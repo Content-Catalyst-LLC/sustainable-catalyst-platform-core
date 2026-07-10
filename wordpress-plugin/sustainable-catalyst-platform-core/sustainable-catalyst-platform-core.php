@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name: Sustainable Catalyst Platform Core
- * Description: WordPress status and registry lookup client for Sustainable Catalyst Platform Core v2.0.0.
- * Version: 2.2.0
+ * Description: WordPress connector for Sustainable Catalyst Platform Core registry, graph, evidence, and developer services.
+ * Version: 2.3.0
  * Author: Content Catalyst LLC
  * License: MIT
  */
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('SCPC_VERSION', '2.2.0');
+define('SCPC_VERSION', '2.3.0');
 define('SCPC_OPTION_BACKEND_URL', 'scpc_backend_url');
 define('SCPC_OPTION_READ_KEY', 'scpc_read_key');
 
@@ -88,7 +88,9 @@ function scpc_render_settings_page() {
         <code>[sc_knowledge_explorer]</code><br />
         <code>[sc_evidence_ledger_status]</code><br />
         <code>[sc_evidence_manifest claim_id="sc:claim:..."]</code><br />
-        <code>[sc_evidence_explorer]</code>
+        <code>[sc_evidence_explorer]</code><br />
+        <code>[sc_developer_portal]</code><br />
+        <code>[sc_public_api_plans]</code>
     </div>
     <?php
 }
@@ -347,3 +349,53 @@ function scpc_evidence_explorer_shortcode() {
         '</section>';
 }
 add_shortcode('sc_evidence_explorer', 'scpc_evidence_explorer_shortcode');
+
+
+function scpc_developer_portal_shortcode() {
+    $base = untrailingslashit(get_option(SCPC_OPTION_BACKEND_URL, ''));
+    if (!$base) {
+        return '<div class="scpc-card scpc-error">Platform Core backend URL is not configured.</div>';
+    }
+
+    return '<section class="scpc-card">' .
+        '<p class="scpc-kicker">Unified Public API</p>' .
+        '<h3>Sustainable Catalyst Developer Portal</h3>' .
+        '<p>Explore the public API, test requests, download SDKs and OpenAPI assets, review scopes and quotas, and configure signed webhooks.</p>' .
+        '<a class="scpc-button" href="' . esc_url($base . '/developers') . '" target="_blank" rel="noopener">Open Developer Portal</a>' .
+        '</section>';
+}
+add_shortcode('sc_developer_portal', 'scpc_developer_portal_shortcode');
+
+function scpc_public_api_plans_shortcode() {
+    $plans = scpc_api_get('/developers/plans.json');
+    if (is_wp_error($plans)) {
+        return '<div class="scpc-card scpc-error"><strong>API plans unavailable</strong><p>' .
+            esc_html($plans->get_error_message()) .
+            '</p></div>';
+    }
+
+    ob_start();
+    ?>
+    <section class="scpc-card">
+        <p class="scpc-kicker">Developer access</p>
+        <h3>Unified Public API Plans</h3>
+        <div class="scpc-api-plan-grid">
+            <?php foreach ($plans as $plan) : ?>
+                <article class="scpc-api-plan">
+                    <strong><?php echo esc_html($plan['name']); ?></strong>
+                    <?php if (!empty($plan['description'])) : ?>
+                        <p><?php echo esc_html($plan['description']); ?></p>
+                    <?php endif; ?>
+                    <p class="scpc-meta">
+                        <?php echo esc_html(number_format_i18n(intval($plan['requests_per_minute']))); ?> requests/minute ·
+                        <?php echo esc_html(number_format_i18n(intval($plan['requests_per_day']))); ?> requests/day ·
+                        page size <?php echo esc_html(number_format_i18n(intval($plan['max_page_size']))); ?>
+                    </p>
+                </article>
+            <?php endforeach; ?>
+        </div>
+    </section>
+    <?php
+    return ob_get_clean();
+}
+add_shortcode('sc_public_api_plans', 'scpc_public_api_plans_shortcode');

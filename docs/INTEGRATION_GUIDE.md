@@ -1,52 +1,150 @@
 # Integration Guide
 
+## Choosing an API surface
+
+Use `/v1` when:
+
+- The caller is a trusted Sustainable Catalyst product
+- The operation requires the internal write key
+- The integration creates claims, evidence, relationships, or snapshots
+- The integration manages developer applications or publishes events
+
+Use `/api/v1` when:
+
+- The caller is an external developer or public integration
+- The integration needs stable read access
+- The caller should have explicit scopes and quotas
+- Usage must be attributable to an application and credential
+- The integration manages its own webhook subscriptions
+
 ## Research Librarian
 
-The Research Librarian can:
+External research tools can use:
 
-- Resolve claims and evidence to stable IDs
-- Surface verified evidence records
-- Link answers to source snapshots
-- Explain recommendation paths through the graph
-- Include manifest hashes in exported research routes
+```text
+GET /api/v1/entities
+GET /api/v1/graph/{entity_id}
+GET /api/v1/graph/path
+GET /api/v1/claims
+GET /api/v1/evidence-records
+GET /api/v1/evidence/manifests/{claim_id}
+```
+
+Recommended scopes:
+
+```text
+registry:read
+graph:read
+evidence:read
+ledger:read
+```
 
 ## Workbench
 
-Workbench should create:
+Workbench remains an internal writer. It should continue using `/v1` to create:
 
-1. A provenance activity for the model run
-2. A calculation trace with inputs, outputs, code version, and runtime
-3. Evidence records that point to the trace
-4. Provenance links between the activity, trace, claim, and source inputs
+- Provenance activities
+- Calculation traces
+- Evidence records
+- Graph relationships
+- Webhook events when needed
+
+A public calculator client can use `/api/v1` for reviewed metadata and evidence but should not receive the internal write key.
 
 ## Decision Studio
 
-Decision Studio should:
+Decision Studio remains an internal writer for:
 
-- Register material claims
-- Import source snapshots from Site Intelligence
-- Attach source and calculation evidence
-- Assign evidence reviews
-- Export claim evidence manifests with decision packets
+- Claims
+- Evidence records
+- Review assignments
+- Evidence manifests
+- Developer-facing webhook events
+
+Public decision-packet viewers can use `/api/v1`.
 
 ## Site Intelligence
 
-Site Intelligence should:
+Site Intelligence remains an internal writer for:
 
-- Register source entities
-- Capture source snapshots
-- Preserve retrieval times and content hashes
-- Link connector activities to snapshots
-- Notify the future Trust Center when freshness or integrity checks fail
+- Source entities
+- Source snapshots
+- Connector provenance
+- Indicator relationships
+
+Public dashboards can consume selected records through `/api/v1`.
+
+## API-key onboarding
+
+1. Create a developer application.
+2. Review the use case.
+3. Approve or reject it.
+4. Assign a plan.
+5. Issue a least-privilege key.
+6. Deliver the plaintext key once.
+7. Ask the developer to verify `/api/v1/status`.
+8. Monitor `/api/v1/developer/usage` and internal developer statistics.
+9. Revoke and replace keys when compromised or lost.
+
+## Webhook verification
+
+Given:
+
+```text
+timestamp = X-SC-Webhook-Timestamp
+signature = X-SC-Webhook-Signature
+body = exact raw request body
+```
+
+Compute:
+
+```text
+HMAC_SHA256(subscription_secret, timestamp + "." + body)
+```
+
+Compare the hexadecimal digest to the `v1=` signature using a constant-time comparison.
+
+Reject:
+
+- Old timestamps outside the consumer's replay window
+- Missing signatures
+- Invalid signatures
+- Duplicate webhook IDs already processed
+
+## Python SDK
+
+```python
+from sc_platform_core_public import PublicApiClient
+
+client = PublicApiClient(
+    "https://YOUR-PLATFORM-CORE.onrender.com",
+    "scpk_your_key",
+)
+
+print(client.status())
+print(client.entities(entity_type="product"))
+print(client.verify_ledger())
+```
+
+## JavaScript SDK
+
+```javascript
+import { PublicApiClient } from "./index.mjs";
+
+const client = new PublicApiClient(
+  "https://YOUR-PLATFORM-CORE.onrender.com",
+  "scpk_your_key"
+);
+
+console.log(await client.status());
+console.log(await client.entities({ entity_type: "product" }));
+```
 
 ## WordPress
 
-Use server-rendered shortcodes for public summaries:
-
 ```text
-[sc_evidence_ledger_status]
-[sc_evidence_manifest claim_id="sc:claim:..."]
-[sc_evidence_explorer]
+[sc_developer_portal]
+[sc_public_api_plans]
 ```
 
-Do not expose write keys, unpublished claims, private snapshots, or internal review notes through public page code.
+The WordPress connector links to the backend Developer Portal. It does not store public developer keys or the internal write key.

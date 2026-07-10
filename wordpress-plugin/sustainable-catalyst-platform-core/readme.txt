@@ -4,7 +4,7 @@ Tags: knowledge graph, entity registry, provenance, sustainable catalyst
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.0
-Stable tag: 2.2.0
+Stable tag: 2.3.0
 License: MIT
 
 WordPress status and entity lookup client for Sustainable Catalyst Platform Core.
@@ -32,3 +32,10 @@ The plugin never exposes the Platform Core write key in frontend code.
 * Adds claim evidence manifest shortcode.
 * Adds Evidence Explorer launch shortcode.
 * Supports claims, source snapshots, provenance activities, calculation traces, reviews, and ledger verification.
+
+
+== 2.3.0 ==
+
+* Adds Developer Portal launch shortcode.
+* Adds public API plan cards.
+* Supports the Unified Public API, scoped credentials, usage controls, SDK assets, and signed webhooks.

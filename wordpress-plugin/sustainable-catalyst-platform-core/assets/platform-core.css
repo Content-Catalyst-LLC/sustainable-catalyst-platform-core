@@ -72,3 +72,17 @@
   color: var(--scpc-red);
   font-weight: 800;
 }
+
+
+.scpc-api-plan-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.scpc-api-plan {
+  padding: 16px;
+  border: 1px solid var(--scpc-border);
+  background: #ffffff;
+}

@@ -20,7 +20,7 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--manifest",
-        default=str(BACKEND / "data" / "platform_core_seed_v2.2.0.json"),
+        default=str(BACKEND / "data" / "platform_core_seed_v2.3.0.json"),
     )
     parser.add_argument(
         "--skip-existing",

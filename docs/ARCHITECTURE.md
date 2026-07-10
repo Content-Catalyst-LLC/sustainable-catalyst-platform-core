@@ -4,64 +4,131 @@
 
 ### Universal Entity Registry
 
-Stable IDs, entity aliases, lifecycle state, visibility, canonical URLs, and metadata.
+Stable IDs, aliases, lifecycle state, visibility, canonical URLs, and extensible metadata.
 
 ### Governed Knowledge Graph
 
-Controlled predicates, type constraints, reviewed relationships, traversal, paths, neighborhoods, recommendations, and JSON-LD.
+Controlled predicates, type constraints, relationship reviews, bounded traversal, paths, neighborhoods, recommendations, and JSON-LD.
 
 ### Evidence Ledger
 
-Claims, source snapshots, evidence records, calculation traces, reviews, assignments, and manifests.
+Claims, immutable source snapshots, evidence records, calculation traces, review assignments, append-only decisions, manifests, and tamper-evident ledger history.
 
-### Provenance layer
+### Unified Public API
 
-Activities identify the agent, software, parameters, environment, timing, and status of a process. Provenance links connect activities to claims, evidence, snapshots, traces, entities, and graph relationships.
+The `/api/v1` layer provides a curated external contract over selected Platform Core read capabilities.
 
-### Tamper-evident audit layer
+Internal product integrations retain `/v1`. External developers receive:
 
-Ledger entries form an ordered hash chain. Each entry binds:
+- Stable versioned paths
+- Consistent response envelopes
+- Request IDs
+- Explicit scopes
+- Quotas and maximum page sizes
+- Public-record filtering
+- Usage visibility
+- Webhook management
+
+### Developer control plane
+
+Administrative `/v1/developer` routes manage:
+
+- API plans
+- Developer applications
+- Approval state
+- Credentials
+- Revocation
+- Usage
+- Event publication
+- Webhook dispatch
+- Platform statistics
+
+These routes require the internal Platform Core write key.
+
+### Credential model
+
+A public API credential stores:
+
+- Application ID
+- Human-readable label
+- Key prefix
+- Last four characters
+- SHA-256 key hash
+- Scopes
+- Status
+- Expiration
+- Last-use time
+- Issuer
+- Revocation time
+
+Plaintext keys are never stored.
+
+### Quota model
+
+Rate limits are enforced from request-log records in PostgreSQL or SQLite:
+
+- Rolling one-minute request count
+- Calendar-day request count
+- Plan-specific maximum page size
+
+This is appropriate for the current single-service deployment. A horizontally scaled high-throughput deployment should add Redis or another distributed counter backend.
+
+### Request privacy
+
+Platform Core does not store raw public API client IP addresses or user-agent strings.
+
+It stores:
 
 ```text
-record identity
-action
-actor
-payload hash
-previous entry hash
-timestamp
+SHA256(api_log_salt + ":" + client_value)
 ```
 
-The chain detects changed payloads, changed entry metadata, missing predecessors, and reordered history.
+The salt must be production-specific and secret.
 
-## Transaction model
+### Webhook model
 
-A domain record and its corresponding ledger entry are inserted in the same database transaction. If either insertion fails, neither is committed.
+Webhook events use an outbox:
 
-## Source-content model
+1. Domain operation creates or updates a Platform Core record.
+2. A webhook event is inserted in the same database transaction.
+3. The dispatcher resolves matching subscriptions.
+4. A canonical JSON body is generated.
+5. The body is signed with HMAC-SHA256.
+6. Delivery status and response information are recorded.
+7. Failed event deliveries remain pending for retry.
 
-Platform Core stores:
+The subscription secret is deterministically derived with HMAC-SHA256 from a production master signing secret and the subscription ID.
 
-- Content hash
-- Length
-- Configurable excerpt
-- Storage and archive references
+### Public-data boundary
 
-It does not require the full source body to remain in the relational database. A later object-storage adapter can preserve full snapshots without changing snapshot IDs.
+The public API excludes:
 
-## Manifest model
+- Administrative developer records
+- Credential hashes and secrets
+- Private or internal claims
+- Nonverified evidence
+- Review assignments
+- Internal evidence-manifest records
+- Unsupported ledger record types
+- Mutable registry and evidence writes
 
-Evidence manifests are generated from current linked records and include the relevant ledger history. Their canonical contents are hashed on export.
+## Middleware
 
-## Immutability model
+`PublicApiMiddleware` runs only for `/api/v1` paths and performs:
 
-Source snapshots, calculation traces, provenance links, reviews, and ledger entries have no update or delete API. Ledger entries also reject ORM updates and deletes.
+1. API-enabled check
+2. Production salt check
+3. Key extraction
+4. SHA-256 key lookup
+5. Application, plan, key, and expiration validation
+6. Minute and daily quota checks
+7. Request-context creation
+8. Response quota headers
+9. Salted request logging
+10. Credential last-use update
 
-Claims remain revision-capable because claim language and lifecycle can change; each change creates a new ledger entry.
+Endpoint dependencies enforce the required scope.
 
-## Security
+## Backward compatibility
 
-- Writes require `X-SC-API-Key`.
-- Production writes fail closed without a configured key.
-- Public-read settings apply to ledger routes.
-- Source content is not returned after snapshot capture.
-- WordPress never receives the backend write key.
+The release does not remove or rename the internal `/v1` interfaces introduced in v2.0–v2.2. Existing Sustainable Catalyst product integrations continue to work.

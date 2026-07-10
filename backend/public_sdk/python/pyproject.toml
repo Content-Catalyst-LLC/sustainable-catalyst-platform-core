@@ -1,0 +1,14 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sc-platform-core-public"
+version = "2.3.0"
+description = "Python client for the Sustainable Catalyst Unified Public API"
+requires-python = ">=3.10"
+dependencies = ["httpx>=0.27,<1"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["sc_platform_core_public*"]

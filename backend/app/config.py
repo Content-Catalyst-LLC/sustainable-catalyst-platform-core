@@ -20,7 +20,7 @@ def _int(name: str, default: int) -> int:
 @dataclass(frozen=True)
 class Settings:
     app_name: str = "Sustainable Catalyst Platform Core"
-    version: str = "2.2.0"
+    version: str = "2.3.0"
     environment: str = "development"
     database_url: str = "sqlite:///./platform_core.db"
     write_api_key: str = ""
@@ -32,6 +32,12 @@ class Settings:
     explorer_enabled: bool = True
     evidence_explorer_enabled: bool = True
     snapshot_excerpt_max: int = 1200
+    public_api_enabled: bool = True
+    developer_portal_enabled: bool = True
+    public_api_default_plan: str = "free"
+    api_log_salt: str = "development-api-log-salt"
+    webhook_signing_secret: str = "development-webhook-signing-secret"
+    webhook_delivery_timeout: int = 10
 
     @classmethod
     def from_env(cls) -> "Settings":
@@ -48,8 +54,13 @@ class Settings:
             database_url = database_url.replace("postgres://", "postgresql+psycopg://", 1)
         elif database_url.startswith("postgresql://"):
             database_url = database_url.replace("postgresql://", "postgresql+psycopg://", 1)
+        environment = os.getenv(
+            "SC_CORE_ENVIRONMENT",
+            "development",
+        ).strip().lower()
+        production = environment == "production"
         return cls(
-            environment=os.getenv("SC_CORE_ENVIRONMENT", "development").strip().lower(),
+            environment=environment,
             database_url=database_url,
             write_api_key=os.getenv("SC_CORE_WRITE_API_KEY", "").strip(),
             public_reads=_bool("SC_CORE_PUBLIC_READS", True),
@@ -60,4 +71,19 @@ class Settings:
             explorer_enabled=_bool("SC_CORE_EXPLORER_ENABLED", True),
             evidence_explorer_enabled=_bool("SC_CORE_EVIDENCE_EXPLORER_ENABLED", True),
             snapshot_excerpt_max=max(0, min(_int("SC_CORE_SNAPSHOT_EXCERPT_MAX", 1200), 10000)),
+            public_api_enabled=_bool("SC_CORE_PUBLIC_API_ENABLED", True),
+            developer_portal_enabled=_bool("SC_CORE_DEVELOPER_PORTAL_ENABLED", True),
+            public_api_default_plan=os.getenv("SC_CORE_PUBLIC_API_DEFAULT_PLAN", "free").strip(),
+            api_log_salt=os.getenv(
+                "SC_CORE_API_LOG_SALT",
+                "" if production else "development-api-log-salt",
+            ).strip(),
+            webhook_signing_secret=os.getenv(
+                "SC_CORE_WEBHOOK_SIGNING_SECRET",
+                "" if production else "development-webhook-signing-secret",
+            ).strip(),
+            webhook_delivery_timeout=max(
+                1,
+                min(_int("SC_CORE_WEBHOOK_DELIVERY_TIMEOUT", 10), 60),
+            ),
         )

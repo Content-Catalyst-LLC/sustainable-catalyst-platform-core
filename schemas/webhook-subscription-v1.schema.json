@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/platform-core/webhook-subscription-v1.json",
+  "title": "Sustainable Catalyst Webhook Subscription",
+  "type": "object",
+  "required": [
+    "application_id",
+    "callback_url",
+    "event_types"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "application_id": {
+      "type": "string"
+    },
+    "callback_url": {
+      "type": "string",
+      "format": "uri"
+    },
+    "event_types": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "status": {
+      "type": "string"
+    },
+    "description": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "metadata": {
+      "type": "object"
+    }
+  }
+}

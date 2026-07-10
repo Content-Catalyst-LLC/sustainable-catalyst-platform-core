@@ -1,5 +1,5 @@
 {
-  "source_name": "platform-core-v2.2.0-seed",
+  "source_name": "platform-core-v2.3.0-seed",
   "entities": [
     {
       "id": "sc:service:platform-core",
@@ -246,6 +246,81 @@
         "interface": "public"
       },
       "aliases": []
+    },
+    {
+      "id": "sc:service:unified-public-api",
+      "entity_type": "service",
+      "slug": "unified-public-api",
+      "name": "Sustainable Catalyst Unified Public API",
+      "description": "Versioned public registry, graph, evidence, ledger, usage, and webhook API for external integrations.",
+      "status": "active",
+      "visibility": "public",
+      "schema_version": "1.0",
+      "metadata": {
+        "version": "2.3.0",
+        "api_version": "v1",
+        "base_path": "/api/v1"
+      },
+      "aliases": []
+    },
+    {
+      "id": "sc:tool:developer-portal",
+      "entity_type": "tool",
+      "slug": "developer-portal",
+      "name": "Sustainable Catalyst Developer Portal",
+      "description": "Public documentation, API console, plans, OpenAPI specification, Postman collection, and SDK downloads.",
+      "canonical_url": "https://sustainablecatalyst.com/platform/",
+      "status": "active",
+      "visibility": "public",
+      "schema_version": "1.0",
+      "metadata": {
+        "version": "2.3.0",
+        "path": "/developers"
+      },
+      "aliases": []
+    },
+    {
+      "id": "sc:registry:api-plan-registry",
+      "entity_type": "registry",
+      "slug": "api-plan-registry",
+      "name": "Sustainable Catalyst API Plan Registry",
+      "description": "Registry of public API quotas, scopes, page limits, availability, and intended integration tiers.",
+      "status": "active",
+      "visibility": "public",
+      "schema_version": "1.0",
+      "metadata": {
+        "version": "2.3.0"
+      },
+      "aliases": []
+    },
+    {
+      "id": "sc:service:webhook-delivery",
+      "entity_type": "service",
+      "slug": "webhook-delivery",
+      "name": "Sustainable Catalyst Webhook Delivery",
+      "description": "Signed outbox-based event delivery for developer applications.",
+      "status": "active",
+      "visibility": "public",
+      "schema_version": "1.0",
+      "metadata": {
+        "version": "2.3.0",
+        "signature": "hmac-sha256"
+      },
+      "aliases": []
+    },
+    {
+      "id": "sc:concept:developer-ecosystem",
+      "entity_type": "concept",
+      "slug": "developer-ecosystem",
+      "name": "Developer Ecosystem",
+      "description": "The APIs, SDKs, documentation, policies, credentials, quotas, and event interfaces used to build on Sustainable Catalyst.",
+      "status": "active",
+      "visibility": "public",
+      "schema_version": "1.0",
+      "metadata": {
+        "domain": "platform-infrastructure"
+      },
+      "aliases": []
     }
   ],
   "relationships": [
@@ -457,6 +532,66 @@
       "status": "verified",
       "provenance": {
         "source": "platform-core-v2.2.0"
+      }
+    },
+    {
+      "subject_id": "sc:service:platform-core",
+      "predicate": "implements",
+      "object_id": "sc:concept:developer-ecosystem",
+      "confidence": 1.0,
+      "status": "verified",
+      "provenance": {
+        "source": "platform-core-v2.3.0"
+      }
+    },
+    {
+      "subject_id": "sc:service:unified-public-api",
+      "predicate": "uses",
+      "object_id": "sc:service:platform-core",
+      "confidence": 1.0,
+      "status": "verified",
+      "provenance": {
+        "source": "platform-core-v2.3.0"
+      }
+    },
+    {
+      "subject_id": "sc:tool:developer-portal",
+      "predicate": "uses",
+      "object_id": "sc:service:unified-public-api",
+      "confidence": 1.0,
+      "status": "verified",
+      "provenance": {
+        "source": "platform-core-v2.3.0"
+      }
+    },
+    {
+      "subject_id": "sc:service:unified-public-api",
+      "predicate": "uses",
+      "object_id": "sc:registry:api-plan-registry",
+      "confidence": 1.0,
+      "status": "verified",
+      "provenance": {
+        "source": "platform-core-v2.3.0"
+      }
+    },
+    {
+      "subject_id": "sc:service:webhook-delivery",
+      "predicate": "uses",
+      "object_id": "sc:service:unified-public-api",
+      "confidence": 1.0,
+      "status": "verified",
+      "provenance": {
+        "source": "platform-core-v2.3.0"
+      }
+    },
+    {
+      "subject_id": "sc:service:unified-public-api",
+      "predicate": "routes_to",
+      "object_id": "sc:tool:developer-portal",
+      "confidence": 1.0,
+      "status": "verified",
+      "provenance": {
+        "source": "platform-core-v2.3.0"
       }
     }
   ]

@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/platform-core/public-envelope-v1.json",
+  "title": "Sustainable Catalyst Unified Public API Envelope",
+  "type": "object",
+  "required": [
+    "data",
+    "meta"
+  ],
+  "properties": {
+    "data": {},
+    "meta": {
+      "type": "object",
+      "required": [
+        "api_version",
+        "request_id",
+        "documentation"
+      ],
+      "properties": {
+        "api_version": {
+          "const": "v1"
+        },
+        "request_id": {
+          "type": "string"
+        },
+        "documentation": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

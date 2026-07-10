@@ -683,3 +683,266 @@ class EvidenceLedgerStats(BaseModel):
     ledger_head_hash: str | None
     evidence_by_status: dict[str, int]
     evidence_by_stance: dict[str, int]
+
+
+class ApiPlanRead(BaseModel):
+    id: str
+    name: str
+    description: str | None
+    requests_per_minute: int
+    requests_per_day: int
+    max_page_size: int
+    allowed_scopes: list[str]
+    public: bool
+    active: bool
+    sort_order: int
+    metadata: dict[str, Any] = Field(
+        default_factory=dict,
+        validation_alias="metadata_json",
+        serialization_alias="metadata",
+    )
+    created_at: datetime
+    updated_at: datetime
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class DeveloperApplicationCreate(BaseModel):
+    id: str | None = None
+    name: str = Field(min_length=1, max_length=300)
+    owner_name: str = Field(min_length=1, max_length=300)
+    owner_email: str = Field(min_length=3, max_length=500)
+    organization: str | None = Field(default=None, max_length=500)
+    website_url: HttpUrl | None = None
+    use_case: str = Field(min_length=20, max_length=20000)
+    status: Literal["pending", "approved", "suspended", "rejected"] = "pending"
+    plan_id: str = Field(default="free", min_length=1, max_length=100)
+    metadata: dict[str, Any] = Field(default_factory=dict)
+    actor: str = Field(min_length=1, max_length=300)
+
+
+class DeveloperApplicationUpdate(BaseModel):
+    status: Literal["pending", "approved", "suspended", "rejected"] | None = None
+    plan_id: str | None = Field(default=None, min_length=1, max_length=100)
+    name: str | None = Field(default=None, min_length=1, max_length=300)
+    owner_name: str | None = Field(default=None, min_length=1, max_length=300)
+    owner_email: str | None = Field(default=None, min_length=3, max_length=500)
+    organization: str | None = Field(default=None, max_length=500)
+    website_url: HttpUrl | None = None
+    use_case: str | None = Field(default=None, min_length=20, max_length=20000)
+    metadata: dict[str, Any] | None = None
+    actor: str = Field(min_length=1, max_length=300)
+
+
+class DeveloperApplicationRead(BaseModel):
+    id: str
+    name: str
+    owner_name: str
+    owner_email: str
+    organization: str | None
+    website_url: str | None
+    use_case: str
+    status: str
+    plan_id: str
+    metadata: dict[str, Any] = Field(
+        default_factory=dict,
+        validation_alias="metadata_json",
+        serialization_alias="metadata",
+    )
+    created_at: datetime
+    updated_at: datetime
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class ApiCredentialIssue(BaseModel):
+    label: str = Field(min_length=1, max_length=300)
+    scopes: list[str] = Field(default_factory=list)
+    expires_at: datetime | None = None
+    created_by: str = Field(min_length=1, max_length=300)
+    metadata: dict[str, Any] = Field(default_factory=dict)
+
+
+class ApiCredentialRead(BaseModel):
+    id: str
+    application_id: str
+    label: str
+    key_prefix: str
+    key_last_four: str
+    scopes: list[str]
+    status: str
+    expires_at: datetime | None
+    last_used_at: datetime | None
+    created_by: str
+    revoked_at: datetime | None
+    metadata: dict[str, Any] = Field(
+        default_factory=dict,
+        validation_alias="metadata_json",
+        serialization_alias="metadata",
+    )
+    created_at: datetime
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class ApiCredentialIssued(BaseModel):
+    credential: ApiCredentialRead
+    api_key: str
+    warning: str = (
+        "This plaintext API key is returned once. Store it securely; "
+        "Platform Core stores only its SHA-256 hash."
+    )
+
+
+class CredentialRevoke(BaseModel):
+    revoked_by: str = Field(min_length=1, max_length=300)
+
+
+class PublicApiIdentity(BaseModel):
+    application_id: str
+    application_name: str
+    credential_id: str
+    credential_label: str
+    plan_id: str
+    plan_name: str
+    scopes: list[str]
+    requests_per_minute: int
+    requests_per_day: int
+    max_page_size: int
+
+
+class ApiUsageSummary(BaseModel):
+    application_id: str
+    credential_id: str | None
+    window_start: datetime
+    window_end: datetime
+    requests: int
+    successful_requests: int
+    client_error_requests: int
+    server_error_requests: int
+    requests_by_path: dict[str, int]
+    requests_by_status: dict[str, int]
+
+
+class WebhookSubscriptionCreate(BaseModel):
+    callback_url: HttpUrl
+    event_types: list[str] = Field(min_length=1, max_length=100)
+    description: str | None = Field(default=None, max_length=5000)
+    metadata: dict[str, Any] = Field(default_factory=dict)
+
+    @model_validator(mode="after")
+    def validate_event_types(self):
+        cleaned = []
+        for event_type in self.event_types:
+            value = event_type.strip().lower()
+            if not value:
+                raise ValueError("Webhook event types cannot be empty.")
+            if not all(char.islower() or char.isdigit() or char in "._-*" for char in value):
+                raise ValueError(
+                    "Webhook event types may contain lowercase letters, numbers, "
+                    "periods, underscores, hyphens, and *."
+                )
+            cleaned.append(value)
+        self.event_types = sorted(set(cleaned))
+        return self
+
+
+class WebhookSubscriptionRead(BaseModel):
+    id: str
+    application_id: str
+    callback_url: str
+    event_types: list[str]
+    status: str
+    description: str | None
+    created_by_credential_id: str
+    metadata: dict[str, Any] = Field(
+        default_factory=dict,
+        validation_alias="metadata_json",
+        serialization_alias="metadata",
+    )
+    created_at: datetime
+    updated_at: datetime
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class WebhookSubscriptionIssued(BaseModel):
+    subscription: WebhookSubscriptionRead
+    signing_secret: str
+    warning: str = (
+        "The signing secret is derived for this subscription and is returned "
+        "when the subscription is created. Store it securely."
+    )
+
+
+class WebhookSubscriptionUpdate(BaseModel):
+    event_types: list[str] | None = None
+    status: Literal["active", "paused", "revoked"] | None = None
+    description: str | None = Field(default=None, max_length=5000)
+    metadata: dict[str, Any] | None = None
+
+
+class WebhookEventCreate(BaseModel):
+    event_type: str = Field(min_length=1, max_length=150)
+    resource_type: str = Field(min_length=1, max_length=100)
+    resource_id: str = Field(min_length=1, max_length=255)
+    payload: dict[str, Any] = Field(default_factory=dict)
+    actor: str = Field(min_length=1, max_length=300)
+
+
+class WebhookEventRead(BaseModel):
+    id: str
+    event_type: str
+    resource_type: str
+    resource_id: str
+    payload: dict[str, Any] = Field(
+        default_factory=dict,
+        validation_alias="payload_json",
+        serialization_alias="payload",
+    )
+    status: str
+    created_at: datetime
+    processed_at: datetime | None
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class WebhookDeliveryRead(BaseModel):
+    id: str
+    subscription_id: str
+    event_id: str
+    status: str
+    attempts: int
+    http_status: int | None
+    response_excerpt: str | None
+    error_message: str | None
+    signature: str | None
+    attempted_at: datetime | None
+    delivered_at: datetime | None
+    created_at: datetime
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class WebhookDispatchResult(BaseModel):
+    events_processed: int
+    deliveries_attempted: int
+    deliveries_succeeded: int
+    deliveries_failed: int
+
+
+class PublicEnvelope(BaseModel):
+    data: Any
+    meta: dict[str, Any] = Field(default_factory=dict)
+
+
+class DeveloperPlatformStats(BaseModel):
+    plans: int
+    applications: int
+    active_credentials: int
+    public_api_requests: int
+    webhook_subscriptions: int
+    webhook_events: int
+    webhook_deliveries: int
+    requests_by_status: dict[str, int]
+    requests_by_path: dict[str, int]

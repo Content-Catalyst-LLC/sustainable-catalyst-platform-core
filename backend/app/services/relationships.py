@@ -7,6 +7,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session, selectinload
 from ..models import Entity, PredicateDefinition, Relationship, RelationshipReview
 from ..schemas import RelationshipCreate, RelationshipReviewCreate
+from .developers import emit_webhook_event
 from .entities import get_entity_or_404
 from .predicates import validate_predicate_usage
 
@@ -31,6 +32,21 @@ def create_relationship(db: Session, payload: RelationshipCreate) -> Relationshi
     )
     db.add(relationship)
     try:
+        db.flush()
+        emit_webhook_event(
+            db,
+            event_type="relationship.created",
+            resource_type="relationship",
+            resource_id=relationship.id,
+            payload={
+                "id": relationship.id,
+                "subject_id": relationship.subject_id,
+                "predicate": relationship.predicate,
+                "object_id": relationship.object_id,
+                "confidence": relationship.confidence,
+                "status": relationship.status,
+            },
+        )
         db.commit()
     except IntegrityError as exc:
         db.rollback()
@@ -175,7 +191,24 @@ def review_relationship(db: Session, *, relationship_id, payload: RelationshipRe
         metadata_json=payload.metadata,
     )
     relationship.status=resulting
-    db.add(review); db.add(relationship); db.commit(); db.refresh(review)
+    db.add(review)
+    db.add(relationship)
+    db.flush()
+    emit_webhook_event(
+        db,
+        event_type="relationship.reviewed",
+        resource_type="relationship",
+        resource_id=relationship.id,
+        payload={
+            "relationship_id": relationship.id,
+            "decision": payload.decision,
+            "reviewer": payload.reviewer,
+            "previous_status": review.previous_status,
+            "resulting_status": review.resulting_status,
+        },
+    )
+    db.commit()
+    db.refresh(review)
     return review
 
 def list_reviews(db: Session, *, relationship_id, decision, limit):

@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/platform-core/api-plan-v1.json",
+  "title": "Sustainable Catalyst API Plan",
+  "type": "object",
+  "required": [
+    "id",
+    "name",
+    "requests_per_minute",
+    "requests_per_day",
+    "max_page_size",
+    "allowed_scopes"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "requests_per_minute": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "requests_per_day": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "max_page_size": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "allowed_scopes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "public": {
+      "type": "boolean"
+    },
+    "active": {
+      "type": "boolean"
+    },
+    "metadata": {
+      "type": "object"
+    }
+  }
+}

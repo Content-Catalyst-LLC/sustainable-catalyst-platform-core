@@ -29,6 +29,18 @@ services:
         value: "true"
       - key: SC_CORE_SNAPSHOT_EXCERPT_MAX
         value: "1200"
+      - key: SC_CORE_PUBLIC_API_ENABLED
+        value: "true"
+      - key: SC_CORE_DEVELOPER_PORTAL_ENABLED
+        value: "true"
+      - key: SC_CORE_PUBLIC_API_DEFAULT_PLAN
+        value: free
+      - key: SC_CORE_API_LOG_SALT
+        generateValue: true
+      - key: SC_CORE_WEBHOOK_SIGNING_SECRET
+        generateValue: true
+      - key: SC_CORE_WEBHOOK_DELIVERY_TIMEOUT
+        value: "10"
 
 databases:
   - name: sustainable-catalyst-platform-core-db

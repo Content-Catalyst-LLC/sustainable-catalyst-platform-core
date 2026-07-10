@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session, selectinload
 
 from ..models import Entity, EntityAlias
 from ..schemas import AliasCreate, EntityCreate, EntityUpdate
+from .developers import emit_webhook_event
 
 
 def get_entity_or_404(db: Session, entity_id: str) -> Entity:
@@ -43,6 +44,20 @@ def create_entity(db: Session, payload: EntityCreate) -> Entity:
         )
     db.add(entity)
     try:
+        db.flush()
+        emit_webhook_event(
+            db,
+            event_type="entity.created",
+            resource_type="entity",
+            resource_id=entity.id,
+            payload={
+                "id": entity.id,
+                "entity_type": entity.entity_type,
+                "name": entity.name,
+                "status": entity.status,
+                "visibility": entity.visibility,
+            },
+        )
         db.commit()
     except IntegrityError as exc:
         db.rollback()
@@ -96,6 +111,19 @@ def update_entity(db: Session, entity_id: str, payload: EntityUpdate) -> Entity:
         changes["metadata_json"] = changes.pop("metadata")
     for field, value in changes.items():
         setattr(entity, field, value)
+    db.flush()
+    emit_webhook_event(
+        db,
+        event_type="entity.updated",
+        resource_type="entity",
+        resource_id=entity.id,
+        payload={
+            "id": entity.id,
+            "changes": list(changes.keys()),
+            "status": entity.status,
+            "visibility": entity.visibility,
+        },
+    )
     db.commit()
     return get_entity_or_404(db, entity_id)
 

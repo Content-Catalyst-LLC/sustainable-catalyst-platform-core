@@ -10,32 +10,29 @@ Completed.
 
 ## v2.2.0 — Evidence Ledger and Provenance Records
 
+Completed.
+
+## v2.3.0 — Unified Public API and Developer Portal
+
 Completed:
 
-- Claims
-- Source snapshots
-- Evidence records
-- Calculation traces
-- Provenance activities and links
-- Review assignments
-- Append-only review history
-- Tamper-evident ledger
-- Chain verification
-- Evidence manifests
-- Evidence Explorer
+- Versioned `/api/v1`
+- Scoped, hashed API credentials
+- Developer applications and plans
+- Rate limits and quotas
+- Usage records
+- Public registry, graph, evidence, and ledger routes
+- Signed webhooks
+- Delivery history and retries
+- Developer Portal
+- API console
+- OpenAPI
+- Python SDK
+- JavaScript SDK
+- Postman collection
+- WordPress portal connectors
 
-## v2.3.0 — Public API and Developer Portal
-
-Planned:
-
-- Issued API keys
-- Rate limits and usage policy
-- Stable public API contracts
-- Published SDK packages
-- Webhooks
-- Embeddable evidence and graph components
-
-## v2.4.0 — Trust Center
+## v2.4.0 — Public Trust Center
 
 Planned:
 
@@ -43,15 +40,26 @@ Planned:
 - Calculator validation
 - AI grounding evaluations
 - Accessibility checks
-- Incidents and known limitations
-- Public machine-readable trust status
+- Incident history
+- Known limitations
+- Machine-readable trust status
+- Public validation records
 
 ## v2.5.0 — Cross-Platform Integration
 
 Planned:
 
-- Graph-aware Research Librarian
+- Graph-aware Research Librarian routes
 - Workbench provenance automation
 - Decision Studio evidence packets
 - Site Intelligence source health
 - Cross-product action centers
+
+## Later platform infrastructure
+
+- Distributed rate limiting
+- External source-snapshot storage
+- Developer self-service account workflow
+- Usage-based billing only if ever needed
+- Dedicated graph database adapter
+- User workspaces and casebooks

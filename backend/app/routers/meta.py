@@ -37,6 +37,8 @@ def health(request: Request):
         "knowledge_graph": True,
         "evidence_ledger": True,
         "provenance_records": True,
+        "unified_public_api": request.app.state.settings.public_api_enabled,
+        "developer_portal": request.app.state.settings.developer_portal_enabled,
     }
 
 
@@ -48,6 +50,7 @@ def ready(db: Session = Depends(get_session)):
         "database": "ready",
         "knowledge_graph": "ready",
         "evidence_ledger": "ready",
+        "unified_public_api": "ready",
     }
 
 
@@ -93,13 +96,27 @@ def meta(request: Request):
             "openapi",
             "python_client",
             "wordpress_client",
+            "unified_public_api_v1",
+            "hashed_developer_credentials",
+            "scoped_api_access",
+            "plan_aware_rate_limits",
+            "request_usage_records",
+            "developer_applications",
+            "developer_portal",
+            "public_openapi",
+            "python_public_sdk",
+            "javascript_public_sdk",
+            "postman_collection",
+            "signed_webhooks",
+            "webhook_delivery_outbox",
         ],
         deferred_capabilities=[
             "public_trust_center",
-            "public_api_key_issuance",
             "large_scale_graph_database_adapter",
             "user_casebooks",
             "external_snapshot_object_storage_adapter",
+            "developer_self_service_billing",
+            "distributed_rate_limit_backend",
         ],
     )
 

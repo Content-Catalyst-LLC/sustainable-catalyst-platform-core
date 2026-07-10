@@ -390,3 +390,201 @@ def _prevent_ledger_update(mapper, connection, target):
 @event.listens_for(LedgerEntry, "before_delete")
 def _prevent_ledger_delete(mapper, connection, target):
     raise RuntimeError("Ledger entries are append-only and cannot be deleted.")
+
+
+class ApiPlan(Base):
+    __tablename__ = "api_plans"
+    __table_args__ = (
+        Index("ix_api_plan_public_active", "public", "active"),
+        Index("ix_api_plan_sort", "sort_order", "name"),
+    )
+
+    id: Mapped[str] = mapped_column(String(100), primary_key=True)
+    name: Mapped[str] = mapped_column(String(200), nullable=False)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    requests_per_minute: Mapped[int] = mapped_column(Integer, default=60)
+    requests_per_day: Mapped[int] = mapped_column(Integer, default=5000)
+    max_page_size: Mapped[int] = mapped_column(Integer, default=100)
+    allowed_scopes: Mapped[list] = mapped_column(JSON, default=list)
+    public: Mapped[bool] = mapped_column(Boolean, default=True)
+    active: Mapped[bool] = mapped_column(Boolean, default=True)
+    sort_order: Mapped[int] = mapped_column(Integer, default=100)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utcnow, onupdate=utcnow
+    )
+
+
+class DeveloperApplication(Base):
+    __tablename__ = "developer_applications"
+    __table_args__ = (
+        Index("ix_developer_application_status", "status"),
+        Index("ix_developer_application_owner_email", "owner_email"),
+    )
+
+    id: Mapped[str] = mapped_column(
+        String(255),
+        primary_key=True,
+        default=lambda: f"sc:developer-app:{uuid.uuid4()}",
+    )
+    name: Mapped[str] = mapped_column(String(300), nullable=False)
+    owner_name: Mapped[str] = mapped_column(String(300), nullable=False)
+    owner_email: Mapped[str] = mapped_column(String(500), nullable=False)
+    organization: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    website_url: Mapped[str | None] = mapped_column(String(2000), nullable=True)
+    use_case: Mapped[str] = mapped_column(Text, nullable=False)
+    status: Mapped[str] = mapped_column(String(50), default="pending", index=True)
+    plan_id: Mapped[str] = mapped_column(
+        ForeignKey("api_plans.id", ondelete="RESTRICT"), nullable=False
+    )
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utcnow, onupdate=utcnow
+    )
+
+
+class ApiCredential(Base):
+    __tablename__ = "api_credentials"
+    __table_args__ = (
+        UniqueConstraint("key_hash", name="uq_api_credential_key_hash"),
+        Index("ix_api_credential_application_status", "application_id", "status"),
+        Index("ix_api_credential_prefix", "key_prefix"),
+    )
+
+    id: Mapped[str] = mapped_column(
+        String(255),
+        primary_key=True,
+        default=lambda: f"sc:api-credential:{uuid.uuid4()}",
+    )
+    application_id: Mapped[str] = mapped_column(
+        ForeignKey("developer_applications.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+    label: Mapped[str] = mapped_column(String(300), nullable=False)
+    key_prefix: Mapped[str] = mapped_column(String(32), nullable=False)
+    key_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    key_last_four: Mapped[str] = mapped_column(String(4), nullable=False)
+    scopes: Mapped[list] = mapped_column(JSON, default=list)
+    status: Mapped[str] = mapped_column(String(30), default="active", index=True)
+    expires_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    last_used_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    created_by: Mapped[str] = mapped_column(String(300), nullable=False)
+    revoked_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ApiRequestLog(Base):
+    __tablename__ = "api_request_logs"
+    __table_args__ = (
+        Index("ix_api_log_credential_created", "credential_id", "created_at"),
+        Index("ix_api_log_application_created", "application_id", "created_at"),
+        Index("ix_api_log_path_created", "path", "created_at"),
+        Index("ix_api_log_request_id", "request_id"),
+    )
+
+    id: Mapped[str] = mapped_column(
+        String(36), primary_key=True, default=lambda: str(uuid.uuid4())
+    )
+    request_id: Mapped[str] = mapped_column(String(64), nullable=False)
+    credential_id: Mapped[str | None] = mapped_column(
+        ForeignKey("api_credentials.id", ondelete="SET NULL"), nullable=True
+    )
+    application_id: Mapped[str | None] = mapped_column(
+        ForeignKey("developer_applications.id", ondelete="SET NULL"), nullable=True
+    )
+    method: Mapped[str] = mapped_column(String(20), nullable=False)
+    path: Mapped[str] = mapped_column(String(1000), nullable=False)
+    query_string: Mapped[str | None] = mapped_column(Text, nullable=True)
+    status_code: Mapped[int] = mapped_column(Integer, nullable=False)
+    required_scope: Mapped[str | None] = mapped_column(String(150), nullable=True)
+    ip_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    user_agent_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    duration_ms: Mapped[float] = mapped_column(Float, nullable=False)
+    response_bytes: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class WebhookSubscription(Base):
+    __tablename__ = "webhook_subscriptions"
+    __table_args__ = (
+        Index("ix_webhook_subscription_application_status", "application_id", "status"),
+    )
+
+    id: Mapped[str] = mapped_column(
+        String(255),
+        primary_key=True,
+        default=lambda: f"sc:webhook-subscription:{uuid.uuid4()}",
+    )
+    application_id: Mapped[str] = mapped_column(
+        ForeignKey("developer_applications.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+    callback_url: Mapped[str] = mapped_column(String(2000), nullable=False)
+    event_types: Mapped[list] = mapped_column(JSON, default=list)
+    status: Mapped[str] = mapped_column(String(30), default="active", index=True)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    created_by_credential_id: Mapped[str] = mapped_column(
+        ForeignKey("api_credentials.id", ondelete="RESTRICT"),
+        nullable=False,
+    )
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utcnow, onupdate=utcnow
+    )
+
+
+class WebhookEvent(Base):
+    __tablename__ = "webhook_events"
+    __table_args__ = (
+        Index("ix_webhook_event_status_created", "status", "created_at"),
+        Index("ix_webhook_event_resource", "resource_type", "resource_id"),
+    )
+
+    id: Mapped[str] = mapped_column(
+        String(255),
+        primary_key=True,
+        default=lambda: f"sc:webhook-event:{uuid.uuid4()}",
+    )
+    event_type: Mapped[str] = mapped_column(String(150), nullable=False, index=True)
+    resource_type: Mapped[str] = mapped_column(String(100), nullable=False)
+    resource_id: Mapped[str] = mapped_column(String(255), nullable=False)
+    payload_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    status: Mapped[str] = mapped_column(String(30), default="pending", index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    processed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+
+class WebhookDelivery(Base):
+    __tablename__ = "webhook_deliveries"
+    __table_args__ = (
+        UniqueConstraint(
+            "subscription_id", "event_id",
+            name="uq_webhook_delivery_subscription_event",
+        ),
+        Index("ix_webhook_delivery_status_created", "status", "created_at"),
+    )
+
+    id: Mapped[str] = mapped_column(
+        String(36), primary_key=True, default=lambda: str(uuid.uuid4())
+    )
+    subscription_id: Mapped[str] = mapped_column(
+        ForeignKey("webhook_subscriptions.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+    event_id: Mapped[str] = mapped_column(
+        ForeignKey("webhook_events.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+    status: Mapped[str] = mapped_column(String(30), default="pending", index=True)
+    attempts: Mapped[int] = mapped_column(Integer, default=0)
+    http_status: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    response_excerpt: Mapped[str | None] = mapped_column(Text, nullable=True)
+    error_message: Mapped[str | None] = mapped_column(Text, nullable=True)
+    signature: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    attempted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    delivered_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)

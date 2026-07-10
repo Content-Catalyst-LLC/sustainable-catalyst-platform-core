@@ -1,0 +1,78 @@
+{
+  "info": {
+    "name": "Sustainable Catalyst Unified Public API v1",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Registry, graph, evidence, ledger, usage, and webhook endpoints."
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://YOUR-PLATFORM-CORE.onrender.com"
+    },
+    {
+      "key": "apiKey",
+      "value": "scpk_your_key"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{apiKey}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "Status",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/v1/status"
+      }
+    },
+    {
+      "name": "Entities",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/v1/entities?entity_type=product"
+      }
+    },
+    {
+      "name": "Knowledge Graph",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/v1/graph/sc:product:research-librarian?depth=2"
+      }
+    },
+    {
+      "name": "Claims",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/v1/claims"
+      }
+    },
+    {
+      "name": "Verify Ledger",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/v1/ledger/verify"
+      }
+    },
+    {
+      "name": "Developer Identity",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/v1/developer/me"
+      }
+    },
+    {
+      "name": "Usage",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/v1/developer/usage?days=30"
+      }
+    }
+  ]
+}

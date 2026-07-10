@@ -1,4 +1,5 @@
-Platform Core v2.2.0 local validation
+Sustainable Catalyst Platform Core v2.3.0
+Unified Public API and Developer Portal
 
 Command:
 python -m pytest -q
@@ -6,8 +7,8 @@ python -m pytest -q
 Exit code: 0
 
 STDOUT:
-[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m                                                       [100%][0m
-[32m[32m[1m18 passed[0m[32m in 4.97s[0m[0m
+[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m                                              [100%][0m
+[32m[32m[1m27 passed[0m[32m in 9.82s[0m[0m
 
 
 STDERR:

@@ -43,6 +43,7 @@ from ..schemas import (
     SourceSnapshotCreate,
     SourceSnapshotRead,
 )
+from .developers import emit_webhook_event
 from .entities import get_entity_or_404
 from .ledger import append_ledger_entry
 
@@ -118,6 +119,19 @@ def create_claim(db: Session, payload: ClaimCreate) -> ClaimRecord:
             "metadata": claim.metadata_json,
         },
     )
+    emit_webhook_event(
+        db,
+        event_type="claim.created",
+        resource_type="claim",
+        resource_id=claim.id,
+        payload={
+            "id": claim.id,
+            "claim_type": claim.claim_type,
+            "subject_entity_id": claim.subject_entity_id,
+            "status": claim.status,
+            "visibility": claim.visibility,
+        },
+    )
     db.commit()
     db.refresh(claim)
     return claim
@@ -146,6 +160,18 @@ def update_claim(
             "changes": changes,
             "current_status": claim.status,
             "updated_at": claim.updated_at,
+        },
+    )
+    emit_webhook_event(
+        db,
+        event_type="claim.updated",
+        resource_type="claim",
+        resource_id=claim.id,
+        payload={
+            "id": claim.id,
+            "changes": list(changes.keys()),
+            "status": claim.status,
+            "visibility": claim.visibility,
         },
     )
     db.commit()
@@ -241,6 +267,19 @@ def create_snapshot(
             "metadata": snapshot.metadata_json,
         },
     )
+    emit_webhook_event(
+        db,
+        event_type="source_snapshot.created",
+        resource_type="source_snapshot",
+        resource_id=snapshot.id,
+        payload={
+            "id": snapshot.id,
+            "source_entity_id": snapshot.source_entity_id,
+            "canonical_url": snapshot.canonical_url,
+            "content_hash": snapshot.content_hash,
+            "retrieved_at": snapshot.retrieved_at.isoformat(),
+        },
+    )
     db.commit()
     db.refresh(snapshot)
     return snapshot
@@ -296,6 +335,19 @@ def create_activity(
             "environment": activity.environment,
             "status": activity.status,
             "metadata": activity.metadata_json,
+        },
+    )
+    emit_webhook_event(
+        db,
+        event_type="provenance_activity.created",
+        resource_type="provenance_activity",
+        resource_id=activity.id,
+        payload={
+            "id": activity.id,
+            "activity_type": activity.activity_type,
+            "name": activity.name,
+            "agent": activity.agent,
+            "status": activity.status,
         },
     )
     db.commit()
@@ -364,6 +416,19 @@ def create_provenance_link(
             "metadata": link.metadata_json,
         },
     )
+    emit_webhook_event(
+        db,
+        event_type="provenance_link.created",
+        resource_type="provenance_link",
+        resource_id=link.id,
+        payload={
+            "id": link.id,
+            "activity_id": activity_id,
+            "role": link.role,
+            "object_type": link.object_type,
+            "object_id": link.object_id,
+        },
+    )
     db.commit()
     db.refresh(link)
     return link
@@ -416,6 +481,20 @@ def create_calculation_trace(
         action="recorded",
         actor=payload.actor,
         payload={**trace_payload, "content_hash": trace.content_hash},
+    )
+    emit_webhook_event(
+        db,
+        event_type="calculation_trace.created",
+        resource_type="calculation_trace",
+        resource_id=trace.id,
+        payload={
+            "id": trace.id,
+            "tool_entity_id": trace.tool_entity_id,
+            "subject_entity_id": trace.subject_entity_id,
+            "activity_id": trace.activity_id,
+            "status": trace.status,
+            "content_hash": trace.content_hash,
+        },
     )
     db.commit()
     db.refresh(trace)
@@ -479,6 +558,20 @@ def create_evidence(
             "review_status": evidence.review_status,
             "provenance": evidence.provenance,
             "metadata": evidence.metadata_json,
+        },
+    )
+    emit_webhook_event(
+        db,
+        event_type="evidence.created",
+        resource_type="evidence",
+        resource_id=evidence.id,
+        payload={
+            "id": evidence.id,
+            "evidence_type": evidence.evidence_type,
+            "stance": evidence.stance,
+            "claim_id": evidence.claim_id,
+            "subject_entity_id": evidence.subject_entity_id,
+            "review_status": evidence.review_status,
         },
     )
     db.commit()
@@ -554,6 +647,19 @@ def review_evidence(
             "metadata": review.metadata_json,
         },
     )
+    emit_webhook_event(
+        db,
+        event_type="evidence.reviewed",
+        resource_type="evidence",
+        resource_id=evidence_id,
+        payload={
+            "evidence_id": evidence_id,
+            "decision": payload.decision,
+            "reviewer": payload.reviewer,
+            "previous_status": review.previous_status,
+            "resulting_status": review.resulting_status,
+        },
+    )
     db.commit()
     db.refresh(review)
     return review
@@ -590,6 +696,18 @@ def assign_evidence_review(
             "metadata": assignment.metadata_json,
         },
     )
+    emit_webhook_event(
+        db,
+        event_type="evidence_review.assigned",
+        resource_type="evidence_review_assignment",
+        resource_id=assignment.id,
+        payload={
+            "assignment_id": assignment.id,
+            "evidence_id": evidence_id,
+            "assignee": assignment.assignee,
+            "status": assignment.status,
+        },
+    )
     db.commit()
     db.refresh(assignment)
     return assignment
@@ -617,6 +735,18 @@ def complete_assignment(
             "evidence_id": assignment.evidence_id,
             "assignee": assignment.assignee,
             "completed_at": assignment.completed_at,
+        },
+    )
+    emit_webhook_event(
+        db,
+        event_type="evidence_review.completed",
+        resource_type="evidence_review_assignment",
+        resource_id=assignment.id,
+        payload={
+            "assignment_id": assignment.id,
+            "evidence_id": assignment.evidence_id,
+            "assignee": assignment.assignee,
+            "completed_at": assignment.completed_at.isoformat(),
         },
     )
     db.commit()

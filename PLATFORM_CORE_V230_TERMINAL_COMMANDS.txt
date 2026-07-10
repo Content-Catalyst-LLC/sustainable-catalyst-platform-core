@@ -1,0 +1,118 @@
+SUSTAINABLE CATALYST PLATFORM CORE v2.3.0
+Unified Public API and Developer Portal
+
+Place these files in ~/Downloads:
+
+1. sustainable-catalyst-platform-core-v2.3.0-repo.zip
+2. PUSH_PLATFORM_CORE_V230_FINAL.sh
+
+Run exactly:
+
+cd ~/Downloads
+chmod +x PUSH_PLATFORM_CORE_V230_FINAL.sh
+./PUSH_PLATFORM_CORE_V230_FINAL.sh
+
+The banner must say:
+
+PLATFORM CORE v2.3.0 — FINAL PUBLIC API PUSH
+
+The script:
+
+- Uses existing GitHub CLI authentication
+- Uses SSH for every Git operation
+- Has no HTTPS fallback
+- Handles an existing or empty repository
+- Safety-stashes unfinished local changes
+- Removes damaged virtual environments
+- Excludes .venv from rsync
+- Recreates the virtual environment from scratch
+- Uses .venv/bin/python directly
+- Runs all regression tests
+- Runs migration 0004 and seed smoke checks
+- Builds the WordPress connector
+- Copies Python and JavaScript SDK downloads
+- Copies the Postman collection
+- Commits and pushes main
+
+RENDER
+
+Keep the existing Platform Core service and PostgreSQL database.
+
+Add or confirm:
+
+SC_CORE_PUBLIC_API_ENABLED=true
+SC_CORE_DEVELOPER_PORTAL_ENABLED=true
+SC_CORE_PUBLIC_API_DEFAULT_PLAN=free
+SC_CORE_API_LOG_SALT=<generate a long random value>
+SC_CORE_WEBHOOK_SIGNING_SECRET=<generate a different long random value>
+SC_CORE_WEBHOOK_DELIVERY_TIMEOUT=10
+
+Keep:
+
+SC_CORE_ENVIRONMENT=production
+SC_CORE_DATABASE_URL=<Render PostgreSQL internal database URL>
+SC_CORE_WRITE_API_KEY=<existing long internal secret>
+SC_CORE_CORS_ORIGINS=https://sustainablecatalyst.com
+SC_CORE_PUBLIC_READS=true
+SC_CORE_MAX_GRAPH_DEPTH=4
+SC_CORE_PAGE_SIZE_MAX=200
+SC_CORE_EXPLORER_ENABLED=true
+SC_CORE_EVIDENCE_EXPLORER_ENABLED=true
+SC_CORE_SNAPSHOT_EXCERPT_MAX=1200
+
+The existing start command runs migration 0004 automatically:
+
+./start.sh
+
+POST-DEPLOYMENT TESTS
+
+curl https://YOUR-PLATFORM-CORE.onrender.com/health
+
+curl https://YOUR-PLATFORM-CORE.onrender.com/developers/plans.json
+
+curl https://YOUR-PLATFORM-CORE.onrender.com/developers/openapi.json
+
+Open:
+
+https://YOUR-PLATFORM-CORE.onrender.com/developers
+https://YOUR-PLATFORM-CORE.onrender.com/developers/console
+
+CREATE THE FIRST DEVELOPER APPLICATION
+
+curl -X POST \
+  "https://YOUR-PLATFORM-CORE.onrender.com/v1/developer/applications" \
+  -H "Content-Type: application/json" \
+  -H "X-SC-API-Key: YOUR_INTERNAL_WRITE_KEY" \
+  -d '{
+    "name": "Sustainable Catalyst Public API Test",
+    "owner_name": "Platform Administrator",
+    "owner_email": "your-email@example.com",
+    "use_case": "Validate the Unified Public API and Developer Portal after deployment.",
+    "status": "approved",
+    "plan_id": "free",
+    "metadata": {},
+    "actor": "platform-administrator"
+  }'
+
+Use the returned application ID to issue a key through:
+
+POST /v1/developer/applications/{application_id}/credentials
+
+Test the public key:
+
+curl \
+  "https://YOUR-PLATFORM-CORE.onrender.com/api/v1/status" \
+  -H "Authorization: Bearer scpk_YOUR_KEY"
+
+WORDPRESS
+
+The push script creates:
+
+~/Downloads/sustainable-catalyst-platform-core-repo/dist/sustainable-catalyst-platform-core-plugin-v2.3.0.zip
+
+Upload it over the existing Platform Core connector.
+
+Shortcodes:
+
+[sc_developer_portal]
+[sc_public_api_plans]

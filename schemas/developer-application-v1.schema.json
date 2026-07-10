@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/platform-core/developer-application-v1.json",
+  "title": "Sustainable Catalyst Developer Application",
+  "type": "object",
+  "required": [
+    "name",
+    "owner_name",
+    "owner_email",
+    "use_case",
+    "plan_id"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "owner_name": {
+      "type": "string"
+    },
+    "owner_email": {
+      "type": "string"
+    },
+    "organization": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "website_url": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "use_case": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string"
+    },
+    "plan_id": {
+      "type": "string"
+    },
+    "metadata": {
+      "type": "object"
+    }
+  }
+}

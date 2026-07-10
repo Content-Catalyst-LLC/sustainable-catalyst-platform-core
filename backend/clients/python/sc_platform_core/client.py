@@ -93,3 +93,75 @@ class PlatformCoreClient:
 
     def evidence_stats(self):
         return self._request("GET", "/v1/evidence/stats")
+
+
+    def api_plans(self):
+        return self._request("GET", "/v1/developer/plans")
+
+    def create_developer_application(self, payload: dict[str, Any]):
+        return self._request(
+            "POST",
+            "/v1/developer/applications",
+            write=True,
+            json=payload,
+        )
+
+    def update_developer_application(
+        self,
+        application_id: str,
+        payload: dict[str, Any],
+    ):
+        return self._request(
+            "PATCH",
+            f"/v1/developer/applications/{application_id}",
+            write=True,
+            json=payload,
+        )
+
+    def issue_public_api_key(
+        self,
+        application_id: str,
+        payload: dict[str, Any],
+    ):
+        return self._request(
+            "POST",
+            f"/v1/developer/applications/{application_id}/credentials",
+            write=True,
+            json=payload,
+        )
+
+    def revoke_public_api_key(
+        self,
+        credential_id: str,
+        *,
+        revoked_by: str,
+    ):
+        return self._request(
+            "POST",
+            f"/v1/developer/credentials/{credential_id}/revoke",
+            write=True,
+            json={"revoked_by": revoked_by},
+        )
+
+    def developer_platform_stats(self):
+        return self._request(
+            "GET",
+            "/v1/developer/stats",
+            write=True,
+        )
+
+    def publish_webhook_event(self, payload: dict[str, Any]):
+        return self._request(
+            "POST",
+            "/v1/developer/events",
+            write=True,
+            json=payload,
+        )
+
+    def dispatch_webhooks(self, limit: int = 100):
+        return self._request(
+            "POST",
+            "/v1/developer/webhooks/dispatch",
+            write=True,
+            params={"limit": limit},
+        )
