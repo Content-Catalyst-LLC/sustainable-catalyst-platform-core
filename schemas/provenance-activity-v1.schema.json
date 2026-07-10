@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/platform-core/provenance-activity-v1.json",
+  "title": "Sustainable Catalyst Provenance Activity",
+  "type": "object",
+  "required": [
+    "activity_type",
+    "name",
+    "agent"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "activity_type": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "agent": {
+      "type": "string"
+    },
+    "software_entity_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "started_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "ended_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "parameters": {
+      "type": "object"
+    },
+    "environment": {
+      "type": "object"
+    },
+    "status": {
+      "type": "string"
+    },
+    "metadata": {
+      "type": "object"
+    }
+  }
+}

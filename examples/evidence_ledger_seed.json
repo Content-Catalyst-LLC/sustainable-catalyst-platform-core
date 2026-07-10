@@ -1,5 +1,5 @@
 {
-  "source_name": "platform-core-v2.1.0-seed",
+  "source_name": "platform-core-v2.2.0-seed",
   "entities": [
     {
       "id": "sc:service:platform-core",
@@ -187,6 +187,65 @@
         "version": "2.1.0"
       },
       "aliases": []
+    },
+    {
+      "id": "sc:service:evidence-ledger",
+      "entity_type": "service",
+      "slug": "evidence-ledger",
+      "name": "Sustainable Catalyst Evidence Ledger",
+      "description": "Claim, source snapshot, evidence, review, provenance, calculation trace, and tamper-evident audit infrastructure.",
+      "status": "active",
+      "visibility": "public",
+      "schema_version": "1.0",
+      "metadata": {
+        "version": "2.2.0",
+        "platform_role": "evidence_and_provenance"
+      },
+      "aliases": []
+    },
+    {
+      "id": "sc:concept:evidence-ledger",
+      "entity_type": "concept",
+      "slug": "evidence-ledger",
+      "name": "Evidence Ledger",
+      "description": "A structured and reviewable record of claims, supporting or contradicting evidence, provenance, and audit history.",
+      "status": "active",
+      "visibility": "public",
+      "schema_version": "1.0",
+      "metadata": {
+        "domain": "knowledge-infrastructure"
+      },
+      "aliases": []
+    },
+    {
+      "id": "sc:concept:tamper-evident-audit",
+      "entity_type": "concept",
+      "slug": "tamper-evident-audit",
+      "name": "Tamper-Evident Audit",
+      "description": "A chained hashing approach that reveals modification or deletion within an ordered record history.",
+      "status": "active",
+      "visibility": "public",
+      "schema_version": "1.0",
+      "metadata": {
+        "domain": "trust-infrastructure"
+      },
+      "aliases": []
+    },
+    {
+      "id": "sc:tool:evidence-explorer",
+      "entity_type": "tool",
+      "slug": "evidence-explorer",
+      "name": "Sustainable Catalyst Evidence Explorer",
+      "description": "Public interface for claims, evidence manifests, provenance records, and ledger verification.",
+      "canonical_url": "https://sustainablecatalyst.com/platform/",
+      "status": "active",
+      "visibility": "public",
+      "schema_version": "1.0",
+      "metadata": {
+        "version": "2.2.0",
+        "interface": "public"
+      },
+      "aliases": []
     }
   ],
   "relationships": [
@@ -338,6 +397,66 @@
       "status": "verified",
       "provenance": {
         "source": "platform-core-v2.1.0"
+      }
+    },
+    {
+      "subject_id": "sc:service:platform-core",
+      "predicate": "implements",
+      "object_id": "sc:concept:evidence-ledger",
+      "confidence": 1.0,
+      "status": "verified",
+      "provenance": {
+        "source": "platform-core-v2.2.0"
+      }
+    },
+    {
+      "subject_id": "sc:service:evidence-ledger",
+      "predicate": "uses",
+      "object_id": "sc:service:platform-core",
+      "confidence": 1.0,
+      "status": "verified",
+      "provenance": {
+        "source": "platform-core-v2.2.0"
+      }
+    },
+    {
+      "subject_id": "sc:service:evidence-ledger",
+      "predicate": "implements",
+      "object_id": "sc:concept:tamper-evident-audit",
+      "confidence": 1.0,
+      "status": "verified",
+      "provenance": {
+        "source": "platform-core-v2.2.0"
+      }
+    },
+    {
+      "subject_id": "sc:tool:evidence-explorer",
+      "predicate": "uses",
+      "object_id": "sc:service:evidence-ledger",
+      "confidence": 1.0,
+      "status": "verified",
+      "provenance": {
+        "source": "platform-core-v2.2.0"
+      }
+    },
+    {
+      "subject_id": "sc:product:decision-studio",
+      "predicate": "uses",
+      "object_id": "sc:service:evidence-ledger",
+      "confidence": 1.0,
+      "status": "verified",
+      "provenance": {
+        "source": "platform-core-v2.2.0"
+      }
+    },
+    {
+      "subject_id": "sc:product:workbench",
+      "predicate": "uses",
+      "object_id": "sc:service:evidence-ledger",
+      "confidence": 1.0,
+      "status": "verified",
+      "provenance": {
+        "source": "platform-core-v2.2.0"
       }
     }
   ]

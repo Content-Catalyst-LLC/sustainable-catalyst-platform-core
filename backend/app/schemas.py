@@ -278,6 +278,15 @@ class RegistryStats(BaseModel):
     aliases: int
     predicate_definitions: int
     relationship_reviews: int
+    claims: int
+    source_snapshots: int
+    evidence_records: int
+    evidence_reviews: int
+    review_assignments: int
+    provenance_activities: int
+    provenance_links: int
+    calculation_traces: int
+    ledger_entries: int
     evidence_foundations: int
     validation_events: int
     import_jobs: int
@@ -295,3 +304,382 @@ class MetaResponse(BaseModel):
     explorer_enabled: bool
     capabilities: list[str]
     deferred_capabilities: list[str]
+
+
+class ClaimCreate(BaseModel):
+    id: str | None = None
+    actor: str = Field(min_length=1, max_length=300)
+    claim_text: str = Field(min_length=1, max_length=20000)
+    claim_type: str = Field(default="factual", min_length=1, max_length=100)
+    subject_entity_id: str | None = None
+    status: str = Field(default="draft", min_length=1, max_length=50)
+    visibility: Visibility = "public"
+    language: str = Field(default="en", min_length=2, max_length=20)
+    metadata: dict[str, Any] = Field(default_factory=dict)
+
+
+class ClaimUpdate(BaseModel):
+    claim_text: str | None = Field(default=None, min_length=1, max_length=20000)
+    claim_type: str | None = Field(default=None, min_length=1, max_length=100)
+    status: str | None = Field(default=None, min_length=1, max_length=50)
+    visibility: Visibility | None = None
+    language: str | None = Field(default=None, min_length=2, max_length=20)
+    metadata: dict[str, Any] | None = None
+    actor: str = Field(min_length=1, max_length=300)
+
+
+class ClaimRead(BaseModel):
+    id: str
+    claim_text: str
+    claim_type: str
+    subject_entity_id: str | None
+    status: str
+    visibility: Visibility
+    language: str
+    metadata: dict[str, Any] = Field(
+        default_factory=dict,
+        validation_alias="metadata_json",
+        serialization_alias="metadata",
+    )
+    created_at: datetime
+    updated_at: datetime
+    model_config = ConfigDict(from_attributes=True)
+
+
+class ClaimList(BaseModel):
+    items: list[ClaimRead]
+    total: int
+    limit: int
+    offset: int
+
+
+class SourceSnapshotCreate(BaseModel):
+    id: str | None = None
+    source_entity_id: str | None = None
+    canonical_url: HttpUrl | None = None
+    title: str | None = Field(default=None, max_length=500)
+    publisher: str | None = Field(default=None, max_length=300)
+    published_at: datetime | None = None
+    retrieved_at: datetime | None = None
+    media_type: str = Field(default="text/html", min_length=1, max_length=150)
+    content: str | None = Field(default=None, max_length=5_000_000)
+    content_hash: str | None = Field(default=None, pattern="^[a-f0-9]{64}$")
+    storage_uri: str | None = Field(default=None, max_length=2000)
+    archived_url: HttpUrl | None = None
+    metadata: dict[str, Any] = Field(default_factory=dict)
+    actor: str = Field(min_length=1, max_length=300)
+
+    @model_validator(mode="after")
+    def require_content_or_hash(self):
+        if self.content is None and self.content_hash is None:
+            raise ValueError("Provide content or a lowercase SHA-256 content_hash.")
+        return self
+
+
+class SourceSnapshotRead(BaseModel):
+    id: str
+    source_entity_id: str | None
+    canonical_url: str | None
+    title: str | None
+    publisher: str | None
+    published_at: datetime | None
+    retrieved_at: datetime
+    media_type: str
+    content_hash: str
+    content_length: int | None
+    content_excerpt: str | None
+    storage_uri: str | None
+    archived_url: str | None
+    metadata: dict[str, Any] = Field(
+        default_factory=dict,
+        validation_alias="metadata_json",
+        serialization_alias="metadata",
+    )
+    created_at: datetime
+    model_config = ConfigDict(from_attributes=True)
+
+
+class SnapshotVerificationRequest(BaseModel):
+    content: str = Field(max_length=5_000_000)
+
+
+class SnapshotVerificationResult(BaseModel):
+    snapshot_id: str
+    expected_hash: str
+    observed_hash: str
+    matches: bool
+    observed_length: int
+
+
+class ProvenanceActivityCreate(BaseModel):
+    id: str | None = None
+    activity_type: str = Field(min_length=1, max_length=100)
+    name: str = Field(min_length=1, max_length=300)
+    description: str | None = None
+    agent: str = Field(min_length=1, max_length=300)
+    software_entity_id: str | None = None
+    started_at: datetime | None = None
+    ended_at: datetime | None = None
+    parameters: dict[str, Any] = Field(default_factory=dict)
+    environment: dict[str, Any] = Field(default_factory=dict)
+    status: str = Field(default="completed", max_length=50)
+    metadata: dict[str, Any] = Field(default_factory=dict)
+
+
+class ProvenanceActivityRead(BaseModel):
+    id: str
+    activity_type: str
+    name: str
+    description: str | None
+    agent: str
+    software_entity_id: str | None
+    started_at: datetime
+    ended_at: datetime | None
+    parameters: dict[str, Any]
+    environment: dict[str, Any]
+    status: str
+    metadata: dict[str, Any] = Field(
+        default_factory=dict,
+        validation_alias="metadata_json",
+        serialization_alias="metadata",
+    )
+    created_at: datetime
+    model_config = ConfigDict(from_attributes=True)
+
+
+class ProvenanceLinkCreate(BaseModel):
+    role: Literal["used", "generated", "derived_from", "informed_by", "was_associated_with"]
+    object_type: str = Field(min_length=1, max_length=100)
+    object_id: str = Field(min_length=1, max_length=255)
+    metadata: dict[str, Any] = Field(default_factory=dict)
+    actor: str = Field(min_length=1, max_length=300)
+
+
+class ProvenanceLinkRead(BaseModel):
+    id: str
+    activity_id: str
+    role: str
+    object_type: str
+    object_id: str
+    metadata: dict[str, Any] = Field(
+        default_factory=dict,
+        validation_alias="metadata_json",
+        serialization_alias="metadata",
+    )
+    created_at: datetime
+    model_config = ConfigDict(from_attributes=True)
+
+
+class CalculationTraceCreate(BaseModel):
+    id: str | None = None
+    tool_entity_id: str
+    subject_entity_id: str | None = None
+    activity_id: str | None = None
+    run_id: str | None = Field(default=None, max_length=255)
+    inputs: dict[str, Any] = Field(default_factory=dict)
+    outputs: dict[str, Any] = Field(default_factory=dict)
+    formula_version: str | None = Field(default=None, max_length=100)
+    code_version: str | None = Field(default=None, max_length=100)
+    runtime: dict[str, Any] = Field(default_factory=dict)
+    status: str = Field(default="completed", max_length=50)
+    metadata: dict[str, Any] = Field(default_factory=dict)
+    actor: str = Field(min_length=1, max_length=300)
+
+
+class CalculationTraceRead(BaseModel):
+    id: str
+    tool_entity_id: str
+    subject_entity_id: str | None
+    activity_id: str | None
+    run_id: str | None
+    inputs: dict[str, Any]
+    outputs: dict[str, Any]
+    formula_version: str | None
+    code_version: str | None
+    runtime: dict[str, Any]
+    status: str
+    content_hash: str
+    metadata: dict[str, Any] = Field(
+        default_factory=dict,
+        validation_alias="metadata_json",
+        serialization_alias="metadata",
+    )
+    created_at: datetime
+    model_config = ConfigDict(from_attributes=True)
+
+
+class EvidenceRecordCreate(BaseModel):
+    id: str | None = None
+    evidence_type: str = Field(min_length=1, max_length=100)
+    stance: Literal["supports", "contradicts", "contextualizes", "neutral"] = "contextualizes"
+    claim_id: str | None = None
+    subject_entity_id: str | None = None
+    source_entity_id: str | None = None
+    source_snapshot_id: str | None = None
+    relationship_id: str | None = None
+    calculation_trace_id: str | None = None
+    statement: str | None = Field(default=None, max_length=20000)
+    methodology: str | None = Field(default=None, max_length=20000)
+    confidence: float | None = Field(default=None, ge=0.0, le=1.0)
+    review_status: str = Field(default="unreviewed", max_length=50)
+    provenance: dict[str, Any] = Field(default_factory=dict)
+    metadata: dict[str, Any] = Field(default_factory=dict)
+    actor: str = Field(min_length=1, max_length=300)
+
+    @model_validator(mode="after")
+    def require_evidence_anchor(self):
+        anchors = [
+            self.source_snapshot_id,
+            self.source_entity_id,
+            self.calculation_trace_id,
+            self.relationship_id,
+        ]
+        if not any(anchors):
+            raise ValueError(
+                "Evidence must reference a source snapshot, source entity, "
+                "calculation trace, or graph relationship."
+            )
+        return self
+
+
+class EvidenceRecordRead(BaseModel):
+    id: str
+    evidence_type: str
+    stance: str
+    claim_id: str | None
+    subject_entity_id: str | None
+    source_entity_id: str | None
+    source_snapshot_id: str | None
+    relationship_id: str | None
+    calculation_trace_id: str | None
+    statement: str | None
+    methodology: str | None
+    confidence: float | None
+    review_status: str
+    provenance: dict[str, Any]
+    metadata: dict[str, Any] = Field(
+        default_factory=dict,
+        validation_alias="metadata_json",
+        serialization_alias="metadata",
+    )
+    created_at: datetime
+    updated_at: datetime
+    model_config = ConfigDict(from_attributes=True)
+
+
+class EvidenceRecordList(BaseModel):
+    items: list[EvidenceRecordRead]
+    total: int
+    limit: int
+    offset: int
+
+
+class EvidenceReviewCreate(BaseModel):
+    decision: Literal["approve", "reject", "needs_changes", "restore_unreviewed"]
+    reviewer: str = Field(min_length=1, max_length=200)
+    note: str | None = Field(default=None, max_length=10000)
+    metadata: dict[str, Any] = Field(default_factory=dict)
+
+
+class EvidenceReviewRead(BaseModel):
+    id: str
+    evidence_id: str
+    decision: str
+    reviewer: str
+    note: str | None
+    previous_status: str
+    resulting_status: str
+    metadata: dict[str, Any] = Field(
+        default_factory=dict,
+        validation_alias="metadata_json",
+        serialization_alias="metadata",
+    )
+    created_at: datetime
+    model_config = ConfigDict(from_attributes=True)
+
+
+class EvidenceAssignmentCreate(BaseModel):
+    assignee: str = Field(min_length=1, max_length=200)
+    assigned_by: str = Field(min_length=1, max_length=200)
+    instructions: str | None = Field(default=None, max_length=10000)
+    due_at: datetime | None = None
+    metadata: dict[str, Any] = Field(default_factory=dict)
+
+
+class EvidenceAssignmentRead(BaseModel):
+    id: str
+    evidence_id: str
+    assignee: str
+    assigned_by: str
+    instructions: str | None
+    status: str
+    due_at: datetime | None
+    completed_at: datetime | None
+    metadata: dict[str, Any] = Field(
+        default_factory=dict,
+        validation_alias="metadata_json",
+        serialization_alias="metadata",
+    )
+    created_at: datetime
+    model_config = ConfigDict(from_attributes=True)
+
+
+class EvidenceAssignmentComplete(BaseModel):
+    completed_by: str = Field(min_length=1, max_length=200)
+
+
+class LedgerEntryRead(BaseModel):
+    sequence: int
+    id: str
+    record_type: str
+    record_id: str
+    action: str
+    actor: str
+    payload_hash: str
+    previous_entry_hash: str | None
+    entry_hash: str
+    payload: dict[str, Any] = Field(
+        default_factory=dict,
+        validation_alias="payload_json",
+        serialization_alias="payload",
+    )
+    created_at: datetime
+    model_config = ConfigDict(from_attributes=True)
+
+
+class LedgerVerificationResult(BaseModel):
+    valid: bool
+    entries_checked: int
+    first_sequence: int | None
+    last_sequence: int | None
+    head_hash: str | None
+    errors: list[str]
+
+
+class EvidenceManifest(BaseModel):
+    claim: ClaimRead
+    evidence: list[EvidenceRecordRead]
+    snapshots: list[SourceSnapshotRead]
+    calculation_traces: list[CalculationTraceRead]
+    provenance_activities: list[ProvenanceActivityRead]
+    provenance_links: list[ProvenanceLinkRead]
+    reviews: list[EvidenceReviewRead]
+    assignments: list[EvidenceAssignmentRead]
+    ledger_entries: list[LedgerEntryRead]
+    manifest_hash: str
+    generated_at: datetime
+
+
+class EvidenceLedgerStats(BaseModel):
+    claims: int
+    source_snapshots: int
+    evidence_records: int
+    evidence_reviews: int
+    review_assignments: int
+    provenance_activities: int
+    provenance_links: int
+    calculation_traces: int
+    ledger_entries: int
+    ledger_head_hash: str | None
+    evidence_by_status: dict[str, int]
+    evidence_by_stance: dict[str, int]

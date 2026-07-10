@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/platform-core/source-snapshot-v1.json",
+  "title": "Sustainable Catalyst Source Snapshot",
+  "type": "object",
+  "required": [
+    "content_hash",
+    "retrieved_at"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "source_entity_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "canonical_url": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "retrieved_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "media_type": {
+      "type": "string"
+    },
+    "content_hash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "content_length": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "storage_uri": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "archived_url": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "metadata": {
+      "type": "object"
+    }
+  }
+}

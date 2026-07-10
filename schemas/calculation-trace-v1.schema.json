@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/platform-core/calculation-trace-v1.json",
+  "title": "Sustainable Catalyst Calculation Trace",
+  "type": "object",
+  "required": [
+    "tool_entity_id",
+    "inputs",
+    "outputs",
+    "content_hash"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "tool_entity_id": {
+      "type": "string"
+    },
+    "subject_entity_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "activity_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "inputs": {
+      "type": "object"
+    },
+    "outputs": {
+      "type": "object"
+    },
+    "formula_version": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "code_version": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "runtime": {
+      "type": "object"
+    },
+    "status": {
+      "type": "string"
+    },
+    "content_hash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "metadata": {
+      "type": "object"
+    }
+  }
+}

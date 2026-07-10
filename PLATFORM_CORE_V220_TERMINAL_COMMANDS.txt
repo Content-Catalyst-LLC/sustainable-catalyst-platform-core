@@ -1,0 +1,83 @@
+SUSTAINABLE CATALYST PLATFORM CORE v2.2.0
+Evidence Ledger and Provenance Records
+
+Place these files in ~/Downloads:
+
+1. sustainable-catalyst-platform-core-v2.2.0-repo.zip
+2. PUSH_PLATFORM_CORE_V220_CLEAN.sh
+
+Run exactly:
+
+cd ~/Downloads
+chmod +x PUSH_PLATFORM_CORE_V220_CLEAN.sh
+./PUSH_PLATFORM_CORE_V220_CLEAN.sh
+
+The banner must say:
+
+PLATFORM CORE v2.2.0 — CLEAN EVIDENCE LEDGER PUSH
+
+The script:
+
+- Uses the existing GitHub CLI authentication
+- Uses SSH for every Git operation
+- Contains no HTTPS fallback
+- Handles an existing or empty repository
+- Safety-stashes unfinished local changes
+- Deletes any damaged backend/.venv
+- Excludes .venv from rsync
+- Recreates the virtual environment from scratch
+- Uses .venv/bin/python directly
+- Runs all tests
+- Runs a clean migration and seed smoke test
+- Builds the WordPress plugin
+- Commits and pushes main
+
+RENDER
+
+Keep the existing Platform Core service and PostgreSQL database.
+
+Add:
+
+SC_CORE_EVIDENCE_EXPLORER_ENABLED=true
+SC_CORE_SNAPSHOT_EXCERPT_MAX=1200
+
+Keep:
+
+SC_CORE_ENVIRONMENT=production
+SC_CORE_DATABASE_URL=<Render PostgreSQL internal database URL>
+SC_CORE_WRITE_API_KEY=<existing long secret>
+SC_CORE_CORS_ORIGINS=https://sustainablecatalyst.com
+SC_CORE_PUBLIC_READS=true
+SC_CORE_MAX_GRAPH_DEPTH=4
+SC_CORE_PAGE_SIZE_MAX=200
+SC_CORE_EXPLORER_ENABLED=true
+
+The existing start command runs migration 0003 automatically:
+
+./start.sh
+
+POST-DEPLOYMENT TESTS
+
+curl https://YOUR-PLATFORM-CORE.onrender.com/health
+
+curl https://YOUR-PLATFORM-CORE.onrender.com/v1/evidence/stats
+
+curl https://YOUR-PLATFORM-CORE.onrender.com/v1/ledger/verify
+
+Open:
+
+https://YOUR-PLATFORM-CORE.onrender.com/evidence-explorer
+
+WORDPRESS
+
+The push script creates:
+
+~/Downloads/sustainable-catalyst-platform-core-repo/dist/sustainable-catalyst-platform-core-plugin-v2.2.0.zip
+
+Upload it over the existing Platform Core connector.
+
+Shortcodes:
+
+[sc_evidence_ledger_status]
+[sc_evidence_manifest claim_id="sc:claim:..."]
+[sc_evidence_explorer]

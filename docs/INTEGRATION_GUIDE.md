@@ -2,47 +2,51 @@
 
 ## Research Librarian
 
-Use:
+The Research Librarian can:
 
-```text
-GET /v1/graph/{entity_id}/neighborhood
-GET /v1/graph/{entity_id}/recommendations
-GET /v1/graph/path
-```
-
-These endpoints support graph-backed source cards, related tools, research routes, and action recommendations.
+- Resolve claims and evidence to stable IDs
+- Surface verified evidence records
+- Link answers to source snapshots
+- Explain recommendation paths through the graph
+- Include manifest hashes in exported research routes
 
 ## Workbench
 
-Recommended relationships:
+Workbench should create:
 
-```text
-tool --implements--> model
-tool --requires--> dataset
-tool --applies_to--> concept
-article --uses--> tool
-```
+1. A provenance activity for the model run
+2. A calculation trace with inputs, outputs, code version, and runtime
+3. Evidence records that point to the trace
+4. Provenance links between the activity, trace, claim, and source inputs
 
 ## Decision Studio
 
-Use paths and neighborhoods to trace claims to sources, import Workbench tools by stable ID, and preserve relationship review state.
+Decision Studio should:
+
+- Register material claims
+- Import source snapshots from Site Intelligence
+- Attach source and calculation evidence
+- Assign evidence reviews
+- Export claim evidence manifests with decision packets
 
 ## Site Intelligence
 
-Recommended relationships:
+Site Intelligence should:
 
-```text
-indicator --measured_by--> dataset
-dataset --has_source--> source
-dashboard --uses--> indicator
-connector --uses--> source
-```
+- Register source entities
+- Capture source snapshots
+- Preserve retrieval times and content hashes
+- Link connector activities to snapshots
+- Notify the future Trust Center when freshness or integrity checks fail
 
 ## WordPress
 
+Use server-rendered shortcodes for public summaries:
+
 ```text
-[sc_platform_core_status]
-[sc_platform_core_entity id="sc:product:workbench"]
-[sc_platform_core_relationships id="sc:product:research-librarian"]
-[sc_knowledge_explorer]
+[sc_evidence_ledger_status]
+[sc_evidence_manifest claim_id="sc:claim:..."]
+[sc_evidence_explorer]
 ```
+
+Do not expose write keys, unpublished claims, private snapshots, or internal review notes through public page code.

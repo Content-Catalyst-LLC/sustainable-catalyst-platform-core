@@ -7,6 +7,7 @@ from .predicate_catalog import DEFAULT_PREDICATES
 MIGRATIONS = [
     ("0001", "Initial universal entity registry, relationships, aliases, evidence foundations, validation events, and import jobs."),
     ("0002", "Knowledge Graph predicate registry, relationship review records, graph indexes, and default controlled vocabulary."),
+    ("0003", "Evidence Ledger claims, source snapshots, evidence records, calculation traces, provenance activities, review assignments, and tamper-evident ledger chain."),
 ]
 
 def _seed_predicates(database: Database) -> int:

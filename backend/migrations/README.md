@@ -1,17 +1,26 @@
 # Migrations
 
-## 0001 — v2.0.0
+## 0001 — Universal Entity Registry
 
-Creates the universal registry, aliases, relationships, evidence foundations, validation events, import jobs, and migration ledger.
+Creates the v2.0.0 registry and foundation tables.
 
-## 0002 — v2.1.0
+## 0002 — Knowledge Graph
 
-Creates and seeds:
+Creates predicate definitions and relationship reviews.
 
-- `predicate_definitions`
-- `relationship_reviews`
-- controlled predicate vocabulary
-- graph-oriented indexes
+## 0003 — Evidence Ledger and Provenance
+
+Creates:
+
+- `claim_records`
+- `source_snapshots`
+- `provenance_activities`
+- `provenance_links`
+- `calculation_traces`
+- `evidence_records`
+- `evidence_reviews`
+- `evidence_review_assignments`
+- `ledger_entries`
 
 Run:
 
@@ -19,4 +28,4 @@ Run:
 python scripts/migrate.py
 ```
 
-The migration adds graph governance without changing existing Sustainable Catalyst entity IDs.
+Migration 0003 adds new tables without changing existing entity IDs, graph relationships, or v2.0/v2.1 API records.

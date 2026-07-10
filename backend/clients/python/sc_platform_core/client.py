@@ -60,3 +60,36 @@ class PlatformCoreClient:
         params: dict[str, Any] = {"limit": limit}
         if target_type: params["target_type"] = target_type
         return self._request("GET", f"/v1/graph/{entity_id}/recommendations", params=params)
+
+
+    def create_claim(self, payload: dict[str, Any]):
+        return self._request("POST", "/v1/claims", write=True, json=payload)
+
+    def create_source_snapshot(self, payload: dict[str, Any]):
+        return self._request("POST", "/v1/source-snapshots", write=True, json=payload)
+
+    def create_provenance_activity(self, payload: dict[str, Any]):
+        return self._request("POST", "/v1/provenance/activities", write=True, json=payload)
+
+    def create_calculation_trace(self, payload: dict[str, Any]):
+        return self._request("POST", "/v1/calculation-traces", write=True, json=payload)
+
+    def create_evidence_record(self, payload: dict[str, Any]):
+        return self._request("POST", "/v1/evidence-records", write=True, json=payload)
+
+    def review_evidence(self, evidence_id: str, payload: dict[str, Any]):
+        return self._request(
+            "POST",
+            f"/v1/evidence-records/{evidence_id}/reviews",
+            write=True,
+            json=payload,
+        )
+
+    def evidence_manifest(self, claim_id: str):
+        return self._request("GET", f"/v1/evidence/manifests/{claim_id}")
+
+    def verify_ledger(self):
+        return self._request("GET", "/v1/ledger/verify")
+
+    def evidence_stats(self):
+        return self._request("GET", "/v1/evidence/stats")

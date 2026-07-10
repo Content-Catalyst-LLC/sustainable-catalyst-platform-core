@@ -25,6 +25,10 @@ services:
         value: "4"
       - key: SC_CORE_EXPLORER_ENABLED
         value: "true"
+      - key: SC_CORE_EVIDENCE_EXPLORER_ENABLED
+        value: "true"
+      - key: SC_CORE_SNAPSHOT_EXCERPT_MAX
+        value: "1200"
 
 databases:
   - name: sustainable-catalyst-platform-core-db

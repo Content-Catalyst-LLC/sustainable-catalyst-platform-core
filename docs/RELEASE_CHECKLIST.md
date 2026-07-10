@@ -1,14 +1,19 @@
-# Release Checklist — v2.1.0
+# Release Checklist — v2.2.0
 
-- [ ] Run `pytest -q`
-- [ ] Confirm migrations 0001 and 0002
-- [ ] Confirm predicate seeding is idempotent
-- [ ] Confirm unknown predicates are rejected
-- [ ] Confirm type constraints
-- [ ] Confirm relationship review history
-- [ ] Confirm shortest paths, neighborhoods, and recommendations
-- [ ] Confirm JSON-LD
-- [ ] Confirm `/explorer`
-- [ ] Confirm seed and reseed
+- [ ] Run the full test suite
+- [ ] Confirm migrations 0001, 0002, and 0003
+- [ ] Confirm v2.2.0 seed and idempotent reseed
+- [ ] Confirm claim creation and revision ledger entries
+- [ ] Confirm source snapshot hashing
+- [ ] Confirm source verification success and failure
+- [ ] Confirm calculation trace hashing
+- [ ] Confirm provenance activity and link creation
+- [ ] Confirm evidence review assignments
+- [ ] Confirm review status transitions
+- [ ] Confirm evidence manifest hash
+- [ ] Confirm ledger verification
+- [ ] Confirm tampering is detected
+- [ ] Confirm ledger ORM update and delete protection
+- [ ] Confirm Evidence Explorer
 - [ ] Confirm no secrets
-- [ ] Install updated WordPress connector
+- [ ] Install WordPress connector v2.2.0

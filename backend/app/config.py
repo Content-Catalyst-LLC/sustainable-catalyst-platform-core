@@ -20,7 +20,7 @@ def _int(name: str, default: int) -> int:
 @dataclass(frozen=True)
 class Settings:
     app_name: str = "Sustainable Catalyst Platform Core"
-    version: str = "2.1.0"
+    version: str = "2.2.0"
     environment: str = "development"
     database_url: str = "sqlite:///./platform_core.db"
     write_api_key: str = ""
@@ -30,6 +30,8 @@ class Settings:
     max_graph_depth: int = 4
     page_size_max: int = 200
     explorer_enabled: bool = True
+    evidence_explorer_enabled: bool = True
+    snapshot_excerpt_max: int = 1200
 
     @classmethod
     def from_env(cls) -> "Settings":
@@ -56,4 +58,6 @@ class Settings:
             max_graph_depth=max(1, min(_int("SC_CORE_MAX_GRAPH_DEPTH", 4), 6)),
             page_size_max=max(10, min(_int("SC_CORE_PAGE_SIZE_MAX", 200), 1000)),
             explorer_enabled=_bool("SC_CORE_EXPLORER_ENABLED", True),
+            evidence_explorer_enabled=_bool("SC_CORE_EVIDENCE_EXPLORER_ENABLED", True),
+            snapshot_excerpt_max=max(0, min(_int("SC_CORE_SNAPSHOT_EXCERPT_MAX", 1200), 10000)),
         )

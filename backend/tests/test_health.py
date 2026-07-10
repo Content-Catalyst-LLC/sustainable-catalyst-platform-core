@@ -1,7 +1,7 @@
 def test_health_and_ready(client):
     health = client.get("/health")
     assert health.status_code == 200
-    assert health.json()["version"] == "2.1.0"
+    assert health.json()["version"] == "2.2.0"
 
     ready = client.get("/ready")
     assert ready.status_code == 200
@@ -15,4 +15,6 @@ def test_meta_declares_deferred_capabilities(client):
     assert "universal_entity_registry" in body["capabilities"]
     assert "controlled_predicate_registry" in body["capabilities"]
     assert "public_knowledge_explorer" in body["capabilities"]
-    assert "full_evidence_ledger" in body["deferred_capabilities"]
+    assert "tamper_evident_ledger" in body["capabilities"]
+    assert "evidence_manifests" in body["capabilities"]
+    assert "public_trust_center" in body["deferred_capabilities"]

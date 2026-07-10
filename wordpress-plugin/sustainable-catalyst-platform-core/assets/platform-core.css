@@ -61,3 +61,14 @@
 .scpc-relationship-group ul { margin: 10px 0 0 1.2rem; }
 .scpc-relationship-group li { margin: 7px 0; }
 .scpc-relationship-group code { margin-left: 6px; color: #666666; font-size: 0.78rem; }
+
+
+.scpc-ledger-valid {
+  color: #1f6f43;
+  font-weight: 800;
+}
+
+.scpc-ledger-invalid {
+  color: var(--scpc-red);
+  font-weight: 800;
+}

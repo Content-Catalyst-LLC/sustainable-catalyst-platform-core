@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Sustainable Catalyst Platform Core
  * Description: WordPress status and registry lookup client for Sustainable Catalyst Platform Core v2.0.0.
- * Version: 2.1.0
+ * Version: 2.2.0
  * Author: Content Catalyst LLC
  * License: MIT
  */
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('SCPC_VERSION', '2.1.0');
+define('SCPC_VERSION', '2.2.0');
 define('SCPC_OPTION_BACKEND_URL', 'scpc_backend_url');
 define('SCPC_OPTION_READ_KEY', 'scpc_read_key');
 
@@ -85,7 +85,10 @@ function scpc_render_settings_page() {
         <code>[sc_platform_core_status]</code><br />
         <code>[sc_platform_core_entity id="sc:product:workbench"]</code><br />
         <code>[sc_platform_core_relationships id="sc:product:research-librarian"]</code><br />
-        <code>[sc_knowledge_explorer]</code>
+        <code>[sc_knowledge_explorer]</code><br />
+        <code>[sc_evidence_ledger_status]</code><br />
+        <code>[sc_evidence_manifest claim_id="sc:claim:..."]</code><br />
+        <code>[sc_evidence_explorer]</code>
     </div>
     <?php
 }
@@ -259,3 +262,88 @@ function scpc_knowledge_explorer_shortcode() {
         '</section>';
 }
 add_shortcode('sc_knowledge_explorer', 'scpc_knowledge_explorer_shortcode');
+
+
+function scpc_evidence_ledger_status_shortcode() {
+    $stats = scpc_api_get('/v1/evidence/stats');
+    $verification = scpc_api_get('/v1/ledger/verify');
+
+    if (is_wp_error($stats) || is_wp_error($verification)) {
+        $error = is_wp_error($stats) ? $stats : $verification;
+        return '<div class="scpc-card scpc-error"><strong>Evidence Ledger unavailable</strong><p>' .
+            esc_html($error->get_error_message()) .
+            '</p></div>';
+    }
+
+    $valid = !empty($verification['valid']);
+    ob_start();
+    ?>
+    <section class="scpc-card">
+        <p class="scpc-kicker">Evidence and provenance infrastructure</p>
+        <h3>Sustainable Catalyst Evidence Ledger</h3>
+        <p>
+            <strong>Integrity:</strong>
+            <span class="<?php echo $valid ? 'scpc-ledger-valid' : 'scpc-ledger-invalid'; ?>">
+                <?php echo $valid ? 'Verified' : 'Verification failed'; ?>
+            </span>
+            · <strong>Claims:</strong> <?php echo esc_html(number_format_i18n(intval($stats['claims']))); ?>
+            · <strong>Evidence records:</strong> <?php echo esc_html(number_format_i18n(intval($stats['evidence_records']))); ?>
+            · <strong>Snapshots:</strong> <?php echo esc_html(number_format_i18n(intval($stats['source_snapshots']))); ?>
+            · <strong>Ledger entries:</strong> <?php echo esc_html(number_format_i18n(intval($stats['ledger_entries']))); ?>
+        </p>
+        <?php if (!empty($stats['ledger_head_hash'])) : ?>
+            <p class="scpc-meta">Ledger head: <code><?php echo esc_html($stats['ledger_head_hash']); ?></code></p>
+        <?php endif; ?>
+    </section>
+    <?php
+    return ob_get_clean();
+}
+add_shortcode('sc_evidence_ledger_status', 'scpc_evidence_ledger_status_shortcode');
+
+function scpc_evidence_manifest_shortcode($atts) {
+    $atts = shortcode_atts(['claim_id' => ''], $atts, 'sc_evidence_manifest');
+    $claim_id = sanitize_text_field($atts['claim_id']);
+
+    if (!$claim_id) {
+        return '<div class="scpc-card scpc-error">Claim ID is required.</div>';
+    }
+
+    $manifest = scpc_api_get('/v1/evidence/manifests/' . rawurlencode($claim_id));
+    if (is_wp_error($manifest)) {
+        return '<div class="scpc-card scpc-error"><strong>Evidence manifest unavailable</strong><p>' .
+            esc_html($manifest->get_error_message()) .
+            '</p></div>';
+    }
+
+    ob_start();
+    ?>
+    <section class="scpc-card">
+        <p class="scpc-kicker">Evidence manifest</p>
+        <h3><?php echo esc_html($manifest['claim']['claim_text']); ?></h3>
+        <p>
+            <strong>Evidence:</strong> <?php echo esc_html(count($manifest['evidence'])); ?>
+            · <strong>Snapshots:</strong> <?php echo esc_html(count($manifest['snapshots'])); ?>
+            · <strong>Calculation traces:</strong> <?php echo esc_html(count($manifest['calculation_traces'])); ?>
+            · <strong>Reviews:</strong> <?php echo esc_html(count($manifest['reviews'])); ?>
+        </p>
+        <p class="scpc-meta">Manifest hash: <code><?php echo esc_html($manifest['manifest_hash']); ?></code></p>
+    </section>
+    <?php
+    return ob_get_clean();
+}
+add_shortcode('sc_evidence_manifest', 'scpc_evidence_manifest_shortcode');
+
+function scpc_evidence_explorer_shortcode() {
+    $base = untrailingslashit(get_option(SCPC_OPTION_BACKEND_URL, ''));
+    if (!$base) {
+        return '<div class="scpc-card scpc-error">Platform Core backend URL is not configured.</div>';
+    }
+
+    return '<section class="scpc-card">' .
+        '<p class="scpc-kicker">Evidence and provenance</p>' .
+        '<h3>Sustainable Catalyst Evidence Explorer</h3>' .
+        '<p>Inspect claims, source snapshots, evidence records, calculation traces, review history, manifests, and ledger integrity.</p>' .
+        '<a class="scpc-button" href="' . esc_url($base . '/evidence-explorer') . '" target="_blank" rel="noopener">Open Evidence Explorer</a>' .
+        '</section>';
+}
+add_shortcode('sc_evidence_explorer', 'scpc_evidence_explorer_shortcode');
