@@ -1,7 +1,5 @@
 # Python Client
 
-Copy `sc_platform_core` into a product backend or package it internally.
-
 ```python
 from sc_platform_core import PlatformCoreClient
 
@@ -10,7 +8,9 @@ client = PlatformCoreClient(
     api_key="write-key-only-when-needed",
 )
 
-print(client.health())
-print(client.get_entity("sc:product:workbench"))
-print(client.graph("sc:product:research-librarian", depth=2))
+print(client.list_predicates())
+print(client.get_entity_jsonld("sc:product:workbench"))
+print(client.neighborhood("sc:product:research-librarian"))
+print(client.path("sc:product:research-librarian", "sc:product:site-intelligence"))
+print(client.recommendations("sc:product:research-librarian", target_type="product"))
 ```

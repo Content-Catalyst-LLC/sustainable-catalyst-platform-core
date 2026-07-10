@@ -1,16 +1,17 @@
 # Migrations
 
-Platform Core v2.0.0 uses a small cross-database migration ledger implemented in `app/migrations.py`.
+## 0001 — v2.0.0
 
-The initial migration creates:
+Creates the universal registry, aliases, relationships, evidence foundations, validation events, import jobs, and migration ledger.
 
-- `entities`
-- `entity_aliases`
-- `relationships`
-- `evidence_foundations`
-- `validation_events`
-- `import_jobs`
-- `schema_migrations`
+## 0002 — v2.1.0
+
+Creates and seeds:
+
+- `predicate_definitions`
+- `relationship_reviews`
+- controlled predicate vocabulary
+- graph-oriented indexes
 
 Run:
 
@@ -18,4 +19,4 @@ Run:
 python scripts/migrate.py
 ```
 
-Future versions should append a migration version and an explicit migration function. Never rewrite a migration after release.
+The migration adds graph governance without changing existing Sustainable Catalyst entity IDs.

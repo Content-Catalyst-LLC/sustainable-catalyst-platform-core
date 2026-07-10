@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/platform-core/predicate-v1.json",
+  "title": "Sustainable Catalyst Predicate Definition",
+  "type": "object",
+  "required": [
+    "id",
+    "label"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9_-]+$"
+    },
+    "label": {
+      "type": "string",
+      "minLength": 1
+    },
+    "description": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "inverse_predicate": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "symmetric": {
+      "type": "boolean"
+    },
+    "transitive": {
+      "type": "boolean"
+    },
+    "allowed_subject_types": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "allowed_object_types": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "status": {
+      "type": "string"
+    },
+    "visibility": {
+      "enum": [
+        "public",
+        "internal",
+        "private"
+      ]
+    },
+    "sort_order": {
+      "type": "integer"
+    },
+    "metadata": {
+      "type": "object"
+    }
+  }
+}

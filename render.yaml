@@ -21,6 +21,10 @@ services:
         generateValue: true
       - key: SC_CORE_CORS_ORIGINS
         value: https://sustainablecatalyst.com
+      - key: SC_CORE_MAX_GRAPH_DEPTH
+        value: "4"
+      - key: SC_CORE_EXPLORER_ENABLED
+        value: "true"
 
 databases:
   - name: sustainable-catalyst-platform-core-db

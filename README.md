@@ -1,75 +1,26 @@
-# Sustainable Catalyst Platform Core v2.0.0
+# Sustainable Catalyst Platform Core v2.1.0
 
-**Universal Entity Registry and Knowledge Infrastructure Foundation**
+**Knowledge Graph and Relationship Engine**
 
-Platform Core is the shared identity, relationship, provenance-foundation, validation-event, and integration layer for Sustainable Catalyst.
+Platform Core v2.1.0 turns the v2.0 Universal Entity Registry into a governed knowledge graph with a controlled predicate vocabulary, reviewed relationships, richer traversal, shortest paths, relationship neighborhoods, recommendations, JSON-LD records, and a first public Knowledge Explorer.
 
-It establishes one stable system of record that can be used by:
+## What v2.1.0 adds
 
-- Research Librarian
-- Workbench
-- Decision Studio
-- Site Intelligence
-- WordPress
-- Future Catalyst Workspace and public API clients
-
-This release fully implements the **Universal Entity Registry**, aliases, typed relationships, graph traversal, import jobs, registry statistics, and integration clients. It also introduces versioned foundation records for the future Evidence Ledger and Trust Center without presenting either system as complete.
-
-## Core principle
-
-> Different interfaces, one underlying knowledge system.
-
-## What v2.0.0 includes
-
-- Stable `sc:<entity-type>:<slug>` identifiers
-- Entity schemas for articles, concepts, sources, datasets, indicators, tools, countries, treaties, products, services, models, claims, evidence records, and other extensible types
-- External aliases and identifier resolution
-- Typed relationships and bounded graph traversal
-- Registry search, filtering, pagination, and statistics
-- Site Intelligence manifest import adapter
-- Evidence foundation records
-- Validation event foundation records
-- Import job audit records
-- Write-key protection and public-read configuration
-- SQLite development storage and PostgreSQL production support
-- Cross-database migration runner
-- FastAPI/OpenAPI documentation
-- Python integration client
-- WordPress status and registry lookup plugin
-- Seed manifest for the existing Sustainable Catalyst products
-- Tests, GitHub Actions, Docker, and Render configuration
-
-## Repository structure
-
-```text
-sustainable-catalyst-platform-core-v2.0.0/
-├── backend/
-│   ├── app/
-│   │   ├── routers/
-│   │   ├── services/
-│   │   ├── config.py
-│   │   ├── database.py
-│   │   ├── dependencies.py
-│   │   ├── ids.py
-│   │   ├── main.py
-│   │   ├── migrations.py
-│   │   ├── models.py
-│   │   └── schemas.py
-│   ├── clients/python/sc_platform_core/
-│   ├── data/
-│   ├── migrations/
-│   ├── scripts/
-│   ├── tests/
-│   ├── Dockerfile
-│   ├── requirements.txt
-│   └── start.sh
-├── wordpress-plugin/
-├── docs/
-├── schemas/
-├── examples/
-├── render.yaml
-└── CHANGELOG.md
-```
+- Controlled Predicate Registry
+- Subject and object entity-type constraints
+- Predicate labels, descriptions, inverses, symmetry, and transitivity metadata
+- Append-only relationship review records
+- Approve, reject, request-changes, and restore-proposed decisions
+- Confidence and status filtering
+- Bounded graph traversal
+- Shortest-path discovery
+- Direct relationship neighborhoods
+- Graph-backed recommendations
+- JSON-LD entity records
+- Public Knowledge Explorer at `/explorer`
+- WordPress relationship and explorer shortcodes
+- Expanded Python integration client
+- v2.0.0-compatible migration path
 
 ## Local setup
 
@@ -89,21 +40,38 @@ uvicorn app.main:app --reload --port 8090
 
 Open:
 
-- API documentation: `http://127.0.0.1:8090/docs`
-- Health: `http://127.0.0.1:8090/health`
-- Registry statistics: `http://127.0.0.1:8090/v1/stats`
-- Products: `http://127.0.0.1:8090/v1/entities?entity_type=product`
+- Knowledge Explorer: `http://127.0.0.1:8090/explorer`
+- OpenAPI: `http://127.0.0.1:8090/docs`
+- Predicates: `http://127.0.0.1:8090/v1/predicates`
+- Statistics: `http://127.0.0.1:8090/v1/stats`
 
-## Test
+## Key endpoints
 
-```bash
-cd backend
-pytest -q
+```text
+GET  /v1/predicates
+POST /v1/predicates
+GET  /v1/graph/{entity_id}
+GET  /v1/graph/{entity_id}/neighborhood
+GET  /v1/graph/{entity_id}/recommendations
+GET  /v1/graph/path
+POST /v1/relationships/{relationship_id}/reviews
+GET  /v1/relationship-reviews
+GET  /v1/entities/{entity_id}/jsonld
+GET  /explorer
 ```
 
-## Production environment
+## WordPress shortcodes
 
-Recommended Render settings:
+```text
+[sc_platform_core_status]
+[sc_platform_core_entity id="sc:product:workbench"]
+[sc_platform_core_relationships id="sc:product:research-librarian"]
+[sc_knowledge_explorer]
+```
+
+The WordPress plugin remains a thin connector. Platform Core is the authoritative registry and graph.
+
+## Production environment
 
 ```text
 Root Directory: backend
@@ -112,65 +80,20 @@ Start Command: ./start.sh
 PYTHON_VERSION=3.12.11
 ```
 
-Required environment variables:
-
 ```text
 SC_CORE_ENVIRONMENT=production
 SC_CORE_DATABASE_URL=<Render PostgreSQL internal database URL>
 SC_CORE_WRITE_API_KEY=<long random secret>
 SC_CORE_CORS_ORIGINS=https://sustainablecatalyst.com
 SC_CORE_PUBLIC_READS=true
-```
-
-The service refuses unauthenticated writes in production when no write key is configured.
-
-## Write authentication
-
-Send the write key in:
-
-```http
-X-SC-API-Key: your-secret
-```
-
-Read routes can remain public. Write routes are protected.
-
-## Example entity
-
-```json
-{
-  "id": "sc:product:workbench",
-  "entity_type": "product",
-  "slug": "workbench",
-  "name": "Sustainable Catalyst Workbench",
-  "description": "Calculation, modeling, visualization, validation, and article-embedded tool environment.",
-  "canonical_url": "https://sustainablecatalyst.com/modeling-analytics/workbench/",
-  "status": "active",
-  "visibility": "public",
-  "schema_version": "1.0",
-  "metadata": {
-    "platform_role": "analysis_engine"
-  }
-}
-```
-
-## Example relationship
-
-```json
-{
-  "subject_id": "sc:product:decision-studio",
-  "predicate": "uses",
-  "object_id": "sc:product:workbench",
-  "confidence": 1.0,
-  "status": "verified",
-  "provenance": {
-    "source": "platform-architecture"
-  }
-}
+SC_CORE_MAX_GRAPH_DEPTH=4
+SC_CORE_PAGE_SIZE_MAX=200
+SC_CORE_EXPLORER_ENABLED=true
 ```
 
 ## Boundaries
 
-Platform Core is infrastructure for identification, interoperability, provenance, and review. It does not automatically verify truth, certify compliance, establish professional conclusions, or replace accountable human review.
+The graph records structured relationships and review state. It does not automatically establish truth, causal validity, legal effect, scientific consensus, or professional conclusions.
 
 ## License
 

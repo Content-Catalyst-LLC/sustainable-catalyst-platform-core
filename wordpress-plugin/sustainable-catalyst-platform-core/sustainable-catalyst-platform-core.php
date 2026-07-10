@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Sustainable Catalyst Platform Core
  * Description: WordPress status and registry lookup client for Sustainable Catalyst Platform Core v2.0.0.
- * Version: 2.0.0
+ * Version: 2.1.0
  * Author: Content Catalyst LLC
  * License: MIT
  */
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('SCPC_VERSION', '2.0.0');
+define('SCPC_VERSION', '2.1.0');
 define('SCPC_OPTION_BACKEND_URL', 'scpc_backend_url');
 define('SCPC_OPTION_READ_KEY', 'scpc_read_key');
 
@@ -83,7 +83,9 @@ function scpc_render_settings_page() {
         </form>
         <h2>Shortcodes</h2>
         <code>[sc_platform_core_status]</code><br />
-        <code>[sc_platform_core_entity id="sc:product:workbench"]</code>
+        <code>[sc_platform_core_entity id="sc:product:workbench"]</code><br />
+        <code>[sc_platform_core_relationships id="sc:product:research-librarian"]</code><br />
+        <code>[sc_knowledge_explorer]</code>
     </div>
     <?php
 }
@@ -198,3 +200,62 @@ function scpc_enqueue_styles() {
     wp_enqueue_style('scpc-styles');
 }
 add_action('wp_enqueue_scripts', 'scpc_enqueue_styles');
+
+
+function scpc_relationships_shortcode($atts) {
+    $atts = shortcode_atts(['id' => '', 'limit' => 20], $atts, 'sc_platform_core_relationships');
+    $entity_id = sanitize_text_field($atts['id']);
+    $limit = min(50, max(1, intval($atts['limit'])));
+    if (!$entity_id) {
+        return '<div class="scpc-card scpc-error">Entity ID is required.</div>';
+    }
+
+    $graph = scpc_api_get('/v1/graph/' . rawurlencode($entity_id) . '/neighborhood?statuses=verified&statuses=approved');
+    if (is_wp_error($graph)) {
+        return '<div class="scpc-card scpc-error"><strong>Relationships unavailable</strong><p>' .
+            esc_html($graph->get_error_message()) . '</p></div>';
+    }
+
+    ob_start(); ?>
+    <section class="scpc-card">
+        <p class="scpc-kicker">Knowledge graph</p>
+        <h3><?php echo esc_html($graph['root']['name']); ?></h3>
+        <?php
+        $shown = 0;
+        foreach ($graph['groups'] as $group) :
+            if ($shown >= $limit) break; ?>
+            <div class="scpc-relationship-group">
+                <strong><?php echo esc_html(ucfirst($group['direction']) . ' · ' . $group['predicate_label']); ?></strong>
+                <ul>
+                    <?php foreach ($group['entities'] as $entity) :
+                        if ($shown >= $limit) break;
+                        $shown++; ?>
+                        <li>
+                            <?php if (!empty($entity['canonical_url'])) : ?>
+                                <a href="<?php echo esc_url($entity['canonical_url']); ?>"><?php echo esc_html($entity['name']); ?></a>
+                            <?php else : echo esc_html($entity['name']); endif; ?>
+                            <code><?php echo esc_html($entity['id']); ?></code>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+        <?php endforeach; ?>
+        <?php if ($shown === 0) : ?><p>No reviewed relationships are available yet.</p><?php endif; ?>
+    </section>
+    <?php return ob_get_clean();
+}
+add_shortcode('sc_platform_core_relationships', 'scpc_relationships_shortcode');
+
+function scpc_knowledge_explorer_shortcode() {
+    $base = untrailingslashit(get_option(SCPC_OPTION_BACKEND_URL, ''));
+    if (!$base) {
+        return '<div class="scpc-card scpc-error">Platform Core backend URL is not configured.</div>';
+    }
+    return '<section class="scpc-card">' .
+        '<p class="scpc-kicker">Knowledge infrastructure</p>' .
+        '<h3>Sustainable Catalyst Knowledge Explorer</h3>' .
+        '<p>Search registered concepts, tools, sources, datasets, products, and their reviewed relationships.</p>' .
+        '<a class="scpc-button" href="' . esc_url($base . '/explorer') . '" target="_blank" rel="noopener">Open Knowledge Explorer</a>' .
+        '</section>';
+}
+add_shortcode('sc_knowledge_explorer', 'scpc_knowledge_explorer_shortcode');

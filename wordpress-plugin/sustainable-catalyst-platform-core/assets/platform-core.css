@@ -51,3 +51,13 @@
 .scpc-error {
   background: var(--scpc-cream);
 }
+
+
+.scpc-relationship-group {
+  margin: 18px 0;
+  padding-top: 16px;
+  border-top: 1px solid var(--scpc-border);
+}
+.scpc-relationship-group ul { margin: 10px 0 0 1.2rem; }
+.scpc-relationship-group li { margin: 7px 0; }
+.scpc-relationship-group code { margin-left: 6px; color: #666666; font-size: 0.78rem; }

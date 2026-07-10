@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/platform-core/relationship-review-v1.json",
+  "title": "Sustainable Catalyst Relationship Review",
+  "type": "object",
+  "required": [
+    "relationship_id",
+    "decision",
+    "reviewer"
+  ],
+  "properties": {
+    "relationship_id": {
+      "type": "string"
+    },
+    "decision": {
+      "enum": [
+        "approve",
+        "reject",
+        "needs_changes",
+        "restore_proposed"
+      ]
+    },
+    "reviewer": {
+      "type": "string"
+    },
+    "note": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "metadata": {
+      "type": "object"
+    }
+  }
+}

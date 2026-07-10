@@ -1,5 +1,5 @@
 {
-  "source_name": "platform-core-v2.0.0-seed",
+  "source_name": "platform-core-v2.1.0-seed",
   "entities": [
     {
       "id": "sc:service:platform-core",
@@ -129,6 +129,64 @@
         "owner_product": "sc:product:workbench"
       },
       "aliases": []
+    },
+    {
+      "id": "sc:concept:knowledge-graph",
+      "entity_type": "concept",
+      "slug": "knowledge-graph",
+      "name": "Knowledge Graph",
+      "description": "A structured network of entities and typed relationships used to connect Sustainable Catalyst knowledge objects.",
+      "status": "active",
+      "visibility": "public",
+      "schema_version": "1.0",
+      "metadata": {
+        "domain": "knowledge-infrastructure"
+      },
+      "aliases": []
+    },
+    {
+      "id": "sc:concept:evidence-provenance",
+      "entity_type": "concept",
+      "slug": "evidence-provenance",
+      "name": "Evidence Provenance",
+      "description": "The traceable origin, transformation, review, and use history of evidence.",
+      "status": "active",
+      "visibility": "public",
+      "schema_version": "1.0",
+      "metadata": {
+        "domain": "knowledge-infrastructure"
+      },
+      "aliases": []
+    },
+    {
+      "id": "sc:tool:knowledge-explorer",
+      "entity_type": "tool",
+      "slug": "knowledge-explorer",
+      "name": "Sustainable Catalyst Knowledge Explorer",
+      "description": "Public search and relationship-neighborhood interface for Platform Core entities.",
+      "canonical_url": "https://sustainablecatalyst.com/platform/",
+      "status": "active",
+      "visibility": "public",
+      "schema_version": "1.0",
+      "metadata": {
+        "version": "2.1.0",
+        "interface": "public"
+      },
+      "aliases": []
+    },
+    {
+      "id": "sc:registry:predicate-registry",
+      "entity_type": "registry",
+      "slug": "predicate-registry",
+      "name": "Sustainable Catalyst Predicate Registry",
+      "description": "Controlled vocabulary for relationship meaning, inverse labels, type constraints, and graph governance.",
+      "status": "active",
+      "visibility": "public",
+      "schema_version": "1.0",
+      "metadata": {
+        "version": "2.1.0"
+      },
+      "aliases": []
     }
   ],
   "relationships": [
@@ -230,6 +288,56 @@
       "status": "verified",
       "provenance": {
         "source": "workbench-architecture"
+      }
+    },
+    {
+      "subject_id": "sc:service:platform-core",
+      "predicate": "implements",
+      "object_id": "sc:concept:knowledge-graph",
+      "confidence": 1.0,
+      "status": "verified",
+      "provenance": {
+        "source": "platform-core-v2.1.0"
+      }
+    },
+    {
+      "subject_id": "sc:tool:knowledge-explorer",
+      "predicate": "uses",
+      "object_id": "sc:service:platform-core",
+      "confidence": 1.0,
+      "status": "verified",
+      "provenance": {
+        "source": "platform-core-v2.1.0"
+      }
+    },
+    {
+      "subject_id": "sc:service:platform-core",
+      "predicate": "uses",
+      "object_id": "sc:registry:predicate-registry",
+      "confidence": 1.0,
+      "status": "verified",
+      "provenance": {
+        "source": "platform-core-v2.1.0"
+      }
+    },
+    {
+      "subject_id": "sc:concept:evidence-provenance",
+      "predicate": "related_to",
+      "object_id": "sc:concept:knowledge-graph",
+      "confidence": 0.95,
+      "status": "verified",
+      "provenance": {
+        "source": "platform-core-v2.1.0"
+      }
+    },
+    {
+      "subject_id": "sc:product:research-librarian",
+      "predicate": "uses",
+      "object_id": "sc:concept:knowledge-graph",
+      "confidence": 1.0,
+      "status": "verified",
+      "provenance": {
+        "source": "platform-core-v2.1.0"
       }
     }
   ]
