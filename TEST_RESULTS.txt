@@ -1,11 +1,9 @@
-Sustainable Catalyst Platform Core v2.4.0
-Trust Center and Evaluation Framework
+Sustainable Catalyst Platform Core v2.5.0
+Signature Dossiers and End-to-End Workflows
 
-Command:
-python -m pytest -q
-
+Command: python -m pytest -q
 Exit code: 0
 
-....................................                                     [100%]
-36 passed in 10.79s
+...........................................                              [100%]
+43 passed in 17.34s
 

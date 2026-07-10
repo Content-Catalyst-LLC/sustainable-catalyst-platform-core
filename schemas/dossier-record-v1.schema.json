@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/platform-core/dossier-record-v1.json",
+  "title": "Sustainable Catalyst Dossier Record Snapshot",
+  "type": "object",
+  "required": [
+    "id",
+    "dossier_id",
+    "section",
+    "record_type",
+    "record_id",
+    "snapshot_hash",
+    "snapshot"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "dossier_id": {
+      "type": "string"
+    },
+    "section": {
+      "type": "string"
+    },
+    "record_type": {
+      "type": "string"
+    },
+    "record_id": {
+      "type": "string"
+    },
+    "label": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "sort_order": {
+      "type": "integer"
+    },
+    "snapshot_hash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "snapshot": {
+      "type": "object"
+    },
+    "public": {
+      "type": "boolean"
+    },
+    "metadata": {
+      "type": "object"
+    }
+  }
+}

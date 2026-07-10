@@ -18,43 +18,32 @@ Completed.
 
 ## v2.4.0 — Trust Center and Evaluation Framework
 
+Completed.
+
+## v2.5.0 — Signature Dossiers and End-to-End Workflows
+
 Completed:
 
-- Public Trust Center
-- Machine-readable trust status
-- Evaluation definition registry
-- Immutable runs and checks
-- Automated platform evaluations
-- Connector freshness evaluation
-- Calculator validation evaluation
-- AI grounding and scope evaluation
-- Accessibility conformance evaluation
-- Recorded specialist reviews
-- Findings and remediation state
-- Incident history
-- Known limitations
-- Attestations
-- Trust webhooks
-- `trust:read` public API
-- SDK and WordPress integration
+- Controlled workflow definitions
+- Ordered workflow stages
+- Cross-product responsibilities
+- Dependency enforcement
+- Append-only transitions
+- Frozen dossier records
+- Approval history
+- Canonical dossier snapshots
+- Platform signatures
+- Tamper detection
+- Public dossier verification
+- Dossier Center
 
-## v2.5.0 — Cross-Platform Integration
+## Next platform candidates
 
-Planned:
-
-- Research Librarian graph and evidence routes
-- Automatic AI grounding evaluation ingestion
-- Workbench validation report submission
-- Decision Studio trust-aware evidence packets
-- Site Intelligence connector freshness automation
-- Shared cross-product action center
-- Trust Center links from product interfaces
-
-## Later platform infrastructure
-
-- Scheduled evaluation orchestration
-- Independent reviewer workflow
-- Distributed rate limiting
-- External source-snapshot storage
-- Dedicated graph database adapter
-- User workspaces and casebooks
+- Asymmetric signing keys and public verification certificates
+- Product callback adapters and workflow automation workers
+- Human task inboxes and due-date notifications
+- Casebooks and private workspaces
+- Exported PDF dossier renderers
+- External archival storage
+- Public trust and dossier feeds
+- Distributed workflow queues and rate-limit counters

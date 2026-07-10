@@ -37,3 +37,17 @@ python scripts/migrate.py
 ```
 
 The migration is additive. Existing registry, graph, evidence, ledger, developer, and webhook records remain unchanged.
+
+## 0006 — Signature Dossiers and End-to-End Workflows
+
+Creates:
+
+- `workflow_definitions`
+- `workflow_runs`
+- `workflow_steps`
+- `workflow_transitions`
+- `signature_dossiers`
+- `dossier_records`
+- `dossier_approvals`
+
+Migration `0006` also seeds the three default workflow definitions and updates existing API plans with `workflow:read` and `dossier:read`.

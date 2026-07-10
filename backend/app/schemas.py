@@ -1291,3 +1291,236 @@ class TrustStatusResponse(BaseModel):
     open_findings: int
     public_evaluation_runs: int
     methodology: str
+
+WorkflowStepStatus = Literal["pending", "in_progress", "blocked", "completed", "skipped", "failed"]
+WorkflowRunStatus = Literal["draft", "in_progress", "blocked", "completed", "cancelled"]
+DossierVisibility = Literal["public", "internal", "private"]
+DossierDecision = Literal["approve", "reject", "request_changes"]
+
+
+class WorkflowDefinitionRead(BaseModel):
+    id: str
+    name: str
+    description: str | None
+    version: str
+    stages: list[dict[str, Any]]
+    public: bool
+    active: bool
+    sort_order: int
+    metadata: dict[str, Any] = Field(default_factory=dict, validation_alias="metadata_json", serialization_alias="metadata")
+    created_at: datetime
+    updated_at: datetime
+    model_config = ConfigDict(from_attributes=True)
+
+
+class WorkflowRunCreate(BaseModel):
+    definition_id: str
+    title: str = Field(min_length=1, max_length=500)
+    subject_entity_id: str | None = None
+    requested_by: str = Field(min_length=1, max_length=300)
+    owner: str | None = Field(default=None, max_length=300)
+    context: dict[str, Any] = Field(default_factory=dict)
+    public: bool = False
+    metadata: dict[str, Any] = Field(default_factory=dict)
+
+
+class WorkflowStepRead(BaseModel):
+    id: str
+    run_id: str
+    step_key: str
+    name: str
+    sequence: int
+    product: str
+    action: str
+    required: bool
+    status: str
+    assigned_to: str | None
+    input_references: list[str]
+    output_references: list[str]
+    notes: str | None
+    due_at: datetime | None
+    started_at: datetime | None
+    completed_at: datetime | None
+    metadata: dict[str, Any] = Field(default_factory=dict, validation_alias="metadata_json", serialization_alias="metadata")
+    created_at: datetime
+    updated_at: datetime
+    model_config = ConfigDict(from_attributes=True)
+
+
+class WorkflowTransitionRead(BaseModel):
+    id: str
+    run_id: str
+    step_id: str | None
+    from_status: str | None
+    to_status: str
+    actor: str
+    reason: str | None
+    payload: dict[str, Any] = Field(default_factory=dict, validation_alias="payload_json", serialization_alias="payload")
+    content_hash: str
+    created_at: datetime
+    model_config = ConfigDict(from_attributes=True)
+
+
+class WorkflowRunRead(BaseModel):
+    id: str
+    definition_id: str
+    title: str
+    subject_entity_id: str | None
+    status: str
+    current_step_key: str | None
+    requested_by: str
+    owner: str | None
+    context: dict[str, Any] = Field(default_factory=dict, validation_alias="context_json", serialization_alias="context")
+    content_hash: str | None
+    public: bool
+    metadata: dict[str, Any] = Field(default_factory=dict, validation_alias="metadata_json", serialization_alias="metadata")
+    started_at: datetime | None
+    completed_at: datetime | None
+    created_at: datetime
+    updated_at: datetime
+    steps: list[WorkflowStepRead] = Field(default_factory=list)
+    transitions: list[WorkflowTransitionRead] = Field(default_factory=list)
+    model_config = ConfigDict(from_attributes=True)
+
+
+class WorkflowStartRequest(BaseModel):
+    actor: str = Field(min_length=1, max_length=300)
+    reason: str | None = Field(default=None, max_length=10000)
+
+
+class WorkflowStepTransition(BaseModel):
+    status: WorkflowStepStatus
+    actor: str = Field(min_length=1, max_length=300)
+    reason: str | None = Field(default=None, max_length=10000)
+    assigned_to: str | None = Field(default=None, max_length=300)
+    input_references: list[str] | None = None
+    output_references: list[str] | None = None
+    notes: str | None = Field(default=None, max_length=30000)
+    payload: dict[str, Any] = Field(default_factory=dict)
+
+
+class WorkflowCancelRequest(BaseModel):
+    actor: str = Field(min_length=1, max_length=300)
+    reason: str = Field(min_length=1, max_length=10000)
+
+
+class DossierCreate(BaseModel):
+    workflow_run_id: str | None = None
+    subject_entity_id: str | None = None
+    title: str = Field(min_length=1, max_length=500)
+    purpose: str = Field(min_length=1, max_length=30000)
+    version: str = Field(default="1.0", max_length=50)
+    visibility: DossierVisibility = "private"
+    supersedes_dossier_id: str | None = None
+    metadata: dict[str, Any] = Field(default_factory=dict)
+    actor: str = Field(min_length=1, max_length=300)
+
+
+class DossierRecordCreate(BaseModel):
+    section: str = Field(min_length=1, max_length=150)
+    record_type: str = Field(min_length=1, max_length=100)
+    record_id: str = Field(min_length=1, max_length=255)
+    label: str | None = Field(default=None, max_length=500)
+    sort_order: int = Field(default=100, ge=0, le=100000)
+    public: bool = True
+    metadata: dict[str, Any] = Field(default_factory=dict)
+    actor: str = Field(min_length=1, max_length=300)
+
+
+class DossierRecordRead(BaseModel):
+    id: str
+    dossier_id: str
+    section: str
+    record_type: str
+    record_id: str
+    label: str | None
+    sort_order: int
+    snapshot_hash: str
+    snapshot: dict[str, Any] = Field(default_factory=dict, validation_alias="snapshot_json", serialization_alias="snapshot")
+    public: bool
+    metadata: dict[str, Any] = Field(default_factory=dict, validation_alias="metadata_json", serialization_alias="metadata")
+    created_at: datetime
+    model_config = ConfigDict(from_attributes=True)
+
+
+class DossierApprovalCreate(BaseModel):
+    decision: DossierDecision
+    signer: str = Field(min_length=1, max_length=300)
+    role: str = Field(min_length=1, max_length=200)
+    statement: str | None = Field(default=None, max_length=30000)
+    evidence_references: list[str] = Field(default_factory=list)
+
+
+class DossierApprovalRead(BaseModel):
+    id: str
+    dossier_id: str
+    decision: str
+    signer: str
+    role: str
+    statement: str | None
+    evidence_references: list[str]
+    content_hash: str
+    created_at: datetime
+    model_config = ConfigDict(from_attributes=True)
+
+
+class DossierFinalizeRequest(BaseModel):
+    signed_by: str = Field(min_length=1, max_length=300)
+    actor: str = Field(min_length=1, max_length=300)
+
+
+class DossierRead(BaseModel):
+    id: str
+    workflow_run_id: str | None
+    subject_entity_id: str | None
+    title: str
+    purpose: str
+    version: str
+    status: str
+    visibility: str
+    dossier_hash: str | None
+    signature_algorithm: str | None
+    platform_signature: str | None
+    signing_key_id: str | None
+    signed_by: str | None
+    signed_at: datetime | None
+    supersedes_dossier_id: str | None
+    metadata: dict[str, Any] = Field(default_factory=dict, validation_alias="metadata_json", serialization_alias="metadata")
+    created_at: datetime
+    updated_at: datetime
+    records: list[DossierRecordRead] = Field(default_factory=list)
+    approvals: list[DossierApprovalRead] = Field(default_factory=list)
+    workflow: WorkflowRunRead | None = None
+    model_config = ConfigDict(from_attributes=True)
+
+
+class DossierVerificationResult(BaseModel):
+    dossier_id: str
+    valid: bool
+    finalized: bool
+    hash_matches: bool
+    signature_matches: bool
+    record_snapshots_match: bool
+    expected_hash: str | None
+    observed_hash: str | None
+    signing_key_id: str | None
+    errors: list[str]
+
+
+class DossierList(BaseModel):
+    items: list[DossierRead]
+    total: int
+    limit: int
+    offset: int
+
+
+class WorkflowPlatformStats(BaseModel):
+    workflow_definitions: int
+    workflow_runs: int
+    active_workflows: int
+    completed_workflows: int
+    workflow_steps: int
+    workflow_transitions: int
+    dossiers: int
+    finalized_dossiers: int
+    approvals: int

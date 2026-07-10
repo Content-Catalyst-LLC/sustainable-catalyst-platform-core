@@ -1,187 +1,96 @@
 # Architecture
 
-## Platform Core layers
+Platform Core v2.5.0 combines six infrastructure layers:
 
-### Universal Entity Registry
+1. Universal Entity Registry
+2. Governed Knowledge Graph
+3. Evidence Ledger and provenance
+4. Unified Public API and developer platform
+5. Trust Center and evaluation framework
+6. Signature Dossiers and end-to-end workflows
 
-Stable identifiers, aliases, lifecycle state, visibility, canonical URLs, and metadata.
+## Workflow engine
 
-### Governed Knowledge Graph
+Workflow definitions are controlled records containing ordered stages. Each stage declares:
 
-Controlled predicates, type constraints, relationship reviews, traversal, paths, neighborhoods, recommendations, and JSON-LD.
+- Stable key
+- Human-readable name
+- Responsible product
+- Action type
+- Required or optional state
+- Extensible metadata
 
-### Evidence Ledger
+Creating a workflow run copies the stage definition into durable workflow-step records. This prevents later edits to a definition from silently changing an active run.
 
-Claims, source snapshots, calculation traces, provenance activities, evidence records, review assignments, manifests, and tamper-evident history.
+Workflow transitions are append-only and content-hashed. Each transition records:
 
-### Unified Public API
+- Workflow and optional step
+- Prior state
+- New state
+- Actor
+- Reason
+- Payload
+- Timestamp
+- Content hash
 
-Scoped, versioned external access to selected registry, graph, evidence, ledger, developer, webhook, and trust records.
+Required-step dependencies are enforced in the service layer. Completion creates a workflow content hash over the final run and ordered steps.
 
-### Trust Center and Evaluation Framework
+## Signature dossier model
 
-The Trust Center introduces five record families:
+A dossier has two phases.
 
-1. Evaluation definitions
-2. Immutable evaluation runs and checks
-3. Findings
-4. Incidents and limitations
-5. Attestations
+### Draft phase
 
-## Evaluation definitions
+The dossier can receive:
 
-A definition specifies:
+- Frozen record snapshots
+- Human approval, rejection, and change-request records
+- Workflow linkage
+- Subject linkage
+- Visibility and purpose metadata
 
-- Stable ID
-- Name and domain
-- Methodology
-- Evaluator kind
-- Target type
-- Thresholds
-- Cadence
-- Failure severity
-- Public visibility
-- Active state
-- Version
+Each dossier record stores a complete JSON snapshot and its SHA-256 hash. The source record can later change without changing the dossier.
 
-Definitions are mutable governance records. Every change is recorded in the Evidence Ledger.
+### Finalized phase
 
-## Evaluation runs
+Finalization builds a canonical package containing:
 
-Runs are immutable observations of one definition at one time. The framework stores the complete result before committing it.
+- Dossier identity and purpose
+- Linked workflow and transition history
+- Ordered record snapshots
+- Approval history
+- Signature context
 
-A run contains:
+The canonical package is hashed. Platform Core signs the hash using HMAC-SHA256 and a server-side secret identified by a nonsecret key ID.
 
-```text
-definition
-optional target entity
-status
-score
-grade
-summary
-triggering actor
-evaluator version
-observations
-environment
-evidence references
-content hash
-visibility
-timestamps
-```
+## Verification model
 
-Check results are stored separately and linked to the run.
+Verification checks:
 
-## Evaluator boundary
+1. The dossier is finalized or superseded.
+2. The stored canonical package hashes to the recorded dossier hash.
+3. The platform signature matches the dossier hash.
+4. Every dossier record snapshot hashes to its recorded snapshot hash.
+5. The final package contains the same frozen record snapshots stored in dossier records.
 
-`services/evaluators.py` provides a stable evaluator interface:
+Verification intentionally does not compare the frozen snapshots with current live records. The purpose of a dossier is to preserve the state used at signing time.
 
-```text
-run_evaluator(kind, database_session, observations, settings)
-```
+## Approval model
 
-Each evaluator returns check dictionaries with:
+Approvals are append-only. Finalization evaluates the latest approval decision for each signer. Any current `reject` or `request_changes` decision blocks finalization. Current `approve` decisions must meet the configured minimum.
 
-```text
-check_key
-name
-status
-score
-severity
-observed
-expected
-details
-evidence_references
-```
+## Public boundary
 
-The orchestration service converts those dictionaries into immutable database records, compatibility validation events, ledger entries, findings, and webhooks.
+The public API exposes only:
 
-## Automated evaluators
+- Public workflow definitions
+- Workflow runs explicitly marked public
+- Public dossiers in finalized or superseded state
+- Dossier records marked public
+- Verification results
 
-### Ledger integrity
+Private record snapshots are removed from public dossier responses and public canonical snapshots.
 
-Recalculates all payload hashes, entry hashes, and previous-entry links.
+## Signature limitations
 
-### Public API readiness
-
-Inspects enabled state and required production configuration without exposing secret values.
-
-### Evidence review coverage
-
-Measures verified evidence records against all evidence records.
-
-### Webhook delivery reliability
-
-Measures delivered attempts against completed failed attempts.
-
-## Context-driven evaluators
-
-### Connector freshness
-
-Requires latest successful retrieval time, freshness window, and connector state.
-
-### Calculator validation
-
-Requires test totals, passed tests, tolerance failures, and edge-case results.
-
-### AI grounding
-
-Requires citation coverage, unsupported-claim rate, source relevance, and scope-gate pass rate.
-
-### Accessibility conformance
-
-Requires checks passed, total checks, critical failures, pending manual checks, and declared target.
-
-## Recorded evaluator
-
-The `recorded` evaluator accepts explicit check results. It supports human reviews and specialist evaluations without forcing all methods into a single automated formula.
-
-## Findings
-
-Failed or errored checks create findings in the same transaction as the run. Findings are mutable remediation records, while the originating evaluation remains immutable.
-
-## Aggregate status
-
-The status builder uses the latest public run for every active public definition.
-
-Domain state considers:
-
-- Latest run status
-- Average available score
-- Evaluation freshness
-- Open findings linked to those runs
-
-Overall state considers:
-
-- Ledger integrity
-- Critical and high incidents
-- Degraded domains
-- Attention domains
-- Open public findings
-
-Known limitations are disclosed but do not automatically rewrite evaluation scores.
-
-## Public and private boundaries
-
-The anonymous Trust Center includes only records explicitly marked public.
-
-The `trust:read` API uses the same public boundary.
-
-Internal `/v1/trust` routes can access both public and private records under the existing read and write policies.
-
-## Transaction model
-
-Trust writes insert the domain record, ledger entry, and webhook event in one database transaction.
-
-Evaluation runs additionally insert:
-
-- Check results
-- ValidationEvent compatibility records
-- Automatic findings for failed checks
-
-## Integrity model
-
-Evaluation run content hashes bind the definition ID, target, status, score, summary, observations, environment, evidence references, timestamps, visibility, and check results.
-
-Attestation hashes bind the statement, scope, issuer, subject, evidence references, validity, visibility, and metadata.
-
-Hashing makes records tamper-evident when paired with the existing chained ledger. It does not replace database access control, backups, external archives, or independent verification.
+HMAC signatures are server-verifiable integrity signatures. They do not provide independent public-key verification and are not qualified electronic signatures. A future release can add asymmetric signature adapters while preserving the canonical dossier hash contract.

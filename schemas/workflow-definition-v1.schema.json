@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/platform-core/workflow-definition-v1.json",
+  "title": "Sustainable Catalyst Workflow Definition",
+  "type": "object",
+  "required": [
+    "id",
+    "name",
+    "version",
+    "stages"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "version": {
+      "type": "string"
+    },
+    "stages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "key",
+          "name",
+          "product",
+          "action"
+        ],
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "product": {
+            "type": "string"
+          },
+          "action": {
+            "type": "string"
+          },
+          "required": {
+            "type": "boolean"
+          },
+          "metadata": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "public": {
+      "type": "boolean"
+    },
+    "active": {
+      "type": "boolean"
+    },
+    "metadata": {
+      "type": "object"
+    }
+  }
+}

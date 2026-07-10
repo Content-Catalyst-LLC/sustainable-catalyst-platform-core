@@ -20,7 +20,7 @@ def _int(name: str, default: int) -> int:
 @dataclass(frozen=True)
 class Settings:
     app_name: str = "Sustainable Catalyst Platform Core"
-    version: str = "2.4.0"
+    version: str = "2.5.0"
     environment: str = "development"
     database_url: str = "sqlite:///./platform_core.db"
     write_api_key: str = ""
@@ -41,6 +41,12 @@ class Settings:
     trust_center_enabled: bool = True
     trust_public_status_enabled: bool = True
     trust_stale_after_days: int = 90
+    workflow_engine_enabled: bool = True
+    dossier_center_enabled: bool = True
+    dossier_signing_secret: str = "development-dossier-signing-secret"
+    dossier_signing_key_id: str = "sc-platform-core-development"
+    dossier_required_approvals: int = 1
+    dossier_max_records: int = 500
 
     @classmethod
     def from_env(cls) -> "Settings":
@@ -92,4 +98,22 @@ class Settings:
             trust_center_enabled=_bool("SC_CORE_TRUST_CENTER_ENABLED", True),
             trust_public_status_enabled=_bool("SC_CORE_TRUST_PUBLIC_STATUS_ENABLED", True),
             trust_stale_after_days=max(1, min(_int("SC_CORE_TRUST_STALE_AFTER_DAYS", 90), 3650)),
+            workflow_engine_enabled=_bool("SC_CORE_WORKFLOW_ENGINE_ENABLED", True),
+            dossier_center_enabled=_bool("SC_CORE_DOSSIER_CENTER_ENABLED", True),
+            dossier_signing_secret=os.getenv(
+                "SC_CORE_DOSSIER_SIGNING_SECRET",
+                "" if production else "development-dossier-signing-secret",
+            ).strip(),
+            dossier_signing_key_id=os.getenv(
+                "SC_CORE_DOSSIER_SIGNING_KEY_ID",
+                "sc-platform-core-development",
+            ).strip(),
+            dossier_required_approvals=max(
+                0,
+                min(_int("SC_CORE_DOSSIER_REQUIRED_APPROVALS", 1), 20),
+            ),
+            dossier_max_records=max(
+                1,
+                min(_int("SC_CORE_DOSSIER_MAX_RECORDS", 500), 5000),
+            ),
         )

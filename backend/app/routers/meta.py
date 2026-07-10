@@ -46,6 +46,8 @@ def health(request: Request):
         "provenance_records": True,
         "unified_public_api": request.app.state.settings.public_api_enabled,
         "developer_portal": request.app.state.settings.developer_portal_enabled,
+        "workflow_engine": request.app.state.settings.workflow_engine_enabled,
+        "dossier_center": request.app.state.settings.dossier_center_enabled,
         "trust_center": request.app.state.settings.trust_center_enabled,
     }
 
@@ -118,6 +120,15 @@ def meta(request: Request):
             "postman_collection",
             "signed_webhooks",
             "webhook_delivery_outbox",
+            "workflow_definition_registry",
+            "ordered_end_to_end_workflows",
+            "append_only_workflow_transitions",
+            "signature_dossiers",
+            "frozen_record_snapshots",
+            "dossier_approvals",
+            "platform_dossier_signatures",
+            "dossier_signature_verification",
+            "public_dossier_center",
             "public_trust_center",
             "evaluation_definition_registry",
             "immutable_evaluation_runs",
@@ -133,6 +144,8 @@ def meta(request: Request):
         deferred_capabilities=[
             "large_scale_graph_database_adapter",
             "user_casebooks",
+            "external_public_key_signature_verification",
+            "qualified_electronic_signatures",
             "external_snapshot_object_storage_adapter",
             "developer_self_service_billing",
             "distributed_rate_limit_backend",

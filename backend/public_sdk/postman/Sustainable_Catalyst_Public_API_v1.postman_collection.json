@@ -2,7 +2,7 @@
   "info": {
     "name": "Sustainable Catalyst Unified Public API v1",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "description": "Registry, graph, evidence, ledger, usage, and webhook endpoints."
+    "description": "Registry, graph, evidence, ledger, trust, workflow, signature dossier, usage, and webhook endpoints."
   },
   "variable": [
     {
@@ -100,6 +100,41 @@
       "request": {
         "method": "GET",
         "url": "{{baseUrl}}/api/v1/trust/limitations"
+      }
+    },
+    {
+      "name": "Workflow Definitions",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/v1/workflow-definitions"
+      }
+    },
+    {
+      "name": "Workflow Run",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/v1/workflow-runs/sc:workflow-run:YOUR_ID"
+      }
+    },
+    {
+      "name": "Signature Dossiers",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/v1/dossiers"
+      }
+    },
+    {
+      "name": "Signature Dossier",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/v1/dossiers/sc:dossier:YOUR_ID"
+      }
+    },
+    {
+      "name": "Verify Signature Dossier",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/v1/dossiers/sc:dossier:YOUR_ID/verify"
       }
     }
   ]

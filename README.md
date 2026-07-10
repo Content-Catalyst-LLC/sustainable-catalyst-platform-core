@@ -1,338 +1,404 @@
-# Sustainable Catalyst Platform Core v2.4.0
+# Sustainable Catalyst Platform Core v2.5.0
 
-**Trust Center and Evaluation Framework**
+**Signature Dossiers and End-to-End Workflows**
 
-Platform Core v2.4.0 adds a public accountability and evaluation layer to the Universal Entity Registry, Knowledge Graph, Evidence Ledger, provenance system, and Unified Public API.
+Platform Core v2.5.0 connects the Universal Entity Registry, Knowledge Graph, Evidence Ledger, Unified Public API, and Trust Center into complete, auditable workflows that can end in a frozen and signed decision package.
 
-The release provides:
+The release adds:
 
-- A public Trust Center at `/trust`
-- Machine-readable trust status at `/trust/status.json`
-- A controlled registry of evaluation definitions
-- Immutable evaluation runs and check-level results
-- Automated and recorded evaluation methods
-- Automatic findings for failed checks
-- Incident history and lifecycle records
-- Known limitation disclosures
-- Evidence-backed attestations
-- Trust-related webhook events
-- `trust:read` Unified Public API access
+- A controlled workflow-definition registry
+- Ordered end-to-end workflow runs
+- Product-specific workflow stages
+- Dependency enforcement between required stages
+- Append-only, hash-recorded workflow transitions
+- Workflow completion hashes
+- Signature dossier creation and assembly
+- Frozen snapshots of included records
+- Human approval and change-request records
+- Canonical dossier snapshots
+- SHA-256 dossier fingerprints
+- HMAC-SHA256 Platform Core signatures
+- Dossier verification and tamper detection
+- Public and private dossier-record boundaries
+- Public Dossier Center
+- Public API workflow and dossier routes
 - Python and JavaScript SDK support
-- WordPress Trust Center and trust-status shortcodes
-- Migration `0005`
+- WordPress workflow and dossier shortcodes
+- Migration `0006`
 
-## Core principle
+Existing v2.0–v2.4 APIs remain available.
 
-> Trust status must expose the method, observations, checks, findings, incidents, limitations, and evidence behind the result. A passing score is not a substitute for judgment, professional assurance, or independent verification.
+## Architectural principle
 
-## Public Trust Center
+> A final decision package should preserve not only the conclusion, but the exact evidence, sources, calculations, relationships, evaluations, disclosures, approvals, and workflow history used at the time it was signed.
+
+## End-to-end workflows
+
+Three workflow definitions are seeded.
+
+### Research to Signature Dossier
+
+```text
+Frame the decision
+→ Build the Research Librarian route
+→ Collect Site Intelligence sources and indicators
+→ Run Workbench models and calculations
+→ Review claims and evidence
+→ Run Trust Center evaluations
+→ Assemble the dossier
+→ Approve and sign
+→ Publish or deliver
+```
+
+### Evidence Assurance Dossier
+
+```text
+Define assurance scope
+→ Collect claims and source snapshots
+→ Validate calculations and provenance
+→ Run evaluation framework
+→ Resolve or accept findings
+→ Assemble and sign assurance dossier
+```
+
+### Dashboard Publication Dossier
+
+```text
+Verify connectors and source freshness
+→ Validate indicator lineage
+→ Validate calculations and visual outputs
+→ Review accessibility
+→ Assemble publication dossier
+→ Approve and publish
+```
+
+## Workflow behavior
+
+A workflow run instantiates the ordered stages from its definition.
+
+Step states:
+
+```text
+pending
+in_progress
+blocked
+completed
+skipped
+failed
+```
+
+Run states:
+
+```text
+draft
+in_progress
+blocked
+completed
+cancelled
+```
+
+A required stage cannot start until earlier required stages are complete or explicitly skipped. A blocked or failed stage blocks the workflow. When all required stages finish, Platform Core:
+
+- Marks the workflow complete
+- Records its completion time
+- Generates a canonical workflow content hash
+- Adds an append-only workflow transition
+- Adds a ledger entry
+- Emits a `workflow.completed` event
+
+Workflow transition rows cannot be updated or deleted through the ORM.
+
+## Signature dossiers
+
+A signature dossier can include frozen snapshots of:
+
+- Entities
+- Graph relationships
+- Graph neighborhoods
+- Claims
+- Evidence records
+- Evidence manifests
+- Source snapshots
+- Calculation traces
+- Provenance activities
+- Evaluation runs and checks
+- Trust findings
+- Incidents
+- Known limitations
+- Attestations
+- Trust status
+- Workflow runs
+- Ledger entries
+
+Adding a record captures its current canonical representation and stores a SHA-256 snapshot hash. Later changes to the live record do not alter the dossier record.
+
+## Approval model
+
+Dossier approvals are append-only records with:
+
+- Decision: `approve`, `reject`, or `request_changes`
+- Signer
+- Role
+- Statement
+- Evidence references
+- Content hash
+- Timestamp
+
+Finalization uses the most recent decision from each signer. A current rejection or change request blocks finalization. The number of current approvals must meet `SC_CORE_DOSSIER_REQUIRED_APPROVALS`.
+
+## Dossier finalization
+
+Finalization requires:
+
+- A draft dossier
+- At least one dossier record
+- A completed linked workflow, when present
+- No unresolved rejection or change request
+- The configured number of current approvals
+- A dossier-signing secret
+
+Platform Core then freezes one canonical snapshot containing:
+
+```text
+Dossier identity and purpose
+Workflow and complete transition history
+Frozen record snapshots and hashes
+Approval records and hashes
+Signature context and signing time
+```
+
+It computes:
+
+```text
+dossier_hash = SHA256(canonical dossier snapshot)
+platform_signature = HMAC-SHA256(signing secret, dossier_hash)
+```
+
+The signature metadata includes:
+
+- Signature algorithm
+- Signing key ID
+- Signer
+- Signing time
+- Dossier hash
+- Platform signature
+
+This is a Platform Core integrity signature. It is not a qualified electronic signature, legal notarization, or external public-key certificate.
+
+## Verification
+
+Verification recalculates:
+
+- The canonical dossier snapshot hash
+- The platform signature
+- Every dossier-record snapshot hash
+- The correspondence between database record snapshots and the frozen dossier package
+
+A finalized dossier remains valid when its live source records change because verification checks the frozen package. Direct modification of the frozen package or record snapshots causes verification to fail.
+
+## Internal API routes
+
+### Workflow definitions and runs
+
+```text
+GET  /v1/workflow-definitions
+POST /v1/workflow-runs
+GET  /v1/workflow-runs
+GET  /v1/workflow-runs/{run_id}
+POST /v1/workflow-runs/{run_id}/start
+POST /v1/workflow-runs/{run_id}/steps/{step_key}/transition
+POST /v1/workflow-runs/{run_id}/cancel
+```
+
+### Signature dossiers
+
+```text
+POST /v1/dossiers
+GET  /v1/dossiers
+GET  /v1/dossiers/{dossier_id}
+POST /v1/dossiers/{dossier_id}/records
+POST /v1/dossiers/{dossier_id}/approvals
+POST /v1/dossiers/{dossier_id}/finalize
+GET  /v1/dossiers/{dossier_id}/verify
+GET  /v1/dossiers/{dossier_id}/export
+GET  /v1/workflow-platform/stats
+```
+
+Internal writes require `X-SC-API-Key`.
+
+## Unified Public API
+
+New scopes:
+
+```text
+workflow:read
+dossier:read
+```
+
+Public routes:
+
+```text
+GET /api/v1/workflow-definitions
+GET /api/v1/workflow-runs/{run_id}
+GET /api/v1/dossiers
+GET /api/v1/dossiers/{dossier_id}
+GET /api/v1/dossiers/{dossier_id}/verify
+```
+
+Only public workflow runs and public finalized or superseded dossiers are returned. Dossier records marked private are excluded from public responses and public canonical snapshots.
+
+## Dossier Center
 
 Open:
 
 ```text
-https://YOUR-PLATFORM-CORE.onrender.com/trust
+https://YOUR-PLATFORM-CORE.onrender.com/dossier-center
 ```
 
-Machine-readable records:
+The Dossier Center lists public finalized dossiers and displays:
 
-```text
-GET /trust/status.json
-GET /trust/evaluations.json
-```
+- Purpose and version
+- Dossier hash
+- Signing key ID
+- Signer
+- Record and approval counts
+- Verification status
+- Full public dossier record
 
-The public page displays:
-
-- Overall status and score
-- Ledger integrity
-- Latest evaluation by domain
-- Check-level observations and expectations
-- Open public findings
-- Active public incidents
-- Known public limitations
-- Active public attestations
-- Evaluation methodology and interpretation boundaries
-
-## Unified Public API
-
-The public developer API adds:
-
-```text
-GET /api/v1/trust/status
-GET /api/v1/trust/evaluations
-GET /api/v1/trust/incidents
-GET /api/v1/trust/limitations
-GET /api/v1/trust/attestations
-```
-
-Required scope:
-
-```text
-trust:read
-```
-
-Existing API plans are automatically updated to include the new scope without replacing custom quota settings.
-
-## Evaluation registry
-
-The release seeds eight evaluation definitions:
-
-| Evaluation | Domain | Evaluator |
-|---|---|---|
-| Evidence Ledger Integrity | Evidence integrity | Automated |
-| Unified Public API Readiness | Platform reliability | Automated |
-| Evidence Review Coverage | Evidence quality | Automated |
-| Connector Freshness | Source reliability | Context-driven |
-| Calculator Validation | Calculation quality | Context-driven |
-| AI Grounding and Scope | AI responsibility | Context-driven |
-| Accessibility Conformance | Accessibility | Context-driven |
-| Webhook Delivery Reliability | Platform reliability | Automated |
-
-Custom definitions can use the `recorded` evaluator to preserve explicit reviewer-supplied checks.
-
-## Evaluation records
-
-Every run stores:
-
-- Evaluation definition and version
-- Target entity when applicable
-- Triggering actor
-- Start and completion times
-- Status, score, grade, and summary
-- Input observations
-- Runtime environment
-- Evidence references
-- Immutable content hash
-- Public disclosure state
-- Check-level results
-
-Every check stores:
-
-- Stable check key
-- Name
-- Passed, warning, failed, error, or not-applicable state
-- Score and severity
-- Observed values
-- Expected values
-- Details and evidence references
-
-Evaluation runs and check results are immutable through the ORM.
-
-## Automated findings
-
-Failed or errored checks create an open trust finding in the same transaction. The finding is:
-
-- Linked to the run and check
-- Recorded in the tamper-evident ledger
-- Emitted as a webhook event
-- Public only when the evaluation run is public
-
-Findings support:
-
-```text
-open
-accepted
-resolved
-dismissed
-```
-
-## Incidents
-
-Incident records include:
-
-- Severity
-- Investigation state
-- Public summary
-- Impact
-- Root cause
-- Remediation
-- Affected entity IDs
-- Detection, start, and resolution times
-- Public or internal visibility
-
-Lifecycle states:
-
-```text
-investigating
-identified
-monitoring
-resolved
-```
-
-A critical public incident sets public trust status to `critical`. A high-severity incident sets it to `degraded`.
-
-## Known limitations
-
-Limitations disclose boundaries that may affect interpretation or use:
-
-- Domain
-- Description
-- Impact
-- Mitigation
-- Affected entities
-- Review date
-- Public visibility
-- Active, mitigated, or retired state
-
-Limitations remain visible without automatically being converted into a passing or failing score.
-
-## Attestations
-
-Attestations record a scoped statement by an issuer with:
-
-- Subject entity
-- Statement and scope
-- Evidence references
-- Validity window
-- Content hash
-- Public visibility
-- Revocation history
-
-Attestations are not certifications. They record what was asserted, by whom, for what scope, and with what evidence references.
-
-## Status aggregation
-
-The aggregate status uses:
-
-- Latest public run for each active public definition
-- Public run freshness
-- Public findings
-- Active public incidents
-- Ledger-chain integrity
-
-Possible values:
-
-```text
-operational
-attention
-degraded
-critical
-unknown
-```
-
-Missing or not-applicable evaluations remain visible as `unknown`. They are never silently treated as passing.
-
-## Running evaluations
-
-Run the default platform-native suite:
+## Example workflow
 
 ```bash
-cd backend
-.venv/bin/python scripts/run_trust_evaluations.py
+curl -X POST "https://YOUR-PLATFORM-CORE.onrender.com/v1/workflow-runs" \
+  -H "Content-Type: application/json" \
+  -H "X-SC-API-Key: YOUR_INTERNAL_WRITE_KEY" \
+  -d '{
+    "definition_id": "research-to-signature-dossier",
+    "title": "Infrastructure Resilience Decision",
+    "subject_entity_id": "sc:concept:infrastructure-resilience",
+    "requested_by": "decision-studio",
+    "owner": "platform-reviewer",
+    "context": {},
+    "public": true,
+    "metadata": {}
+  }'
 ```
 
-The default suite runs evaluations that do not require external observations:
-
-- Ledger integrity
-- Public API readiness
-- Evidence review coverage
-- Webhook delivery reliability
-
-Run selected or context-driven checks:
+Start it:
 
 ```bash
-.venv/bin/python scripts/run_trust_evaluations.py \
-  --context ../examples/trust_evaluation_contexts.json \
-  --triggered-by release-validation
+curl -X POST \
+  "https://YOUR-PLATFORM-CORE.onrender.com/v1/workflow-runs/WORKFLOW_ID/start" \
+  -H "Content-Type: application/json" \
+  -H "X-SC-API-Key: YOUR_INTERNAL_WRITE_KEY" \
+  -d '{"actor":"workflow-orchestrator"}'
 ```
 
-## Administrative routes
+Complete a stage:
+
+```bash
+curl -X POST \
+  "https://YOUR-PLATFORM-CORE.onrender.com/v1/workflow-runs/WORKFLOW_ID/steps/frame/transition" \
+  -H "Content-Type: application/json" \
+  -H "X-SC-API-Key: YOUR_INTERNAL_WRITE_KEY" \
+  -d '{
+    "status":"in_progress",
+    "actor":"decision-studio",
+    "payload":{}
+  }'
+```
+
+Then transition the same stage to `completed` with output references.
+
+## Example dossier
+
+Create:
+
+```bash
+curl -X POST "https://YOUR-PLATFORM-CORE.onrender.com/v1/dossiers" \
+  -H "Content-Type: application/json" \
+  -H "X-SC-API-Key: YOUR_INTERNAL_WRITE_KEY" \
+  -d '{
+    "workflow_run_id":"WORKFLOW_ID",
+    "subject_entity_id":"sc:concept:infrastructure-resilience",
+    "title":"Infrastructure Resilience Signature Dossier",
+    "purpose":"Preserve the evidence and decision route used for publication.",
+    "version":"1.0",
+    "visibility":"public",
+    "metadata":{},
+    "actor":"decision-studio"
+  }'
+```
+
+Add a frozen evidence manifest:
+
+```bash
+curl -X POST \
+  "https://YOUR-PLATFORM-CORE.onrender.com/v1/dossiers/DOSSIER_ID/records" \
+  -H "Content-Type: application/json" \
+  -H "X-SC-API-Key: YOUR_INTERNAL_WRITE_KEY" \
+  -d '{
+    "section":"Evidence",
+    "record_type":"evidence_manifest",
+    "record_id":"sc:claim:CLAIM_ID",
+    "label":"Claim Evidence Manifest",
+    "sort_order":100,
+    "public":true,
+    "metadata":{},
+    "actor":"dossier-assembler"
+  }'
+```
+
+Approve:
+
+```bash
+curl -X POST \
+  "https://YOUR-PLATFORM-CORE.onrender.com/v1/dossiers/DOSSIER_ID/approvals" \
+  -H "Content-Type: application/json" \
+  -H "X-SC-API-Key: YOUR_INTERNAL_WRITE_KEY" \
+  -d '{
+    "decision":"approve",
+    "signer":"reviewer@example.org",
+    "role":"Evidence Reviewer",
+    "statement":"The frozen records support publication.",
+    "evidence_references":[]
+  }'
+```
+
+Finalize:
+
+```bash
+curl -X POST \
+  "https://YOUR-PLATFORM-CORE.onrender.com/v1/dossiers/DOSSIER_ID/finalize" \
+  -H "Content-Type: application/json" \
+  -H "X-SC-API-Key: YOUR_INTERNAL_WRITE_KEY" \
+  -d '{
+    "signed_by":"Sustainable Catalyst Platform Core",
+    "actor":"platform-signing-service"
+  }'
+```
+
+Verify:
+
+```bash
+curl "https://YOUR-PLATFORM-CORE.onrender.com/v1/dossiers/DOSSIER_ID/verify"
+```
+
+## Production environment
+
+Keep all v2.4 variables and add:
 
 ```text
-GET   /v1/trust/status
-GET   /v1/trust/definitions
-POST  /v1/trust/definitions
-PATCH /v1/trust/definitions/{definition_id}
-POST  /v1/trust/definitions/{definition_id}/runs
-POST  /v1/trust/run-suite
-GET   /v1/trust/runs
-GET   /v1/trust/runs/{run_id}
-
-GET   /v1/trust/findings
-POST  /v1/trust/findings
-PATCH /v1/trust/findings/{finding_id}
-
-GET   /v1/trust/incidents
-POST  /v1/trust/incidents
-PATCH /v1/trust/incidents/{incident_id}
-
-GET   /v1/trust/limitations
-POST  /v1/trust/limitations
-PATCH /v1/trust/limitations/{limitation_id}
-
-GET   /v1/trust/attestations
-POST  /v1/trust/attestations
-POST  /v1/trust/attestations/{attestation_id}/revoke
+SC_CORE_WORKFLOW_ENGINE_ENABLED=true
+SC_CORE_DOSSIER_CENTER_ENABLED=true
+SC_CORE_DOSSIER_SIGNING_SECRET=<long random secret>
+SC_CORE_DOSSIER_SIGNING_KEY_ID=sc-platform-core-production
+SC_CORE_DOSSIER_REQUIRED_APPROVALS=1
+SC_CORE_DOSSIER_MAX_RECORDS=500
 ```
 
-Administrative writes require `X-SC-API-Key`.
+In production, dossier finalization fails closed when the signing secret is absent.
 
-## Example: calculator evaluation
-
-```json
-{
-  "triggered_by": "workbench-ci",
-  "observations": {
-    "total_cases": 100,
-    "passed_cases": 100,
-    "tolerance_failures": 0,
-    "edge_cases_total": 20,
-    "edge_cases_passed": 20
-  },
-  "environment": {
-    "python": "3.12",
-    "release": "2.4.0"
-  },
-  "evidence_references": [
-    "sc:trace:validation-run"
-  ]
-}
-```
-
-Submit to:
-
-```text
-POST /v1/trust/definitions/calculator-validation/runs
-```
-
-## Example: AI grounding evaluation
-
-```json
-{
-  "triggered_by": "research-librarian-evaluation",
-  "observations": {
-    "citation_coverage": 0.98,
-    "unsupported_claim_rate": 0.01,
-    "source_relevance": 0.95,
-    "scope_gate_pass_rate": 0.99
-  },
-  "environment": {
-    "provider": "gemini"
-  },
-  "evidence_references": []
-}
-```
-
-The evaluator reports each measure separately. A high aggregate score does not conceal an unsupported-claim failure or scope-gate failure.
-
-## Webhook events
-
-Trust operations emit events such as:
-
-```text
-trust.evaluation.completed
-trust.finding.created
-trust.finding.updated
-trust.incident.created
-trust.incident.updated
-trust.limitation.created
-trust.limitation.updated
-trust.attestation.issued
-trust.attestation.revoked
-trust.evaluation_definition.created
-trust.evaluation_definition.updated
-```
-
-Subscriptions can use exact names, `trust.*`, or `*`.
+Do not reuse the internal write key, API-log salt, or webhook-signing secret as the dossier-signing secret.
 
 ## Local setup
 
@@ -341,57 +407,25 @@ cd backend
 python3.12 -m venv .venv
 .venv/bin/python -m pip install --upgrade pip
 .venv/bin/python -m pip install -r requirements.txt
-
 cp .env.example .env
 .venv/bin/python scripts/migrate.py
 .venv/bin/python scripts/seed_registry.py
 .venv/bin/python -m uvicorn app.main:app --reload --port 8090
 ```
 
-Open:
-
-```text
-http://127.0.0.1:8090/trust
-http://127.0.0.1:8090/trust/status.json
-http://127.0.0.1:8090/developers
-http://127.0.0.1:8090/explorer
-http://127.0.0.1:8090/evidence-explorer
-http://127.0.0.1:8090/docs
-```
-
-## Production environment
-
-```text
-SC_CORE_TRUST_CENTER_ENABLED=true
-SC_CORE_TRUST_PUBLIC_STATUS_ENABLED=true
-SC_CORE_TRUST_STALE_AFTER_DAYS=90
-```
-
-Keep the existing Platform Core variables, including the database, internal write key, API log salt, and webhook signing secret.
-
 ## WordPress shortcodes
 
 ```text
-[sc_trust_center]
-[sc_trust_status]
+[sc_dossier_center]
+[sc_signature_dossier id="sc:dossier:..."]
+[sc_workflow_status id="sc:workflow-run:..."]
 ```
 
-The WordPress connector reads public Trust Center routes. It does not store internal write credentials.
+These join the existing registry, graph, evidence, developer, and trust shortcodes.
 
 ## Boundaries
 
-The Trust Center does not establish legal compliance, professional assurance, scientific consensus, financial accuracy, medical safety, engineering adequacy, accessibility certification, or freedom from defects.
-
-Evaluation quality depends on:
-
-- The method used
-- The completeness of observations
-- The quality of evidence references
-- The freshness of the run
-- The competence and independence of reviewers
-- The correctness of evaluator implementation
-
-The framework is designed to disclose those conditions rather than hide them.
+The dossier signature verifies the integrity of the frozen Platform Core package under the configured server secret. It does not establish that every source is true, that every analysis is correct, that a decision is legally valid, or that a human signer possesses a regulated digital-signature credential.
 
 ## License
 

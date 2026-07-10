@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/platform-core/workflow-run-v1.json",
+  "title": "Sustainable Catalyst Workflow Run",
+  "type": "object",
+  "required": [
+    "id",
+    "definition_id",
+    "title",
+    "status",
+    "requested_by"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "definition_id": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "subject_entity_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "status": {
+      "enum": [
+        "draft",
+        "in_progress",
+        "blocked",
+        "completed",
+        "cancelled"
+      ]
+    },
+    "current_step_key": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "requested_by": {
+      "type": "string"
+    },
+    "owner": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "context": {
+      "type": "object"
+    },
+    "content_hash": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "public": {
+      "type": "boolean"
+    },
+    "steps": {
+      "type": "array"
+    },
+    "transitions": {
+      "type": "array"
+    },
+    "metadata": {
+      "type": "object"
+    }
+  }
+}

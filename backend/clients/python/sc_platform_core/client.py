@@ -193,3 +193,31 @@ class PlatformCoreClient:
 
     def create_trust_attestation(self, payload: dict[str, Any]):
         return self._request("POST", "/v1/trust/attestations", write=True, json=payload)
+
+
+    def workflow_definitions(self):
+        return self._request("GET", "/v1/workflow-definitions")
+
+    def create_workflow_run(self, payload: dict[str, Any]):
+        return self._request("POST", "/v1/workflow-runs", write=True, json=payload)
+
+    def start_workflow_run(self, run_id: str, payload: dict[str, Any]):
+        return self._request("POST", f"/v1/workflow-runs/{run_id}/start", write=True, json=payload)
+
+    def transition_workflow_step(self, run_id: str, step_key: str, payload: dict[str, Any]):
+        return self._request("POST", f"/v1/workflow-runs/{run_id}/steps/{step_key}/transition", write=True, json=payload)
+
+    def create_dossier(self, payload: dict[str, Any]):
+        return self._request("POST", "/v1/dossiers", write=True, json=payload)
+
+    def add_dossier_record(self, dossier_id: str, payload: dict[str, Any]):
+        return self._request("POST", f"/v1/dossiers/{dossier_id}/records", write=True, json=payload)
+
+    def approve_dossier(self, dossier_id: str, payload: dict[str, Any]):
+        return self._request("POST", f"/v1/dossiers/{dossier_id}/approvals", write=True, json=payload)
+
+    def finalize_dossier(self, dossier_id: str, payload: dict[str, Any]):
+        return self._request("POST", f"/v1/dossiers/{dossier_id}/finalize", write=True, json=payload)
+
+    def verify_dossier(self, dossier_id: str):
+        return self._request("GET", f"/v1/dossiers/{dossier_id}/verify")

@@ -1,174 +1,116 @@
 # Integration Guide
 
-## Trust Center consumers
+## Product responsibilities
 
-Use anonymous routes for public web rendering:
+### Decision Studio
 
-```text
-GET /trust/status.json
-GET /trust/evaluations.json
-```
+- Creates decision-oriented workflow runs
+- Frames the problem and desired decision
+- Registers material claims
+- Creates the draft dossier
+- Coordinates approvals and finalization
 
-Use the Unified Public API for authenticated integrations:
+### Research Librarian
 
-```text
-GET /api/v1/trust/status
-GET /api/v1/trust/evaluations
-GET /api/v1/trust/incidents
-GET /api/v1/trust/limitations
-GET /api/v1/trust/attestations
-```
+- Produces research routes
+- Returns source and entity IDs
+- Adds evidence-manifest references
+- Completes research workflow stages
 
-Scope:
+### Site Intelligence
 
-```text
-trust:read
-```
+- Captures source snapshots
+- Supplies dataset and indicator IDs
+- Records connector freshness and lineage
+- Completes source-intelligence and dashboard stages
 
-## Workbench
+### Workbench
 
-Workbench should run `calculator-validation` for release candidates and substantial calculator changes.
+- Creates provenance activities
+- Creates calculation traces
+- Returns formula, code, runtime, input, and output references
+- Completes analysis and validation stages
 
-Recommended observations:
+### Trust Center
 
-```json
-{
-  "total_cases": 250,
-  "passed_cases": 248,
-  "tolerance_failures": 0,
-  "edge_cases_total": 40,
-  "edge_cases_passed": 39
-}
-```
+- Runs evaluation definitions
+- Records findings, incidents, limitations, and attestations
+- Supplies evaluation-run and trust-status records to the dossier
 
-Attach calculation traces, validation reports, or release manifests through `evidence_references`.
+### Platform Core
 
-## Research Librarian
+- Enforces stage ordering
+- Records transitions
+- Freezes dossier records
+- Resolves approval state
+- Produces the final hash and signature
+- Serves public verification records
 
-The Research Librarian should run `ai-grounding` against a curated evaluation set.
-
-Recommended observations:
-
-```json
-{
-  "citation_coverage": 0.97,
-  "unsupported_claim_rate": 0.015,
-  "source_relevance": 0.94,
-  "scope_gate_pass_rate": 0.995
-}
-```
-
-Evaluation samples should be retained outside the aggregate observation when detailed prompt-response content is sensitive. Reference the retained evidence through stable IDs or storage references.
-
-## Site Intelligence
-
-Each connector can run `connector-freshness` with:
-
-```json
-{
-  "last_success_at": "2026-07-10T12:00:00Z",
-  "max_age_hours": 24,
-  "connector_status": "active"
-}
-```
-
-Use the connector entity as `target_entity_id`.
-
-## Decision Studio
-
-Decision Studio can include Trust Center status in exported decision packets and link claims to relevant evaluation runs.
-
-Do not present an aggregate Trust Center score as proof that a decision is correct. Include the underlying domains, incidents, limitations, and evaluation dates.
-
-## Accessibility workflow
-
-Record both automated and manual checks:
-
-```json
-{
-  "target": "WCAG 2.2 AA",
-  "total_checks": 120,
-  "passed_checks": 116,
-  "critical_failures": 0,
-  "manual_checks_pending": 4
-}
-```
-
-Pending manual checks should remain visible as warnings.
-
-## Custom review methods
-
-Create an evaluation definition with:
+## Recommended record sections
 
 ```text
-evaluator_kind = recorded
+Decision Context
+Research Route
+Sources and Datasets
+Knowledge Graph
+Claims and Evidence
+Calculations and Models
+Provenance
+Trust Evaluations
+Findings and Limitations
+Approvals
+Publication Record
 ```
 
-Then submit check results under `observations.checks`.
-
-This is appropriate for editorial source review, legal authority review, design review, qualitative methodology review, or specialist scientific review.
-
-## Incidents
-
-Create an incident when a material trust condition is active and cannot be represented adequately as only an evaluation finding.
-
-Examples:
-
-- Source connector outage
-- Evidence corruption
-- Incorrect calculator output
-- Public API data exposure
-- AI scope-gate failure affecting published output
-- Accessibility regression
-
-Resolve the incident only after impact, root cause, and remediation have been recorded when known.
-
-## Limitations
-
-Use a known limitation for persistent boundaries rather than temporary operational incidents.
-
-Examples:
-
-- Experimental calculator without complete validation
-- AI evaluation set limited to English
-- Source freshness dependent on upstream publication cadence
-- Accessibility review incomplete for embedded third-party content
-
-## Attestations
-
-Attestations should be narrow and evidence-backed.
-
-Good:
-
-> The v2.4.0 Platform Core regression suite completed with 36 passing tests on the recorded release environment.
-
-Too broad:
-
-> Platform Core is fully trustworthy.
-
-## Webhooks
-
-Subscribe to:
+## Supported dossier record types
 
 ```text
-trust.*
+entity
+relationship
+graph_neighborhood
+claim
+evidence
+evidence_manifest
+source_snapshot
+calculation_trace
+provenance_activity
+evaluation_run
+trust_finding
+trust_incident
+known_limitation
+trust_attestation
+trust_status
+workflow_run
+ledger_entry
 ```
 
-or specific events such as:
+## Workflow integration pattern
+
+1. Create a workflow run.
+2. Start the run.
+3. Transition the current product stage to `in_progress`.
+4. Perform the product operation.
+5. Save output references using stable Platform Core IDs.
+6. Transition the stage to `completed`.
+7. Continue until the workflow is complete.
+8. Create and assemble the dossier.
+9. Add approval records.
+10. Finalize and verify the dossier.
+
+## Error handling
+
+- HTTP 409 indicates unmet stage dependencies or approval blockers.
+- HTTP 422 indicates an invalid state transition or unsupported record type.
+- HTTP 503 indicates production signing configuration is missing.
+- A failed dossier verification should be treated as an integrity incident.
+
+## Public clients
+
+Use scopes:
 
 ```text
-trust.evaluation.completed
-trust.incident.created
-trust.incident.updated
-trust.finding.created
-trust.attestation.revoked
+workflow:read
+dossier:read
 ```
 
-## WordPress
-
-```text
-[sc_trust_center]
-[sc_trust_status]
-```
-
-The status shortcode uses the anonymous public JSON route and does not require a public developer key.
+Public clients can list finalized dossiers, inspect public workflow records, and verify signatures. They cannot create workflows, add records, approve, or finalize dossiers.

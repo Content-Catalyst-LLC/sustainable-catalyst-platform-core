@@ -74,6 +74,27 @@ export class PublicApiClient {
     return this.request("/trust/attestations");
   }
 
+  workflowDefinitions() {
+    return this.request("/workflow-definitions");
+  }
+
+  workflowRun(runId) {
+    return this.request(`/workflow-runs/${encodeURIComponent(runId)}`);
+  }
+
+  dossiers(params = {}) {
+    const query = new URLSearchParams(params);
+    return this.request(`/dossiers?${query}`);
+  }
+
+  dossier(dossierId) {
+    return this.request(`/dossiers/${encodeURIComponent(dossierId)}`);
+  }
+
+  verifyDossier(dossierId) {
+    return this.request(`/dossiers/${encodeURIComponent(dossierId)}/verify`);
+  }
+
   identity() {
     return this.request("/developer/me");
   }

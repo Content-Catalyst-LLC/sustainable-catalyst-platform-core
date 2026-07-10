@@ -48,3 +48,25 @@ console.log(await client.entities({ entity_type: "product" }));
 ## Direct HTTP
 
 The SDKs intentionally remain thin. Any standards-compliant HTTP client can use the public API directly.
+
+## Signature dossiers and workflows
+
+Python:
+
+```python
+print(client.workflow_definitions())
+print(client.workflow_run("sc:workflow-run:..."))
+print(client.dossiers())
+print(client.dossier("sc:dossier:..."))
+print(client.verify_dossier("sc:dossier:..."))
+```
+
+JavaScript:
+
+```javascript
+console.log(await client.workflowDefinitions());
+console.log(await client.workflowRun("sc:workflow-run:..."));
+console.log(await client.dossiers());
+console.log(await client.dossier("sc:dossier:..."));
+console.log(await client.verifyDossier("sc:dossier:..."));
+```

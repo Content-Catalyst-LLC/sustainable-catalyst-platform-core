@@ -88,3 +88,24 @@ The API uses standard HTTP status codes:
 ## Request IDs
 
 Clients may supply `X-Request-ID`. Platform Core truncates it to 64 characters. If omitted, Platform Core generates one. The request ID is echoed in the response and retained in usage records.
+
+## v2.5.0 workflow and dossier routes
+
+Scopes:
+
+```text
+workflow:read
+dossier:read
+```
+
+Routes:
+
+```text
+GET /api/v1/workflow-definitions
+GET /api/v1/workflow-runs/{run_id}
+GET /api/v1/dossiers
+GET /api/v1/dossiers/{dossier_id}
+GET /api/v1/dossiers/{dossier_id}/verify
+```
+
+Only public workflow runs and public finalized or superseded dossiers are returned.

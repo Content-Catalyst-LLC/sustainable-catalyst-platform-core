@@ -9,6 +9,8 @@ from .migrations import run_migrations
 from .public_api_auth import PublicApiMiddleware
 from .routers import (
     developer_admin,
+    dossier_center,
+    dossier_public_site,
     developer_portal,
     entities,
     evidence,
@@ -24,6 +26,8 @@ from .routers import (
     trust_admin,
     trust_center,
     trust_public,
+    workflow_public,
+    workflows,
 )
 
 
@@ -40,7 +44,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             "workflows, tamper-evident audit infrastructure, a unified public API, "
             "developer applications, scoped credentials, usage controls, webhooks, "
             "SDK assets, a public Trust Center, evaluation runs, incidents, "
-            "limitations, and attestations for Sustainable Catalyst."
+            "limitations, attestations, signature dossiers, and end-to-end workflows for Sustainable Catalyst."
         ),
         contact={
             "name": "Sustainable Catalyst",
@@ -80,6 +84,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     )
 
     app.include_router(meta.router)
+    app.include_router(dossier_center.router)
+    app.include_router(dossier_public_site.router)
     app.include_router(trust_center.router)
     app.include_router(developer_portal.router)
     app.include_router(explorer.router)
@@ -87,6 +93,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(predicates.router)
     app.include_router(public_api.router)
     app.include_router(trust_public.router)
+    app.include_router(workflow_public.router)
     app.include_router(entities.router)
     app.include_router(relationships.router)
     app.include_router(evidence.router)
@@ -95,6 +102,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(imports.router)
     app.include_router(developer_admin.router)
     app.include_router(trust_admin.router)
+    app.include_router(workflows.router)
 
     return app
 

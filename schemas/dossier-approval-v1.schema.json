@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/platform-core/dossier-approval-v1.json",
+  "title": "Sustainable Catalyst Dossier Approval",
+  "type": "object",
+  "required": [
+    "id",
+    "dossier_id",
+    "decision",
+    "signer",
+    "role",
+    "content_hash"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "dossier_id": {
+      "type": "string"
+    },
+    "decision": {
+      "enum": [
+        "approve",
+        "reject",
+        "request_changes"
+      ]
+    },
+    "signer": {
+      "type": "string"
+    },
+    "role": {
+      "type": "string"
+    },
+    "statement": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "evidence_references": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "content_hash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

@@ -1,36 +1,25 @@
-# Release Checklist — v2.4.0
+# Release Checklist — v2.5.0
 
 - [ ] Run all regression tests
-- [ ] Confirm migration `0005`
-- [ ] Confirm eight evaluation definitions are seeded
-- [ ] Confirm existing API plans include `trust:read`
-- [ ] Confirm v2.4.0 registry seed
-- [ ] Confirm ledger-integrity evaluation
-- [ ] Confirm API-readiness evaluation
-- [ ] Confirm evidence coverage evaluation
-- [ ] Confirm connector freshness evaluation
-- [ ] Confirm calculator validation evaluation
-- [ ] Confirm AI grounding evaluation
-- [ ] Confirm accessibility evaluation
-- [ ] Confirm webhook reliability evaluation
-- [ ] Confirm recorded custom evaluator
-- [ ] Confirm immutable evaluation runs
-- [ ] Confirm immutable check results
-- [ ] Confirm automatic findings
-- [ ] Confirm finding ledger entries
-- [ ] Confirm incident lifecycle
-- [ ] Confirm private incident filtering
-- [ ] Confirm limitation disclosure
-- [ ] Confirm attestation hashing and revocation
-- [ ] Confirm aggregate trust status
-- [ ] Confirm ledger failure produces critical status
-- [ ] Confirm evaluation freshness handling
-- [ ] Confirm anonymous Trust Center routes
-- [ ] Confirm `trust:read` authorization
-- [ ] Confirm public OpenAPI trust routes
-- [ ] Confirm Python SDK trust methods
-- [ ] Confirm JavaScript SDK trust methods
-- [ ] Confirm Postman trust requests
-- [ ] Confirm WordPress connector v2.4.0
-- [ ] Confirm no embedded secrets
-- [ ] Confirm repository, plugin, and SDK ZIP integrity
+- [ ] Confirm migration `0006`
+- [ ] Confirm three workflow definitions are seeded
+- [ ] Confirm API plans include `workflow:read` and `dossier:read`
+- [ ] Confirm workflow dependency enforcement
+- [ ] Confirm blocked and failed workflow behavior
+- [ ] Confirm completion content hash
+- [ ] Confirm transition immutability
+- [ ] Confirm every supported dossier record type
+- [ ] Confirm record snapshot hashes
+- [ ] Confirm approval resolution by latest signer decision
+- [ ] Confirm required approval count
+- [ ] Confirm production signing fails closed without a secret
+- [ ] Confirm dossier hash and HMAC signature
+- [ ] Confirm live-record changes do not invalidate a frozen dossier
+- [ ] Confirm frozen-package tampering is detected
+- [ ] Confirm private records are excluded publicly
+- [ ] Confirm public workflow and dossier scopes
+- [ ] Confirm Dossier Center
+- [ ] Confirm Python and JavaScript SDKs
+- [ ] Confirm WordPress connector v2.5.0
+- [ ] Confirm secret scan
+- [ ] Confirm repository and release ZIP integrity

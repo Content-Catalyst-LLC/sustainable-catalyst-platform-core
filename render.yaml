@@ -52,3 +52,12 @@ databases:
   - name: sustainable-catalyst-platform-core-db
     databaseName: sustainable_catalyst_platform_core
     user: sustainable_catalyst_platform_core
+
+# Platform Core v2.5.0
+# Add these secret values in Render rather than committing them:
+# SC_CORE_WORKFLOW_ENGINE_ENABLED=true
+# SC_CORE_DOSSIER_CENTER_ENABLED=true
+# SC_CORE_DOSSIER_SIGNING_SECRET=<long random secret>
+# SC_CORE_DOSSIER_SIGNING_KEY_ID=sc-platform-core-production
+# SC_CORE_DOSSIER_REQUIRED_APPROVALS=1
+# SC_CORE_DOSSIER_MAX_RECORDS=500

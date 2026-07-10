@@ -1,0 +1,102 @@
+SUSTAINABLE CATALYST PLATFORM CORE v2.5.0
+Signature Dossiers and End-to-End Workflows
+
+Place these files in ~/Downloads:
+
+1. sustainable-catalyst-platform-core-v2.5.0-repo.zip
+2. PUSH_PLATFORM_CORE_V250_FINAL.sh
+
+Run exactly:
+
+cd ~/Downloads
+chmod +x PUSH_PLATFORM_CORE_V250_FINAL.sh
+./PUSH_PLATFORM_CORE_V250_FINAL.sh
+
+The banner must say:
+
+PLATFORM CORE v2.5.0 — FINAL SIGNATURE DOSSIER PUSH
+
+The script:
+
+- Uses existing GitHub CLI authentication
+- Uses SSH for every Git operation
+- Has no HTTPS or password fallback
+- Handles the existing or an empty repository
+- Safety-stashes unfinished local changes
+- Removes damaged virtual environments
+- Excludes .venv from rsync
+- Recreates the virtual environment from scratch
+- Runs all 43 tests
+- Runs migration 0006 and seed smoke checks
+- Runs the Trust Center evaluation smoke suite
+- Builds the WordPress connector and public SDKs
+- Commits and pushes main
+
+RENDER
+
+Keep the existing Platform Core service and PostgreSQL database.
+
+Add or confirm:
+
+SC_CORE_WORKFLOW_ENGINE_ENABLED=true
+SC_CORE_DOSSIER_CENTER_ENABLED=true
+SC_CORE_DOSSIER_SIGNING_SECRET=<generate-a-long-random-secret>
+SC_CORE_DOSSIER_SIGNING_KEY_ID=sc-platform-core-production
+SC_CORE_DOSSIER_REQUIRED_APPROVALS=1
+SC_CORE_DOSSIER_MAX_RECORDS=500
+
+Keep all v2.4 environment variables, including:
+
+SC_CORE_ENVIRONMENT=production
+SC_CORE_DATABASE_URL=<Render PostgreSQL internal database URL>
+SC_CORE_WRITE_API_KEY=<existing long internal secret>
+SC_CORE_API_LOG_SALT=<existing long random secret>
+SC_CORE_WEBHOOK_SIGNING_SECRET=<existing different random secret>
+SC_CORE_TRUST_CENTER_ENABLED=true
+SC_CORE_TRUST_PUBLIC_STATUS_ENABLED=true
+
+Do not reuse the write key, API log salt, or webhook secret as the dossier-signing secret.
+
+The existing start command runs migration 0006 automatically:
+
+./start.sh
+
+POST-DEPLOYMENT TESTS
+
+curl https://YOUR-PLATFORM-CORE.onrender.com/health
+curl https://YOUR-PLATFORM-CORE.onrender.com/v1/workflow-definitions
+curl https://YOUR-PLATFORM-CORE.onrender.com/v1/workflow-platform/stats
+curl https://YOUR-PLATFORM-CORE.onrender.com/public/dossiers
+
+Open:
+
+https://YOUR-PLATFORM-CORE.onrender.com/dossier-center
+https://YOUR-PLATFORM-CORE.onrender.com/developers
+https://YOUR-PLATFORM-CORE.onrender.com/trust
+
+PUBLIC API SCOPES
+
+workflow:read
+dossier:read
+
+PUBLIC API ROUTES
+
+GET /api/v1/workflow-definitions
+GET /api/v1/workflow-runs/{run_id}
+GET /api/v1/dossiers
+GET /api/v1/dossiers/{dossier_id}
+GET /api/v1/dossiers/{dossier_id}/verify
+
+WORDPRESS
+
+The push script creates:
+
+~/Downloads/sustainable-catalyst-platform-core-repo/dist/sustainable-catalyst-platform-core-plugin-v2.5.0.zip
+
+Upload it over the existing Platform Core connector.
+
+New shortcodes:
+
+[sc_dossier_center]
+[sc_signature_dossier id="sc:dossier:..."]
+[sc_workflow_status id="sc:workflow-run:..."]

@@ -1,10 +1,11 @@
 from __future__ import annotations
 from sqlalchemy import select
 from .database import Base, Database
-from .models import ApiPlan, EvaluationDefinition, PredicateDefinition, SchemaMigration
+from .models import ApiPlan, EvaluationDefinition, PredicateDefinition, SchemaMigration, WorkflowDefinition
 from .predicate_catalog import DEFAULT_PREDICATES
 from .api_plan_catalog import DEFAULT_API_PLANS
 from .evaluation_catalog import DEFAULT_EVALUATION_DEFINITIONS
+from .workflow_catalog import DEFAULT_WORKFLOW_DEFINITIONS
 
 MIGRATIONS = [
     ("0001", "Initial universal entity registry, relationships, aliases, evidence foundations, validation events, and import jobs."),
@@ -12,6 +13,7 @@ MIGRATIONS = [
     ("0003", "Evidence Ledger claims, source snapshots, evidence records, calculation traces, provenance activities, review assignments, and tamper-evident ledger chain."),
     ("0004", "Unified Public API plans, developer applications, hashed credentials, request usage records, webhooks, and developer portal infrastructure."),
     ("0005", "Trust Center evaluation definitions, immutable evaluation runs and checks, findings, incidents, known limitations, attestations, and public trust status."),
+    ("0006", "Signature dossiers, frozen record snapshots, approvals, platform signatures, workflow definitions, runs, steps, and append-only transitions."),
 ]
 
 def _seed_predicates(database: Database) -> int:
@@ -56,6 +58,26 @@ def _seed_evaluation_definitions(database: Database) -> int:
         session.commit()
     return created
 
+def _seed_workflow_definitions(database: Database) -> int:
+    created = 0
+    with database.session_factory() as session:
+        for payload in DEFAULT_WORKFLOW_DEFINITIONS:
+            existing = session.get(WorkflowDefinition, payload["id"])
+            if existing is None:
+                data = dict(payload)
+                metadata = data.pop("metadata", {})
+                session.add(WorkflowDefinition(**data, metadata_json=metadata))
+                created += 1
+            else:
+                existing.stages = payload["stages"]
+                existing.version = payload.get("version", existing.version)
+                existing.active = payload.get("active", existing.active)
+                existing.public = payload.get("public", existing.public)
+                session.add(existing)
+        session.commit()
+    return created
+
+
 def run_migrations(database: Database) -> list[str]:
     Base.metadata.create_all(database.engine)
     applied: list[str] = []
@@ -68,6 +90,7 @@ def run_migrations(database: Database) -> list[str]:
     _seed_predicates(database)
     _seed_api_plans(database)
     _seed_evaluation_definitions(database)
+    _seed_workflow_definitions(database)
     return applied
 
 def migration_status(database: Database) -> dict:
@@ -77,5 +100,6 @@ def migration_status(database: Database) -> dict:
         predicates = len(session.scalars(select(PredicateDefinition.id)).all())
         api_plans = len(session.scalars(select(ApiPlan.id)).all())
         evaluation_definitions = len(session.scalars(select(EvaluationDefinition.id)).all())
+        workflow_definitions = len(session.scalars(select(WorkflowDefinition.id)).all())
     expected = {version for version, _ in MIGRATIONS}
-    return {"expected":sorted(expected),"applied":sorted(applied),"pending":sorted(expected-applied),"predicate_definitions":predicates,"api_plans":api_plans,"evaluation_definitions":evaluation_definitions}
+    return {"expected":sorted(expected),"applied":sorted(applied),"pending":sorted(expected-applied),"predicate_definitions":predicates,"api_plans":api_plans,"evaluation_definitions":evaluation_definitions,"workflow_definitions":workflow_definitions}

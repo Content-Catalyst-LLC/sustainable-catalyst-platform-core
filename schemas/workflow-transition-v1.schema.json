@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/platform-core/workflow-transition-v1.json",
+  "title": "Sustainable Catalyst Workflow Transition",
+  "type": "object",
+  "required": [
+    "id",
+    "run_id",
+    "to_status",
+    "actor",
+    "content_hash",
+    "created_at"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "run_id": {
+      "type": "string"
+    },
+    "step_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "from_status": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "to_status": {
+      "type": "string"
+    },
+    "actor": {
+      "type": "string"
+    },
+    "reason": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "payload": {
+      "type": "object"
+    },
+    "content_hash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

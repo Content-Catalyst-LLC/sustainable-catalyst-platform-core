@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/platform-core/dossier-verification-v1.json",
+  "title": "Sustainable Catalyst Dossier Verification Result",
+  "type": "object",
+  "required": [
+    "dossier_id",
+    "valid",
+    "finalized",
+    "hash_matches",
+    "signature_matches",
+    "record_snapshots_match",
+    "errors"
+  ],
+  "properties": {
+    "dossier_id": {
+      "type": "string"
+    },
+    "valid": {
+      "type": "boolean"
+    },
+    "finalized": {
+      "type": "boolean"
+    },
+    "hash_matches": {
+      "type": "boolean"
+    },
+    "signature_matches": {
+      "type": "boolean"
+    },
+    "record_snapshots_match": {
+      "type": "boolean"
+    },
+    "expected_hash": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "observed_hash": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "signing_key_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "errors": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

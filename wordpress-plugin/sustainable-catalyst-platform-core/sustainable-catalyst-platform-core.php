@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Sustainable Catalyst Platform Core
  * Description: WordPress connector for Sustainable Catalyst Platform Core registry, graph, evidence, and developer services.
- * Version: 2.4.0
+ * Version: 2.5.0
  * Author: Content Catalyst LLC
  * License: MIT
  */
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('SCPC_VERSION', '2.4.0');
+define('SCPC_VERSION', '2.5.0');
 define('SCPC_OPTION_BACKEND_URL', 'scpc_backend_url');
 define('SCPC_OPTION_READ_KEY', 'scpc_read_key');
 
@@ -92,7 +92,10 @@ function scpc_render_settings_page() {
         <code>[sc_developer_portal]</code><br />
         <code>[sc_public_api_plans]</code><br />
         <code>[sc_trust_center]</code><br />
-        <code>[sc_trust_status]</code>
+        <code>[sc_trust_status]</code><br />
+        <code>[sc_dossier_center]</code><br />
+        <code>[sc_signature_dossier id="sc:dossier:..."]</code><br />
+        <code>[sc_workflow_status id="sc:workflow-run:..."]</code>
     </div>
     <?php
 }
@@ -451,3 +454,66 @@ function scpc_trust_status_shortcode() {
     return ob_get_clean();
 }
 add_shortcode('sc_trust_status', 'scpc_trust_status_shortcode');
+
+
+function scpc_dossier_center_shortcode() {
+    $base = untrailingslashit(get_option(SCPC_OPTION_BACKEND_URL, ''));
+    if (!$base) {
+        return '<div class="scpc-card scpc-error">Platform Core backend URL is not configured.</div>';
+    }
+    return '<section class="scpc-card">' .
+        '<p class="scpc-kicker">End-to-end decision records</p>' .
+        '<h3>Sustainable Catalyst Signature Dossiers</h3>' .
+        '<p>Inspect finalized evidence, workflow, trust, approval, and signature packages with machine-verifiable hashes.</p>' .
+        '<a class="scpc-button" href="' . esc_url($base . '/dossier-center') . '" target="_blank" rel="noopener">Open Dossier Center</a>' .
+        '</section>';
+}
+add_shortcode('sc_dossier_center', 'scpc_dossier_center_shortcode');
+
+function scpc_signature_dossier_shortcode($atts) {
+    $atts = shortcode_atts(['id' => ''], $atts, 'sc_signature_dossier');
+    $dossier_id = sanitize_text_field($atts['id']);
+    if (!$dossier_id) {
+        return '<div class="scpc-card scpc-error">Dossier ID is required.</div>';
+    }
+    $dossier = scpc_api_get('/public/dossiers/' . rawurlencode($dossier_id));
+    $verification = scpc_api_get('/public/dossiers/' . rawurlencode($dossier_id) . '/verify');
+    if (is_wp_error($dossier) || is_wp_error($verification)) {
+        $error = is_wp_error($dossier) ? $dossier : $verification;
+        return '<div class="scpc-card scpc-error"><strong>Dossier unavailable</strong><p>' . esc_html($error->get_error_message()) . '</p></div>';
+    }
+    $valid = !empty($verification['valid']);
+    ob_start(); ?>
+    <section class="scpc-card">
+        <p class="scpc-kicker">Signature dossier</p>
+        <h3><?php echo esc_html($dossier['title']); ?></h3>
+        <p><?php echo esc_html($dossier['purpose']); ?></p>
+        <p><strong>Signature:</strong> <span class="<?php echo $valid ? 'scpc-ledger-valid' : 'scpc-ledger-invalid'; ?>"><?php echo $valid ? 'Verified' : 'Failed'; ?></span> · <strong>Records:</strong> <?php echo esc_html(count($dossier['records'])); ?> · <strong>Approvals:</strong> <?php echo esc_html(count($dossier['approvals'])); ?></p>
+        <p class="scpc-meta">Hash: <code><?php echo esc_html($dossier['dossier_hash']); ?></code><br />Signed by <?php echo esc_html($dossier['signed_by']); ?> using <?php echo esc_html($dossier['signature_algorithm']); ?></p>
+    </section>
+    <?php return ob_get_clean();
+}
+add_shortcode('sc_signature_dossier', 'scpc_signature_dossier_shortcode');
+
+function scpc_workflow_status_shortcode($atts) {
+    $atts = shortcode_atts(['id' => ''], $atts, 'sc_workflow_status');
+    $run_id = sanitize_text_field($atts['id']);
+    if (!$run_id) {
+        return '<div class="scpc-card scpc-error">Workflow run ID is required.</div>';
+    }
+    $workflow = scpc_api_get('/v1/workflow-runs/' . rawurlencode($run_id));
+    if (is_wp_error($workflow)) {
+        return '<div class="scpc-card scpc-error"><strong>Workflow unavailable</strong><p>' . esc_html($workflow->get_error_message()) . '</p></div>';
+    }
+    $completed = 0;
+    foreach ($workflow['steps'] as $step) { if (in_array($step['status'], ['completed', 'skipped'], true)) $completed++; }
+    ob_start(); ?>
+    <section class="scpc-card">
+        <p class="scpc-kicker">End-to-end workflow</p>
+        <h3><?php echo esc_html($workflow['title']); ?></h3>
+        <p><strong>Status:</strong> <?php echo esc_html(ucwords(str_replace('_', ' ', $workflow['status']))); ?> · <strong>Progress:</strong> <?php echo esc_html($completed); ?>/<?php echo esc_html(count($workflow['steps'])); ?> stages</p>
+        <?php if (!empty($workflow['current_step_key'])) : ?><p class="scpc-meta">Current stage: <code><?php echo esc_html($workflow['current_step_key']); ?></code></p><?php endif; ?>
+    </section>
+    <?php return ob_get_clean();
+}
+add_shortcode('sc_workflow_status', 'scpc_workflow_status_shortcode');

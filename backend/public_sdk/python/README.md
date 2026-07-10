@@ -1,4 +1,4 @@
-# Sustainable Catalyst Public API Python Client
+# Sustainable Catalyst Public API Python Client v2.5.0
 
 ```python
 from sc_platform_core_public import PublicApiClient
@@ -9,7 +9,8 @@ client = PublicApiClient(
 )
 
 print(client.status())
-print(client.entities(entity_type="product"))
 print(client.trust_status())
-print(client.trust_evaluations(domain="ai-responsibility"))
+print(client.workflow_definitions())
+print(client.dossiers())
+print(client.verify_dossier("sc:dossier:..."))
 ```

@@ -91,3 +91,18 @@ class PublicApiClient:
 
     def usage(self, days: int = 30):
         return self.request("GET", "/developer/usage", params={"days": days})
+
+    def workflow_definitions(self):
+        return self.request("GET", "/workflow-definitions")
+
+    def workflow_run(self, run_id: str):
+        return self.request("GET", f"/workflow-runs/{run_id}")
+
+    def dossiers(self, **params):
+        return self.request("GET", "/dossiers", params=params)
+
+    def dossier(self, dossier_id: str):
+        return self.request("GET", f"/dossiers/{dossier_id}")
+
+    def verify_dossier(self, dossier_id: str):
+        return self.request("GET", f"/dossiers/{dossier_id}/verify")

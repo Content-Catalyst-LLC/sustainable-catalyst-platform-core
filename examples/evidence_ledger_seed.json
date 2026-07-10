@@ -1,5 +1,5 @@
 {
-  "source_name": "platform-core-v2.4.0-seed",
+  "source_name": "platform-core-v2.5.0-seed",
   "entities": [
     {
       "id": "sc:service:platform-core",
@@ -395,6 +395,79 @@
         "domain": "trust-infrastructure"
       },
       "aliases": []
+    },
+    {
+      "id": "sc:service:workflow-engine",
+      "entity_type": "service",
+      "slug": "workflow-engine",
+      "name": "Sustainable Catalyst Workflow Engine",
+      "description": "Ordered, auditable end-to-end workflow orchestration across Sustainable Catalyst products.",
+      "status": "active",
+      "visibility": "public",
+      "schema_version": "1.0",
+      "metadata": {
+        "version": "2.5.0"
+      },
+      "aliases": []
+    },
+    {
+      "id": "sc:service:signature-dossiers",
+      "entity_type": "service",
+      "slug": "signature-dossiers",
+      "name": "Sustainable Catalyst Signature Dossiers",
+      "description": "Frozen, signed, and verifiable evidence and decision packages assembled from Platform Core records.",
+      "status": "active",
+      "visibility": "public",
+      "schema_version": "1.0",
+      "metadata": {
+        "version": "2.5.0",
+        "signature": "HMAC-SHA256"
+      },
+      "aliases": []
+    },
+    {
+      "id": "sc:tool:dossier-center",
+      "entity_type": "tool",
+      "slug": "dossier-center",
+      "name": "Sustainable Catalyst Dossier Center",
+      "description": "Public interface for finalized signature dossiers and verification status.",
+      "canonical_url": "https://sustainablecatalyst.com/platform/",
+      "status": "active",
+      "visibility": "public",
+      "schema_version": "1.0",
+      "metadata": {
+        "version": "2.5.0",
+        "path": "/dossier-center"
+      },
+      "aliases": []
+    },
+    {
+      "id": "sc:registry:workflow-definition-registry",
+      "entity_type": "registry",
+      "slug": "workflow-definition-registry",
+      "name": "Sustainable Catalyst Workflow Definition Registry",
+      "description": "Controlled registry of end-to-end product workflows, ordered stages, responsibilities, and completion requirements.",
+      "status": "active",
+      "visibility": "public",
+      "schema_version": "1.0",
+      "metadata": {
+        "version": "2.5.0"
+      },
+      "aliases": []
+    },
+    {
+      "id": "sc:concept:signature-dossier",
+      "entity_type": "concept",
+      "slug": "signature-dossier",
+      "name": "Signature Dossier",
+      "description": "A canonical frozen package of records, workflow history, approvals, hashes, and a platform signature.",
+      "status": "active",
+      "visibility": "public",
+      "schema_version": "1.0",
+      "metadata": {
+        "domain": "decision-infrastructure"
+      },
+      "aliases": []
     }
   ],
   "relationships": [
@@ -726,6 +799,76 @@
       "status": "verified",
       "provenance": {
         "source": "platform-core-v2.4.0"
+      }
+    },
+    {
+      "subject_id": "sc:service:platform-core",
+      "predicate": "implements",
+      "object_id": "sc:concept:signature-dossier",
+      "confidence": 1.0,
+      "status": "verified",
+      "provenance": {
+        "source": "platform-core-v2.5.0"
+      }
+    },
+    {
+      "subject_id": "sc:service:workflow-engine",
+      "predicate": "uses",
+      "object_id": "sc:registry:workflow-definition-registry",
+      "confidence": 1.0,
+      "status": "verified",
+      "provenance": {
+        "source": "platform-core-v2.5.0"
+      }
+    },
+    {
+      "subject_id": "sc:service:signature-dossiers",
+      "predicate": "uses",
+      "object_id": "sc:service:workflow-engine",
+      "confidence": 1.0,
+      "status": "verified",
+      "provenance": {
+        "source": "platform-core-v2.5.0"
+      }
+    },
+    {
+      "subject_id": "sc:tool:dossier-center",
+      "predicate": "uses",
+      "object_id": "sc:service:signature-dossiers",
+      "confidence": 1.0,
+      "status": "verified",
+      "provenance": {
+        "source": "platform-core-v2.5.0"
+      }
+    },
+    {
+      "subject_id": "sc:product:research-librarian",
+      "predicate": "uses",
+      "object_id": "sc:service:workflow-engine",
+      "confidence": 1.0,
+      "status": "verified",
+      "provenance": {
+        "source": "platform-core-v2.5.0"
+      }
+    },
+    {
+      "subject_id": "sc:product:workbench",
+      "predicate": "uses",
+      "object_id": "sc:service:workflow-engine",
+      "confidence": 1.0,
+      "status": "verified",
+      "provenance": {
+        "source": "platform-core-v2.5.0"
+      }
+    },
+    {
+      "subject_id": "sc:product:decision-studio",
+      "predicate": "uses",
+      "object_id": "sc:service:signature-dossiers",
+      "confidence": 1.0,
+      "status": "verified",
+      "provenance": {
+        "source": "platform-core-v2.5.0"
       }
     }
   ]

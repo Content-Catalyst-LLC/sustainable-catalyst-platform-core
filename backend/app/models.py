@@ -775,3 +775,183 @@ def _prevent_evaluation_check_update(mapper, connection, target):
 @event.listens_for(EvaluationCheckResult, "before_delete")
 def _prevent_evaluation_check_delete(mapper, connection, target):
     raise RuntimeError("Evaluation check results are immutable and cannot be deleted.")
+
+class WorkflowDefinition(Base):
+    __tablename__ = "workflow_definitions"
+    __table_args__ = (
+        Index("ix_workflow_definition_active_public", "active", "public"),
+        Index("ix_workflow_definition_sort", "sort_order", "name"),
+    )
+    id: Mapped[str] = mapped_column(String(150), primary_key=True)
+    name: Mapped[str] = mapped_column(String(300), nullable=False)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    version: Mapped[str] = mapped_column(String(50), default="1.0")
+    stages: Mapped[list] = mapped_column(JSON, default=list)
+    public: Mapped[bool] = mapped_column(Boolean, default=True)
+    active: Mapped[bool] = mapped_column(Boolean, default=True)
+    sort_order: Mapped[int] = mapped_column(Integer, default=100)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class WorkflowRun(Base):
+    __tablename__ = "workflow_runs"
+    __table_args__ = (
+        Index("ix_workflow_run_definition_status", "definition_id", "status"),
+        Index("ix_workflow_run_subject_status", "subject_entity_id", "status"),
+        Index("ix_workflow_run_public_created", "public", "created_at"),
+    )
+    id: Mapped[str] = mapped_column(String(255), primary_key=True, default=lambda: f"sc:workflow-run:{uuid.uuid4()}")
+    definition_id: Mapped[str] = mapped_column(ForeignKey("workflow_definitions.id", ondelete="RESTRICT"), nullable=False)
+    title: Mapped[str] = mapped_column(String(500), nullable=False)
+    subject_entity_id: Mapped[str | None] = mapped_column(ForeignKey("entities.id", ondelete="SET NULL"), nullable=True)
+    status: Mapped[str] = mapped_column(String(30), default="draft", index=True)
+    current_step_key: Mapped[str | None] = mapped_column(String(150), nullable=True)
+    requested_by: Mapped[str] = mapped_column(String(300), nullable=False)
+    owner: Mapped[str | None] = mapped_column(String(300), nullable=True)
+    context_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    content_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    public: Mapped[bool] = mapped_column(Boolean, default=False)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    started_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class WorkflowStep(Base):
+    __tablename__ = "workflow_steps"
+    __table_args__ = (
+        UniqueConstraint("run_id", "step_key", name="uq_workflow_run_step"),
+        Index("ix_workflow_step_run_sequence", "run_id", "sequence"),
+        Index("ix_workflow_step_status_product", "status", "product"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    run_id: Mapped[str] = mapped_column(ForeignKey("workflow_runs.id", ondelete="CASCADE"), nullable=False)
+    step_key: Mapped[str] = mapped_column(String(150), nullable=False)
+    name: Mapped[str] = mapped_column(String(300), nullable=False)
+    sequence: Mapped[int] = mapped_column(Integer, nullable=False)
+    product: Mapped[str] = mapped_column(String(150), nullable=False)
+    action: Mapped[str] = mapped_column(String(150), nullable=False)
+    required: Mapped[bool] = mapped_column(Boolean, default=True)
+    status: Mapped[str] = mapped_column(String(30), default="pending", index=True)
+    assigned_to: Mapped[str | None] = mapped_column(String(300), nullable=True)
+    input_references: Mapped[list] = mapped_column(JSON, default=list)
+    output_references: Mapped[list] = mapped_column(JSON, default=list)
+    notes: Mapped[str | None] = mapped_column(Text, nullable=True)
+    due_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    started_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class WorkflowTransition(Base):
+    __tablename__ = "workflow_transitions"
+    __table_args__ = (
+        Index("ix_workflow_transition_run_created", "run_id", "created_at"),
+        Index("ix_workflow_transition_step_created", "step_id", "created_at"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    run_id: Mapped[str] = mapped_column(ForeignKey("workflow_runs.id", ondelete="CASCADE"), nullable=False)
+    step_id: Mapped[str | None] = mapped_column(ForeignKey("workflow_steps.id", ondelete="SET NULL"), nullable=True)
+    from_status: Mapped[str | None] = mapped_column(String(30), nullable=True)
+    to_status: Mapped[str] = mapped_column(String(30), nullable=False)
+    actor: Mapped[str] = mapped_column(String(300), nullable=False)
+    reason: Mapped[str | None] = mapped_column(Text, nullable=True)
+    payload_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    content_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class SignatureDossier(Base):
+    __tablename__ = "signature_dossiers"
+    __table_args__ = (
+        Index("ix_dossier_status_visibility", "status", "visibility"),
+        Index("ix_dossier_workflow", "workflow_run_id"),
+        Index("ix_dossier_subject", "subject_entity_id"),
+        UniqueConstraint("dossier_hash", name="uq_signature_dossier_hash"),
+    )
+    id: Mapped[str] = mapped_column(String(255), primary_key=True, default=lambda: f"sc:dossier:{uuid.uuid4()}")
+    workflow_run_id: Mapped[str | None] = mapped_column(ForeignKey("workflow_runs.id", ondelete="SET NULL"), nullable=True)
+    subject_entity_id: Mapped[str | None] = mapped_column(ForeignKey("entities.id", ondelete="SET NULL"), nullable=True)
+    title: Mapped[str] = mapped_column(String(500), nullable=False)
+    purpose: Mapped[str] = mapped_column(Text, nullable=False)
+    version: Mapped[str] = mapped_column(String(50), default="1.0")
+    status: Mapped[str] = mapped_column(String(30), default="draft", index=True)
+    visibility: Mapped[str] = mapped_column(String(30), default="private", index=True)
+    dossier_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    signature_algorithm: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    platform_signature: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    signing_key_id: Mapped[str | None] = mapped_column(String(200), nullable=True)
+    signed_by: Mapped[str | None] = mapped_column(String(300), nullable=True)
+    signed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    snapshot_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    supersedes_dossier_id: Mapped[str | None] = mapped_column(ForeignKey("signature_dossiers.id", ondelete="SET NULL"), nullable=True)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class DossierRecord(Base):
+    __tablename__ = "dossier_records"
+    __table_args__ = (
+        UniqueConstraint("dossier_id", "record_type", "record_id", name="uq_dossier_record"),
+        Index("ix_dossier_record_section_order", "dossier_id", "section", "sort_order"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    dossier_id: Mapped[str] = mapped_column(ForeignKey("signature_dossiers.id", ondelete="CASCADE"), nullable=False)
+    section: Mapped[str] = mapped_column(String(150), nullable=False)
+    record_type: Mapped[str] = mapped_column(String(100), nullable=False)
+    record_id: Mapped[str] = mapped_column(String(255), nullable=False)
+    label: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    sort_order: Mapped[int] = mapped_column(Integer, default=100)
+    snapshot_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    snapshot_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    public: Mapped[bool] = mapped_column(Boolean, default=True)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class DossierApproval(Base):
+    __tablename__ = "dossier_approvals"
+    __table_args__ = (
+        Index("ix_dossier_approval_dossier_created", "dossier_id", "created_at"),
+        Index("ix_dossier_approval_decision", "decision"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    dossier_id: Mapped[str] = mapped_column(ForeignKey("signature_dossiers.id", ondelete="CASCADE"), nullable=False)
+    decision: Mapped[str] = mapped_column(String(30), nullable=False)
+    signer: Mapped[str] = mapped_column(String(300), nullable=False)
+    role: Mapped[str] = mapped_column(String(200), nullable=False)
+    statement: Mapped[str | None] = mapped_column(Text, nullable=True)
+    evidence_references: Mapped[list] = mapped_column(JSON, default=list)
+    content_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+@event.listens_for(WorkflowTransition, "before_update")
+def _prevent_workflow_transition_update(mapper, connection, target):
+    raise RuntimeError("Workflow transitions are append-only and cannot be updated.")
+
+
+@event.listens_for(WorkflowTransition, "before_delete")
+def _prevent_workflow_transition_delete(mapper, connection, target):
+    raise RuntimeError("Workflow transitions are append-only and cannot be deleted.")
+
+
+@event.listens_for(DossierRecord, "before_update")
+def _prevent_dossier_record_update(mapper, connection, target):
+    raise RuntimeError("Dossier record snapshots are immutable and cannot be updated.")
+
+
+@event.listens_for(DossierApproval, "before_update")
+def _prevent_dossier_approval_update(mapper, connection, target):
+    raise RuntimeError("Dossier approvals are append-only and cannot be updated.")
+
+
+@event.listens_for(DossierApproval, "before_delete")
+def _prevent_dossier_approval_delete(mapper, connection, target):
+    raise RuntimeError("Dossier approvals are append-only and cannot be deleted.")

@@ -1,4 +1,4 @@
-# Sustainable Catalyst Public API JavaScript Client
+# Sustainable Catalyst Public API JavaScript Client v2.5.0
 
 ```javascript
 import { PublicApiClient } from "./index.mjs";
@@ -10,5 +10,7 @@ const client = new PublicApiClient(
 
 console.log(await client.status());
 console.log(await client.trustStatus());
-console.log(await client.trustEvaluations({ domain: "evidence-quality" }));
+console.log(await client.workflowDefinitions());
+console.log(await client.dossiers());
+console.log(await client.verifyDossier("sc:dossier:..."));
 ```
