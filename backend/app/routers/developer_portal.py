@@ -67,6 +67,7 @@ footer{padding:28px 24px;border-top:1px solid var(--line);color:var(--muted)}
 <a class="button" href="/developers/console">Open API Console</a>
 <a class="button secondary" href="/developers/openapi.json">Public OpenAPI</a>
 <a class="button secondary" href="/developers/postman.json">Postman Collection</a>
+<a class="button secondary" href="/trust">Trust Center</a>
 </div>
 </div>
 </header>
@@ -104,6 +105,7 @@ footer{padding:28px 24px;border-top:1px solid var(--line);color:var(--muted)}
 <tr><td>Knowledge graph</td><td><code>GET /api/v1/graph/{entity_id}</code><br><code>GET /api/v1/graph/path</code></td><td><code>graph:read</code></td></tr>
 <tr><td>Evidence</td><td><code>GET /api/v1/claims</code><br><code>GET /api/v1/evidence-records</code><br><code>GET /api/v1/evidence/manifests/{claim_id}</code></td><td><code>evidence:read</code></td></tr>
 <tr><td>Ledger</td><td><code>GET /api/v1/ledger/verify</code><br><code>GET /api/v1/ledger/entries</code></td><td><code>ledger:read</code></td></tr>
+<tr><td>Trust Center</td><td><code>GET /api/v1/trust/status</code><br><code>GET /api/v1/trust/evaluations</code><br><code>GET /api/v1/trust/incidents</code></td><td><code>trust:read</code></td></tr>
 <tr><td>Developer account</td><td><code>GET /api/v1/developer/me</code><br><code>GET /api/v1/developer/usage</code></td><td><code>developer:read</code></td></tr>
 <tr><td>Webhooks</td><td><code>GET/POST /api/v1/developer/webhooks</code></td><td><code>webhooks:manage</code></td></tr>
 </tbody>
@@ -119,6 +121,7 @@ footer{padding:28px 24px;border-top:1px solid var(--line);color:var(--muted)}
 <span class="scope">graph:read</span>
 <span class="scope">evidence:read</span>
 <span class="scope">ledger:read</span>
+<span class="scope">trust:read</span>
 <span class="scope">developer:read</span>
 <span class="scope">webhooks:manage</span>
 </p>
@@ -152,6 +155,7 @@ X-SC-Webhook-Signature: v1=&lt;hex-hmac&gt;</code></pre>
 <a class="button" href="/developers/sdk/javascript.zip">JavaScript SDK</a>
 <a class="button secondary" href="/developers/openapi.json">OpenAPI JSON</a>
 <a class="button secondary" href="/developers/postman.json">Postman Collection</a>
+<a class="button secondary" href="/trust">Trust Center</a>
 </div>
 </section>
 
@@ -219,6 +223,8 @@ pre{min-height:260px;overflow:auto;background:#151515;color:#fff;padding:18px;li
 <option value="/api/v1/claims">Public claims</option>
 <option value="/api/v1/evidence-records">Verified evidence</option>
 <option value="/api/v1/ledger/verify">Ledger verification</option>
+<option value="/api/v1/trust/status">Trust status</option>
+<option value="/api/v1/trust/evaluations">Trust evaluations</option>
 <option value="/api/v1/developer/me">Developer identity</option>
 <option value="/api/v1/developer/usage?days=30">Credential usage</option>
 </select>
@@ -354,7 +360,7 @@ def postman_collection(request: Request):
 @router.get("/developers/sdk/python.zip")
 def python_sdk(request: Request):
     _require_portal(request)
-    path = SDK_ROOT / "downloads" / "sc-platform-core-public-python-v2.3.0.zip"
+    path = SDK_ROOT / "downloads" / "sc-platform-core-public-python-v2.4.0.zip"
     if not path.exists():
         raise HTTPException(status_code=404, detail="Python SDK is unavailable.")
     return FileResponse(
@@ -370,7 +376,7 @@ def javascript_sdk(request: Request):
     path = (
         SDK_ROOT
         / "downloads"
-        / "sc-platform-core-public-javascript-v2.3.0.zip"
+        / "sc-platform-core-public-javascript-v2.4.0.zip"
     )
     if not path.exists():
         raise HTTPException(status_code=404, detail="JavaScript SDK is unavailable.")

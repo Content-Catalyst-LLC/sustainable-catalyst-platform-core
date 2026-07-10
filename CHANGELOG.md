@@ -1,73 +1,80 @@
 # Changelog
 
-## 2.3.0 — 2026-07-10
+## 2.4.0 — 2026-07-10
 
 ### Added
 
-- Unified `/api/v1` public API
-- Consistent public response envelope
-- Public request IDs and API-version headers
-- Developer applications
-- Application approval and suspension states
-- Public, standard, and internal API plans
-- Scoped API credentials
-- One-time plaintext key issuance
-- SHA-256-only credential storage
-- Credential expiration and revocation
-- Per-minute rate limits
-- Daily request quotas
-- Plan-aware maximum page sizes
-- Request usage records
-- Salted client IP and user-agent hashing
-- Developer identity and usage endpoints
-- Public registry, graph, evidence, and ledger routes
-- Public-data filtering for claims, evidence, manifests, and ledger entries
-- Signed webhook subscriptions
-- Wildcard and prefix webhook event matching
-- Webhook outbox, deliveries, retry state, and delivery history
-- Registry, relationship, claim, snapshot, provenance, trace, evidence, and review events
-- Webhook dispatch worker
-- Developer Portal
-- Interactive public API console
-- Public OpenAPI document
-- Python public SDK
-- JavaScript public SDK
-- Postman collection
-- WordPress Developer Portal shortcode
-- WordPress public API plan shortcode
-- Public JSON schemas for plans, applications, subscriptions, and envelopes
-- Internal Python client developer-administration methods
-- Migration `0004`
-- Public API, credential, quota, privacy, portal, and webhook regression tests
+- Public Trust Center
+- Machine-readable public trust status
+- Public evaluation-record feed
+- Controlled evaluation-definition registry
+- Eight seeded evaluation methods
+- Immutable evaluation runs
+- Immutable check-level results
+- Evaluation content hashes
+- Automatic trust findings for failed checks
+- Finding lifecycle and remediation records
+- Public and internal incident records
+- Incident lifecycle and aggregate-status effects
+- Known limitation registry
+- Evidence-backed attestations and revocation
+- Trust-domain aggregation
+- Evaluation freshness handling
+- Ledger-integrity influence on overall status
+- Default platform-native evaluation suite
+- Context-driven calculator, connector, AI, and accessibility evaluation
+- Recorded custom evaluator
+- ValidationEvent compatibility records
+- Trust Center webhook events
+- `trust:read` public API scope
+- Unified Public API trust routes
+- Python public SDK trust methods
+- JavaScript public SDK trust methods
+- Internal Python client trust-administration methods
+- Developer Portal trust documentation and console routes
+- Postman Trust Center requests
+- WordPress Trust Center shortcode
+- WordPress public trust-status shortcode
+- Public trust JSON schemas
+- Trust evaluation CLI
+- Migration `0005`
+- Trust Center regression tests
 
-### Security
+### Security and integrity
 
-- API keys are returned once and stored only as SHA-256 hashes
-- Key and webhook-secret responses use `Cache-Control: no-store`
-- Production public API fails closed without a request-log salt
-- Production webhook signing fails closed without a master signing secret
-- Public ledger routes exclude developer administration records
-- Public evidence manifests exclude nonverified evidence and review assignments
-- Production webhook URLs require HTTPS and reject private-network destinations
-- Request logs retain salted hashes rather than raw client IP and user-agent values
+- Evaluation runs and check results reject ORM updates and deletes
+- Private incidents, limitations, attestations, findings, and runs are excluded from public status
+- Failed evaluation findings are ledgered and emitted as webhook events
+- Attestation contents are hashed
+- Overall status becomes critical when ledger verification fails
+- Missing evaluations remain unknown rather than passing
+- Existing API plans receive `trust:read` without replacing custom quota values
 
 ### Changed
 
-- Platform Core version updated to 2.3.0
-- Health and metadata report developer-platform readiness
-- Seed manifest updated to v2.3.0
-- CORS exposes request, API-version, quota, and retry headers
-- Existing `/v1` integrations remain unchanged
-- Public external integrations use the curated `/api/v1` surface
+- Platform Core version updated to 2.4.0
+- Health and readiness report Trust Center availability
+- Service metadata reports Trust Center capabilities
+- Registry statistics include evaluation and trust records
+- Seed manifest updated to v2.4.0
+- Developer Portal includes Trust Center routes and scope
+- Public SDK packages updated to v2.4.0
+- Webhook user agent updated to v2.4.0
 
 ### Deferred
 
-- Public Trust Center
-- Developer self-service billing
+- Independent third-party assurance workflow
+- Scheduled evaluation orchestration service
 - Distributed rate-limit backend
 - External source-snapshot object storage adapter
 - Dedicated graph database adapter
 - User workspaces and casebooks
+
+## 2.3.0 — 2026-07-10
+
+- Unified Public API
+- Developer applications and scoped hashed API keys
+- Rate limits, quotas, request records, webhooks, Developer Portal, SDKs, and Postman collection
 
 ## 2.2.0 — 2026-07-10
 

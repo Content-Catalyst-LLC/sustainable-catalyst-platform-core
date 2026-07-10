@@ -14,52 +14,47 @@ Completed.
 
 ## v2.3.0 — Unified Public API and Developer Portal
 
+Completed.
+
+## v2.4.0 — Trust Center and Evaluation Framework
+
 Completed:
 
-- Versioned `/api/v1`
-- Scoped, hashed API credentials
-- Developer applications and plans
-- Rate limits and quotas
-- Usage records
-- Public registry, graph, evidence, and ledger routes
-- Signed webhooks
-- Delivery history and retries
-- Developer Portal
-- API console
-- OpenAPI
-- Python SDK
-- JavaScript SDK
-- Postman collection
-- WordPress portal connectors
-
-## v2.4.0 — Public Trust Center
-
-Planned:
-
-- Connector freshness
-- Calculator validation
-- AI grounding evaluations
-- Accessibility checks
+- Public Trust Center
+- Machine-readable trust status
+- Evaluation definition registry
+- Immutable runs and checks
+- Automated platform evaluations
+- Connector freshness evaluation
+- Calculator validation evaluation
+- AI grounding and scope evaluation
+- Accessibility conformance evaluation
+- Recorded specialist reviews
+- Findings and remediation state
 - Incident history
 - Known limitations
-- Machine-readable trust status
-- Public validation records
+- Attestations
+- Trust webhooks
+- `trust:read` public API
+- SDK and WordPress integration
 
 ## v2.5.0 — Cross-Platform Integration
 
 Planned:
 
-- Graph-aware Research Librarian routes
-- Workbench provenance automation
-- Decision Studio evidence packets
-- Site Intelligence source health
-- Cross-product action centers
+- Research Librarian graph and evidence routes
+- Automatic AI grounding evaluation ingestion
+- Workbench validation report submission
+- Decision Studio trust-aware evidence packets
+- Site Intelligence connector freshness automation
+- Shared cross-product action center
+- Trust Center links from product interfaces
 
 ## Later platform infrastructure
 
+- Scheduled evaluation orchestration
+- Independent reviewer workflow
 - Distributed rate limiting
 - External source-snapshot storage
-- Developer self-service account workflow
-- Usage-based billing only if ever needed
 - Dedicated graph database adapter
 - User workspaces and casebooks

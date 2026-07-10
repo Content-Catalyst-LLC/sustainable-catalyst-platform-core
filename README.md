@@ -1,303 +1,338 @@
-# Sustainable Catalyst Platform Core v2.3.0
+# Sustainable Catalyst Platform Core v2.4.0
 
-**Unified Public API and Developer Portal**
+**Trust Center and Evaluation Framework**
 
-Platform Core v2.3.0 turns the internal registry, Knowledge Graph, Evidence Ledger, and provenance system into a governed external developer platform.
+Platform Core v2.4.0 adds a public accountability and evaluation layer to the Universal Entity Registry, Knowledge Graph, Evidence Ledger, provenance system, and Unified Public API.
 
-The release adds:
+The release provides:
 
-- A stable `/api/v1` public surface
-- Reviewed registry, graph, evidence, and ledger access
-- Developer applications and approval state
-- API plans, scopes, quotas, and maximum page sizes
-- One-time plaintext API-key issuance
-- SHA-256-only key storage
-- Per-minute and daily rate limits
-- Request IDs and usage records
-- Hashed client network and user-agent identifiers
-- Signed webhooks with an outbox and delivery history
-- Public OpenAPI documentation
-- An interactive API console
-- Python and JavaScript SDK downloads
-- A Postman collection
-- WordPress Developer Portal and plan shortcodes
-- Migration `0004`
+- A public Trust Center at `/trust`
+- Machine-readable trust status at `/trust/status.json`
+- A controlled registry of evaluation definitions
+- Immutable evaluation runs and check-level results
+- Automated and recorded evaluation methods
+- Automatic findings for failed checks
+- Incident history and lifecycle records
+- Known limitation disclosures
+- Evidence-backed attestations
+- Trust-related webhook events
+- `trust:read` Unified Public API access
+- Python and JavaScript SDK support
+- WordPress Trust Center and trust-status shortcodes
+- Migration `0005`
 
-Existing `/v1` product integrations remain available. The unified `/api/v1` routes are additive and intentionally narrower.
+## Core principle
 
-## Architectural principle
+> Trust status must expose the method, observations, checks, findings, incidents, limitations, and evidence behind the result. A passing score is not a substitute for judgment, professional assurance, or independent verification.
 
-> Public access should expose useful, reviewed, machine-readable knowledge without exposing administrative controls, internal credentials, private records, or mutable platform state.
-
-## Public API design
-
-All unified public API responses use one envelope:
-
-```json
-{
-  "data": {},
-  "meta": {
-    "api_version": "v1",
-    "request_id": "4cd56bf912d74fcf8cbcc3d84f11a2aa",
-    "documentation": "/developers"
-  }
-}
-```
-
-Authenticate with either:
-
-```http
-Authorization: Bearer scpk_your_key
-```
-
-or:
-
-```http
-X-SC-Public-Key: scpk_your_key
-```
-
-Every public response includes:
-
-```text
-X-Request-ID
-X-SC-API-Version
-X-RateLimit-Limit-Minute
-X-RateLimit-Remaining-Minute
-X-RateLimit-Limit-Day
-X-RateLimit-Remaining-Day
-```
-
-Rate-limited responses also include `Retry-After`.
-
-## Public API domains
-
-### Service
-
-```text
-GET /api/v1/status
-```
-
-Scope: `public:status`
-
-### Universal Entity Registry
-
-```text
-GET /api/v1/entities
-GET /api/v1/entities/{entity_id}
-GET /api/v1/entities/{entity_id}/jsonld
-GET /api/v1/predicates
-```
-
-Scope: `registry:read`
-
-### Knowledge Graph
-
-```text
-GET /api/v1/graph/{entity_id}
-GET /api/v1/graph/{entity_id}/neighborhood
-GET /api/v1/graph/{entity_id}/recommendations
-GET /api/v1/graph/path
-```
-
-Scope: `graph:read`
-
-### Evidence Ledger
-
-```text
-GET /api/v1/claims
-GET /api/v1/claims/{claim_id}
-GET /api/v1/evidence-records
-GET /api/v1/evidence-records/{evidence_id}
-GET /api/v1/evidence/manifests/{claim_id}
-```
-
-Scope: `evidence:read`
-
-The public evidence surface returns public claims and verified evidence. Review assignments and nonverified evidence are excluded from public manifests.
-
-### Ledger integrity
-
-```text
-GET /api/v1/ledger/verify
-GET /api/v1/ledger/entries
-```
-
-Scope: `ledger:read`
-
-The public ledger route exposes evidence-domain record types. Developer applications, API credentials, and other administrative records are not exposed.
-
-### Developer identity and usage
-
-```text
-GET /api/v1/developer/me
-GET /api/v1/developer/usage
-```
-
-Scope: `developer:read`
-
-### Webhook subscriptions
-
-```text
-GET   /api/v1/developer/webhooks
-POST  /api/v1/developer/webhooks
-PATCH /api/v1/developer/webhooks/{subscription_id}
-GET   /api/v1/developer/webhooks/{subscription_id}/deliveries
-```
-
-Scope: `webhooks:manage`
-
-## API plans
-
-Three seed plans are included:
-
-| Plan | Requests/minute | Requests/day | Maximum page size | Public |
-|---|---:|---:|---:|---|
-| Public Research | 60 | 5,000 | 100 | Yes |
-| Standard Integration | 300 | 50,000 | 200 | Yes |
-| Sustainable Catalyst Internal | 2,000 | 500,000 | 1,000 | No |
-
-Plans can be changed in the database or extended through later administration interfaces.
-
-## API-key security
-
-Public API keys use the form:
-
-```text
-scpk_<prefix>_<random-secret>
-```
-
-Platform Core:
-
-- Returns the plaintext key once at issuance
-- Stores only its SHA-256 hash
-- Stores a prefix and last four characters for identification
-- Assigns explicit scopes
-- Supports expiration and revocation
-- Requires an approved developer application
-- Rejects scopes not allowed by the assigned plan
-- Sends `Cache-Control: no-store` when returning a new key
-
-A lost plaintext key cannot be recovered. Revoke it and issue a replacement.
-
-## Developer application workflow
-
-Administrative routes remain under the internal Platform Core write key.
-
-### Create an approved application
-
-```bash
-curl -X POST "https://YOUR-PLATFORM-CORE.onrender.com/v1/developer/applications" \
-  -H "Content-Type: application/json" \
-  -H "X-SC-API-Key: YOUR_INTERNAL_WRITE_KEY" \
-  -d '{
-    "name": "Example Public Research Integration",
-    "owner_name": "Example Developer",
-    "owner_email": "developer@example.org",
-    "organization": "Example Organization",
-    "website_url": "https://example.org",
-    "use_case": "Build a public-interest research integration using reviewed Sustainable Catalyst registry, graph, and evidence records.",
-    "status": "approved",
-    "plan_id": "free",
-    "metadata": {},
-    "actor": "platform-administrator"
-  }'
-```
-
-### Issue a scoped key
-
-```bash
-curl -X POST \
-  "https://YOUR-PLATFORM-CORE.onrender.com/v1/developer/applications/APPLICATION_ID/credentials" \
-  -H "Content-Type: application/json" \
-  -H "X-SC-API-Key: YOUR_INTERNAL_WRITE_KEY" \
-  -d '{
-    "label": "Production integration",
-    "scopes": [
-      "public:status",
-      "registry:read",
-      "graph:read",
-      "evidence:read",
-      "ledger:read",
-      "developer:read",
-      "webhooks:manage"
-    ],
-    "created_by": "platform-administrator",
-    "metadata": {}
-  }'
-```
-
-Copy the returned `api_key` immediately.
-
-## Webhooks
-
-Webhook event patterns support:
-
-```text
-*
-claim.*
-evidence.*
-claim.created
-evidence.reviewed
-```
-
-The system emits events for registry, relationship, claim, snapshot, provenance, calculation, evidence, and review operations.
-
-Webhook deliveries include:
-
-```http
-X-SC-Webhook-ID: sc:webhook-event:...
-X-SC-Webhook-Timestamp: 1783650000
-X-SC-Webhook-Signature: v1=<hex-hmac>
-```
-
-Verify HMAC-SHA256 over:
-
-```text
-{timestamp}.{raw_request_body}
-```
-
-using the subscription signing secret.
-
-Production callback URLs:
-
-- Must use HTTPS
-- Cannot target localhost
-- Cannot target private, loopback, link-local, reserved, or unspecified IP addresses
-- Cannot contain embedded credentials
-
-Failed deliveries remain pending for retry.
-
-Dispatch pending webhooks:
-
-```bash
-cd backend
-.venv/bin/python scripts/dispatch_webhooks.py --limit 100
-```
-
-The same operation is available administratively:
-
-```text
-POST /v1/developer/webhooks/dispatch
-```
-
-## Developer Portal
+## Public Trust Center
 
 Open:
 
 ```text
-https://YOUR-PLATFORM-CORE.onrender.com/developers
+https://YOUR-PLATFORM-CORE.onrender.com/trust
 ```
 
-Included:
+Machine-readable records:
 
-- Public API overview
-- Scope and quota documentation
-- Interactive GET console
-- Public OpenAPI JSON
-- Python SDK download
-- JavaScript SDK download
-- Postman collection
-- Webhook signing documentation
+```text
+GET /trust/status.json
+GET /trust/evaluations.json
+```
+
+The public page displays:
+
+- Overall status and score
+- Ledger integrity
+- Latest evaluation by domain
+- Check-level observations and expectations
+- Open public findings
+- Active public incidents
+- Known public limitations
+- Active public attestations
+- Evaluation methodology and interpretation boundaries
+
+## Unified Public API
+
+The public developer API adds:
+
+```text
+GET /api/v1/trust/status
+GET /api/v1/trust/evaluations
+GET /api/v1/trust/incidents
+GET /api/v1/trust/limitations
+GET /api/v1/trust/attestations
+```
+
+Required scope:
+
+```text
+trust:read
+```
+
+Existing API plans are automatically updated to include the new scope without replacing custom quota settings.
+
+## Evaluation registry
+
+The release seeds eight evaluation definitions:
+
+| Evaluation | Domain | Evaluator |
+|---|---|---|
+| Evidence Ledger Integrity | Evidence integrity | Automated |
+| Unified Public API Readiness | Platform reliability | Automated |
+| Evidence Review Coverage | Evidence quality | Automated |
+| Connector Freshness | Source reliability | Context-driven |
+| Calculator Validation | Calculation quality | Context-driven |
+| AI Grounding and Scope | AI responsibility | Context-driven |
+| Accessibility Conformance | Accessibility | Context-driven |
+| Webhook Delivery Reliability | Platform reliability | Automated |
+
+Custom definitions can use the `recorded` evaluator to preserve explicit reviewer-supplied checks.
+
+## Evaluation records
+
+Every run stores:
+
+- Evaluation definition and version
+- Target entity when applicable
+- Triggering actor
+- Start and completion times
+- Status, score, grade, and summary
+- Input observations
+- Runtime environment
+- Evidence references
+- Immutable content hash
+- Public disclosure state
+- Check-level results
+
+Every check stores:
+
+- Stable check key
+- Name
+- Passed, warning, failed, error, or not-applicable state
+- Score and severity
+- Observed values
+- Expected values
+- Details and evidence references
+
+Evaluation runs and check results are immutable through the ORM.
+
+## Automated findings
+
+Failed or errored checks create an open trust finding in the same transaction. The finding is:
+
+- Linked to the run and check
+- Recorded in the tamper-evident ledger
+- Emitted as a webhook event
+- Public only when the evaluation run is public
+
+Findings support:
+
+```text
+open
+accepted
+resolved
+dismissed
+```
+
+## Incidents
+
+Incident records include:
+
+- Severity
+- Investigation state
+- Public summary
+- Impact
+- Root cause
+- Remediation
+- Affected entity IDs
+- Detection, start, and resolution times
+- Public or internal visibility
+
+Lifecycle states:
+
+```text
+investigating
+identified
+monitoring
+resolved
+```
+
+A critical public incident sets public trust status to `critical`. A high-severity incident sets it to `degraded`.
+
+## Known limitations
+
+Limitations disclose boundaries that may affect interpretation or use:
+
+- Domain
+- Description
+- Impact
+- Mitigation
+- Affected entities
+- Review date
+- Public visibility
+- Active, mitigated, or retired state
+
+Limitations remain visible without automatically being converted into a passing or failing score.
+
+## Attestations
+
+Attestations record a scoped statement by an issuer with:
+
+- Subject entity
+- Statement and scope
+- Evidence references
+- Validity window
+- Content hash
+- Public visibility
+- Revocation history
+
+Attestations are not certifications. They record what was asserted, by whom, for what scope, and with what evidence references.
+
+## Status aggregation
+
+The aggregate status uses:
+
+- Latest public run for each active public definition
+- Public run freshness
+- Public findings
+- Active public incidents
+- Ledger-chain integrity
+
+Possible values:
+
+```text
+operational
+attention
+degraded
+critical
+unknown
+```
+
+Missing or not-applicable evaluations remain visible as `unknown`. They are never silently treated as passing.
+
+## Running evaluations
+
+Run the default platform-native suite:
+
+```bash
+cd backend
+.venv/bin/python scripts/run_trust_evaluations.py
+```
+
+The default suite runs evaluations that do not require external observations:
+
+- Ledger integrity
+- Public API readiness
+- Evidence review coverage
+- Webhook delivery reliability
+
+Run selected or context-driven checks:
+
+```bash
+.venv/bin/python scripts/run_trust_evaluations.py \
+  --context ../examples/trust_evaluation_contexts.json \
+  --triggered-by release-validation
+```
+
+## Administrative routes
+
+```text
+GET   /v1/trust/status
+GET   /v1/trust/definitions
+POST  /v1/trust/definitions
+PATCH /v1/trust/definitions/{definition_id}
+POST  /v1/trust/definitions/{definition_id}/runs
+POST  /v1/trust/run-suite
+GET   /v1/trust/runs
+GET   /v1/trust/runs/{run_id}
+
+GET   /v1/trust/findings
+POST  /v1/trust/findings
+PATCH /v1/trust/findings/{finding_id}
+
+GET   /v1/trust/incidents
+POST  /v1/trust/incidents
+PATCH /v1/trust/incidents/{incident_id}
+
+GET   /v1/trust/limitations
+POST  /v1/trust/limitations
+PATCH /v1/trust/limitations/{limitation_id}
+
+GET   /v1/trust/attestations
+POST  /v1/trust/attestations
+POST  /v1/trust/attestations/{attestation_id}/revoke
+```
+
+Administrative writes require `X-SC-API-Key`.
+
+## Example: calculator evaluation
+
+```json
+{
+  "triggered_by": "workbench-ci",
+  "observations": {
+    "total_cases": 100,
+    "passed_cases": 100,
+    "tolerance_failures": 0,
+    "edge_cases_total": 20,
+    "edge_cases_passed": 20
+  },
+  "environment": {
+    "python": "3.12",
+    "release": "2.4.0"
+  },
+  "evidence_references": [
+    "sc:trace:validation-run"
+  ]
+}
+```
+
+Submit to:
+
+```text
+POST /v1/trust/definitions/calculator-validation/runs
+```
+
+## Example: AI grounding evaluation
+
+```json
+{
+  "triggered_by": "research-librarian-evaluation",
+  "observations": {
+    "citation_coverage": 0.98,
+    "unsupported_claim_rate": 0.01,
+    "source_relevance": 0.95,
+    "scope_gate_pass_rate": 0.99
+  },
+  "environment": {
+    "provider": "gemini"
+  },
+  "evidence_references": []
+}
+```
+
+The evaluator reports each measure separately. A high aggregate score does not conceal an unsupported-claim failure or scope-gate failure.
+
+## Webhook events
+
+Trust operations emit events such as:
+
+```text
+trust.evaluation.completed
+trust.finding.created
+trust.finding.updated
+trust.incident.created
+trust.incident.updated
+trust.limitation.created
+trust.limitation.updated
+trust.attestation.issued
+trust.attestation.revoked
+trust.evaluation_definition.created
+trust.evaluation_definition.updated
+```
+
+Subscriptions can use exact names, `trust.*`, or `*`.
 
 ## Local setup
 
@@ -310,16 +345,15 @@ python3.12 -m venv .venv
 cp .env.example .env
 .venv/bin/python scripts/migrate.py
 .venv/bin/python scripts/seed_registry.py
-
 .venv/bin/python -m uvicorn app.main:app --reload --port 8090
 ```
 
 Open:
 
 ```text
+http://127.0.0.1:8090/trust
+http://127.0.0.1:8090/trust/status.json
 http://127.0.0.1:8090/developers
-http://127.0.0.1:8090/developers/console
-http://127.0.0.1:8090/developers/openapi.json
 http://127.0.0.1:8090/explorer
 http://127.0.0.1:8090/evidence-explorer
 http://127.0.0.1:8090/docs
@@ -328,67 +362,36 @@ http://127.0.0.1:8090/docs
 ## Production environment
 
 ```text
-Root Directory: backend
-Build Command: pip install -r requirements.txt
-Start Command: ./start.sh
-PYTHON_VERSION=3.12.11
+SC_CORE_TRUST_CENTER_ENABLED=true
+SC_CORE_TRUST_PUBLIC_STATUS_ENABLED=true
+SC_CORE_TRUST_STALE_AFTER_DAYS=90
 ```
 
-Required:
-
-```text
-SC_CORE_ENVIRONMENT=production
-SC_CORE_DATABASE_URL=<Render PostgreSQL internal database URL>
-SC_CORE_WRITE_API_KEY=<long random internal secret>
-SC_CORE_CORS_ORIGINS=https://sustainablecatalyst.com
-SC_CORE_PUBLIC_READS=true
-SC_CORE_MAX_GRAPH_DEPTH=4
-SC_CORE_PAGE_SIZE_MAX=200
-SC_CORE_EXPLORER_ENABLED=true
-SC_CORE_EVIDENCE_EXPLORER_ENABLED=true
-SC_CORE_SNAPSHOT_EXCERPT_MAX=1200
-
-SC_CORE_PUBLIC_API_ENABLED=true
-SC_CORE_DEVELOPER_PORTAL_ENABLED=true
-SC_CORE_PUBLIC_API_DEFAULT_PLAN=free
-SC_CORE_API_LOG_SALT=<long random secret>
-SC_CORE_WEBHOOK_SIGNING_SECRET=<different long random secret>
-SC_CORE_WEBHOOK_DELIVERY_TIMEOUT=10
-```
-
-In production, the public API fails closed when `SC_CORE_API_LOG_SALT` is missing. Webhook subscription creation fails closed when `SC_CORE_WEBHOOK_SIGNING_SECRET` is missing.
+Keep the existing Platform Core variables, including the database, internal write key, API log salt, and webhook signing secret.
 
 ## WordPress shortcodes
 
 ```text
-[sc_platform_core_status]
-[sc_platform_core_entity id="sc:product:workbench"]
-[sc_platform_core_relationships id="sc:product:research-librarian"]
-[sc_knowledge_explorer]
-
-[sc_evidence_ledger_status]
-[sc_evidence_manifest claim_id="sc:claim:..."]
-[sc_evidence_explorer]
-
-[sc_developer_portal]
-[sc_public_api_plans]
+[sc_trust_center]
+[sc_trust_status]
 ```
 
-The WordPress plugin remains a thin public connector. It does not store or issue developer credentials.
+The WordPress connector reads public Trust Center routes. It does not store internal write credentials.
 
-## Privacy and operational boundaries
+## Boundaries
 
-Request usage records include:
+The Trust Center does not establish legal compliance, professional assurance, scientific consensus, financial accuracy, medical safety, engineering adequacy, accessibility certification, or freedom from defects.
 
-- Application and credential IDs
-- Request path, method, status, duration, and response size
-- Required scope
-- Request ID
-- SHA-256 hashes of client IP and user-agent values salted with `SC_CORE_API_LOG_SALT`
+Evaluation quality depends on:
 
-Raw client IP addresses and raw user-agent strings are not stored.
+- The method used
+- The completeness of observations
+- The quality of evidence references
+- The freshness of the run
+- The competence and independence of reviewers
+- The correctness of evaluator implementation
 
-The in-database rate limiter is suitable for the current single-service Platform Core deployment. A distributed rate-limit backend remains a future requirement if the API is horizontally scaled across multiple database replicas or high-throughput service instances.
+The framework is designed to disclose those conditions rather than hide them.
 
 ## License
 

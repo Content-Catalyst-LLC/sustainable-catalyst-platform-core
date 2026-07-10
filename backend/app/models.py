@@ -588,3 +588,190 @@ class WebhookDelivery(Base):
     attempted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     delivered_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class EvaluationDefinition(Base):
+    __tablename__ = "evaluation_definitions"
+    __table_args__ = (
+        Index("ix_evaluation_definition_domain_active", "domain", "active"),
+        Index("ix_evaluation_definition_public_sort", "public", "sort_order"),
+    )
+    id: Mapped[str] = mapped_column(String(150), primary_key=True)
+    name: Mapped[str] = mapped_column(String(300), nullable=False)
+    domain: Mapped[str] = mapped_column(String(150), nullable=False, index=True)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    methodology: Mapped[str] = mapped_column(Text, nullable=False)
+    evaluator_kind: Mapped[str] = mapped_column(String(150), nullable=False)
+    target_type: Mapped[str] = mapped_column(String(100), default="platform")
+    thresholds: Mapped[dict] = mapped_column(JSON, default=dict)
+    cadence: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    severity_on_failure: Mapped[str] = mapped_column(String(30), default="medium")
+    public: Mapped[bool] = mapped_column(Boolean, default=True)
+    active: Mapped[bool] = mapped_column(Boolean, default=True)
+    version: Mapped[str] = mapped_column(String(50), default="1.0")
+    sort_order: Mapped[int] = mapped_column(Integer, default=100)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class EvaluationRun(Base):
+    __tablename__ = "evaluation_runs"
+    __table_args__ = (
+        Index("ix_evaluation_run_definition_completed", "definition_id", "completed_at"),
+        Index("ix_evaluation_run_target_completed", "target_entity_id", "completed_at"),
+        Index("ix_evaluation_run_status_grade", "status", "grade"),
+        Index("ix_evaluation_run_public_completed", "public", "completed_at"),
+    )
+    id: Mapped[str] = mapped_column(String(255), primary_key=True, default=lambda: f"sc:evaluation-run:{uuid.uuid4()}")
+    definition_id: Mapped[str] = mapped_column(ForeignKey("evaluation_definitions.id", ondelete="RESTRICT"), nullable=False)
+    target_entity_id: Mapped[str | None] = mapped_column(ForeignKey("entities.id", ondelete="SET NULL"), nullable=True)
+    status: Mapped[str] = mapped_column(String(30), nullable=False)
+    score: Mapped[float | None] = mapped_column(Float, nullable=True)
+    grade: Mapped[str] = mapped_column(String(30), nullable=False)
+    summary: Mapped[str] = mapped_column(Text, nullable=False)
+    triggered_by: Mapped[str] = mapped_column(String(300), nullable=False)
+    evaluator_version: Mapped[str] = mapped_column(String(100), nullable=False)
+    observations: Mapped[dict] = mapped_column(JSON, default=dict)
+    environment: Mapped[dict] = mapped_column(JSON, default=dict)
+    evidence_references: Mapped[list] = mapped_column(JSON, default=list)
+    content_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    public: Mapped[bool] = mapped_column(Boolean, default=True)
+    started_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    completed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class EvaluationCheckResult(Base):
+    __tablename__ = "evaluation_check_results"
+    __table_args__ = (
+        UniqueConstraint("run_id", "check_key", name="uq_evaluation_run_check"),
+        Index("ix_evaluation_check_run_status", "run_id", "status"),
+        Index("ix_evaluation_check_severity", "severity"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    run_id: Mapped[str] = mapped_column(ForeignKey("evaluation_runs.id", ondelete="CASCADE"), nullable=False)
+    check_key: Mapped[str] = mapped_column(String(150), nullable=False)
+    name: Mapped[str] = mapped_column(String(300), nullable=False)
+    status: Mapped[str] = mapped_column(String(30), nullable=False)
+    score: Mapped[float | None] = mapped_column(Float, nullable=True)
+    severity: Mapped[str] = mapped_column(String(30), default="info")
+    observed: Mapped[dict] = mapped_column(JSON, default=dict)
+    expected: Mapped[dict] = mapped_column(JSON, default=dict)
+    details: Mapped[dict] = mapped_column(JSON, default=dict)
+    evidence_references: Mapped[list] = mapped_column(JSON, default=list)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class TrustFinding(Base):
+    __tablename__ = "trust_findings"
+    __table_args__ = (
+        Index("ix_trust_finding_status_severity", "status", "severity"),
+        Index("ix_trust_finding_run", "evaluation_run_id"),
+        Index("ix_trust_finding_public", "public", "created_at"),
+    )
+    id: Mapped[str] = mapped_column(String(255), primary_key=True, default=lambda: f"sc:trust-finding:{uuid.uuid4()}")
+    evaluation_run_id: Mapped[str | None] = mapped_column(ForeignKey("evaluation_runs.id", ondelete="SET NULL"), nullable=True)
+    check_result_id: Mapped[str | None] = mapped_column(ForeignKey("evaluation_check_results.id", ondelete="SET NULL"), nullable=True)
+    target_entity_id: Mapped[str | None] = mapped_column(ForeignKey("entities.id", ondelete="SET NULL"), nullable=True)
+    finding_type: Mapped[str] = mapped_column(String(100), default="evaluation")
+    severity: Mapped[str] = mapped_column(String(30), nullable=False)
+    status: Mapped[str] = mapped_column(String(30), default="open")
+    title: Mapped[str] = mapped_column(String(500), nullable=False)
+    description: Mapped[str] = mapped_column(Text, nullable=False)
+    remediation: Mapped[str | None] = mapped_column(Text, nullable=True)
+    owner: Mapped[str | None] = mapped_column(String(300), nullable=True)
+    due_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    resolved_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    public: Mapped[bool] = mapped_column(Boolean, default=True)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class TrustIncident(Base):
+    __tablename__ = "trust_incidents"
+    __table_args__ = (
+        Index("ix_trust_incident_status_severity", "status", "severity"),
+        Index("ix_trust_incident_public_started", "public", "started_at"),
+    )
+    id: Mapped[str] = mapped_column(String(255), primary_key=True, default=lambda: f"sc:trust-incident:{uuid.uuid4()}")
+    title: Mapped[str] = mapped_column(String(500), nullable=False)
+    severity: Mapped[str] = mapped_column(String(30), nullable=False)
+    status: Mapped[str] = mapped_column(String(30), default="investigating")
+    summary: Mapped[str] = mapped_column(Text, nullable=False)
+    impact: Mapped[str | None] = mapped_column(Text, nullable=True)
+    root_cause: Mapped[str | None] = mapped_column(Text, nullable=True)
+    remediation: Mapped[str | None] = mapped_column(Text, nullable=True)
+    affected_entity_ids: Mapped[list] = mapped_column(JSON, default=list)
+    started_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    detected_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    resolved_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    public: Mapped[bool] = mapped_column(Boolean, default=True)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class KnownLimitation(Base):
+    __tablename__ = "known_limitations"
+    __table_args__ = (
+        Index("ix_limitation_domain_status", "domain", "status"),
+        Index("ix_limitation_public_review", "public", "review_after"),
+    )
+    id: Mapped[str] = mapped_column(String(255), primary_key=True, default=lambda: f"sc:limitation:{uuid.uuid4()}")
+    domain: Mapped[str] = mapped_column(String(150), nullable=False)
+    title: Mapped[str] = mapped_column(String(500), nullable=False)
+    description: Mapped[str] = mapped_column(Text, nullable=False)
+    impact: Mapped[str | None] = mapped_column(Text, nullable=True)
+    mitigation: Mapped[str | None] = mapped_column(Text, nullable=True)
+    status: Mapped[str] = mapped_column(String(30), default="active")
+    affected_entity_ids: Mapped[list] = mapped_column(JSON, default=list)
+    review_after: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    public: Mapped[bool] = mapped_column(Boolean, default=True)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class TrustAttestation(Base):
+    __tablename__ = "trust_attestations"
+    __table_args__ = (
+        Index("ix_attestation_subject_status", "subject_entity_id", "status"),
+        Index("ix_attestation_public_valid", "public", "valid_until"),
+    )
+    id: Mapped[str] = mapped_column(String(255), primary_key=True, default=lambda: f"sc:attestation:{uuid.uuid4()}")
+    subject_entity_id: Mapped[str | None] = mapped_column(ForeignKey("entities.id", ondelete="SET NULL"), nullable=True)
+    statement: Mapped[str] = mapped_column(Text, nullable=False)
+    scope: Mapped[str] = mapped_column(String(300), nullable=False)
+    issuer: Mapped[str] = mapped_column(String(300), nullable=False)
+    status: Mapped[str] = mapped_column(String(30), default="active")
+    evidence_references: Mapped[list] = mapped_column(JSON, default=list)
+    valid_from: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    valid_until: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    revoked_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    revocation_reason: Mapped[str | None] = mapped_column(Text, nullable=True)
+    content_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    public: Mapped[bool] = mapped_column(Boolean, default=True)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+@event.listens_for(EvaluationRun, "before_update")
+def _prevent_evaluation_run_update(mapper, connection, target):
+    raise RuntimeError("Evaluation runs are immutable and cannot be updated.")
+
+
+@event.listens_for(EvaluationRun, "before_delete")
+def _prevent_evaluation_run_delete(mapper, connection, target):
+    raise RuntimeError("Evaluation runs are immutable and cannot be deleted.")
+
+
+@event.listens_for(EvaluationCheckResult, "before_update")
+def _prevent_evaluation_check_update(mapper, connection, target):
+    raise RuntimeError("Evaluation check results are immutable and cannot be updated.")
+
+
+@event.listens_for(EvaluationCheckResult, "before_delete")
+def _prevent_evaluation_check_delete(mapper, connection, target):
+    raise RuntimeError("Evaluation check results are immutable and cannot be deleted.")

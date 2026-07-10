@@ -4,131 +4,184 @@
 
 ### Universal Entity Registry
 
-Stable IDs, aliases, lifecycle state, visibility, canonical URLs, and extensible metadata.
+Stable identifiers, aliases, lifecycle state, visibility, canonical URLs, and metadata.
 
 ### Governed Knowledge Graph
 
-Controlled predicates, type constraints, relationship reviews, bounded traversal, paths, neighborhoods, recommendations, and JSON-LD.
+Controlled predicates, type constraints, relationship reviews, traversal, paths, neighborhoods, recommendations, and JSON-LD.
 
 ### Evidence Ledger
 
-Claims, immutable source snapshots, evidence records, calculation traces, review assignments, append-only decisions, manifests, and tamper-evident ledger history.
+Claims, source snapshots, calculation traces, provenance activities, evidence records, review assignments, manifests, and tamper-evident history.
 
 ### Unified Public API
 
-The `/api/v1` layer provides a curated external contract over selected Platform Core read capabilities.
+Scoped, versioned external access to selected registry, graph, evidence, ledger, developer, webhook, and trust records.
 
-Internal product integrations retain `/v1`. External developers receive:
+### Trust Center and Evaluation Framework
 
-- Stable versioned paths
-- Consistent response envelopes
-- Request IDs
-- Explicit scopes
-- Quotas and maximum page sizes
-- Public-record filtering
-- Usage visibility
-- Webhook management
+The Trust Center introduces five record families:
 
-### Developer control plane
+1. Evaluation definitions
+2. Immutable evaluation runs and checks
+3. Findings
+4. Incidents and limitations
+5. Attestations
 
-Administrative `/v1/developer` routes manage:
+## Evaluation definitions
 
-- API plans
-- Developer applications
-- Approval state
-- Credentials
-- Revocation
-- Usage
-- Event publication
-- Webhook dispatch
-- Platform statistics
+A definition specifies:
 
-These routes require the internal Platform Core write key.
+- Stable ID
+- Name and domain
+- Methodology
+- Evaluator kind
+- Target type
+- Thresholds
+- Cadence
+- Failure severity
+- Public visibility
+- Active state
+- Version
 
-### Credential model
+Definitions are mutable governance records. Every change is recorded in the Evidence Ledger.
 
-A public API credential stores:
+## Evaluation runs
 
-- Application ID
-- Human-readable label
-- Key prefix
-- Last four characters
-- SHA-256 key hash
-- Scopes
-- Status
-- Expiration
-- Last-use time
-- Issuer
-- Revocation time
+Runs are immutable observations of one definition at one time. The framework stores the complete result before committing it.
 
-Plaintext keys are never stored.
-
-### Quota model
-
-Rate limits are enforced from request-log records in PostgreSQL or SQLite:
-
-- Rolling one-minute request count
-- Calendar-day request count
-- Plan-specific maximum page size
-
-This is appropriate for the current single-service deployment. A horizontally scaled high-throughput deployment should add Redis or another distributed counter backend.
-
-### Request privacy
-
-Platform Core does not store raw public API client IP addresses or user-agent strings.
-
-It stores:
+A run contains:
 
 ```text
-SHA256(api_log_salt + ":" + client_value)
+definition
+optional target entity
+status
+score
+grade
+summary
+triggering actor
+evaluator version
+observations
+environment
+evidence references
+content hash
+visibility
+timestamps
 ```
 
-The salt must be production-specific and secret.
+Check results are stored separately and linked to the run.
 
-### Webhook model
+## Evaluator boundary
 
-Webhook events use an outbox:
+`services/evaluators.py` provides a stable evaluator interface:
 
-1. Domain operation creates or updates a Platform Core record.
-2. A webhook event is inserted in the same database transaction.
-3. The dispatcher resolves matching subscriptions.
-4. A canonical JSON body is generated.
-5. The body is signed with HMAC-SHA256.
-6. Delivery status and response information are recorded.
-7. Failed event deliveries remain pending for retry.
+```text
+run_evaluator(kind, database_session, observations, settings)
+```
 
-The subscription secret is deterministically derived with HMAC-SHA256 from a production master signing secret and the subscription ID.
+Each evaluator returns check dictionaries with:
 
-### Public-data boundary
+```text
+check_key
+name
+status
+score
+severity
+observed
+expected
+details
+evidence_references
+```
 
-The public API excludes:
+The orchestration service converts those dictionaries into immutable database records, compatibility validation events, ledger entries, findings, and webhooks.
 
-- Administrative developer records
-- Credential hashes and secrets
-- Private or internal claims
-- Nonverified evidence
-- Review assignments
-- Internal evidence-manifest records
-- Unsupported ledger record types
-- Mutable registry and evidence writes
+## Automated evaluators
 
-## Middleware
+### Ledger integrity
 
-`PublicApiMiddleware` runs only for `/api/v1` paths and performs:
+Recalculates all payload hashes, entry hashes, and previous-entry links.
 
-1. API-enabled check
-2. Production salt check
-3. Key extraction
-4. SHA-256 key lookup
-5. Application, plan, key, and expiration validation
-6. Minute and daily quota checks
-7. Request-context creation
-8. Response quota headers
-9. Salted request logging
-10. Credential last-use update
+### Public API readiness
 
-Endpoint dependencies enforce the required scope.
+Inspects enabled state and required production configuration without exposing secret values.
 
-## Backward compatibility
+### Evidence review coverage
 
-The release does not remove or rename the internal `/v1` interfaces introduced in v2.0–v2.2. Existing Sustainable Catalyst product integrations continue to work.
+Measures verified evidence records against all evidence records.
+
+### Webhook delivery reliability
+
+Measures delivered attempts against completed failed attempts.
+
+## Context-driven evaluators
+
+### Connector freshness
+
+Requires latest successful retrieval time, freshness window, and connector state.
+
+### Calculator validation
+
+Requires test totals, passed tests, tolerance failures, and edge-case results.
+
+### AI grounding
+
+Requires citation coverage, unsupported-claim rate, source relevance, and scope-gate pass rate.
+
+### Accessibility conformance
+
+Requires checks passed, total checks, critical failures, pending manual checks, and declared target.
+
+## Recorded evaluator
+
+The `recorded` evaluator accepts explicit check results. It supports human reviews and specialist evaluations without forcing all methods into a single automated formula.
+
+## Findings
+
+Failed or errored checks create findings in the same transaction as the run. Findings are mutable remediation records, while the originating evaluation remains immutable.
+
+## Aggregate status
+
+The status builder uses the latest public run for every active public definition.
+
+Domain state considers:
+
+- Latest run status
+- Average available score
+- Evaluation freshness
+- Open findings linked to those runs
+
+Overall state considers:
+
+- Ledger integrity
+- Critical and high incidents
+- Degraded domains
+- Attention domains
+- Open public findings
+
+Known limitations are disclosed but do not automatically rewrite evaluation scores.
+
+## Public and private boundaries
+
+The anonymous Trust Center includes only records explicitly marked public.
+
+The `trust:read` API uses the same public boundary.
+
+Internal `/v1/trust` routes can access both public and private records under the existing read and write policies.
+
+## Transaction model
+
+Trust writes insert the domain record, ledger entry, and webhook event in one database transaction.
+
+Evaluation runs additionally insert:
+
+- Check results
+- ValidationEvent compatibility records
+- Automatic findings for failed checks
+
+## Integrity model
+
+Evaluation run content hashes bind the definition ID, target, status, score, summary, observations, environment, evidence references, timestamps, visibility, and check results.
+
+Attestation hashes bind the statement, scope, issuer, subject, evidence references, validity, visibility, and metadata.
+
+Hashing makes records tamper-evident when paired with the existing chained ledger. It does not replace database access control, backups, external archives, or independent verification.

@@ -290,6 +290,13 @@ class RegistryStats(BaseModel):
     evidence_foundations: int
     validation_events: int
     import_jobs: int
+    evaluation_definitions: int
+    evaluation_runs: int
+    evaluation_check_results: int
+    trust_findings: int
+    trust_incidents: int
+    known_limitations: int
+    trust_attestations: int
     entities_by_type: dict[str, int]
     relationships_by_predicate: dict[str, int]
     relationships_by_status: dict[str, int]
@@ -946,3 +953,341 @@ class DeveloperPlatformStats(BaseModel):
     webhook_deliveries: int
     requests_by_status: dict[str, int]
     requests_by_path: dict[str, int]
+
+
+class EvaluationDefinitionCreate(BaseModel):
+    id: str = Field(pattern="^[a-z0-9][a-z0-9_-]{1,149}$")
+    name: str = Field(min_length=1, max_length=300)
+    domain: str = Field(min_length=1, max_length=150)
+    description: str | None = None
+    methodology: str = Field(min_length=1, max_length=30000)
+    evaluator_kind: str = Field(min_length=1, max_length=150)
+    target_type: str = Field(default="platform", max_length=100)
+    thresholds: dict[str, Any] = Field(default_factory=dict)
+    cadence: str | None = Field(default=None, max_length=100)
+    severity_on_failure: Severity = "medium"
+    public: bool = True
+    active: bool = True
+    version: str = Field(default="1.0", max_length=50)
+    sort_order: int = 100
+    metadata: dict[str, Any] = Field(default_factory=dict)
+    actor: str = Field(min_length=1, max_length=300)
+
+
+class EvaluationDefinitionUpdate(BaseModel):
+    name: str | None = Field(default=None, min_length=1, max_length=300)
+    domain: str | None = Field(default=None, min_length=1, max_length=150)
+    description: str | None = None
+    methodology: str | None = Field(default=None, min_length=1, max_length=30000)
+    evaluator_kind: str | None = Field(default=None, min_length=1, max_length=150)
+    target_type: str | None = Field(default=None, max_length=100)
+    thresholds: dict[str, Any] | None = None
+    cadence: str | None = Field(default=None, max_length=100)
+    severity_on_failure: Severity | None = None
+    public: bool | None = None
+    active: bool | None = None
+    version: str | None = Field(default=None, max_length=50)
+    sort_order: int | None = None
+    metadata: dict[str, Any] | None = None
+    actor: str = Field(min_length=1, max_length=300)
+
+
+class EvaluationDefinitionRead(BaseModel):
+    id: str
+    name: str
+    domain: str
+    description: str | None
+    methodology: str
+    evaluator_kind: str
+    target_type: str
+    thresholds: dict[str, Any]
+    cadence: str | None
+    severity_on_failure: str
+    public: bool
+    active: bool
+    version: str
+    sort_order: int
+    metadata: dict[str, Any] = Field(default_factory=dict, validation_alias="metadata_json", serialization_alias="metadata")
+    created_at: datetime
+    updated_at: datetime
+    model_config = ConfigDict(from_attributes=True)
+
+
+class EvaluationRunCreate(BaseModel):
+    target_entity_id: str | None = None
+    triggered_by: str = Field(min_length=1, max_length=300)
+    observations: dict[str, Any] = Field(default_factory=dict)
+    environment: dict[str, Any] = Field(default_factory=dict)
+    evidence_references: list[str] = Field(default_factory=list)
+    public: bool | None = None
+
+
+class EvaluationCheckRead(BaseModel):
+    id: str
+    run_id: str
+    check_key: str
+    name: str
+    status: str
+    score: float | None
+    severity: str
+    observed: dict[str, Any]
+    expected: dict[str, Any]
+    details: dict[str, Any]
+    evidence_references: list[str]
+    created_at: datetime
+    model_config = ConfigDict(from_attributes=True)
+
+
+class EvaluationRunRead(BaseModel):
+    id: str
+    definition_id: str
+    target_entity_id: str | None
+    status: str
+    score: float | None
+    grade: str
+    summary: str
+    triggered_by: str
+    evaluator_version: str
+    observations: dict[str, Any]
+    environment: dict[str, Any]
+    evidence_references: list[str]
+    content_hash: str
+    public: bool
+    started_at: datetime
+    completed_at: datetime
+    created_at: datetime
+    checks: list[EvaluationCheckRead] = Field(default_factory=list)
+    model_config = ConfigDict(from_attributes=True)
+
+
+class EvaluationSuiteRequest(BaseModel):
+    definition_ids: list[str] | None = None
+    triggered_by: str = Field(min_length=1, max_length=300)
+    target_entity_id: str | None = None
+    contexts: dict[str, dict[str, Any]] = Field(default_factory=dict)
+    environment: dict[str, Any] = Field(default_factory=dict)
+    public: bool | None = None
+
+
+class EvaluationSuiteResult(BaseModel):
+    runs: list[EvaluationRunRead]
+    total: int
+    passed: int
+    warnings: int
+    failed: int
+    not_applicable: int
+
+
+class TrustFindingCreate(BaseModel):
+    evaluation_run_id: str | None = None
+    check_result_id: str | None = None
+    target_entity_id: str | None = None
+    finding_type: str = Field(default="manual", max_length=100)
+    severity: Severity
+    status: Literal["open", "accepted", "resolved", "dismissed"] = "open"
+    title: str = Field(min_length=1, max_length=500)
+    description: str = Field(min_length=1, max_length=30000)
+    remediation: str | None = Field(default=None, max_length=30000)
+    owner: str | None = Field(default=None, max_length=300)
+    due_at: datetime | None = None
+    public: bool = True
+    metadata: dict[str, Any] = Field(default_factory=dict)
+    actor: str = Field(min_length=1, max_length=300)
+
+
+class TrustFindingUpdate(BaseModel):
+    severity: Severity | None = None
+    status: Literal["open", "accepted", "resolved", "dismissed"] | None = None
+    title: str | None = Field(default=None, min_length=1, max_length=500)
+    description: str | None = Field(default=None, min_length=1, max_length=30000)
+    remediation: str | None = Field(default=None, max_length=30000)
+    owner: str | None = Field(default=None, max_length=300)
+    due_at: datetime | None = None
+    public: bool | None = None
+    metadata: dict[str, Any] | None = None
+    actor: str = Field(min_length=1, max_length=300)
+
+
+class TrustFindingRead(BaseModel):
+    id: str
+    evaluation_run_id: str | None
+    check_result_id: str | None
+    target_entity_id: str | None
+    finding_type: str
+    severity: str
+    status: str
+    title: str
+    description: str
+    remediation: str | None
+    owner: str | None
+    due_at: datetime | None
+    resolved_at: datetime | None
+    public: bool
+    metadata: dict[str, Any] = Field(default_factory=dict, validation_alias="metadata_json", serialization_alias="metadata")
+    created_at: datetime
+    updated_at: datetime
+    model_config = ConfigDict(from_attributes=True)
+
+
+class TrustIncidentCreate(BaseModel):
+    title: str = Field(min_length=1, max_length=500)
+    severity: Severity
+    status: Literal["investigating", "identified", "monitoring", "resolved"] = "investigating"
+    summary: str = Field(min_length=1, max_length=30000)
+    impact: str | None = Field(default=None, max_length=30000)
+    root_cause: str | None = Field(default=None, max_length=30000)
+    remediation: str | None = Field(default=None, max_length=30000)
+    affected_entity_ids: list[str] = Field(default_factory=list)
+    started_at: datetime | None = None
+    detected_at: datetime | None = None
+    resolved_at: datetime | None = None
+    public: bool = True
+    metadata: dict[str, Any] = Field(default_factory=dict)
+    actor: str = Field(min_length=1, max_length=300)
+
+
+class TrustIncidentUpdate(BaseModel):
+    title: str | None = Field(default=None, min_length=1, max_length=500)
+    severity: Severity | None = None
+    status: Literal["investigating", "identified", "monitoring", "resolved"] | None = None
+    summary: str | None = Field(default=None, min_length=1, max_length=30000)
+    impact: str | None = Field(default=None, max_length=30000)
+    root_cause: str | None = Field(default=None, max_length=30000)
+    remediation: str | None = Field(default=None, max_length=30000)
+    affected_entity_ids: list[str] | None = None
+    resolved_at: datetime | None = None
+    public: bool | None = None
+    metadata: dict[str, Any] | None = None
+    actor: str = Field(min_length=1, max_length=300)
+
+
+class TrustIncidentRead(BaseModel):
+    id: str
+    title: str
+    severity: str
+    status: str
+    summary: str
+    impact: str | None
+    root_cause: str | None
+    remediation: str | None
+    affected_entity_ids: list[str]
+    started_at: datetime
+    detected_at: datetime
+    resolved_at: datetime | None
+    public: bool
+    metadata: dict[str, Any] = Field(default_factory=dict, validation_alias="metadata_json", serialization_alias="metadata")
+    created_at: datetime
+    updated_at: datetime
+    model_config = ConfigDict(from_attributes=True)
+
+
+class KnownLimitationCreate(BaseModel):
+    domain: str = Field(min_length=1, max_length=150)
+    title: str = Field(min_length=1, max_length=500)
+    description: str = Field(min_length=1, max_length=30000)
+    impact: str | None = Field(default=None, max_length=30000)
+    mitigation: str | None = Field(default=None, max_length=30000)
+    status: Literal["active", "mitigated", "retired"] = "active"
+    affected_entity_ids: list[str] = Field(default_factory=list)
+    review_after: datetime | None = None
+    public: bool = True
+    metadata: dict[str, Any] = Field(default_factory=dict)
+    actor: str = Field(min_length=1, max_length=300)
+
+
+class KnownLimitationUpdate(BaseModel):
+    domain: str | None = Field(default=None, min_length=1, max_length=150)
+    title: str | None = Field(default=None, min_length=1, max_length=500)
+    description: str | None = Field(default=None, min_length=1, max_length=30000)
+    impact: str | None = Field(default=None, max_length=30000)
+    mitigation: str | None = Field(default=None, max_length=30000)
+    status: Literal["active", "mitigated", "retired"] | None = None
+    affected_entity_ids: list[str] | None = None
+    review_after: datetime | None = None
+    public: bool | None = None
+    metadata: dict[str, Any] | None = None
+    actor: str = Field(min_length=1, max_length=300)
+
+
+class KnownLimitationRead(BaseModel):
+    id: str
+    domain: str
+    title: str
+    description: str
+    impact: str | None
+    mitigation: str | None
+    status: str
+    affected_entity_ids: list[str]
+    review_after: datetime | None
+    public: bool
+    metadata: dict[str, Any] = Field(default_factory=dict, validation_alias="metadata_json", serialization_alias="metadata")
+    created_at: datetime
+    updated_at: datetime
+    model_config = ConfigDict(from_attributes=True)
+
+
+class TrustAttestationCreate(BaseModel):
+    subject_entity_id: str | None = None
+    statement: str = Field(min_length=1, max_length=30000)
+    scope: str = Field(min_length=1, max_length=300)
+    issuer: str = Field(min_length=1, max_length=300)
+    evidence_references: list[str] = Field(default_factory=list)
+    valid_from: datetime | None = None
+    valid_until: datetime | None = None
+    public: bool = True
+    metadata: dict[str, Any] = Field(default_factory=dict)
+    actor: str = Field(min_length=1, max_length=300)
+
+
+class TrustAttestationRevoke(BaseModel):
+    reason: str = Field(min_length=1, max_length=10000)
+    revoked_by: str = Field(min_length=1, max_length=300)
+
+
+class TrustAttestationRead(BaseModel):
+    id: str
+    subject_entity_id: str | None
+    statement: str
+    scope: str
+    issuer: str
+    status: str
+    evidence_references: list[str]
+    valid_from: datetime
+    valid_until: datetime | None
+    revoked_at: datetime | None
+    revocation_reason: str | None
+    content_hash: str
+    public: bool
+    metadata: dict[str, Any] = Field(default_factory=dict, validation_alias="metadata_json", serialization_alias="metadata")
+    created_at: datetime
+    model_config = ConfigDict(from_attributes=True)
+
+
+class TrustDomainStatus(BaseModel):
+    domain: str
+    status: str
+    score: float | None
+    grade: str
+    latest_run_id: str | None
+    latest_completed_at: datetime | None
+    evaluation_count: int
+    open_findings: int
+    summary: str
+
+
+class TrustStatusResponse(BaseModel):
+    service: str
+    platform_version: str
+    overall_status: str
+    overall_score: float | None
+    grade: str
+    generated_at: datetime
+    ledger_valid: bool
+    last_evaluated_at: datetime | None
+    domains: list[TrustDomainStatus]
+    active_incidents: list[TrustIncidentRead]
+    known_limitations: list[KnownLimitationRead]
+    active_attestations: list[TrustAttestationRead]
+    open_findings: int
+    public_evaluation_runs: int
+    methodology: str

@@ -1,5 +1,5 @@
 {
-  "source_name": "platform-core-v2.3.0-seed",
+  "source_name": "platform-core-v2.4.0-seed",
   "entities": [
     {
       "id": "sc:service:platform-core",
@@ -321,6 +321,80 @@
         "domain": "platform-infrastructure"
       },
       "aliases": []
+    },
+    {
+      "id": "sc:service:trust-center",
+      "entity_type": "service",
+      "slug": "trust-center",
+      "name": "Sustainable Catalyst Trust Center",
+      "description": "Public evaluation, incident, limitation, attestation, and machine-readable trust status infrastructure.",
+      "status": "active",
+      "visibility": "public",
+      "schema_version": "1.0",
+      "metadata": {
+        "version": "2.4.0",
+        "path": "/trust"
+      },
+      "aliases": []
+    },
+    {
+      "id": "sc:tool:trust-center",
+      "entity_type": "tool",
+      "slug": "trust-center",
+      "name": "Sustainable Catalyst Trust Center",
+      "description": "Public interface for evaluation results, incidents, known limitations, attestations, and trust methodology.",
+      "canonical_url": "https://sustainablecatalyst.com/platform/",
+      "status": "active",
+      "visibility": "public",
+      "schema_version": "1.0",
+      "metadata": {
+        "version": "2.4.0",
+        "interface": "public"
+      },
+      "aliases": []
+    },
+    {
+      "id": "sc:registry:evaluation-definition-registry",
+      "entity_type": "registry",
+      "slug": "evaluation-definition-registry",
+      "name": "Sustainable Catalyst Evaluation Definition Registry",
+      "description": "Controlled registry of evaluation methods, thresholds, cadence, target types, and public disclosure state.",
+      "status": "active",
+      "visibility": "public",
+      "schema_version": "1.0",
+      "metadata": {
+        "version": "2.4.0",
+        "definitions": 8
+      },
+      "aliases": []
+    },
+    {
+      "id": "sc:concept:trust-evaluation",
+      "entity_type": "concept",
+      "slug": "trust-evaluation",
+      "name": "Trust Evaluation",
+      "description": "A transparent assessment that records method, observations, check-level results, score, findings, and evidence references without equating a passing score with certainty.",
+      "status": "active",
+      "visibility": "public",
+      "schema_version": "1.0",
+      "metadata": {
+        "domain": "trust-infrastructure"
+      },
+      "aliases": []
+    },
+    {
+      "id": "sc:concept:known-limitation",
+      "entity_type": "concept",
+      "slug": "known-limitation",
+      "name": "Known Limitation",
+      "description": "A disclosed boundary, weakness, incomplete capability, or unresolved uncertainty that affects interpretation or use.",
+      "status": "active",
+      "visibility": "public",
+      "schema_version": "1.0",
+      "metadata": {
+        "domain": "trust-infrastructure"
+      },
+      "aliases": []
     }
   ],
   "relationships": [
@@ -592,6 +666,66 @@
       "status": "verified",
       "provenance": {
         "source": "platform-core-v2.3.0"
+      }
+    },
+    {
+      "subject_id": "sc:service:platform-core",
+      "predicate": "implements",
+      "object_id": "sc:concept:trust-evaluation",
+      "confidence": 1.0,
+      "status": "verified",
+      "provenance": {
+        "source": "platform-core-v2.4.0"
+      }
+    },
+    {
+      "subject_id": "sc:service:trust-center",
+      "predicate": "uses",
+      "object_id": "sc:service:platform-core",
+      "confidence": 1.0,
+      "status": "verified",
+      "provenance": {
+        "source": "platform-core-v2.4.0"
+      }
+    },
+    {
+      "subject_id": "sc:tool:trust-center",
+      "predicate": "uses",
+      "object_id": "sc:service:trust-center",
+      "confidence": 1.0,
+      "status": "verified",
+      "provenance": {
+        "source": "platform-core-v2.4.0"
+      }
+    },
+    {
+      "subject_id": "sc:service:trust-center",
+      "predicate": "uses",
+      "object_id": "sc:registry:evaluation-definition-registry",
+      "confidence": 1.0,
+      "status": "verified",
+      "provenance": {
+        "source": "platform-core-v2.4.0"
+      }
+    },
+    {
+      "subject_id": "sc:service:trust-center",
+      "predicate": "related_to",
+      "object_id": "sc:concept:known-limitation",
+      "confidence": 1.0,
+      "status": "verified",
+      "provenance": {
+        "source": "platform-core-v2.4.0"
+      }
+    },
+    {
+      "subject_id": "sc:service:unified-public-api",
+      "predicate": "routes_to",
+      "object_id": "sc:tool:trust-center",
+      "confidence": 1.0,
+      "status": "verified",
+      "provenance": {
+        "source": "platform-core-v2.4.0"
       }
     }
   ]

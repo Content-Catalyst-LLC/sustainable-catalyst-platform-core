@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Sustainable Catalyst Platform Core
  * Description: WordPress connector for Sustainable Catalyst Platform Core registry, graph, evidence, and developer services.
- * Version: 2.3.0
+ * Version: 2.4.0
  * Author: Content Catalyst LLC
  * License: MIT
  */
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('SCPC_VERSION', '2.3.0');
+define('SCPC_VERSION', '2.4.0');
 define('SCPC_OPTION_BACKEND_URL', 'scpc_backend_url');
 define('SCPC_OPTION_READ_KEY', 'scpc_read_key');
 
@@ -90,7 +90,9 @@ function scpc_render_settings_page() {
         <code>[sc_evidence_manifest claim_id="sc:claim:..."]</code><br />
         <code>[sc_evidence_explorer]</code><br />
         <code>[sc_developer_portal]</code><br />
-        <code>[sc_public_api_plans]</code>
+        <code>[sc_public_api_plans]</code><br />
+        <code>[sc_trust_center]</code><br />
+        <code>[sc_trust_status]</code>
     </div>
     <?php
 }
@@ -399,3 +401,53 @@ function scpc_public_api_plans_shortcode() {
     return ob_get_clean();
 }
 add_shortcode('sc_public_api_plans', 'scpc_public_api_plans_shortcode');
+
+
+function scpc_trust_center_shortcode() {
+    $base = untrailingslashit(get_option(SCPC_OPTION_BACKEND_URL, ''));
+    if (!$base) {
+        return '<div class="scpc-card scpc-error">Platform Core backend URL is not configured.</div>';
+    }
+
+    return '<section class="scpc-card">' .
+        '<p class="scpc-kicker">Evaluation and public accountability</p>' .
+        '<h3>Sustainable Catalyst Trust Center</h3>' .
+        '<p>Review evaluation results, check-level evidence, incidents, known limitations, attestations, and machine-readable trust status.</p>' .
+        '<a class="scpc-button" href="' . esc_url($base . '/trust') . '" target="_blank" rel="noopener">Open Trust Center</a>' .
+        '</section>';
+}
+add_shortcode('sc_trust_center', 'scpc_trust_center_shortcode');
+
+function scpc_trust_status_shortcode() {
+    $status = scpc_api_get('/trust/status.json');
+    if (is_wp_error($status)) {
+        return '<div class="scpc-card scpc-error"><strong>Trust status unavailable</strong><p>' .
+            esc_html($status->get_error_message()) .
+            '</p></div>';
+    }
+
+    $overall = sanitize_html_class($status['overall_status']);
+    ob_start();
+    ?>
+    <section class="scpc-card">
+        <p class="scpc-kicker">Public trust status</p>
+        <h3>Sustainable Catalyst Platform Core</h3>
+        <p>
+            <span class="scpc-trust-status scpc-trust-<?php echo esc_attr($overall); ?>">
+                <?php echo esc_html(ucfirst($status['overall_status'])); ?>
+            </span>
+            · <strong>Score:</strong> <?php echo is_null($status['overall_score']) ? 'N/A' : esc_html(number_format_i18n(floatval($status['overall_score']), 1)); ?>
+            · <strong>Grade:</strong> <?php echo esc_html($status['grade']); ?>
+            · <strong>Ledger:</strong> <?php echo !empty($status['ledger_valid']) ? 'Verified' : 'Failed'; ?>
+        </p>
+        <p class="scpc-meta">
+            <?php echo esc_html(count($status['domains'])); ?> evaluation domains ·
+            <?php echo esc_html(intval($status['open_findings'])); ?> open findings ·
+            <?php echo esc_html(count($status['active_incidents'])); ?> active incidents ·
+            <?php echo esc_html(count($status['known_limitations'])); ?> known limitations
+        </p>
+    </section>
+    <?php
+    return ob_get_clean();
+}
+add_shortcode('sc_trust_status', 'scpc_trust_status_shortcode');

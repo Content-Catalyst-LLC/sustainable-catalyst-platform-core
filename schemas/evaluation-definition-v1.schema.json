@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/platform-core/evaluation-definition-v1.json",
+  "title": "Sustainable Catalyst Evaluation Definition",
+  "type": "object",
+  "required": [
+    "id",
+    "name",
+    "domain",
+    "methodology",
+    "evaluator_kind",
+    "thresholds"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "domain": {
+      "type": "string"
+    },
+    "description": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "methodology": {
+      "type": "string"
+    },
+    "evaluator_kind": {
+      "type": "string"
+    },
+    "target_type": {
+      "type": "string"
+    },
+    "thresholds": {
+      "type": "object"
+    },
+    "cadence": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "severity_on_failure": {
+      "type": "string"
+    },
+    "public": {
+      "type": "boolean"
+    },
+    "active": {
+      "type": "boolean"
+    },
+    "version": {
+      "type": "string"
+    },
+    "metadata": {
+      "type": "object"
+    }
+  }
+}

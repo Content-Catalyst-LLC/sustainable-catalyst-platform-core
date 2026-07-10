@@ -613,7 +613,7 @@ def dispatch_pending_webhooks(
             signature = build_webhook_signature(secret, timestamp, body)
             headers = {
                 "Content-Type": "application/json",
-                "User-Agent": "Sustainable-Catalyst-Platform-Core/2.3.0",
+                "User-Agent": "Sustainable-Catalyst-Platform-Core/2.4.0",
                 "X-SC-Webhook-ID": event.id,
                 "X-SC-Webhook-Timestamp": timestamp,
                 "X-SC-Webhook-Signature": signature,

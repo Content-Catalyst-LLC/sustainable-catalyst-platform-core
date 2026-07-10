@@ -165,3 +165,31 @@ class PlatformCoreClient:
             write=True,
             params={"limit": limit},
         )
+
+
+    def trust_status(self):
+        return self._request("GET", "/v1/trust/status")
+
+    def evaluation_definitions(self, *, domain: str | None = None):
+        params = {"domain": domain} if domain else None
+        return self._request("GET", "/v1/trust/definitions", params=params)
+
+    def run_evaluation(self, definition_id: str, payload: dict[str, Any]):
+        return self._request(
+            "POST",
+            f"/v1/trust/definitions/{definition_id}/runs",
+            write=True,
+            json=payload,
+        )
+
+    def run_trust_suite(self, payload: dict[str, Any]):
+        return self._request("POST", "/v1/trust/run-suite", write=True, json=payload)
+
+    def create_trust_incident(self, payload: dict[str, Any]):
+        return self._request("POST", "/v1/trust/incidents", write=True, json=payload)
+
+    def create_known_limitation(self, payload: dict[str, Any]):
+        return self._request("POST", "/v1/trust/limitations", write=True, json=payload)
+
+    def create_trust_attestation(self, payload: dict[str, Any]):
+        return self._request("POST", "/v1/trust/attestations", write=True, json=payload)

@@ -14,17 +14,21 @@ Creates claims, source snapshots, provenance activities, links, calculation trac
 
 ## 0004 — Unified Public API and Developer Platform
 
+Creates API plans, developer applications, hashed credentials, request logs, webhook subscriptions, events, and deliveries.
+
+## 0005 — Trust Center and Evaluation Framework
+
 Creates:
 
-- `api_plans`
-- `developer_applications`
-- `api_credentials`
-- `api_request_logs`
-- `webhook_subscriptions`
-- `webhook_events`
-- `webhook_deliveries`
+- `evaluation_definitions`
+- `evaluation_runs`
+- `evaluation_check_results`
+- `trust_findings`
+- `trust_incidents`
+- `known_limitations`
+- `trust_attestations`
 
-Migration `0004` also seeds the default API plans.
+Migration `0005` seeds the default evaluation registry and merges the `trust:read` scope into existing API plans without replacing their quota settings.
 
 Run:
 
@@ -32,4 +36,4 @@ Run:
 python scripts/migrate.py
 ```
 
-The migration is additive. Existing entity, graph, evidence, and ledger records remain unchanged.
+The migration is additive. Existing registry, graph, evidence, ledger, developer, and webhook records remain unchanged.

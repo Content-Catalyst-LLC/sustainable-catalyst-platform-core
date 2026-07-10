@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/platform-core/evaluation-run-v1.json",
+  "title": "Sustainable Catalyst Evaluation Run",
+  "type": "object",
+  "required": [
+    "id",
+    "definition_id",
+    "status",
+    "grade",
+    "summary",
+    "triggered_by",
+    "content_hash",
+    "checks"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "definition_id": {
+      "type": "string"
+    },
+    "target_entity_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "status": {
+      "enum": [
+        "passed",
+        "warning",
+        "failed",
+        "error",
+        "not_applicable"
+      ]
+    },
+    "score": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "grade": {
+      "type": "string"
+    },
+    "summary": {
+      "type": "string"
+    },
+    "triggered_by": {
+      "type": "string"
+    },
+    "evaluator_version": {
+      "type": "string"
+    },
+    "observations": {
+      "type": "object"
+    },
+    "environment": {
+      "type": "object"
+    },
+    "evidence_references": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "content_hash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "public": {
+      "type": "boolean"
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    }
+  }
+}

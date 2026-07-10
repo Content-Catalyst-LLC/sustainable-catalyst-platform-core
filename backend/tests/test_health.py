@@ -1,7 +1,7 @@
 def test_health_and_ready(client):
     health = client.get("/health")
     assert health.status_code == 200
-    assert health.json()["version"] == "2.3.0"
+    assert health.json()["version"] == "2.4.0"
 
     ready = client.get("/ready")
     assert ready.status_code == 200
@@ -20,4 +20,6 @@ def test_meta_declares_deferred_capabilities(client):
     assert "unified_public_api_v1" in body["capabilities"]
     assert "developer_portal" in body["capabilities"]
     assert "signed_webhooks" in body["capabilities"]
-    assert "public_trust_center" in body["deferred_capabilities"]
+    assert "public_trust_center" in body["capabilities"]
+    assert "machine_readable_trust_status" in body["capabilities"]
+    assert "large_scale_graph_database_adapter" in body["deferred_capabilities"]

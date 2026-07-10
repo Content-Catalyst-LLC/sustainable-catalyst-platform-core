@@ -9,5 +9,6 @@ const client = new PublicApiClient(
 );
 
 console.log(await client.status());
-console.log(await client.entities({ entity_type: "product" }));
+console.log(await client.trustStatus());
+console.log(await client.trustEvaluations({ domain: "evidence-quality" }));
 ```

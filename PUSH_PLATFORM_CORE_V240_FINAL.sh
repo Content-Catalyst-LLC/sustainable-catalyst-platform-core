@@ -10,12 +10,12 @@ SSH_REMOTE="git@github.com:${REPO_SLUG}.git"
 WEB_URL="https://github.com/${REPO_SLUG}"
 
 DOWNLOADS="${HOME}/Downloads"
-PACKAGE_ZIP="${DOWNLOADS}/sustainable-catalyst-platform-core-v2.3.0-repo.zip"
+PACKAGE_ZIP="${DOWNLOADS}/sustainable-catalyst-platform-core-v2.4.0-repo.zip"
 WORKDIR="${DOWNLOADS}/sustainable-catalyst-platform-core-repo"
-EXTRACT_DIR="${DOWNLOADS}/sc-platform-core-v2.3.0-final-extracted"
+EXTRACT_DIR="${DOWNLOADS}/sc-platform-core-v2.4.0-final-extracted"
 
 echo "============================================================"
-echo "PLATFORM CORE v2.3.0 — FINAL PUBLIC API PUSH"
+echo "PLATFORM CORE v2.4.0 — FINAL TRUST CENTER PUSH"
 echo "============================================================"
 echo "Repository: ${WEB_URL}"
 echo "Git remote: ${SSH_REMOTE}"
@@ -65,11 +65,11 @@ if ! gh repo view "$REPO_SLUG" >/dev/null 2>&1; then
   echo "Creating the missing GitHub repository..."
   gh repo create "$REPO_SLUG" \
     --public \
-    --description "Shared registry, knowledge graph, evidence ledger, unified public API, and developer infrastructure for Sustainable Catalyst." \
+    --description "Shared registry, knowledge graph, evidence ledger, unified public API, Trust Center, and evaluation infrastructure for Sustainable Catalyst." \
     --disable-wiki
 fi
 
-echo "Extracting Platform Core v2.3.0..."
+echo "Extracting Platform Core v2.4.0..."
 rm -rf "$EXTRACT_DIR"
 mkdir -p "$EXTRACT_DIR"
 unzip -q "$PACKAGE_ZIP" -d "$EXTRACT_DIR"
@@ -78,12 +78,12 @@ SOURCE_ROOT="$(
   find "$EXTRACT_DIR" \
     -maxdepth 1 \
     -type d \
-    -name "sustainable-catalyst-platform-core-v2.3.0" \
+    -name "sustainable-catalyst-platform-core-v2.4.0" \
     | head -1
 )"
 
 if [ -z "${SOURCE_ROOT:-}" ] || [ ! -f "$SOURCE_ROOT/backend/app/main.py" ]; then
-  echo "ERROR: Could not locate Platform Core v2.3.0 inside the ZIP."
+  echo "ERROR: Could not locate Platform Core v2.4.0 inside the ZIP."
   exit 1
 fi
 
@@ -99,7 +99,7 @@ if [ -d "$WORKDIR/.git" ]; then
 
   if ! git diff --quiet || ! git diff --cached --quiet || [ -n "$(git ls-files --others --exclude-standard)" ]; then
     echo "Saving unfinished local changes in a safety stash..."
-    git stash push -u -m "Automatic safety stash before Platform Core v2.3.0" || true
+    git stash push -u -m "Automatic safety stash before Platform Core v2.4.0" || true
   fi
 
   git fetch origin --prune
@@ -130,7 +130,7 @@ rm -rf "$WORKDIR/backend/.venv"
 rm -rf "$WORKDIR/backend/.pytest_cache"
 find "$WORKDIR" -type d -name "__pycache__" -prune -exec rm -rf {} + 2>/dev/null || true
 
-echo "Replacing repository contents with v2.3.0..."
+echo "Replacing repository contents with v2.4.0..."
 rsync -a --delete \
   --exclude=".git/" \
   --exclude=".venv/" \
@@ -141,18 +141,19 @@ rsync -a --delete \
 cd "$WORKDIR"
 
 echo "Validating release markers..."
-test -f backend/app/public_api_auth.py
-test -f backend/app/routers/public_api.py
-test -f backend/app/routers/developer_admin.py
-test -f backend/app/routers/developer_portal.py
-test -f backend/app/services/developers.py
-test -f backend/scripts/dispatch_webhooks.py
-test -f backend/tests/test_public_api_v230.py
-test -f backend/data/platform_core_seed_v2.3.0.json
-test -f backend/public_sdk/downloads/sc-platform-core-public-python-v2.3.0.zip
-test -f backend/public_sdk/downloads/sc-platform-core-public-javascript-v2.3.0.zip
-grep -q 'version: str = "2.3.0"' backend/app/config.py
-grep -q "unified_public_api_v1" backend/app/routers/meta.py
+test -f backend/app/evaluation_catalog.py
+test -f backend/app/services/evaluators.py
+test -f backend/app/services/trust.py
+test -f backend/app/routers/trust_admin.py
+test -f backend/app/routers/trust_public.py
+test -f backend/app/routers/trust_center.py
+test -f backend/tests/test_trust_center_v240.py
+test -f backend/data/platform_core_seed_v2.4.0.json
+test -f backend/public_sdk/downloads/sc-platform-core-public-python-v2.4.0.zip
+test -f backend/public_sdk/downloads/sc-platform-core-public-javascript-v2.4.0.zip
+grep -q 'version: str = "2.4.0"' backend/app/config.py
+grep -q "machine_readable_trust_status" backend/app/routers/meta.py
+grep -q '"0005"' backend/app/migrations.py
 
 echo "Running push-safe secret scan..."
 if grep -RInE \
@@ -160,8 +161,8 @@ if grep -RInE \
   . \
   --exclude-dir=.git \
   --exclude-dir=.venv \
-  --exclude="PUSH_PLATFORM_CORE_V230_FINAL.sh" \
-  --exclude="PLATFORM_CORE_V230_TERMINAL_COMMANDS.txt" \
+  --exclude="PUSH_PLATFORM_CORE_V240_FINAL.sh" \
+  --exclude="PLATFORM_CORE_V240_TERMINAL_COMMANDS.txt" \
   --exclude="TEST_RESULTS.txt" \
   --exclude="SMOKE_TEST_RESULTS.json" \
   --exclude=".env.example"; then
@@ -185,8 +186,8 @@ backend/.venv/bin/python -m pip install -r backend/requirements.txt
 echo "Running the full test suite..."
 backend/.venv/bin/python -m pytest -q backend/tests
 
-echo "Running a clean migration and seed smoke test..."
-SMOKE_DB="${WORKDIR}/backend/platform_core_v230_push_smoke.db"
+echo "Running migration 0005 and seed smoke tests..."
+SMOKE_DB="${WORKDIR}/backend/platform_core_v240_push_smoke.db"
 rm -f "$SMOKE_DB"
 
 SC_CORE_DATABASE_URL="sqlite:///${SMOKE_DB}" \
@@ -203,38 +204,46 @@ SC_CORE_API_LOG_SALT=y \
 SC_CORE_WEBHOOK_SIGNING_SECRET=z \
 backend/.venv/bin/python backend/scripts/seed_registry.py
 
+SC_CORE_DATABASE_URL="sqlite:///${SMOKE_DB}" \
+SC_CORE_ENVIRONMENT=test \
+SC_CORE_WRITE_API_KEY=x \
+SC_CORE_API_LOG_SALT=y \
+SC_CORE_WEBHOOK_SIGNING_SECRET=z \
+backend/.venv/bin/python backend/scripts/run_trust_evaluations.py \
+  --triggered-by push-smoke
+
 rm -f "$SMOKE_DB"
 
 echo "Building release downloads..."
 mkdir -p dist
 
-rm -f dist/sustainable-catalyst-platform-core-plugin-v2.3.0.zip
+rm -f dist/sustainable-catalyst-platform-core-plugin-v2.4.0.zip
 (
   cd wordpress-plugin
   zip -qr \
-    ../dist/sustainable-catalyst-platform-core-plugin-v2.3.0.zip \
+    ../dist/sustainable-catalyst-platform-core-plugin-v2.4.0.zip \
     sustainable-catalyst-platform-core
 )
 
 cp \
-  backend/public_sdk/downloads/sc-platform-core-public-python-v2.3.0.zip \
+  backend/public_sdk/downloads/sc-platform-core-public-python-v2.4.0.zip \
   dist/
 
 cp \
-  backend/public_sdk/downloads/sc-platform-core-public-javascript-v2.3.0.zip \
+  backend/public_sdk/downloads/sc-platform-core-public-javascript-v2.4.0.zip \
   dist/
 
 cp \
   backend/public_sdk/postman/Sustainable_Catalyst_Public_API_v1.postman_collection.json \
   dist/
 
-echo "Committing Platform Core v2.3.0..."
+echo "Committing Platform Core v2.4.0..."
 git add -A
 
 if git diff --cached --quiet; then
   echo "No new repository changes need to be committed."
 else
-  git commit -m "Build Platform Core v2.3.0 unified public API and developer portal"
+  git commit -m "Build Platform Core v2.4.0 Trust Center and evaluation framework"
 fi
 
 echo "Pushing main through SSH..."
@@ -242,12 +251,12 @@ git push --set-upstream origin "$BRANCH"
 
 echo ""
 echo "============================================================"
-echo "PLATFORM CORE v2.3.0 PUSHED SUCCESSFULLY"
+echo "PLATFORM CORE v2.4.0 PUSHED SUCCESSFULLY"
 echo "============================================================"
 echo "GitHub repository: ${WEB_URL}"
 echo "Local repository:  ${WORKDIR}"
 echo "SSH remote:        $(git remote get-url origin)"
 echo "Python used:       $("$PYTHON_BIN" --version 2>&1)"
-echo "WordPress plugin:  ${WORKDIR}/dist/sustainable-catalyst-platform-core-plugin-v2.3.0.zip"
-echo "Python SDK:        ${WORKDIR}/dist/sc-platform-core-public-python-v2.3.0.zip"
-echo "JavaScript SDK:    ${WORKDIR}/dist/sc-platform-core-public-javascript-v2.3.0.zip"
+echo "WordPress plugin:  ${WORKDIR}/dist/sustainable-catalyst-platform-core-plugin-v2.4.0.zip"
+echo "Python SDK:        ${WORKDIR}/dist/sc-platform-core-public-python-v2.4.0.zip"
+echo "JavaScript SDK:    ${WORKDIR}/dist/sc-platform-core-public-javascript-v2.4.0.zip"

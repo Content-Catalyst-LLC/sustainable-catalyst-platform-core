@@ -41,6 +41,12 @@ services:
         generateValue: true
       - key: SC_CORE_WEBHOOK_DELIVERY_TIMEOUT
         value: "10"
+      - key: SC_CORE_TRUST_CENTER_ENABLED
+        value: "true"
+      - key: SC_CORE_TRUST_PUBLIC_STATUS_ENABLED
+        value: "true"
+      - key: SC_CORE_TRUST_STALE_AFTER_DAYS
+        value: "90"
 
 databases:
   - name: sustainable-catalyst-platform-core-db

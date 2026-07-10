@@ -20,7 +20,7 @@ def _int(name: str, default: int) -> int:
 @dataclass(frozen=True)
 class Settings:
     app_name: str = "Sustainable Catalyst Platform Core"
-    version: str = "2.3.0"
+    version: str = "2.4.0"
     environment: str = "development"
     database_url: str = "sqlite:///./platform_core.db"
     write_api_key: str = ""
@@ -38,6 +38,9 @@ class Settings:
     api_log_salt: str = "development-api-log-salt"
     webhook_signing_secret: str = "development-webhook-signing-secret"
     webhook_delivery_timeout: int = 10
+    trust_center_enabled: bool = True
+    trust_public_status_enabled: bool = True
+    trust_stale_after_days: int = 90
 
     @classmethod
     def from_env(cls) -> "Settings":
@@ -86,4 +89,7 @@ class Settings:
                 1,
                 min(_int("SC_CORE_WEBHOOK_DELIVERY_TIMEOUT", 10), 60),
             ),
+            trust_center_enabled=_bool("SC_CORE_TRUST_CENTER_ENABLED", True),
+            trust_public_status_enabled=_bool("SC_CORE_TRUST_PUBLIC_STATUS_ENABLED", True),
+            trust_stale_after_days=max(1, min(_int("SC_CORE_TRUST_STALE_AFTER_DAYS", 90), 3650)),
         )

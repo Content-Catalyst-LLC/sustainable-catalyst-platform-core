@@ -73,6 +73,34 @@
         "method": "GET",
         "url": "{{baseUrl}}/api/v1/developer/usage?days=30"
       }
+    },
+    {
+      "name": "Trust Status",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/v1/trust/status"
+      }
+    },
+    {
+      "name": "Trust Evaluations",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/v1/trust/evaluations"
+      }
+    },
+    {
+      "name": "Trust Incidents",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/v1/trust/incidents"
+      }
+    },
+    {
+      "name": "Known Limitations",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/v1/trust/limitations"
+      }
     }
   ]
 }

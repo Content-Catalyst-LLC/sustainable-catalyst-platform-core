@@ -1,0 +1,33 @@
+{
+  "triggered_by": "release-validation",
+  "environment": {
+    "release": "2.4.0"
+  },
+  "contexts": {
+    "connector-freshness": {
+      "last_success_at": "2026-07-10T12:00:00+00:00",
+      "max_age_hours": 48,
+      "connector_status": "active"
+    },
+    "calculator-validation": {
+      "total_cases": 100,
+      "passed_cases": 100,
+      "tolerance_failures": 0,
+      "edge_cases_total": 20,
+      "edge_cases_passed": 20
+    },
+    "ai-grounding": {
+      "citation_coverage": 0.98,
+      "unsupported_claim_rate": 0.01,
+      "source_relevance": 0.95,
+      "scope_gate_pass_rate": 0.99
+    },
+    "accessibility-conformance": {
+      "target": "WCAG 2.2 AA",
+      "total_checks": 100,
+      "passed_checks": 98,
+      "critical_failures": 0,
+      "manual_checks_pending": 2
+    }
+  }
+}

@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/platform-core/trust-status-v1.json",
+  "title": "Sustainable Catalyst Trust Status",
+  "type": "object",
+  "required": [
+    "service",
+    "platform_version",
+    "overall_status",
+    "grade",
+    "generated_at",
+    "ledger_valid",
+    "domains",
+    "active_incidents",
+    "known_limitations",
+    "active_attestations",
+    "methodology"
+  ],
+  "properties": {
+    "service": {
+      "type": "string"
+    },
+    "platform_version": {
+      "type": "string"
+    },
+    "overall_status": {
+      "enum": [
+        "operational",
+        "attention",
+        "degraded",
+        "critical",
+        "unknown"
+      ]
+    },
+    "overall_score": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "grade": {
+      "type": "string"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "ledger_valid": {
+      "type": "boolean"
+    },
+    "last_evaluated_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "domains": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "active_incidents": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "known_limitations": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "active_attestations": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "open_findings": {
+      "type": "integer"
+    },
+    "public_evaluation_runs": {
+      "type": "integer"
+    },
+    "methodology": {
+      "type": "string"
+    }
+  }
+}

@@ -12,7 +12,11 @@ from ..models import (
     EvidenceRecord,
     EvidenceReview,
     EvidenceReviewAssignment,
+    EvaluationCheckResult,
+    EvaluationDefinition,
+    EvaluationRun,
     ImportJob,
+    KnownLimitation,
     LedgerEntry,
     PredicateDefinition,
     ProvenanceActivity,
@@ -20,6 +24,9 @@ from ..models import (
     Relationship,
     RelationshipReview,
     SourceSnapshot,
+    TrustAttestation,
+    TrustFinding,
+    TrustIncident,
     ValidationEvent,
 )
 from ..schemas import MetaResponse, RegistryStats
@@ -39,6 +46,7 @@ def health(request: Request):
         "provenance_records": True,
         "unified_public_api": request.app.state.settings.public_api_enabled,
         "developer_portal": request.app.state.settings.developer_portal_enabled,
+        "trust_center": request.app.state.settings.trust_center_enabled,
     }
 
 
@@ -51,6 +59,7 @@ def ready(db: Session = Depends(get_session)):
         "knowledge_graph": "ready",
         "evidence_ledger": "ready",
         "unified_public_api": "ready",
+        "trust_center": "ready",
     }
 
 
@@ -109,9 +118,19 @@ def meta(request: Request):
             "postman_collection",
             "signed_webhooks",
             "webhook_delivery_outbox",
+            "public_trust_center",
+            "evaluation_definition_registry",
+            "immutable_evaluation_runs",
+            "check_level_evaluation_results",
+            "automated_trust_evaluators",
+            "trust_findings",
+            "public_incident_history",
+            "known_limitation_registry",
+            "trust_attestations",
+            "machine_readable_trust_status",
+            "trust_webhook_events",
         ],
         deferred_capabilities=[
-            "public_trust_center",
             "large_scale_graph_database_adapter",
             "user_casebooks",
             "external_snapshot_object_storage_adapter",
@@ -164,6 +183,13 @@ def stats(db: Session = Depends(get_session)):
         evidence_foundations=count(EvidenceFoundation),
         validation_events=count(ValidationEvent),
         import_jobs=count(ImportJob),
+        evaluation_definitions=count(EvaluationDefinition),
+        evaluation_runs=count(EvaluationRun),
+        evaluation_check_results=count(EvaluationCheckResult),
+        trust_findings=count(TrustFinding),
+        trust_incidents=count(TrustIncident),
+        known_limitations=count(KnownLimitation),
+        trust_attestations=count(TrustAttestation),
         entities_by_type={key: int(value) for key, value in entity_rows},
         relationships_by_predicate={
             key: int(value) for key, value in predicate_rows

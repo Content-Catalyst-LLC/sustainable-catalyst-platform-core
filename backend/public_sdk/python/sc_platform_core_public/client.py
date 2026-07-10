@@ -71,6 +71,21 @@ class PublicApiClient:
     def verify_ledger(self):
         return self.request("GET", "/ledger/verify")
 
+    def trust_status(self):
+        return self.request("GET", "/trust/status")
+
+    def trust_evaluations(self, **params):
+        return self.request("GET", "/trust/evaluations", params=params)
+
+    def trust_incidents(self, include_resolved: bool = False):
+        return self.request("GET", "/trust/incidents", params={"include_resolved": include_resolved})
+
+    def trust_limitations(self, include_retired: bool = False):
+        return self.request("GET", "/trust/limitations", params={"include_retired": include_retired})
+
+    def trust_attestations(self):
+        return self.request("GET", "/trust/attestations")
+
     def identity(self):
         return self.request("GET", "/developer/me")
 

@@ -1,150 +1,174 @@
 # Integration Guide
 
-## Choosing an API surface
+## Trust Center consumers
 
-Use `/v1` when:
-
-- The caller is a trusted Sustainable Catalyst product
-- The operation requires the internal write key
-- The integration creates claims, evidence, relationships, or snapshots
-- The integration manages developer applications or publishes events
-
-Use `/api/v1` when:
-
-- The caller is an external developer or public integration
-- The integration needs stable read access
-- The caller should have explicit scopes and quotas
-- Usage must be attributable to an application and credential
-- The integration manages its own webhook subscriptions
-
-## Research Librarian
-
-External research tools can use:
+Use anonymous routes for public web rendering:
 
 ```text
-GET /api/v1/entities
-GET /api/v1/graph/{entity_id}
-GET /api/v1/graph/path
-GET /api/v1/claims
-GET /api/v1/evidence-records
-GET /api/v1/evidence/manifests/{claim_id}
+GET /trust/status.json
+GET /trust/evaluations.json
 ```
 
-Recommended scopes:
+Use the Unified Public API for authenticated integrations:
 
 ```text
-registry:read
-graph:read
-evidence:read
-ledger:read
+GET /api/v1/trust/status
+GET /api/v1/trust/evaluations
+GET /api/v1/trust/incidents
+GET /api/v1/trust/limitations
+GET /api/v1/trust/attestations
+```
+
+Scope:
+
+```text
+trust:read
 ```
 
 ## Workbench
 
-Workbench remains an internal writer. It should continue using `/v1` to create:
+Workbench should run `calculator-validation` for release candidates and substantial calculator changes.
 
-- Provenance activities
-- Calculation traces
-- Evidence records
-- Graph relationships
-- Webhook events when needed
+Recommended observations:
 
-A public calculator client can use `/api/v1` for reviewed metadata and evidence but should not receive the internal write key.
+```json
+{
+  "total_cases": 250,
+  "passed_cases": 248,
+  "tolerance_failures": 0,
+  "edge_cases_total": 40,
+  "edge_cases_passed": 39
+}
+```
 
-## Decision Studio
+Attach calculation traces, validation reports, or release manifests through `evidence_references`.
 
-Decision Studio remains an internal writer for:
+## Research Librarian
 
-- Claims
-- Evidence records
-- Review assignments
-- Evidence manifests
-- Developer-facing webhook events
+The Research Librarian should run `ai-grounding` against a curated evaluation set.
 
-Public decision-packet viewers can use `/api/v1`.
+Recommended observations:
+
+```json
+{
+  "citation_coverage": 0.97,
+  "unsupported_claim_rate": 0.015,
+  "source_relevance": 0.94,
+  "scope_gate_pass_rate": 0.995
+}
+```
+
+Evaluation samples should be retained outside the aggregate observation when detailed prompt-response content is sensitive. Reference the retained evidence through stable IDs or storage references.
 
 ## Site Intelligence
 
-Site Intelligence remains an internal writer for:
+Each connector can run `connector-freshness` with:
 
-- Source entities
-- Source snapshots
-- Connector provenance
-- Indicator relationships
+```json
+{
+  "last_success_at": "2026-07-10T12:00:00Z",
+  "max_age_hours": 24,
+  "connector_status": "active"
+}
+```
 
-Public dashboards can consume selected records through `/api/v1`.
+Use the connector entity as `target_entity_id`.
 
-## API-key onboarding
+## Decision Studio
 
-1. Create a developer application.
-2. Review the use case.
-3. Approve or reject it.
-4. Assign a plan.
-5. Issue a least-privilege key.
-6. Deliver the plaintext key once.
-7. Ask the developer to verify `/api/v1/status`.
-8. Monitor `/api/v1/developer/usage` and internal developer statistics.
-9. Revoke and replace keys when compromised or lost.
+Decision Studio can include Trust Center status in exported decision packets and link claims to relevant evaluation runs.
 
-## Webhook verification
+Do not present an aggregate Trust Center score as proof that a decision is correct. Include the underlying domains, incidents, limitations, and evaluation dates.
 
-Given:
+## Accessibility workflow
+
+Record both automated and manual checks:
+
+```json
+{
+  "target": "WCAG 2.2 AA",
+  "total_checks": 120,
+  "passed_checks": 116,
+  "critical_failures": 0,
+  "manual_checks_pending": 4
+}
+```
+
+Pending manual checks should remain visible as warnings.
+
+## Custom review methods
+
+Create an evaluation definition with:
 
 ```text
-timestamp = X-SC-Webhook-Timestamp
-signature = X-SC-Webhook-Signature
-body = exact raw request body
+evaluator_kind = recorded
 ```
 
-Compute:
+Then submit check results under `observations.checks`.
+
+This is appropriate for editorial source review, legal authority review, design review, qualitative methodology review, or specialist scientific review.
+
+## Incidents
+
+Create an incident when a material trust condition is active and cannot be represented adequately as only an evaluation finding.
+
+Examples:
+
+- Source connector outage
+- Evidence corruption
+- Incorrect calculator output
+- Public API data exposure
+- AI scope-gate failure affecting published output
+- Accessibility regression
+
+Resolve the incident only after impact, root cause, and remediation have been recorded when known.
+
+## Limitations
+
+Use a known limitation for persistent boundaries rather than temporary operational incidents.
+
+Examples:
+
+- Experimental calculator without complete validation
+- AI evaluation set limited to English
+- Source freshness dependent on upstream publication cadence
+- Accessibility review incomplete for embedded third-party content
+
+## Attestations
+
+Attestations should be narrow and evidence-backed.
+
+Good:
+
+> The v2.4.0 Platform Core regression suite completed with 36 passing tests on the recorded release environment.
+
+Too broad:
+
+> Platform Core is fully trustworthy.
+
+## Webhooks
+
+Subscribe to:
 
 ```text
-HMAC_SHA256(subscription_secret, timestamp + "." + body)
+trust.*
 ```
 
-Compare the hexadecimal digest to the `v1=` signature using a constant-time comparison.
+or specific events such as:
 
-Reject:
-
-- Old timestamps outside the consumer's replay window
-- Missing signatures
-- Invalid signatures
-- Duplicate webhook IDs already processed
-
-## Python SDK
-
-```python
-from sc_platform_core_public import PublicApiClient
-
-client = PublicApiClient(
-    "https://YOUR-PLATFORM-CORE.onrender.com",
-    "scpk_your_key",
-)
-
-print(client.status())
-print(client.entities(entity_type="product"))
-print(client.verify_ledger())
-```
-
-## JavaScript SDK
-
-```javascript
-import { PublicApiClient } from "./index.mjs";
-
-const client = new PublicApiClient(
-  "https://YOUR-PLATFORM-CORE.onrender.com",
-  "scpk_your_key"
-);
-
-console.log(await client.status());
-console.log(await client.entities({ entity_type: "product" }));
+```text
+trust.evaluation.completed
+trust.incident.created
+trust.incident.updated
+trust.finding.created
+trust.attestation.revoked
 ```
 
 ## WordPress
 
 ```text
-[sc_developer_portal]
-[sc_public_api_plans]
+[sc_trust_center]
+[sc_trust_status]
 ```
 
-The WordPress connector links to the backend Developer Portal. It does not store public developer keys or the internal write key.
+The status shortcode uses the anonymous public JSON route and does not require a public developer key.

@@ -53,6 +53,27 @@ export class PublicApiClient {
     return this.request("/ledger/verify");
   }
 
+  trustStatus() {
+    return this.request("/trust/status");
+  }
+
+  trustEvaluations(params = {}) {
+    const query = new URLSearchParams(params);
+    return this.request(`/trust/evaluations?${query}`);
+  }
+
+  trustIncidents(includeResolved = false) {
+    return this.request(`/trust/incidents?include_resolved=${includeResolved}`);
+  }
+
+  trustLimitations(includeRetired = false) {
+    return this.request(`/trust/limitations?include_retired=${includeRetired}`);
+  }
+
+  trustAttestations() {
+    return this.request("/trust/attestations");
+  }
+
   identity() {
     return this.request("/developer/me");
   }

@@ -1,32 +1,36 @@
-# Release Checklist — v2.3.0
+# Release Checklist — v2.4.0
 
 - [ ] Run all regression tests
-- [ ] Confirm migration `0004`
-- [ ] Confirm API plans are seeded idempotently
-- [ ] Confirm v2.3.0 registry seed
-- [ ] Confirm existing `/v1` tests still pass
-- [ ] Confirm `/api/v1` requires a key
-- [ ] Confirm scope enforcement
-- [ ] Confirm minute and daily quotas
-- [ ] Confirm maximum page size
-- [ ] Confirm plaintext key is returned once
-- [ ] Confirm only the key hash is stored
-- [ ] Confirm revocation
-- [ ] Confirm expiration handling
-- [ ] Confirm request IDs and quota headers
-- [ ] Confirm salted request logging
-- [ ] Confirm public claims and evidence filtering
-- [ ] Confirm administrative ledger records are excluded
-- [ ] Confirm webhook URL restrictions
-- [ ] Confirm webhook signatures
-- [ ] Confirm successful deliveries
-- [ ] Confirm failed deliveries remain pending
-- [ ] Confirm Developer Portal
-- [ ] Confirm public OpenAPI security definitions
-- [ ] Confirm API console
-- [ ] Confirm Python SDK ZIP
-- [ ] Confirm JavaScript SDK ZIP
-- [ ] Confirm Postman collection
-- [ ] Confirm WordPress connector v2.3.0
+- [ ] Confirm migration `0005`
+- [ ] Confirm eight evaluation definitions are seeded
+- [ ] Confirm existing API plans include `trust:read`
+- [ ] Confirm v2.4.0 registry seed
+- [ ] Confirm ledger-integrity evaluation
+- [ ] Confirm API-readiness evaluation
+- [ ] Confirm evidence coverage evaluation
+- [ ] Confirm connector freshness evaluation
+- [ ] Confirm calculator validation evaluation
+- [ ] Confirm AI grounding evaluation
+- [ ] Confirm accessibility evaluation
+- [ ] Confirm webhook reliability evaluation
+- [ ] Confirm recorded custom evaluator
+- [ ] Confirm immutable evaluation runs
+- [ ] Confirm immutable check results
+- [ ] Confirm automatic findings
+- [ ] Confirm finding ledger entries
+- [ ] Confirm incident lifecycle
+- [ ] Confirm private incident filtering
+- [ ] Confirm limitation disclosure
+- [ ] Confirm attestation hashing and revocation
+- [ ] Confirm aggregate trust status
+- [ ] Confirm ledger failure produces critical status
+- [ ] Confirm evaluation freshness handling
+- [ ] Confirm anonymous Trust Center routes
+- [ ] Confirm `trust:read` authorization
+- [ ] Confirm public OpenAPI trust routes
+- [ ] Confirm Python SDK trust methods
+- [ ] Confirm JavaScript SDK trust methods
+- [ ] Confirm Postman trust requests
+- [ ] Confirm WordPress connector v2.4.0
 - [ ] Confirm no embedded secrets
-- [ ] Confirm repository and plugin ZIP integrity
+- [ ] Confirm repository, plugin, and SDK ZIP integrity

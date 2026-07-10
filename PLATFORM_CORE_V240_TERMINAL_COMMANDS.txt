@@ -1,0 +1,122 @@
+SUSTAINABLE CATALYST PLATFORM CORE v2.4.0
+Trust Center and Evaluation Framework
+
+Place these files in ~/Downloads:
+
+1. sustainable-catalyst-platform-core-v2.4.0-repo.zip
+2. PUSH_PLATFORM_CORE_V240_FINAL.sh
+
+Run exactly:
+
+cd ~/Downloads
+chmod +x PUSH_PLATFORM_CORE_V240_FINAL.sh
+./PUSH_PLATFORM_CORE_V240_FINAL.sh
+
+The banner must say:
+
+PLATFORM CORE v2.4.0 — FINAL TRUST CENTER PUSH
+
+The script:
+
+- Uses existing GitHub CLI authentication
+- Uses SSH for every Git operation
+- Has no HTTPS or password fallback
+- Handles an existing or empty repository
+- Safety-stashes unfinished local changes
+- Removes damaged virtual environments
+- Excludes .venv from rsync
+- Recreates the virtual environment from scratch
+- Uses .venv/bin/python directly
+- Runs all 36 tests
+- Runs migration 0005 and seed smoke tests
+- Runs the default Trust Center evaluation suite
+- Builds the WordPress connector
+- Copies Python and JavaScript SDK downloads
+- Copies the Postman collection
+- Commits and pushes main
+
+RENDER
+
+Keep the existing Platform Core service and PostgreSQL database.
+
+Add or confirm:
+
+SC_CORE_TRUST_CENTER_ENABLED=true
+SC_CORE_TRUST_PUBLIC_STATUS_ENABLED=true
+SC_CORE_TRUST_STALE_AFTER_DAYS=90
+
+Keep:
+
+SC_CORE_ENVIRONMENT=production
+SC_CORE_DATABASE_URL=<Render PostgreSQL internal database URL>
+SC_CORE_WRITE_API_KEY=<existing long internal secret>
+SC_CORE_CORS_ORIGINS=https://sustainablecatalyst.com
+SC_CORE_PUBLIC_READS=true
+SC_CORE_MAX_GRAPH_DEPTH=4
+SC_CORE_PAGE_SIZE_MAX=200
+SC_CORE_EXPLORER_ENABLED=true
+SC_CORE_EVIDENCE_EXPLORER_ENABLED=true
+SC_CORE_SNAPSHOT_EXCERPT_MAX=1200
+SC_CORE_PUBLIC_API_ENABLED=true
+SC_CORE_DEVELOPER_PORTAL_ENABLED=true
+SC_CORE_PUBLIC_API_DEFAULT_PLAN=free
+SC_CORE_API_LOG_SALT=<existing long random secret>
+SC_CORE_WEBHOOK_SIGNING_SECRET=<existing different long random secret>
+SC_CORE_WEBHOOK_DELIVERY_TIMEOUT=10
+
+The existing start command runs migration 0005 automatically:
+
+./start.sh
+
+POST-DEPLOYMENT TESTS
+
+curl https://YOUR-PLATFORM-CORE.onrender.com/health
+
+curl https://YOUR-PLATFORM-CORE.onrender.com/trust/status.json
+
+curl https://YOUR-PLATFORM-CORE.onrender.com/trust/evaluations.json
+
+Open:
+
+https://YOUR-PLATFORM-CORE.onrender.com/trust
+https://YOUR-PLATFORM-CORE.onrender.com/developers
+
+RUN THE DEFAULT TRUST SUITE ON RENDER
+
+Use the Render Shell:
+
+python scripts/run_trust_evaluations.py --triggered-by production-deployment
+
+The default suite runs:
+
+- Evidence Ledger Integrity
+- Unified Public API Readiness
+- Evidence Review Coverage
+- Webhook Delivery Reliability
+
+Context-driven evaluations can be submitted through:
+
+POST /v1/trust/definitions/{definition_id}/runs
+
+PUBLIC API
+
+Existing public API keys receive trust:read through migration 0005's plan-scope merge.
+
+Test:
+
+curl \
+  "https://YOUR-PLATFORM-CORE.onrender.com/api/v1/trust/status" \
+  -H "Authorization: Bearer scpk_YOUR_KEY"
+
+WORDPRESS
+
+The push script creates:
+
+~/Downloads/sustainable-catalyst-platform-core-repo/dist/sustainable-catalyst-platform-core-plugin-v2.4.0.zip
+
+Upload it over the existing Platform Core connector.
+
+Shortcodes:
+
+[sc_trust_center]
+[sc_trust_status]

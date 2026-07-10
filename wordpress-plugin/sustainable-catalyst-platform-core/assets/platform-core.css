@@ -86,3 +86,9 @@
   border: 1px solid var(--scpc-border);
   background: #ffffff;
 }
+
+.scpc-trust-status { display:inline-block; padding:5px 9px; border:1px solid var(--scpc-border); font-weight:800; text-transform:uppercase; font-size:.78rem; }
+.scpc-trust-operational { color:#1f6f43; }
+.scpc-trust-attention { color:#8b5a00; }
+.scpc-trust-degraded, .scpc-trust-critical { color:var(--scpc-red); }
+.scpc-trust-unknown { color:#666666; }

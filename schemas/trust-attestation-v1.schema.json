@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/platform-core/trust-attestation-v1.json",
+  "title": "Sustainable Catalyst Trust Attestation",
+  "type": "object",
+  "required": [
+    "statement",
+    "scope",
+    "issuer",
+    "status",
+    "content_hash",
+    "valid_from"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "subject_entity_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "statement": {
+      "type": "string"
+    },
+    "scope": {
+      "type": "string"
+    },
+    "issuer": {
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "active",
+        "revoked"
+      ]
+    },
+    "evidence_references": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "valid_from": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "valid_until": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "content_hash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "public": {
+      "type": "boolean"
+    },
+    "metadata": {
+      "type": "object"
+    }
+  }
+}

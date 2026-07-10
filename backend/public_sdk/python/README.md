@@ -10,5 +10,6 @@ client = PublicApiClient(
 
 print(client.status())
 print(client.entities(entity_type="product"))
-print(client.verify_ledger())
+print(client.trust_status())
+print(client.trust_evaluations(domain="ai-responsibility"))
 ```
