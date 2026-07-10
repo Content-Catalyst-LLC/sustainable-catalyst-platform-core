@@ -1,0 +1,323 @@
+{
+  "name": "sustainable-catalyst-platform-core-v2.0.0",
+  "version": "2.0.0",
+  "built_on": "2026-07-10",
+  "validation": {
+    "pytest": "8 passed",
+    "migration_smoke": "passed",
+    "seed_smoke": "passed",
+    "idempotent_reseed": "passed"
+  },
+  "files": [
+    {
+      "path": ".github/workflows/test.yml",
+      "bytes": 454,
+      "sha256": "c634870320039031329777d2cc9211869acb7d96da2e0924eb444c3f2e3ba2dc"
+    },
+    {
+      "path": ".gitignore",
+      "bytes": 167,
+      "sha256": "9f35c9278fb9fa8f921e959c2fd1cf0cc7332b3d4b9735f938d51111065ef702"
+    },
+    {
+      "path": ".python-version",
+      "bytes": 8,
+      "sha256": "43fd694bd564dd2215f51a6b23f6a3712834850225e629d7781c81c71076092d"
+    },
+    {
+      "path": "CHANGELOG.md",
+      "bytes": 1017,
+      "sha256": "e297437d9bbf9352ec70916c9e3b15d9a9100e6dca03dd111d49f894cf3d0517"
+    },
+    {
+      "path": "LICENSE",
+      "bytes": 1077,
+      "sha256": "86f5ca4e2be25260a0e60361d3d42dc1daed4177ef9cab593f00563c3efb0c80"
+    },
+    {
+      "path": "PLATFORM_CORE_V200_TERMINAL_COMMANDS.txt",
+      "bytes": 2335,
+      "sha256": "797f7ab79a5d198eba1e43533351ed200f97db00c938f73fe1472379ab072475"
+    },
+    {
+      "path": "README.md",
+      "bytes": 4822,
+      "sha256": "d80f3106ed855abd5423ab4b1c285b1924565cb3590d567f37bcff61ba25f35c"
+    },
+    {
+      "path": "SMOKE_TEST_RESULTS.json",
+      "bytes": 4191,
+      "sha256": "eb67a6e894f338133f648dc0cecfd82140b2df2d7928c4a04b786d3a2d5f4872"
+    },
+    {
+      "path": "TEST_RESULTS.txt",
+      "bytes": 1381,
+      "sha256": "276a8c724648f8655a18310ba03af8435e449ea28ef937d8802cbfb8fc1821d6"
+    },
+    {
+      "path": "backend/.env.example",
+      "bytes": 280,
+      "sha256": "415083b5c0f65d7cce8dc91489f91802fe2f0be9048c57705ea592bedc72e538"
+    },
+    {
+      "path": "backend/.python-version",
+      "bytes": 8,
+      "sha256": "43fd694bd564dd2215f51a6b23f6a3712834850225e629d7781c81c71076092d"
+    },
+    {
+      "path": "backend/Dockerfile",
+      "bytes": 218,
+      "sha256": "0edf9b1f1837ea3491ec3fc4b67c24646423d07d80a4579058ba50c298724421"
+    },
+    {
+      "path": "backend/app/__init__.py",
+      "bytes": 22,
+      "sha256": "ffb3a541d6d590ae2369dd022dda48d20ad3fb31006feaa01661f9985cc35e20"
+    },
+    {
+      "path": "backend/app/config.py",
+      "bytes": 2292,
+      "sha256": "cab7e2e65bf4c4ec91722ee57959100743fdcd8509be16460bf7358fa74ea353"
+    },
+    {
+      "path": "backend/app/database.py",
+      "bytes": 869,
+      "sha256": "c884ae74f6c479030a9b0b055c56f11dec7061e97648acb03158e87d0fc47923"
+    },
+    {
+      "path": "backend/app/dependencies.py",
+      "bytes": 1243,
+      "sha256": "d9e8fcc2e76fc680784f3d7372411f50b2fb8685ad06c8379c2df738d1dc0312"
+    },
+    {
+      "path": "backend/app/ids.py",
+      "bytes": 1250,
+      "sha256": "abf7c40f084b165b3f8a29849a1b1e20d93678c93e1064d42708e97cc14fdbfe"
+    },
+    {
+      "path": "backend/app/main.py",
+      "bytes": 2203,
+      "sha256": "93dd32328daa1e613db199e78a53699c10c906a91363a3487fe1153c40960ab7"
+    },
+    {
+      "path": "backend/app/migrations.py",
+      "bytes": 1588,
+      "sha256": "938d7752816f0418fa784e5680c6d283aea6ba7d103375d2f31f77f4e83b1c98"
+    },
+    {
+      "path": "backend/app/models.py",
+      "bytes": 7808,
+      "sha256": "3f949b775b779213ec6f73253b8b753e840902ae1e4c26dadd45d7faa277e363"
+    },
+    {
+      "path": "backend/app/routers/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "backend/app/routers/entities.py",
+      "bytes": 3115,
+      "sha256": "7e0771d5846aaf1e4e7b14d7706d35945ac1cef0196442fad3e27591dc77af8c"
+    },
+    {
+      "path": "backend/app/routers/foundations.py",
+      "bytes": 2674,
+      "sha256": "b14271e9faa6773e3da2bd99e9a8f87d1cf06f39c95e7f606452112cdfff9572"
+    },
+    {
+      "path": "backend/app/routers/imports.py",
+      "bytes": 1117,
+      "sha256": "864064d42187fcfcf70cb8e6a221c7d1b90377bc5d48401c3e1c18bdf4dc6eaf"
+    },
+    {
+      "path": "backend/app/routers/meta.py",
+      "bytes": 3067,
+      "sha256": "8310d643897ef462f7ae0b30bf9cba6c381874aa31a105c55476309c8348a33a"
+    },
+    {
+      "path": "backend/app/routers/relationships.py",
+      "bytes": 3153,
+      "sha256": "6bbe875480bf9ce6478a7d0a79027be464ea11393a9453d4a01d03969c64cd86"
+    },
+    {
+      "path": "backend/app/schemas.py",
+      "bytes": 6825,
+      "sha256": "6673d3c8157dcd164af7ba54386cdae83180f6be8203321a3bcc82d440faf14d"
+    },
+    {
+      "path": "backend/app/services/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "backend/app/services/entities.py",
+      "bytes": 5593,
+      "sha256": "5873dce3dc1849f8c1a41f5a82cd725edee54998c0e29ecab559c3c2e1252bd2"
+    },
+    {
+      "path": "backend/app/services/imports.py",
+      "bytes": 2291,
+      "sha256": "827cce046d717509e597aefe32d682eeee4c8443fe604bfac7db50b6b8d0d25b"
+    },
+    {
+      "path": "backend/app/services/relationships.py",
+      "bytes": 4644,
+      "sha256": "7478ec392ad343da6acccde46713fba87ad32fdbfc0364936476396cf52d8fa1"
+    },
+    {
+      "path": "backend/clients/python/README.md",
+      "bytes": 409,
+      "sha256": "81c73eb9943ed40e7d26a45b3b1937a565b473952c14f2995a6a25622be31436"
+    },
+    {
+      "path": "backend/clients/python/sc_platform_core/__init__.py",
+      "bytes": 113,
+      "sha256": "454cfd7eb8804e30f12b8c9b688c287b468e0b21dbe427ba3b4dfa90c9adc162"
+    },
+    {
+      "path": "backend/clients/python/sc_platform_core/client.py",
+      "bytes": 2840,
+      "sha256": "a9b7cb6274f66e2bc971061d3adb978787b62404763312caa6708fdff9238cab"
+    },
+    {
+      "path": "backend/data/platform_core_seed_v2.0.0.json",
+      "bytes": 7302,
+      "sha256": "57edbf3e6a82690107abaff43be38e0bf6e1980224b7984de50c2ea85c4b2011"
+    },
+    {
+      "path": "backend/migrations/README.md",
+      "bytes": 457,
+      "sha256": "aede59532b3b795eaa02014bcfbc1559dfa384e4179bc474ef7857ea5d17c38f"
+    },
+    {
+      "path": "backend/platform_core.db",
+      "bytes": 147456,
+      "sha256": "b4d92e7d691cfbcdb5b30e6b27f26b08a50316d99609a3096092fd28cbb064c5"
+    },
+    {
+      "path": "backend/requirements.txt",
+      "bytes": 131,
+      "sha256": "d66170307a2de891469d9ce7324c68a6ee07146403e7a27b5a52849e2a04c5c2"
+    },
+    {
+      "path": "backend/scripts/import_manifest.py",
+      "bytes": 1114,
+      "sha256": "0e4d02d7184e193b96b6bdb28c6c53537ce0f8c4e1e2daddfcd7e1480e5c997e"
+    },
+    {
+      "path": "backend/scripts/migrate.py",
+      "bytes": 607,
+      "sha256": "e4bb30fcd85f77502362b8598134853dc87c1a24a5888abe2c6e2a6c3af7ecc2"
+    },
+    {
+      "path": "backend/scripts/seed_registry.py",
+      "bytes": 1605,
+      "sha256": "71f1e4f1c829dc3a911602bf7009105130d6bc6108ddc40f0e833d23b53577d0"
+    },
+    {
+      "path": "backend/start.sh",
+      "bytes": 178,
+      "sha256": "041fc01a6e7858b746d01df65219d5f83716d66a8a1d652f7f5e24d42834b76c"
+    },
+    {
+      "path": "backend/tests/conftest.py",
+      "bytes": 778,
+      "sha256": "a3b58a83d0f17cc31e3ab4d827727fe5d6e4effbd9b95aad73eac64fc92e432d"
+    },
+    {
+      "path": "backend/tests/test_entities.py",
+      "bytes": 1735,
+      "sha256": "2bf30c241b0c0535cd8be68f074e44110903d7a0248d667da2f7d7225f48f113"
+    },
+    {
+      "path": "backend/tests/test_graph.py",
+      "bytes": 1785,
+      "sha256": "59a0d9a242b1d9b105714774fe580d22c0d8fbbb0ad9c0ffcfa0988e45f9f6fb"
+    },
+    {
+      "path": "backend/tests/test_health.py",
+      "bytes": 561,
+      "sha256": "8248a1cd90c1794b179c1ce2431f78bc3b23b192158dc9a8b6f5c821a04925e1"
+    },
+    {
+      "path": "backend/tests/test_import_and_foundations.py",
+      "bytes": 2266,
+      "sha256": "0d6093ff1dfcf92c605569d1c2d455bd9ca0b5545990be4a3ed316b755514c1e"
+    },
+    {
+      "path": "dist/sustainable-catalyst-platform-core-plugin-v2.0.0.zip",
+      "bytes": 3413,
+      "sha256": "f3147d4ff5e92c1c7617d3fb343a821f51cab7083af29e0207caf18f8d44ccb9"
+    },
+    {
+      "path": "docs/ARCHITECTURE.md",
+      "bytes": 2380,
+      "sha256": "da45e09c56c0c4ac266796079e3f9b60132ad8387008b3462db87c3e96a47965"
+    },
+    {
+      "path": "docs/INTEGRATION_GUIDE.md",
+      "bytes": 1949,
+      "sha256": "48948331688fe7dfb8542d025aae39c42fb0d2a2bf8ff14693779e2eb598bf0d"
+    },
+    {
+      "path": "docs/RELEASE_CHECKLIST.md",
+      "bytes": 633,
+      "sha256": "2534534d83f8786bd8e022c87b3ea276f0e123d618b6d11871984fea7b7a86fb"
+    },
+    {
+      "path": "docs/ROADMAP.md",
+      "bytes": 1218,
+      "sha256": "0f92430e71d042b7a27fc80b71909034acfa21e63209f9b2324281c1b10d37f1"
+    },
+    {
+      "path": "examples/site_intelligence_import.json",
+      "bytes": 7302,
+      "sha256": "57edbf3e6a82690107abaff43be38e0bf6e1980224b7984de50c2ea85c4b2011"
+    },
+    {
+      "path": "push_platform_core_v2_0_0_to_github.sh",
+      "bytes": 3323,
+      "sha256": "27120d17b08e7fe843fcdec21d502b932825eab73ed8321935c5832542444c09"
+    },
+    {
+      "path": "render.yaml",
+      "bytes": 846,
+      "sha256": "13755ee669789b78aaef5343c6f8d4c07eea55d1344859125ab63c7a81ab9511"
+    },
+    {
+      "path": "schemas/entity-v1.schema.json",
+      "bytes": 1125,
+      "sha256": "0df8a54c312eccc728eeb60cc789bf53d3cb5abc65108423daa0a584001bce3b"
+    },
+    {
+      "path": "schemas/evidence-foundation-v1.schema.json",
+      "bytes": 884,
+      "sha256": "db49c2b83ffd29377da74375a5bfdb6eef2ea3e58e63939fee175c1d350eca1f"
+    },
+    {
+      "path": "schemas/relationship-v1.schema.json",
+      "bytes": 716,
+      "sha256": "6b3dea6f3ddca2e4ad29e46ed3a1e25e3e874df93c9ca19b108580e6b4ee872c"
+    },
+    {
+      "path": "schemas/validation-event-v1.schema.json",
+      "bytes": 914,
+      "sha256": "1e14587db02876c34801d8f451cdf52f7854487c459a5bf93be2b8bfa4509265"
+    },
+    {
+      "path": "wordpress-plugin/sustainable-catalyst-platform-core/assets/platform-core.css",
+      "bytes": 957,
+      "sha256": "71ae7ecb4b69c75b5b2f8b3e09696af975007757f26d2107baa3a52f898b4b12"
+    },
+    {
+      "path": "wordpress-plugin/sustainable-catalyst-platform-core/readme.txt",
+      "bytes": 619,
+      "sha256": "7383cdfb6a161fb23af930694fce4637f1f06c7036699f0b95ad7eb10bfe4d83"
+    },
+    {
+      "path": "wordpress-plugin/sustainable-catalyst-platform-core/sustainable-catalyst-platform-core.php",
+      "bytes": 6999,
+      "sha256": "90bffcde84cb8713b00cbc2e2df7c210b69ba0c844d438f59c7cbfda911186d2"
+    }
+  ]
+}

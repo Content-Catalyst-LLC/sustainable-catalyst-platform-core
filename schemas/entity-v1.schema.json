@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/platform-core/entity-v1.json",
+  "title": "Sustainable Catalyst Entity",
+  "type": "object",
+  "required": [
+    "id",
+    "entity_type",
+    "slug",
+    "name"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^sc:[a-z0-9-]+:[a-z0-9-]+$"
+    },
+    "entity_type": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$"
+    },
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 300
+    },
+    "description": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "canonical_url": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uri"
+    },
+    "status": {
+      "type": "string"
+    },
+    "visibility": {
+      "enum": [
+        "public",
+        "internal",
+        "private"
+      ]
+    },
+    "schema_version": {
+      "type": "string"
+    },
+    "metadata": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,236 @@
+{
+  "source_name": "platform-core-v2.0.0-seed",
+  "entities": [
+    {
+      "id": "sc:service:platform-core",
+      "entity_type": "service",
+      "slug": "platform-core",
+      "name": "Sustainable Catalyst Platform Core",
+      "description": "Shared entity, relationship, provenance-foundation, validation, and integration infrastructure.",
+      "canonical_url": "https://sustainablecatalyst.com/platform/",
+      "status": "active",
+      "visibility": "internal",
+      "schema_version": "1.0",
+      "metadata": {
+        "version": "2.0.0",
+        "platform_role": "shared_intelligence_infrastructure"
+      },
+      "aliases": [
+        {
+          "namespace": "github-repository",
+          "value": "sustainable-catalyst-platform-core"
+        }
+      ]
+    },
+    {
+      "id": "sc:product:research-librarian",
+      "entity_type": "product",
+      "slug": "research-librarian",
+      "name": "Sustainable Catalyst Research Librarian",
+      "description": "Site-scoped research discovery, source routing, answer UX, and guided research path environment.",
+      "canonical_url": "https://sustainablecatalyst.com/platform/research-librarian/",
+      "status": "active",
+      "visibility": "public",
+      "schema_version": "1.0",
+      "metadata": {
+        "platform_role": "research_and_discovery"
+      },
+      "aliases": [
+        {
+          "namespace": "github-repository",
+          "value": "sustainable-catalyst-research-librarian-ai"
+        }
+      ]
+    },
+    {
+      "id": "sc:product:workbench",
+      "entity_type": "product",
+      "slug": "workbench",
+      "name": "Sustainable Catalyst Workbench",
+      "description": "Calculation, modeling, visualization, validation, and article-embedded tool environment.",
+      "canonical_url": "https://sustainablecatalyst.com/modeling-analytics/workbench/",
+      "status": "active",
+      "visibility": "public",
+      "schema_version": "1.0",
+      "metadata": {
+        "platform_role": "analysis_engine"
+      },
+      "aliases": [
+        {
+          "namespace": "github-repository",
+          "value": "sustainable-catalyst-workbench"
+        }
+      ]
+    },
+    {
+      "id": "sc:product:decision-studio",
+      "entity_type": "product",
+      "slug": "decision-studio",
+      "name": "Sustainable Catalyst Decision Studio",
+      "description": "Auditable decision packet, scenario comparison, readiness, evidence, and brief generation environment.",
+      "canonical_url": "https://sustainablecatalyst.com/platform/",
+      "status": "active",
+      "visibility": "public",
+      "schema_version": "1.0",
+      "metadata": {
+        "platform_role": "decision_synthesis"
+      },
+      "aliases": [
+        {
+          "namespace": "github-repository",
+          "value": "sustainable-catalyst-decision-studio"
+        }
+      ]
+    },
+    {
+      "id": "sc:product:site-intelligence",
+      "entity_type": "product",
+      "slug": "site-intelligence",
+      "name": "Sustainable Catalyst Site Intelligence",
+      "description": "Live public data connectors, source health, observatories, dashboards, and public-safe platform intelligence.",
+      "canonical_url": "https://sustainablecatalyst.com/platform/site-intelligence/",
+      "status": "active",
+      "visibility": "public",
+      "schema_version": "1.0",
+      "metadata": {
+        "platform_role": "live_data_and_monitoring"
+      },
+      "aliases": [
+        {
+          "namespace": "github-repository",
+          "value": "sustainable-catalyst-site-intelligence"
+        }
+      ]
+    },
+    {
+      "id": "sc:registry:public-source-registry",
+      "entity_type": "registry",
+      "slug": "public-source-registry",
+      "name": "Sustainable Catalyst Public Source Registry",
+      "description": "Registry of public data sources, APIs, datasets, licenses, freshness expectations, and connector metadata.",
+      "status": "active",
+      "visibility": "public",
+      "schema_version": "1.0",
+      "metadata": {
+        "owner_product": "sc:product:site-intelligence"
+      },
+      "aliases": []
+    },
+    {
+      "id": "sc:registry:tool-registry",
+      "entity_type": "registry",
+      "slug": "tool-registry",
+      "name": "Sustainable Catalyst Tool Registry",
+      "description": "Registry of Workbench tools, calculators, inputs, outputs, equations, maturity, and validation state.",
+      "status": "active",
+      "visibility": "public",
+      "schema_version": "1.0",
+      "metadata": {
+        "owner_product": "sc:product:workbench"
+      },
+      "aliases": []
+    }
+  ],
+  "relationships": [
+    {
+      "subject_id": "sc:product:research-librarian",
+      "predicate": "uses",
+      "object_id": "sc:service:platform-core",
+      "confidence": 1.0,
+      "status": "verified",
+      "provenance": {
+        "source": "platform-core-v2.0.0-architecture"
+      }
+    },
+    {
+      "subject_id": "sc:product:workbench",
+      "predicate": "uses",
+      "object_id": "sc:service:platform-core",
+      "confidence": 1.0,
+      "status": "verified",
+      "provenance": {
+        "source": "platform-core-v2.0.0-architecture"
+      }
+    },
+    {
+      "subject_id": "sc:product:decision-studio",
+      "predicate": "uses",
+      "object_id": "sc:service:platform-core",
+      "confidence": 1.0,
+      "status": "verified",
+      "provenance": {
+        "source": "platform-core-v2.0.0-architecture"
+      }
+    },
+    {
+      "subject_id": "sc:product:site-intelligence",
+      "predicate": "uses",
+      "object_id": "sc:service:platform-core",
+      "confidence": 1.0,
+      "status": "verified",
+      "provenance": {
+        "source": "platform-core-v2.0.0-architecture"
+      }
+    },
+    {
+      "subject_id": "sc:product:decision-studio",
+      "predicate": "uses",
+      "object_id": "sc:product:workbench",
+      "confidence": 1.0,
+      "status": "verified",
+      "provenance": {
+        "source": "platform-architecture"
+      }
+    },
+    {
+      "subject_id": "sc:product:research-librarian",
+      "predicate": "routes_to",
+      "object_id": "sc:product:workbench",
+      "confidence": 1.0,
+      "status": "verified",
+      "provenance": {
+        "source": "research-librarian-route-map"
+      }
+    },
+    {
+      "subject_id": "sc:product:research-librarian",
+      "predicate": "routes_to",
+      "object_id": "sc:product:decision-studio",
+      "confidence": 1.0,
+      "status": "verified",
+      "provenance": {
+        "source": "research-librarian-route-map"
+      }
+    },
+    {
+      "subject_id": "sc:product:research-librarian",
+      "predicate": "routes_to",
+      "object_id": "sc:product:site-intelligence",
+      "confidence": 1.0,
+      "status": "verified",
+      "provenance": {
+        "source": "research-librarian-route-map"
+      }
+    },
+    {
+      "subject_id": "sc:product:site-intelligence",
+      "predicate": "uses",
+      "object_id": "sc:registry:public-source-registry",
+      "confidence": 1.0,
+      "status": "verified",
+      "provenance": {
+        "source": "site-intelligence-architecture"
+      }
+    },
+    {
+      "subject_id": "sc:product:workbench",
+      "predicate": "uses",
+      "object_id": "sc:registry:tool-registry",
+      "confidence": 1.0,
+      "status": "verified",
+      "provenance": {
+        "source": "workbench-architecture"
+      }
+    }
+  ]
+}

@@ -1,0 +1,88 @@
+SUSTAINABLE CATALYST PLATFORM CORE v2.0.0
+Universal Entity Registry and Knowledge Infrastructure Foundation
+
+1. Create this empty GitHub repository if it does not already exist:
+
+Content-Catalyst-LLC/sustainable-catalyst-platform-core
+
+Do not initialize it with a README if you are creating it immediately before the first push.
+
+2. Put both downloaded files in ~/Downloads:
+
+sustainable-catalyst-platform-core-v2.0.0-repo.zip
+push_platform_core_v2_0_0_to_github.sh
+
+3. Run:
+
+cd ~/Downloads
+chmod +x push_platform_core_v2_0_0_to_github.sh
+./push_platform_core_v2_0_0_to_github.sh
+
+4. Create a new Render PostgreSQL database.
+
+Recommended name:
+
+sustainable-catalyst-platform-core-db
+
+5. Create a new Render Web Service from:
+
+Content-Catalyst-LLC/sustainable-catalyst-platform-core
+
+Render settings:
+
+Root Directory: backend
+Build Command: pip install -r requirements.txt
+Start Command: ./start.sh
+Health Check Path: /health
+Python Version: 3.12.11
+
+6. Add environment variables:
+
+SC_CORE_ENVIRONMENT=production
+SC_CORE_DATABASE_URL=<Render PostgreSQL internal database URL>
+SC_CORE_WRITE_API_KEY=<generate a long random secret>
+SC_CORE_CORS_ORIGINS=https://sustainablecatalyst.com
+SC_CORE_PUBLIC_READS=true
+SC_CORE_MAX_GRAPH_DEPTH=3
+SC_CORE_PAGE_SIZE_MAX=200
+
+7. After deployment, test:
+
+curl https://YOUR-PLATFORM-CORE.onrender.com/health
+
+curl https://YOUR-PLATFORM-CORE.onrender.com/v1/stats
+
+curl "https://YOUR-PLATFORM-CORE.onrender.com/v1/entities?entity_type=product"
+
+curl "https://YOUR-PLATFORM-CORE.onrender.com/v1/graph/sc:product:research-librarian?depth=2"
+
+8. Build or locate the WordPress plugin zip:
+
+The push script creates:
+
+~/Downloads/sustainable-catalyst-platform-core-repo/dist/sustainable-catalyst-platform-core-plugin-v2.0.0.zip
+
+Upload it in WordPress:
+
+Plugins → Add Plugin → Upload Plugin
+
+Then configure:
+
+Settings → Platform Core
+
+Enter the Render backend URL.
+
+9. Add a status block to a private platform/admin page first:
+
+[sc_platform_core_status]
+
+Optional entity card:
+
+[sc_platform_core_entity id="sc:product:workbench"]
+
+10. Product integration environment variables for later builds:
+
+SC_PLATFORM_CORE_URL=https://YOUR-PLATFORM-CORE.onrender.com
+SC_PLATFORM_CORE_WRITE_API_KEY=<same write key, backend only>
+
+Never place the write key in public JavaScript, page HTML, or a public shortcode.

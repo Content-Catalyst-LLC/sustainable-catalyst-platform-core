@@ -1,0 +1,53 @@
+.scpc-card {
+  --scpc-red: #e60000;
+  --scpc-black: #111111;
+  --scpc-cream: #f8f4ed;
+  --scpc-border: #ded8cf;
+  margin: 24px 0;
+  padding: 24px;
+  background: #ffffff;
+  border: 1px solid var(--scpc-border);
+  border-left: 5px solid var(--scpc-red);
+  color: var(--scpc-black);
+}
+
+.scpc-card h3 {
+  margin: 5px 0 12px;
+  color: var(--scpc-black);
+}
+
+.scpc-kicker {
+  margin: 0;
+  color: var(--scpc-red);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.scpc-meta {
+  color: #666666;
+  font-size: 0.9rem;
+}
+
+.scpc-button {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 10px 16px;
+  background: var(--scpc-red);
+  border: 1px solid var(--scpc-red);
+  color: #ffffff !important;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.scpc-button:hover,
+.scpc-button:focus {
+  background: #bf0000;
+  border-color: #bf0000;
+  color: #ffffff !important;
+}
+
+.scpc-error {
+  background: var(--scpc-cream);
+}

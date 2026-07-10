@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/platform-core/validation-event-v1.json",
+  "title": "Sustainable Catalyst Validation Event",
+  "type": "object",
+  "required": [
+    "component",
+    "check_name",
+    "status"
+  ],
+  "properties": {
+    "entity_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "component": {
+      "type": "string"
+    },
+    "check_name": {
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "passed",
+        "warning",
+        "failed",
+        "unknown"
+      ]
+    },
+    "severity": {
+      "enum": [
+        "info",
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ]
+    },
+    "details": {
+      "type": "object"
+    },
+    "observed_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    }
+  }
+}

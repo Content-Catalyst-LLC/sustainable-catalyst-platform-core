@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/platform-core/evidence-foundation-v1.json",
+  "title": "Sustainable Catalyst Evidence Foundation",
+  "type": "object",
+  "required": [
+    "evidence_type"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "evidence_type": {
+      "type": "string"
+    },
+    "subject_entity_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "source_entity_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "methodology": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "confidence": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0,
+      "maximum": 1
+    },
+    "review_status": {
+      "type": "string"
+    },
+    "provenance": {
+      "type": "object"
+    }
+  }
+}

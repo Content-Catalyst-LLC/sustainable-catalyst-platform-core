@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: sustainable-catalyst-platform-core
+    runtime: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: ./start.sh
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.11
+      - key: SC_CORE_ENVIRONMENT
+        value: production
+      - key: SC_CORE_PUBLIC_READS
+        value: "true"
+      - key: SC_CORE_DATABASE_URL
+        fromDatabase:
+          name: sustainable-catalyst-platform-core-db
+          property: connectionString
+      - key: SC_CORE_WRITE_API_KEY
+        generateValue: true
+      - key: SC_CORE_CORS_ORIGINS
+        value: https://sustainablecatalyst.com
+
+databases:
+  - name: sustainable-catalyst-platform-core-db
+    databaseName: sustainable_catalyst_platform_core
+    user: sustainable_catalyst_platform_core

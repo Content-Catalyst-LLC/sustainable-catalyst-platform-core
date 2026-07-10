@@ -1,0 +1,17 @@
+.DS_Store
+__MACOSX/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+.venv/
+.env
+*.db
+*.sqlite
+*.sqlite3
+*.log
+dist/
+build/
+*.egg-info/
+wordpress-plugin/*.zip
