@@ -45,6 +45,7 @@ def health(request: Request):
         "evidence_ledger": True,
         "provenance_records": True,
         "unified_public_api": request.app.state.settings.public_api_enabled,
+        "unified_service_gateway": request.app.state.gateway_settings.enabled,
         "developer_portal": request.app.state.settings.developer_portal_enabled,
         "workflow_engine": request.app.state.settings.workflow_engine_enabled,
         "dossier_center": request.app.state.settings.dossier_center_enabled,
@@ -61,6 +62,7 @@ def ready(db: Session = Depends(get_session)):
         "knowledge_graph": "ready",
         "evidence_ledger": "ready",
         "unified_public_api": "ready",
+        "unified_service_gateway": "ready",
         "trust_center": "ready",
     }
 
@@ -108,6 +110,12 @@ def meta(request: Request):
             "python_client",
             "wordpress_client",
             "unified_public_api_v1",
+            "unified_service_gateway",
+            "environment_backed_service_registry",
+            "aggregated_downstream_health",
+            "cross_service_request_tracing",
+            "bounded_service_proxy",
+            "per_service_circuit_breakers",
             "hashed_developer_credentials",
             "scoped_api_access",
             "plan_aware_rate_limits",

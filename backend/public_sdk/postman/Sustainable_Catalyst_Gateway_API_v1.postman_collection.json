@@ -1,0 +1,33 @@
+{
+  "info": {
+    "name": "Sustainable Catalyst Gateway API v1",
+    "description": "Unified read-only product gateway introduced by Platform Core v2.6.0.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {"key": "base_url", "value": "https://YOUR-PLATFORM-CORE.onrender.com"},
+    {"key": "public_api_key", "value": "scpk_..."}
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [{"key": "token", "value": "{{public_api_key}}", "type": "string"}]
+  },
+  "item": [
+    {
+      "name": "Gateway service catalog",
+      "request": {"method": "GET", "url": "{{base_url}}/api/v1/gateway/services"}
+    },
+    {
+      "name": "Aggregated gateway health",
+      "request": {"method": "GET", "url": "{{base_url}}/api/v1/gateway/health"}
+    },
+    {
+      "name": "Site Intelligence health through Core",
+      "request": {"method": "GET", "url": "{{base_url}}/api/v1/site-intelligence/health"}
+    },
+    {
+      "name": "Workbench health through Core",
+      "request": {"method": "GET", "url": "{{base_url}}/api/v1/workbench/health"}
+    }
+  ]
+}

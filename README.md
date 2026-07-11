@@ -1,4 +1,52 @@
-# Sustainable Catalyst Platform Core v2.5.0
+# Sustainable Catalyst Platform Core v2.6.0
+
+**Unified Service Gateway and Integration Foundation**
+
+Platform Core v2.6.0 makes Sustainable Catalyst Core the governed front door for internal and external product APIs while preserving Site Intelligence, Workbench, Decision Studio, Research Librarian, Catalyst Finance, and Narrative Risk as independently deployable domain services.
+
+The release adds:
+
+- Environment-backed service discovery for six product services
+- A sanitized service catalog that never exposes service URLs or tokens
+- Aggregated downstream health checks
+- Correlation IDs propagated through Core and downstream requests
+- Server-side service-token injection
+- Request-method allowlists and request/response size limits
+- Per-service timeouts and circuit breakers
+- Authenticated internal proxy routes
+- Read-only public developer routes under `/api/v1`
+- A shared `gateway:read` public API scope
+- Gateway deployment examples for Docker Compose and self-hosting
+- Gateway-specific regression tests
+
+Existing v2.0–v2.5 APIs, the Knowledge Graph, Evidence Ledger, Developer Portal, Trust Center, workflows, and signature dossiers remain available.
+
+## Architectural principle
+
+> Core governs access, identity, provenance, routing, and cross-product integration. Domain products retain their specialized calculations, connectors, retrieval logic, and decision workflows.
+
+## Gateway routes
+
+```text
+GET  /v1/gateway/services
+GET  /v1/gateway/health
+*    /v1/gateway/{service_id}/{path}
+
+GET  /api/v1/gateway/services
+GET  /api/v1/gateway/health
+GET  /api/v1/site-intelligence/{path}
+GET  /api/v1/workbench/{path}
+GET  /api/v1/decision-studio/{path}
+GET  /api/v1/research-librarian/{path}
+GET  /api/v1/finance/{path}
+GET  /api/v1/narrative-risk/{path}
+```
+
+See `docs/UNIFIED_SERVICE_GATEWAY_V260.md` and `deployment/platform-core-v260.env.example`.
+
+---
+
+## Previous release foundation: v2.5.0
 
 **Signature Dossiers and End-to-End Workflows**
 

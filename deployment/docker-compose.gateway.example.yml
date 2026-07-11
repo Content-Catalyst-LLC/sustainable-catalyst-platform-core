@@ -1,0 +1,37 @@
+services:
+  platform-core:
+    build:
+      context: ../backend
+    environment:
+      SC_CORE_ENVIRONMENT: production
+      SC_CORE_DATABASE_URL: ${SC_CORE_DATABASE_URL}
+      SC_CORE_WRITE_API_KEY: ${SC_CORE_WRITE_API_KEY}
+      SC_CORE_API_LOG_SALT: ${SC_CORE_API_LOG_SALT}
+      SC_CORE_WEBHOOK_SIGNING_SECRET: ${SC_CORE_WEBHOOK_SIGNING_SECRET}
+      SC_CORE_DOSSIER_SIGNING_SECRET: ${SC_CORE_DOSSIER_SIGNING_SECRET}
+      SC_CORE_GATEWAY_ENABLED: "true"
+
+      SC_CORE_SITE_INTELLIGENCE_URL: ${SC_CORE_SITE_INTELLIGENCE_URL:-}
+      SC_CORE_SITE_INTELLIGENCE_ENABLED: ${SC_CORE_SITE_INTELLIGENCE_ENABLED:-false}
+      SC_CORE_WORKBENCH_URL: ${SC_CORE_WORKBENCH_URL:-}
+      SC_CORE_WORKBENCH_ENABLED: ${SC_CORE_WORKBENCH_ENABLED:-false}
+      SC_CORE_DECISION_STUDIO_URL: ${SC_CORE_DECISION_STUDIO_URL:-}
+      SC_CORE_DECISION_STUDIO_ENABLED: ${SC_CORE_DECISION_STUDIO_ENABLED:-false}
+      SC_CORE_RESEARCH_LIBRARIAN_URL: ${SC_CORE_RESEARCH_LIBRARIAN_URL:-}
+      SC_CORE_RESEARCH_LIBRARIAN_ENABLED: ${SC_CORE_RESEARCH_LIBRARIAN_ENABLED:-false}
+      SC_CORE_FINANCE_URL: ${SC_CORE_FINANCE_URL:-}
+      SC_CORE_FINANCE_ENABLED: ${SC_CORE_FINANCE_ENABLED:-false}
+      SC_CORE_NARRATIVE_RISK_URL: ${SC_CORE_NARRATIVE_RISK_URL:-}
+      SC_CORE_NARRATIVE_RISK_ENABLED: ${SC_CORE_NARRATIVE_RISK_ENABLED:-false}
+    ports:
+      - "8090:8090"
+    networks:
+      - catalyst-internal
+
+  # Attach real product services to catalyst-internal and set the corresponding
+  # URL to the private Docker DNS name, for example http://workbench:8080.
+  # Do not publish product ports to the host unless direct access is required.
+
+networks:
+  catalyst-internal:
+    internal: true

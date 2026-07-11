@@ -82,7 +82,8 @@ class PublicApiMiddleware(BaseHTTPMiddleware):
 
         settings = request.app.state.settings
         request_id = (
-            request.headers.get("X-Request-ID", "").strip()[:64]
+            getattr(request.state, "request_id", None)
+            or request.headers.get("X-Request-ID", "").strip()[:64]
             or uuid.uuid4().hex
         )
         request.state.request_id = request_id

@@ -62,7 +62,7 @@ footer{padding:28px 24px;border-top:1px solid var(--line);color:var(--muted)}
 <div class="wrap">
 <p class="eyebrow">Sustainable Catalyst Platform Core</p>
 <h1>Developer Portal</h1>
-<p class="lede">Build public-interest research, sustainability, evidence, knowledge-graph, and decision-support integrations on one versioned API. The unified public surface exposes reviewed registry, graph, evidence, and ledger records without exposing Platform Core administrative controls.</p>
+<p class="lede">Build public-interest research, sustainability, evidence, knowledge-graph, decision-support, and cross-product gateway integrations on one versioned API. The unified public surface exposes reviewed registry, graph, evidence, and ledger records without exposing Platform Core administrative controls.</p>
 <div class="actions">
 <a class="button" href="/developers/console">Open API Console</a>
 <a class="button secondary" href="/developers/openapi.json">Public OpenAPI</a>
@@ -108,7 +108,7 @@ footer{padding:28px 24px;border-top:1px solid var(--line);color:var(--muted)}
 <tr><td>Ledger</td><td><code>GET /api/v1/ledger/verify</code><br><code>GET /api/v1/ledger/entries</code></td><td><code>ledger:read</code></td></tr>
 <tr><td>Trust Center</td><td><code>GET /api/v1/trust/status</code><br><code>GET /api/v1/trust/evaluations</code><br><code>GET /api/v1/trust/incidents</code></td><td><code>trust:read</code></td></tr>
 <tr><td>Workflows</td><td><code>GET /api/v1/workflow-definitions</code><br><code>GET /api/v1/workflow-runs/{run_id}</code></td><td><code>workflow:read</code></td></tr>
-<tr><td>Signature dossiers</td><td><code>GET /api/v1/dossiers</code><br><code>GET /api/v1/dossiers/{dossier_id}</code><br><code>GET /api/v1/dossiers/{dossier_id}/verify</code></td><td><code>dossier:read</code></td></tr>
+<tr><td>Signature dossiers</td><td><code>GET /api/v1/dossiers</code><br><code>GET /api/v1/dossiers/{dossier_id}</code><br><code>GET /api/v1/dossiers/{dossier_id}/verify</code></td><td><code>dossier:read</code></td></tr><tr><td>Service gateway</td><td><code>GET /api/v1/gateway/health</code><br><code>GET /api/v1/site-intelligence/{path}</code><br><code>GET /api/v1/workbench/{path}</code></td><td><code>gateway:read</code></td></tr>
 <tr><td>Developer account</td><td><code>GET /api/v1/developer/me</code><br><code>GET /api/v1/developer/usage</code></td><td><code>developer:read</code></td></tr>
 <tr><td>Webhooks</td><td><code>GET/POST /api/v1/developer/webhooks</code></td><td><code>webhooks:manage</code></td></tr>
 </tbody>

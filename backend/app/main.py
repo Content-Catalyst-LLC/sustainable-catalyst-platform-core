@@ -4,6 +4,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from .config import Settings
+from .request_tracing import RequestTraceMiddleware
+from .service_registry import GatewaySettings, ServiceRegistry
+from .services.gateway import GatewayRuntime
 from .database import Database
 from .migrations import run_migrations
 from .public_api_auth import PublicApiMiddleware
@@ -16,6 +19,7 @@ from .routers import (
     evidence,
     evidence_explorer,
     explorer,
+    gateway,
     foundations,
     imports,
     ledger,
@@ -44,7 +48,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             "workflows, tamper-evident audit infrastructure, a unified public API, "
             "developer applications, scoped credentials, usage controls, webhooks, "
             "SDK assets, a public Trust Center, evaluation runs, incidents, "
-            "limitations, attestations, signature dossiers, and end-to-end workflows for Sustainable Catalyst."
+            "limitations, attestations, signature dossiers, end-to-end workflows, and a unified service gateway for Sustainable Catalyst."
         ),
         contact={
             "name": "Sustainable Catalyst",
@@ -57,6 +61,14 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     run_migrations(database)
     app.state.database = database
     app.state.settings = settings
+    gateway_settings = GatewaySettings.from_env()
+    app.state.gateway_settings = gateway_settings
+    app.state.service_registry = ServiceRegistry.from_env()
+    app.state.gateway_runtime = GatewayRuntime(
+        app.state.service_registry,
+        gateway_settings,
+        core_version=settings.version,
+    )
 
     app.add_middleware(PublicApiMiddleware)
 
@@ -80,8 +92,14 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             "X-RateLimit-Limit-Day",
             "X-RateLimit-Remaining-Day",
             "Retry-After",
+            "X-SC-Core-Version",
+            "X-SC-Gateway-Service",
+            "X-SC-Upstream-Latency-Ms",
+            "Server-Timing",
         ],
     )
+
+    app.add_middleware(RequestTraceMiddleware)
 
     app.include_router(meta.router)
     app.include_router(dossier_center.router)
@@ -92,6 +110,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(evidence_explorer.router)
     app.include_router(predicates.router)
     app.include_router(public_api.router)
+    app.include_router(gateway.router)
     app.include_router(trust_public.router)
     app.include_router(workflow_public.router)
     app.include_router(entities.router)

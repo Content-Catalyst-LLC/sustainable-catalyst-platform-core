@@ -1,9 +1,2 @@
-Sustainable Catalyst Platform Core v2.5.0
-Signature Dossiers and End-to-End Workflows
-
-Command: python -m pytest -q
-Exit code: 0
-
-...........................................                              [100%]
-43 passed in 17.34s
-
+.....................................................                    [100%]
+53 passed in 11.53s

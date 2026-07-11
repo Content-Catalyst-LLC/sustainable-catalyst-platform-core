@@ -1,5 +1,17 @@
 # Changelog
 
+## 2.6.0 — Unified Service Gateway and Integration Foundation
+
+- Added environment-backed product service registry.
+- Added bounded internal and public gateway routing.
+- Added aggregate downstream health reporting.
+- Added request correlation, service-token forwarding, and gateway response metadata.
+- Added timeouts, size limits, method allowlists, and per-service circuit breakers.
+- Added `gateway:read` to the governed public API plans.
+- Added Docker Compose and production environment examples.
+- Preserved all v2.0–v2.5 APIs and data models.
+
+
 ## 2.5.0 — 2026-07-10
 
 ### Added
