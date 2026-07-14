@@ -8,6 +8,7 @@ from fastapi.testclient import TestClient
 
 BACKEND = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(BACKEND))
+sys.path.insert(0, str(BACKEND / "public_sdk" / "python"))
 
 from app.config import Settings
 from app.main import create_app

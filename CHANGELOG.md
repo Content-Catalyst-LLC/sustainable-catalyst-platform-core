@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.7.2 — 2026-07-14
+
+- Added the Scientific Data Connector Pack with 13 connectors over 12 official free-access sources.
+- Added migration `0009` and normalized scientific data records with raw-ingestion provenance.
+- Added NASA, NOAA, ECMWF, USGS Water, NCBI, PubChem, GBIF, Materials Project, MAST, HEASARC, IRSA, and ESO adapters.
+- Added read-only TAP/ADQL validation, scientific APIs, SDK methods, WordPress status, schema, and deployment configuration.
+- Preserved the strict zero-paid-provider and credit-card-free acceptance rules.
+
+
 ## 2.7.1 — 2026-07-14
 
 - Added the International Law and United Nations Connector Pack.

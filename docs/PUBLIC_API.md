@@ -118,3 +118,15 @@ Only public workflow runs and public finalized or superseded dossiers are return
 - `GET /api/v1/international-law/authority-taxonomy`
 
 These routes use the existing `data:read` scope. They return normalized public legal records; raw provider payloads and internal connector configuration remain private.
+
+## Scientific data v2.7.2
+
+Credentials with `data:read` may access:
+
+```text
+GET /api/v1/science/records
+GET /api/v1/science/records/{record_id}
+GET /api/v1/science/record-types
+```
+
+The list endpoint supports record type, discipline, source, connector, collection, mission, instrument, target, dataset, query, and observation-date filters. Public endpoints return normalized metadata only; raw provider payloads remain internal.

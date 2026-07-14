@@ -1122,6 +1122,52 @@ class LiveDataObservation(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
 
+
+class ScientificDataRecord(Base):
+    __tablename__ = "scientific_data_records"
+    __table_args__ = (
+        UniqueConstraint("connector_id", "source_record_id", "record_type", name="uq_scientific_data_source_type"),
+        Index("ix_scientific_data_discipline_type", "discipline", "record_type"),
+        Index("ix_scientific_data_collection_time", "collection", "observation_start"),
+        Index("ix_scientific_data_mission_instrument", "mission", "instrument"),
+        Index("ix_scientific_data_dataset", "dataset_id"),
+        Index("ix_scientific_data_public", "public", "published_at"),
+    )
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    connector_id: Mapped[str] = mapped_column(ForeignKey("live_data_connectors.id", ondelete="RESTRICT"), nullable=False, index=True)
+    source_id: Mapped[str] = mapped_column(ForeignKey("live_data_sources.id", ondelete="RESTRICT"), nullable=False, index=True)
+    raw_record_id: Mapped[str | None] = mapped_column(ForeignKey("live_data_raw_records.id", ondelete="SET NULL"), nullable=True, index=True)
+    source_record_id: Mapped[str] = mapped_column(String(500), nullable=False)
+    record_type: Mapped[str] = mapped_column(String(120), nullable=False, index=True)
+    discipline: Mapped[str] = mapped_column(String(120), nullable=False, index=True)
+    title: Mapped[str] = mapped_column(Text, nullable=False)
+    summary: Mapped[str | None] = mapped_column(Text, nullable=True)
+    dataset_id: Mapped[str | None] = mapped_column(String(500), nullable=True, index=True)
+    collection: Mapped[str | None] = mapped_column(String(500), nullable=True, index=True)
+    mission: Mapped[str | None] = mapped_column(String(300), nullable=True, index=True)
+    instrument: Mapped[str | None] = mapped_column(String(300), nullable=True, index=True)
+    target: Mapped[str | None] = mapped_column(String(500), nullable=True, index=True)
+    doi: Mapped[str | None] = mapped_column(String(500), nullable=True, index=True)
+    access_url: Mapped[str | None] = mapped_column(String(2000), nullable=True)
+    landing_page_url: Mapped[str | None] = mapped_column(String(2000), nullable=True)
+    geometry_json: Mapped[dict | None] = mapped_column(JSON, nullable=True)
+    observation_start: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True, index=True)
+    observation_end: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    published_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True, index=True)
+    identifiers_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    keywords_json: Mapped[list] = mapped_column(JSON, default=list)
+    variables_json: Mapped[list] = mapped_column(JSON, default=list)
+    file_formats_json: Mapped[list] = mapped_column(JSON, default=list)
+    quality_status: Mapped[str] = mapped_column(String(100), default="source_reported", index=True)
+    license_name: Mapped[str | None] = mapped_column(String(300), nullable=True)
+    attribution: Mapped[str | None] = mapped_column(Text, nullable=True)
+    content_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    public: Mapped[bool] = mapped_column(Boolean, default=True, index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
 class InternationalLawRecord(Base):
     __tablename__ = "international_law_records"
     __table_args__ = (

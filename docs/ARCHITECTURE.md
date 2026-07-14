@@ -94,3 +94,7 @@ Private record snapshots are removed from public dossier responses and public ca
 ## Signature limitations
 
 HMAC signatures are server-verifiable integrity signatures. They do not provide independent public-key verification and are not qualified electronic signatures. A future release can add asymmetric signature adapters while preserving the canonical dossier hash contract.
+
+## Scientific data record layer
+
+Core v2.7.2 stores provider-neutral scientific discovery records separately from generic live observations and international-law records. Scientific records preserve source identifiers, dataset and mission context, access links, temporal and spatial coverage, file-format hints, quality, license, attribution, content hashes, and raw-ingestion provenance. Large scientific files remain provider-hosted until the v2.8.0 scientific-file fabric.

@@ -2,7 +2,11 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
+import csv
+import io
+import json
 import math
+import re
 from typing import Any
 from urllib.parse import quote, urlparse
 import xml.etree.ElementTree as ET
@@ -58,6 +62,8 @@ class ConnectorRequest:
     url: str
     params: dict[str, Any] = field(default_factory=dict)
     headers: dict[str, str] = field(default_factory=dict)
+    json_body: Any | None = None
+    data: dict[str, Any] | None = None
 
 
 @dataclass
@@ -77,6 +83,7 @@ class NormalizedObservation:
     methodology_url: str | None = None
     metadata: dict[str, Any] = field(default_factory=dict)
     legal_record: dict[str, Any] | None = None
+    scientific_record: dict[str, Any] | None = None
     public: bool = True
 
 
@@ -1020,6 +1027,396 @@ class OhchrUhriAdapter(ConnectorAdapter):
         return payload, observations
 
 
+_SAFE_TOKEN = re.compile(r"^[A-Za-z0-9_.:+-]{1,200}$")
+
+
+def _safe_token(value: Any, label: str) -> str:
+    text = str(value or "").strip()
+    if not _SAFE_TOKEN.fullmatch(text):
+        raise ValueError(f"Parameter '{label}' contains unsupported characters.")
+    return text
+
+
+def _safe_adql(query: Any, *, max_length: int = 12000) -> str:
+    text = " ".join(str(query or "").strip().split())
+    if not text or len(text) > max_length:
+        raise ValueError("A bounded ADQL SELECT query is required.")
+    lowered = text.lower()
+    if not lowered.startswith("select "):
+        raise ValueError("Only read-only SELECT queries are permitted.")
+    if ";" in text or re.search(r"\b(insert|update|delete|drop|alter|create|grant|revoke|truncate)\b", lowered):
+        raise ValueError("The ADQL query contains a prohibited operation.")
+    return text
+
+
+def _tap_rows(payload: Any) -> list[dict[str, Any]]:
+    if isinstance(payload, list):
+        return [row for row in payload if isinstance(row, dict)]
+    if not isinstance(payload, dict):
+        return []
+    if isinstance(payload.get("data"), list) and payload.get("metadata"):
+        metadata = payload.get("metadata") or []
+        names = [str(item.get("name") or item.get("column_name") or f"column_{i}") if isinstance(item, dict) else str(item) for i, item in enumerate(metadata)]
+        output = []
+        for row in payload["data"]:
+            if isinstance(row, dict):
+                output.append(row)
+            elif isinstance(row, list):
+                output.append({names[i] if i < len(names) else f"column_{i}": value for i, value in enumerate(row)})
+        return output
+    for key in ("results", "rows", "items"):
+        if isinstance(payload.get(key), list):
+            return [row for row in payload[key] if isinstance(row, dict)]
+    return []
+
+
+class NasaCmrCollectionsAdapter(ConnectorAdapter):
+    adapter_id = "nasa_cmr_collections_v1"
+
+    def build_request(self, connector, parameters, settings) -> ConnectorRequest:
+        keyword = str(self._required(parameters, "keyword")).strip()
+        params: dict[str, Any] = {
+            "keyword": keyword,
+            "page_size": min(max(int(parameters.get("page_size", connector.configuration_json.get("default_page_size", 50))), 1), 200),
+            "pretty": "false",
+        }
+        for key in ("temporal", "bounding_box", "provider", "short_name", "version"):
+            if parameters.get(key) is not None:
+                params[key] = str(parameters[key])
+        return ConnectorRequest(method="GET", url=connector.base_url, params=params, headers={"User-Agent": settings.live_data_user_agent, "Accept": "application/json"})
+
+    def normalize(self, response, *, connector, parameters, retrieved_at):
+        payload = response.json()
+        entries = ((payload.get("feed") or {}).get("entry") or []) if isinstance(payload, dict) else []
+        observations: list[NormalizedObservation] = []
+        for row in entries:
+            if not isinstance(row, dict):
+                continue
+            concept_id = str(row.get("id") or row.get("concept-id") or row.get("short_name") or "")
+            if not concept_id:
+                continue
+            title = _first_text(row.get("dataset_id") or row.get("title") or row.get("short_name")) or concept_id
+            start = _record_date(row, "time_start", "updated", default=retrieved_at)
+            end = None
+            if row.get("time_end"):
+                try: end = parse_datetime(row["time_end"])
+                except ValueError: end = None
+            links = [item for item in row.get("links", []) if isinstance(item, dict)]
+            access = next((item.get("href") for item in links if item.get("href") and not item.get("inherited")), None)
+            doi = _first_text(row.get("doi"))
+            keywords = _list_text(row.get("organizations")) + _list_text(row.get("browse_flag"))
+            boxes = row.get("boxes") or []
+            geometry = {"type": "BoundingBox", "coordinates": boxes[0]} if boxes else None
+            science = {
+                "record_type": "earth_science_dataset",
+                "discipline": "earth_science",
+                "title": title,
+                "summary": _first_text(row.get("summary")),
+                "dataset_id": _first_text(row.get("short_name")) or concept_id,
+                "collection": _first_text(row.get("data_center")),
+                "doi": doi,
+                "access_url": access,
+                "landing_page_url": next((item.get("href") for item in links if item.get("rel", "").endswith("metadata#")), None),
+                "geometry": geometry,
+                "observation_start": start,
+                "observation_end": end,
+                "published_at": _record_date(row, "updated", default=retrieved_at),
+                "identifiers": {"cmr_concept_id": concept_id, "short_name": row.get("short_name"), "doi": doi},
+                "keywords": keywords,
+                "file_formats": _list_text(row.get("archive_center")),
+                "metadata": {"version_id": row.get("version_id"), "original_format": row.get("original_format"), "links": links[:20]},
+            }
+            observations.append(NormalizedObservation(source_record_id=concept_id, domain="earth_science", metric="dataset_available", value_number=1.0, value_text=title, unit="boolean", geometry=geometry, observed_at=start, published_at=science["published_at"], freshness_status="catalog", quality_status="provider_catalog", methodology_url="https://cmr.earthdata.nasa.gov/search/site/docs/search/api", metadata={"short_name": row.get("short_name"), "version_id": row.get("version_id")}, scientific_record=science))
+        return payload, observations
+
+
+class NasaApodAdapter(ConnectorAdapter):
+    adapter_id = "nasa_apod_v1"
+
+    def build_request(self, connector, parameters, settings) -> ConnectorRequest:
+        params: dict[str, Any] = {"api_key": settings.nasa_api_key, "thumbs": "true"}
+        for key in ("date", "start_date", "end_date"):
+            if parameters.get(key): params[key] = str(parameters[key])
+        if parameters.get("count") is not None:
+            params["count"] = min(max(int(parameters["count"]), 1), 25)
+        return ConnectorRequest(method="GET", url=connector.base_url, params=params, headers={"User-Agent": settings.live_data_user_agent, "Accept": "application/json"})
+
+    def normalize(self, response, *, connector, parameters, retrieved_at):
+        payload = response.json()
+        rows = payload if isinstance(payload, list) else [payload]
+        observations = []
+        for row in rows:
+            if not isinstance(row, dict): continue
+            date = parse_datetime(row.get("date"), default=retrieved_at)
+            title = _first_text(row.get("title")) or "NASA astronomy media"
+            url = _first_text(row.get("hdurl") or row.get("url") or row.get("thumbnail_url"))
+            media_type = str(row.get("media_type") or "unknown")
+            observations.append(NormalizedObservation(source_record_id=f"apod:{date.date().isoformat()}", domain="space_science", metric="astronomy_media_published", value_number=1.0, value_text=title, unit="item", observed_at=date, published_at=date, freshness_status="daily", quality_status="official_media", methodology_url="https://api.nasa.gov/", dimensions={"media_type": media_type, "service_version": row.get("service_version")}, metadata={"url": row.get("url"), "hdurl": row.get("hdurl"), "copyright": row.get("copyright")}, scientific_record={"record_type": "astronomy_image", "discipline": "astronomy", "title": title, "summary": _first_text(row.get("explanation")), "collection": "Astronomy Picture of the Day", "mission": "NASA public science communication", "access_url": url, "landing_page_url": row.get("url"), "observation_start": date, "observation_end": date, "published_at": date, "identifiers": {"apod_date": date.date().isoformat()}, "keywords": ["astronomy", media_type], "file_formats": [media_type], "metadata": {"copyright": row.get("copyright"), "thumbnail_url": row.get("thumbnail_url")}}))
+        return payload, observations
+
+
+class NoaaNceiDataAdapter(ConnectorAdapter):
+    adapter_id = "noaa_ncei_data_v1"
+
+    def build_request(self, connector, parameters, settings) -> ConnectorRequest:
+        params = {
+            "dataset": str(self._required(parameters, "dataset")),
+            "startDate": str(self._required(parameters, "start_date")),
+            "endDate": str(self._required(parameters, "end_date")),
+            "format": "json",
+            "includeAttributes": "true",
+            "includeStationName": "true",
+            "includeStationLocation": "true",
+        }
+        mapping = {"stations": "stations", "bbox": "boundingBox", "units": "units", "limit": "limit"}
+        for source, target in mapping.items():
+            if parameters.get(source) is not None: params[target] = parameters[source]
+        return ConnectorRequest(method="GET", url=connector.base_url, params=params, headers={"User-Agent": settings.live_data_user_agent, "Accept": "application/json"})
+
+    def normalize(self, response, *, connector, parameters, retrieved_at):
+        payload = response.json()
+        rows = payload if isinstance(payload, list) else (payload.get("results") or payload.get("data") or [])
+        observations = []
+        for index, row in enumerate(rows):
+            if not isinstance(row, dict): continue
+            date = _record_date(row, "DATE", "date", default=retrieved_at)
+            station = _first_text(row.get("STATION") or row.get("station")) or f"record-{index}"
+            dataset = str(parameters.get("dataset"))
+            lat = finite_float(row.get("LATITUDE") or row.get("latitude")); lon = finite_float(row.get("LONGITUDE") or row.get("longitude"))
+            geometry = {"type": "Point", "coordinates": [lon, lat]} if lat is not None and lon is not None else None
+            excluded = {"DATE","date","STATION","station","NAME","name","LATITUDE","latitude","LONGITUDE","longitude","ELEVATION","elevation"}
+            variables = [key for key, value in row.items() if key not in excluded and value not in (None, "")]
+            source_id = f"{dataset}:{station}:{date.isoformat()}:{index}"
+            observations.append(NormalizedObservation(source_record_id=source_id, domain="earth_science", metric="ncei_environmental_record", value_text=station, geometry=geometry, observed_at=date, published_at=retrieved_at, freshness_status="source_record", quality_status="source_reported", methodology_url="https://www.ncei.noaa.gov/support/access-data-service-api-user-documentation", dimensions={"dataset": dataset, "station": station, "station_name": row.get("NAME") or row.get("name"), "elevation": row.get("ELEVATION") or row.get("elevation")}, metadata={"variables": {key: row.get(key) for key in variables}}, scientific_record={"record_type": "environmental_observation", "discipline": "earth_science", "title": f"{dataset} observation at {station}", "summary": _first_text(row.get("NAME") or row.get("name")), "dataset_id": dataset, "collection": dataset, "geometry": geometry, "observation_start": date, "observation_end": date, "published_at": retrieved_at, "identifiers": {"station": station}, "variables": variables, "quality_status": "source_reported", "metadata": {"record": row}}))
+        return payload, observations
+
+
+class EcmwfOpenDataIndexAdapter(ConnectorAdapter):
+    adapter_id = "ecmwf_open_data_index_v1"
+
+    def build_request(self, connector, parameters, settings) -> ConnectorRequest:
+        date = _safe_token(self._required(parameters, "date"), "date")
+        run = _safe_token(self._required(parameters, "run"), "run").zfill(2)
+        if run not in set(connector.configuration_json.get("allowed_runs", [])): raise ValueError("Unsupported ECMWF run.")
+        stream = _safe_token(self._required(parameters, "stream"), "stream")
+        product_type = _safe_token(self._required(parameters, "type"), "type")
+        step = int(self._required(parameters, "step")); model = _safe_token(parameters.get("model", "ifs"), "model"); resolution = _safe_token(parameters.get("resolution", "0p25"), "resolution")
+        filename = f"{date}{run}0000-{step}h-{stream}-{product_type}.index"
+        url = f"{connector.base_url.rstrip('/')}/{date}/{run}z/{model}/{resolution}/{stream}/{filename}"
+        return ConnectorRequest(method="GET", url=url, headers={"User-Agent": settings.live_data_user_agent, "Accept": "application/x-ndjson,application/json,text/plain"})
+
+    def normalize(self, response, *, connector, parameters, retrieved_at):
+        rows=[]
+        for line in response.text.splitlines():
+            line=line.strip()
+            if not line: continue
+            try: row=json.loads(line)
+            except json.JSONDecodeError: continue
+            if isinstance(row,dict): rows.append(row)
+        observations=[]
+        run_time=parse_datetime(f"{parameters['date']}T{str(parameters['run']).zfill(2)}:00:00+00:00", default=retrieved_at)
+        for index,row in enumerate(rows):
+            param=str(row.get("param") or row.get("shortName") or row.get("name") or f"field-{index}")
+            level=row.get("levelist") or row.get("level")
+            rec_id=f"{parameters['date']}:{parameters['run']}:{parameters['stream']}:{parameters['type']}:{parameters['step']}:{param}:{level}:{index}"
+            observations.append(NormalizedObservation(source_record_id=rec_id,domain="atmospheric_science",metric="forecast_field_available",value_number=1.0,value_text=param,unit="boolean",observed_at=run_time,published_at=run_time,freshness_status="forecast_catalog",quality_status="provider_index",methodology_url="https://www.ecmwf.int/en/forecasts/datasets/open-data",dimensions={"step_hours":int(parameters["step"]),"stream":parameters["stream"],"type":parameters["type"],"level":level,"offset":row.get("_offset"),"length":row.get("_length")},metadata={"index_record":row},scientific_record={"record_type":"forecast_field","discipline":"atmospheric_science","title":f"ECMWF {param} forecast field","summary":"Machine-readable ECMWF open-data GRIB index record.","dataset_id":f"ecmwf:{parameters.get('model','ifs')}:{parameters['stream']}","collection":"ECMWF Open Data","mission":parameters.get("model","ifs"),"observation_start":run_time,"published_at":run_time,"identifiers":{"parameter":param,"step_hours":parameters["step"]},"variables":[param],"file_formats":["GRIB2"],"metadata":{"index_record":row,"request_url":str(response.request.url).removesuffix('.index')}}))
+        return {"records":rows}, observations
+
+
+class UsgsWaterInstantaneousAdapter(ConnectorAdapter):
+    adapter_id = "usgs_water_iv_v1"
+
+    def build_request(self, connector, parameters, settings) -> ConnectorRequest:
+        params={"format":"json","siteStatus":"all"}
+        selectors={"sites":"sites","state_cd":"stateCd","b_box":"bBox"}
+        if not any(parameters.get(k) for k in selectors): raise ValueError("One of sites, state_cd, or b_box is required.")
+        for source,target in selectors.items():
+            if parameters.get(source): params[target]=str(parameters[source])
+        params["period"]=str(parameters.get("period") or connector.configuration_json.get("default_period","P1D"))
+        if parameters.get("parameter_cd"): params["parameterCd"]=str(parameters["parameter_cd"])
+        return ConnectorRequest(method="GET",url=connector.base_url,params=params,headers={"User-Agent":settings.live_data_user_agent,"Accept":"application/json"})
+
+    def normalize(self,response,*,connector,parameters,retrieved_at):
+        payload=response.json(); series=(((payload.get("value") or {}).get("timeSeries")) or []) if isinstance(payload,dict) else []
+        observations=[]
+        for ts in series:
+            variable=ts.get("variable") or {}; code=_first_text(variable.get("variableCode")) or "water_value"; unit=_first_text((variable.get("unit") or {}).get("unitCode"))
+            source=ts.get("sourceInfo") or {}; site=_first_text(source.get("siteCode")) or _first_text(source.get("siteName")) or "unknown-site"
+            geo=((source.get("geoLocation") or {}).get("geogLocation") or {}); lat=finite_float(geo.get("latitude")); lon=finite_float(geo.get("longitude")); geometry={"type":"Point","coordinates":[lon,lat]} if lat is not None and lon is not None else None
+            for block in ts.get("values",[]):
+                qualifiers=block.get("qualifier") or []
+                for item in block.get("value",[]):
+                    date=parse_datetime(item.get("dateTime"),default=retrieved_at); val=finite_float(item.get("value")); q=_list_text(item.get("qualifiers") or qualifiers)
+                    rec_id=f"{site}:{code}:{date.isoformat()}"
+                    observations.append(NormalizedObservation(source_record_id=rec_id,domain="hydrology",metric=code,value_number=val,value_text=None if val is not None else _first_text(item.get("value")),unit=unit,geometry=geometry,observed_at=date,published_at=retrieved_at,freshness_status="near_real_time",quality_status="provisional" if any('P'==x or 'provisional' in x.lower() for x in q) else "source_reported",methodology_url="https://waterservices.usgs.gov/docs/instantaneous-values/instantaneous-values-details/",dimensions={"site":site,"site_name":source.get("siteName"),"variable_name":variable.get("variableDescription"),"qualifiers":q},metadata={"source_info":source},scientific_record={"record_type":"water_observation","discipline":"hydrology","title":f"{variable.get('variableDescription') or code} at {source.get('siteName') or site}","dataset_id":"USGS NWIS Instantaneous Values","collection":"USGS Water Data for the Nation","geometry":geometry,"observation_start":date,"observation_end":date,"published_at":retrieved_at,"identifiers":{"site":site,"parameter_code":code},"variables":[code],"quality_status":"provisional" if any('P'==x or 'provisional' in x.lower() for x in q) else "source_reported","metadata":{"value":item.get("value"),"unit":unit,"qualifiers":q}}))
+        return payload,observations
+
+
+class NcbiEntrezSearchAdapter(ConnectorAdapter):
+    adapter_id = "ncbi_entrez_search_v1"
+
+    def build_request(self,connector,parameters,settings)->ConnectorRequest:
+        db=_safe_token(self._required(parameters,"db"),"db").lower(); allowed=set(connector.configuration_json.get("allowed_databases",[]))
+        if db not in allowed: raise ValueError(f"Unsupported NCBI database '{db}'.")
+        params={"db":db,"term":str(self._required(parameters,"term")),"retmode":"json","retmax":min(max(int(parameters.get("retmax",50)),1),200),"tool":connector.configuration_json.get("tool","sustainable_catalyst_core"),"email":str(parameters.get("email") or "platform@sustainablecatalyst.com")}
+        if settings.ncbi_api_key: params["api_key"]=settings.ncbi_api_key
+        return ConnectorRequest(method="GET",url=f"{connector.base_url.rstrip('/')}/esearch.fcgi",params=params,headers={"User-Agent":settings.live_data_user_agent,"Accept":"application/json"})
+
+    def normalize(self,response,*,connector,parameters,retrieved_at):
+        payload=response.json(); result=payload.get("esearchresult") or {}; db=str(parameters.get("db")); term=str(parameters.get("term")); observations=[]
+        for uid in result.get("idlist") or []:
+            uid=str(uid)
+            observations.append(NormalizedObservation(source_record_id=f"{db}:{uid}",domain="biomedical_science",metric="entrez_record_match",value_number=1.0,value_text=uid,unit="record",observed_at=retrieved_at,published_at=retrieved_at,freshness_status="catalog",quality_status="database_match",methodology_url="https://www.ncbi.nlm.nih.gov/books/NBK25501/",dimensions={"database":db,"query":term},metadata={"query_translation":result.get("querytranslation"),"count":result.get("count")},scientific_record={"record_type":"biomedical_database_record","discipline":"biomedical_science","title":f"NCBI {db} record {uid}","summary":f"Record identifier returned for Entrez search: {term}","dataset_id":db,"collection":f"NCBI Entrez {db}","landing_page_url":f"https://www.ncbi.nlm.nih.gov/{db}/{uid}/","published_at":retrieved_at,"identifiers":{"uid":uid,"database":db},"keywords":[term],"metadata":{"query_translation":result.get("querytranslation")}}))
+        return payload,observations
+
+
+class PubchemCompoundPropertiesAdapter(ConnectorAdapter):
+    adapter_id = "pubchem_compound_properties_v1"
+    PROPERTIES="Title,MolecularFormula,MolecularWeight,CanonicalSMILES,IsomericSMILES,InChI,InChIKey,IUPACName,XLogP,ExactMass,MonoisotopicMass,TPSA,Complexity,HBondDonorCount,HBondAcceptorCount,RotatableBondCount,Charge"
+
+    def build_request(self,connector,parameters,settings)->ConnectorRequest:
+        namespace=_safe_token(self._required(parameters,"namespace"),"namespace").lower(); allowed=set(connector.configuration_json.get("allowed_namespaces",[]))
+        if namespace not in allowed: raise ValueError("Unsupported PubChem namespace.")
+        identifier=quote(str(self._required(parameters,"identifier")).strip(),safe="")
+        return ConnectorRequest(method="GET",url=f"{connector.base_url.rstrip('/')}/{namespace}/{identifier}/property/{self.PROPERTIES}/JSON",headers={"User-Agent":settings.live_data_user_agent,"Accept":"application/json"})
+
+    def normalize(self,response,*,connector,parameters,retrieved_at):
+        payload=response.json(); rows=((payload.get("PropertyTable") or {}).get("Properties") or []); observations=[]
+        for row in rows:
+            cid=str(row.get("CID") or row.get("InChIKey") or parameters.get("identifier")); title=_first_text(row.get("Title") or row.get("IUPACName")) or f"PubChem compound {cid}"; weight=finite_float(row.get("MolecularWeight"))
+            observations.append(NormalizedObservation(source_record_id=f"cid:{cid}",domain="chemistry",metric="molecular_weight",value_number=weight,value_text=title,unit="g/mol",observed_at=retrieved_at,published_at=retrieved_at,freshness_status="catalog",quality_status="database_record",methodology_url="https://pubchem.ncbi.nlm.nih.gov/docs/pug-rest",dimensions={"molecular_formula":row.get("MolecularFormula"),"iupac_name":row.get("IUPACName"),"inchi_key":row.get("InChIKey")},metadata={"properties":row},scientific_record={"record_type":"chemical_compound","discipline":"chemistry","title":title,"summary":f"PubChem compound record for {row.get('MolecularFormula') or cid}.","dataset_id":"PubChem Compound","collection":"PubChem","landing_page_url":f"https://pubchem.ncbi.nlm.nih.gov/compound/{cid}","published_at":retrieved_at,"identifiers":{"cid":cid,"inchi":row.get("InChI"),"inchikey":row.get("InChIKey"),"canonical_smiles":row.get("ConnectivitySMILES") or row.get("CanonicalSMILES")},"variables":[key for key,value in row.items() if value is not None],"metadata":{"properties":row}}))
+        return payload,observations
+
+
+class GbifOccurrenceSearchAdapter(ConnectorAdapter):
+    adapter_id = "gbif_occurrence_search_v1"
+
+    def build_request(self,connector,parameters,settings)->ConnectorRequest:
+        keys={"scientific_name":"scientificName","taxon_key":"taxon_key","country":"country","geometry":"geometry","year":"year","basis_of_record":"basisOfRecord","has_coordinate":"hasCoordinate"}
+        if not any(parameters.get(k) for k in ("scientific_name","taxon_key","country","geometry")): raise ValueError("A taxon or geographic filter is required.")
+        params={"limit":min(max(int(parameters.get("limit",100)),1),int(connector.configuration_json.get("max_limit",300))),"offset":max(int(parameters.get("offset",0)),0)}
+        for source,target in keys.items():
+            if parameters.get(source) is not None: params[target]=parameters[source]
+        return ConnectorRequest(method="GET",url=connector.base_url,params=params,headers={"User-Agent":settings.live_data_user_agent,"Accept":"application/json"})
+
+    def normalize(self,response,*,connector,parameters,retrieved_at):
+        payload=response.json(); observations=[]
+        for row in payload.get("results") or []:
+            key=str(row.get("key") or row.get("gbifID") or "")
+            if not key: continue
+            date=_record_date(row,"eventDate","lastInterpreted","modified",default=retrieved_at); lat=finite_float(row.get("decimalLatitude")); lon=finite_float(row.get("decimalLongitude")); geometry={"type":"Point","coordinates":[lon,lat]} if lat is not None and lon is not None else None
+            name=_first_text(row.get("scientificName") or row.get("acceptedScientificName")) or f"GBIF occurrence {key}"
+            license_name=_first_text(row.get("license"))
+            observations.append(NormalizedObservation(source_record_id=key,domain="biodiversity",metric="species_occurrence",value_number=1.0,value_text=name,unit="occurrence",geometry=geometry,observed_at=date,published_at=_record_date(row,"modified","lastInterpreted",default=retrieved_at),freshness_status="occurrence_record",quality_status="source_reported",methodology_url="https://techdocs.gbif.org/en/openapi/",dimensions={"taxon_key":row.get("taxonKey"),"country_code":row.get("countryCode"),"basis_of_record":row.get("basisOfRecord"),"occurrence_status":row.get("occurrenceStatus")},metadata={"dataset_key":row.get("datasetKey"),"dataset_title":row.get("datasetTitle"),"issues":row.get("issues"),"record_license":license_name},scientific_record={"record_type":"biodiversity_occurrence","discipline":"biodiversity","title":name,"summary":_first_text(row.get("locality") or row.get("verbatimLocality")),"dataset_id":_first_text(row.get("datasetKey")),"collection":_first_text(row.get("datasetTitle")),"landing_page_url":f"https://www.gbif.org/occurrence/{key}","geometry":geometry,"observation_start":date,"observation_end":date,"published_at":_record_date(row,"modified","lastInterpreted",default=retrieved_at),"identifiers":{"gbif_id":key,"taxon_key":row.get("taxonKey"),"occurrence_id":row.get("occurrenceID")},"keywords":_list_text([row.get("kingdom"),row.get("phylum"),row.get("class"),row.get("order"),row.get("family"),row.get("genus")]),"quality_status":"source_reported","metadata":{"basis_of_record":row.get("basisOfRecord"),"issues":row.get("issues"),"record_license":license_name,"publishing_org_key":row.get("publishingOrgKey")}}))
+        return payload,observations
+
+
+class MaterialsProjectSummaryAdapter(ConnectorAdapter):
+    adapter_id = "materials_project_summary_v1"
+
+    def build_request(self,connector,parameters,settings)->ConnectorRequest:
+        if not settings.materials_project_api_key: raise ValueError("SC_CORE_MATERIALS_PROJECT_API_KEY is required after free Materials Project registration.")
+        allowed=("material_ids","formula","chemsys","elements")
+        if not any(parameters.get(k) for k in allowed): raise ValueError("A material identifier, formula, chemical system, or element filter is required.")
+        params={"_limit":min(max(int(parameters.get("limit",25)),1),100),"_fields":"material_id,formula_pretty,chemsys,nelements,nsites,volume,density,density_atomic,symmetry,energy_per_atom,formation_energy_per_atom,energy_above_hull,is_stable,band_gap,is_gap_direct,is_metal,total_magnetization,ordering,theoretical,database_IDs,last_updated,origins,warnings"}
+        for key in allowed:
+            if parameters.get(key) is not None: params[key]=parameters[key]
+        return ConnectorRequest(method="GET",url=connector.base_url,params=params,headers={"X-API-KEY":settings.materials_project_api_key,"User-Agent":settings.live_data_user_agent,"Accept":"application/json"})
+
+    def normalize(self,response,*,connector,parameters,retrieved_at):
+        payload=response.json(); rows=payload.get("data") or []; observations=[]
+        db_version=_first_text((payload.get("meta") or {}).get("db_version") or response.headers.get("X-DB-Version"))
+        for row in rows:
+            mid=str(row.get("material_id") or "")
+            if not mid: continue
+            title=_first_text(row.get("formula_pretty")) or mid; date=_record_date(row,"last_updated",default=retrieved_at)
+            observations.append(NormalizedObservation(source_record_id=mid,domain="materials_science",metric="formation_energy_per_atom",value_number=finite_float(row.get("formation_energy_per_atom")),value_text=title,unit="eV/atom",observed_at=date,published_at=date,freshness_status="database_record",quality_status="computed",methodology_url="https://docs.materialsproject.org/downloading-data/using-the-api/getting-started",dimensions={"chemsys":row.get("chemsys"),"is_stable":row.get("is_stable"),"band_gap":row.get("band_gap"),"is_metal":row.get("is_metal")},metadata={"database_version":db_version,"summary":row},scientific_record={"record_type":"material","discipline":"materials_science","title":title,"summary":f"Computed Materials Project summary for {title}.","dataset_id":mid,"collection":"Materials Project","landing_page_url":f"https://next-gen.materialsproject.org/materials/{mid}","published_at":date,"identifiers":{"material_id":mid,"database_ids":row.get("database_IDs")},"keywords":_list_text([row.get("chemsys"),row.get("ordering")]),"variables":[key for key,value in row.items() if value is not None],"quality_status":"computed","metadata":{"database_version":db_version,"summary":row}}))
+        return payload,observations
+
+
+class MastObservationsAdapter(ConnectorAdapter):
+    adapter_id = "mast_observations_v1"
+
+    def build_request(self,connector,parameters,settings)->ConnectorRequest:
+        filters=[]
+        if parameters.get("target_name"): filters.append({"paramName":"target_name","values":[str(parameters["target_name"])]})
+        if parameters.get("collection"): filters.append({"paramName":"obs_collection","values":[str(parameters["collection"])]})
+        if parameters.get("instrument"): filters.append({"paramName":"instrument_name","values":[str(parameters["instrument"])]})
+        request={"service":"Mast.Caom.Filtered","params":{"columns":"*","filters":filters},"format":"json","pagesize":min(max(int(parameters.get("limit",100)),1),int(connector.configuration_json.get("max_pagesize",200))),"page":1}
+        if parameters.get("coordinates"):
+            coords=str(parameters["coordinates"]).replace(","," ").split();
+            if len(coords)!=2: raise ValueError("coordinates must contain RA and Dec.")
+            request["service"]="Mast.Caom.Cone"; request["params"]={"ra":float(coords[0]),"dec":float(coords[1]),"radius":float(parameters.get("radius",0.2))}
+        if not filters and request["service"]!="Mast.Caom.Cone": raise ValueError("A target, collection, or coordinates filter is required.")
+        return ConnectorRequest(method="POST",url=connector.base_url,data={"request":json.dumps(request,separators=(",",":"))},headers={"User-Agent":settings.live_data_user_agent,"Accept":"application/json"})
+
+    def normalize(self,response,*,connector,parameters,retrieved_at):
+        payload=response.json(); observations=[]
+        for row in payload.get("data") or []:
+            obs_id=str(row.get("obsid") or row.get("obs_id") or row.get("productFilename") or "")
+            if not obs_id: continue
+            start=retrieved_at
+            for key in ("t_min","obs_date","date_obs"):
+                if row.get(key) is not None:
+                    try:
+                        if key=="t_min": start=datetime.fromtimestamp((float(row[key])-40587.0)*86400,tz=timezone.utc)
+                        else: start=parse_datetime(row[key])
+                        break
+                    except (ValueError,TypeError,OverflowError): pass
+            ra=finite_float(row.get("s_ra")); dec=finite_float(row.get("s_dec")); geometry={"type":"Point","coordinates":[ra,dec]} if ra is not None and dec is not None else None
+            title=_first_text(row.get("target_name") or row.get("obs_id")) or f"MAST observation {obs_id}"
+            collection=_first_text(row.get("obs_collection")); instrument=_first_text(row.get("instrument_name"))
+            observations.append(NormalizedObservation(source_record_id=obs_id,domain="astronomy",metric="telescope_observation",value_number=1.0,value_text=title,unit="observation",geometry=geometry,observed_at=start,published_at=retrieved_at,freshness_status="archive_record",quality_status="archive_metadata",methodology_url="https://archive.stsci.edu/vo/mast_services.html",dimensions={"collection":collection,"instrument":instrument,"data_rights":row.get("dataRights"),"dataproduct_type":row.get("dataproduct_type")},metadata={"observation":row},scientific_record={"record_type":"telescope_observation","discipline":"astronomy","title":title,"summary":_first_text(row.get("proposal_title") or row.get("intentType")),"dataset_id":obs_id,"collection":collection,"mission":collection,"instrument":instrument,"target":_first_text(row.get("target_name")),"access_url":_first_text(row.get("dataURL")),"landing_page_url":f"https://mast.stsci.edu/portal/Mashup/Clients/Mast/Portal.html?searchQuery={quote(obs_id,safe='')}","geometry":geometry,"observation_start":start,"published_at":retrieved_at,"identifiers":{"obs_id":row.get("obs_id"),"obsid":row.get("obsid"),"proposal_id":row.get("proposal_id")},"keywords":_list_text([collection,instrument,row.get("dataproduct_type")]),"file_formats":_list_text(row.get("dataProductType") or row.get("dataproduct_type")),"quality_status":"archive_metadata","metadata":{"observation":row}}))
+        return payload,observations
+
+
+class HeasarcXaminAdapter(ConnectorAdapter):
+    adapter_id = "heasarc_xamin_v1"
+
+    def build_request(self,connector,parameters,settings)->ConnectorRequest:
+        table=_safe_token(self._required(parameters,"table"),"table")
+        params={"table":table,"format":"json","maxrows":min(max(int(parameters.get("maxrows",connector.configuration_json.get("default_maxrows",100))),1),500)}
+        for key in ("position","radius","name","fields","sortvar"):
+            if parameters.get(key) is not None: params[key]=parameters[key]
+        return ConnectorRequest(method="GET",url=connector.base_url,params=params,headers={"User-Agent":settings.live_data_user_agent,"Accept":"application/json,text/csv,text/plain"})
+
+    def normalize(self,response,*,connector,parameters,retrieved_at):
+        try: payload=response.json()
+        except ValueError:
+            rows=list(csv.DictReader(io.StringIO(response.text))); payload={"rows":rows}
+        rows=_tap_rows(payload); observations=[]; table=str(parameters.get("table"))
+        for index,row in enumerate(rows):
+            rid=str(row.get("id") or row.get("name") or row.get("seq_id") or row.get("obsid") or f"{table}:{index}")
+            title=_first_text(row.get("name") or row.get("object") or row.get("target_name")) or f"HEASARC {table} record {rid}"
+            ra=finite_float(row.get("ra") or row.get("ra_obj")); dec=finite_float(row.get("dec") or row.get("dec_obj")); geometry={"type":"Point","coordinates":[ra,dec]} if ra is not None and dec is not None else None
+            observations.append(NormalizedObservation(source_record_id=rid,domain="astronomy",metric="high_energy_catalog_record",value_number=1.0,value_text=title,unit="record",geometry=geometry,observed_at=retrieved_at,published_at=retrieved_at,freshness_status="catalog",quality_status="archive_metadata",methodology_url="https://heasarc.gsfc.nasa.gov/docs/archive/apis.html",dimensions={"table":table},metadata={"record":row},scientific_record={"record_type":"astronomy_catalog_record","discipline":"high_energy_astrophysics","title":title,"summary":f"HEASARC public catalog record from {table}.","dataset_id":table,"collection":table,"mission":_first_text(row.get("mission") or row.get("observatory")),"instrument":_first_text(row.get("instrument")),"target":_first_text(row.get("name") or row.get("object")),"geometry":geometry,"published_at":retrieved_at,"identifiers":{"record_id":rid},"variables":[key for key,value in row.items() if value is not None],"quality_status":"archive_metadata","metadata":{"record":row}}))
+        return payload,observations
+
+
+class IvoaTapJsonAdapter(ConnectorAdapter):
+    adapter_id = "ivoa_tap_json_v1"
+
+    def build_request(self,connector,parameters,settings)->ConnectorRequest:
+        query=_safe_adql(self._required(parameters,"query")); maxrec=min(max(int(parameters.get("maxrec",connector.configuration_json.get("maxrec",200))),1),500)
+        return ConnectorRequest(method="GET",url=connector.base_url,params={"REQUEST":"doQuery","LANG":"ADQL","FORMAT":"json","MAXREC":maxrec,"QUERY":query},headers={"User-Agent":settings.live_data_user_agent,"Accept":"application/json"})
+
+    def normalize(self,response,*,connector,parameters,retrieved_at):
+        payload=response.json(); rows=_tap_rows(payload); archive=str(connector.configuration_json.get("archive") or connector.source_id); observations=[]
+        for index,row in enumerate(rows):
+            rid=str(row.get("obs_publisher_did") or row.get("obs_id") or row.get("source_id") or row.get("main_id") or f"{archive}:{index}")
+            title=_first_text(row.get("target_name") or row.get("obs_id") or row.get("main_id") or row.get("source_id")) or f"{archive} record {rid}"
+            ra=finite_float(row.get("s_ra") or row.get("ra")); dec=finite_float(row.get("s_dec") or row.get("dec")); geometry={"type":"Point","coordinates":[ra,dec]} if ra is not None and dec is not None else None
+            start=retrieved_at
+            for key in ("t_min","date_obs","obs_date"):
+                if row.get(key) is not None:
+                    try:
+                        start=datetime.fromtimestamp((float(row[key])-40587.0)*86400,tz=timezone.utc) if key=="t_min" else parse_datetime(row[key]); break
+                    except (ValueError,TypeError,OverflowError): pass
+            collection=_first_text(row.get("obs_collection") or row.get("collection") or archive); instrument=_first_text(row.get("instrument_name") or row.get("instrument")); access=_first_text(row.get("access_url"))
+            observations.append(NormalizedObservation(source_record_id=rid,domain="astronomy",metric="archive_record",value_number=1.0,value_text=title,unit="record",geometry=geometry,observed_at=start,published_at=retrieved_at,freshness_status="archive_record",quality_status="archive_metadata",methodology_url=connector.source_id,dimensions={"archive":archive,"collection":collection,"instrument":instrument,"data_product_type":row.get("dataproduct_type")},metadata={"record":row},scientific_record={"record_type":"telescope_observation" if row.get("obs_id") or row.get("obs_publisher_did") else "astronomy_catalog_record","discipline":"astronomy","title":title,"summary":_first_text(row.get("obs_title") or row.get("proposal_title")),"dataset_id":rid,"collection":collection,"mission":_first_text(row.get("facility_name") or row.get("telescope_name") or collection),"instrument":instrument,"target":_first_text(row.get("target_name") or row.get("main_id")),"access_url":access,"geometry":geometry,"observation_start":start,"published_at":retrieved_at,"identifiers":{"publisher_did":row.get("obs_publisher_did"),"obs_id":row.get("obs_id"),"source_id":row.get("source_id")},"keywords":_list_text([archive,collection,instrument,row.get("dataproduct_type")]),"file_formats":_list_text(row.get("access_format")),"quality_status":"archive_metadata","metadata":{"record":row,"query":parameters.get("query")}}))
+        return payload,observations
+
+
 ADAPTERS: dict[str, ConnectorAdapter] = {
     adapter.adapter_id: adapter
     for adapter in (
@@ -1037,5 +1434,17 @@ ADAPTERS: dict[str, ConnectorAdapter] = {
         UnComtradeAdapter(),
         UnhcrPopulationAdapter(),
         OhchrUhriAdapter(),
+        NasaCmrCollectionsAdapter(),
+        NasaApodAdapter(),
+        NoaaNceiDataAdapter(),
+        EcmwfOpenDataIndexAdapter(),
+        UsgsWaterInstantaneousAdapter(),
+        NcbiEntrezSearchAdapter(),
+        PubchemCompoundPropertiesAdapter(),
+        GbifOccurrenceSearchAdapter(),
+        MaterialsProjectSummaryAdapter(),
+        MastObservationsAdapter(),
+        HeasarcXaminAdapter(),
+        IvoaTapJsonAdapter(),
     )
 }

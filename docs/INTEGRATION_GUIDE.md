@@ -123,3 +123,7 @@ Public clients can list finalized dossiers, inspect public workflow records, and
 - `GET /api/v1/international-law/authority-taxonomy`
 
 These routes use the existing `data:read` scope. They return normalized public legal records; raw provider payloads and internal connector configuration remain private.
+
+## Scientific Data Connector Pack v2.7.2
+
+Products should discover scientific records through Core rather than calling provider APIs directly. Use `/v1/science/records` for internal product integration and `/api/v1/science/records` for scoped public applications. Filter by discipline, record type, source, mission, instrument, target, dataset, or observation range. Follow `access_url` to provider-hosted files and retain Core record IDs in downstream calculations and evidence packets.

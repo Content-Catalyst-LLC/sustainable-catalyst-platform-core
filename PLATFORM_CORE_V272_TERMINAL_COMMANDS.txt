@@ -1,0 +1,111 @@
+SUSTAINABLE CATALYST PLATFORM CORE v2.7.2
+SCIENTIFIC DATA CONNECTOR PACK
+
+1. Extract the release and enter the repository
+
+unzip sustainable-catalyst-platform-core-v2.7.2.zip
+cd sustainable-catalyst-platform-core-v2.7.2
+
+2. Create a Python environment
+
+cd backend
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+
+3. Run the complete regression suite in two stable groups
+
+PYTHONPATH=".:public_sdk/python" DD_TRACE_ENABLED=false pytest -q -p no:ddtrace \
+  tests/test_entities.py \
+  tests/test_evidence_ledger_v220.py \
+  tests/test_gateway_v260.py \
+  tests/test_graph.py \
+  tests/test_graph_engine_v210.py \
+  tests/test_health.py \
+  tests/test_import_and_foundations.py \
+  tests/test_international_law_un_v271.py \
+  tests/test_live_data_gateway_v270.py \
+  tests/test_predicates.py \
+  tests/test_public_api_v230.py
+
+PYTHONPATH=".:public_sdk/python" DD_TRACE_ENABLED=false pytest -q -p no:ddtrace \
+  tests/test_scientific_connectors_v272.py \
+  tests/test_signature_dossiers_v250.py \
+  tests/test_trust_center_v240.py
+
+4. Configure local environment
+
+cp .env.example .env
+# Keep SC_CORE_LIVE_DATA_STRICT_FREE_SOURCES=true.
+# NASA APOD defaults to DEMO_KEY for development.
+# Optional free registration:
+#   SC_CORE_NASA_API_KEY
+#   SC_CORE_NCBI_API_KEY
+# Required only for the free Materials Project connector:
+#   SC_CORE_MATERIALS_PROJECT_API_KEY
+
+5. Run migrations and start Core
+
+python scripts/migrate.py
+./start.sh
+
+6. Check v2.7.2 status and scientific registries
+
+curl http://127.0.0.1:8090/health
+curl http://127.0.0.1:8090/ready
+curl http://127.0.0.1:8090/v1/live/connectors/health
+curl http://127.0.0.1:8090/v1/live/sources
+curl http://127.0.0.1:8090/v1/live/connectors
+curl http://127.0.0.1:8090/v1/science/record-types
+curl http://127.0.0.1:8090/v1/science/stats
+
+7. Read the write key securely for administrative ingestion
+
+read -rsp "Enter SC_CORE_WRITE_API_KEY: " SC_CORE_WRITE_API_KEY
+export SC_CORE_WRITE_API_KEY
+echo
+
+8. Ingest NASA Earth science collection metadata
+
+curl -X POST \
+  http://127.0.0.1:8090/v1/live/connectors/nasa.cmr-collections/ingest \
+  -H 'Content-Type: application/json' \
+  -H "X-SC-API-Key: $SC_CORE_WRITE_API_KEY" \
+  -d '{"parameters":{"keyword":"climate","page_size":10},"requested_by":"terminal","run_type":"manual"}'
+
+9. Ingest a PubChem compound record
+
+curl -X POST \
+  http://127.0.0.1:8090/v1/live/connectors/pubchem.compound-properties/ingest \
+  -H 'Content-Type: application/json' \
+  -H "X-SC-API-Key: $SC_CORE_WRITE_API_KEY" \
+  -d '{"parameters":{"namespace":"name","identifier":"aspirin"},"requested_by":"terminal","run_type":"manual"}'
+
+10. Discover MAST telescope observations
+
+curl -X POST \
+  http://127.0.0.1:8090/v1/live/connectors/mast.observations/ingest \
+  -H 'Content-Type: application/json' \
+  -H "X-SC-API-Key: $SC_CORE_WRITE_API_KEY" \
+  -d '{"parameters":{"target_name":"M31","limit":25},"requested_by":"terminal","run_type":"manual"}'
+
+11. Query normalized scientific records and provenance
+
+curl 'http://127.0.0.1:8090/v1/science/records?discipline=astronomy&limit=25'
+# Replace RECORD_ID with a returned record identifier.
+curl 'http://127.0.0.1:8090/v1/science/provenance/RECORD_ID'
+
+12. Configure the free-registration Materials Project connector when ready
+
+read -rsp "Enter free Materials Project API key: " SC_CORE_MATERIALS_PROJECT_API_KEY
+export SC_CORE_MATERIALS_PROJECT_API_KEY
+echo
+
+13. Commit and push manually
+
+cd ..
+git status
+git add .
+git commit -m "Build Platform Core v2.7.2 scientific data connector pack"
+git push origin main

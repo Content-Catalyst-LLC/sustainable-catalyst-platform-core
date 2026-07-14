@@ -1,25 +1,21 @@
-# Sustainable Catalyst Platform Core v2.7.1
+# Sustainable Catalyst Platform Core v2.7.2
 
-**International Law and United Nations Connector Pack**
+**Scientific Data Connector Pack**
 
-Platform Core v2.7.1 adds the International Law and United Nations Connector Pack on top of the v2.7.0 free live-data gateway, including dedicated legal-authority records, official-document provenance, and public discovery APIs.
+Platform Core v2.7.2 adds governed scientific discovery on top of the v2.7.1 international-law and United Nations layer and the v2.7.0 Free Live Data Gateway. Core remains the shared source-governance, ingestion, normalization, provenance, and delivery service for Sustainable Catalyst products.
 
-The release adds:
+The release includes:
 
-- Strict free-source and no-credit-card acceptance rules
-- Reviewed source, licensing, attribution, and access-policy records
-- A reusable provider adapter SDK
-- Bounded HTTP retrieval and raw-response storage
-- SHA-256 raw-response hashes
-- Ingestion runs and operational connector health
-- Stable normalized observation IDs and deduplication
-- Freshness, quality, methodology, and lineage records
-- Internal APIs under `/v1/live`
-- Scoped public APIs under `/api/v1/live`
-- A new `data:read` developer scope
-- Sixteen governed free-source records and fourteen connector definitions
-- Python, JavaScript, WordPress, deployment, and scheduling support
-- Migration `0008` and v2.7.1 international-law and UN regression coverage
+- 28 governed free-access source records and 27 connector definitions
+- 13 new scientific connectors over 12 official scientific providers
+- Migration `0009` and a normalized `scientific_data_records` store
+- Raw-response hashing, bounded storage, deduplication, and provenance
+- Earth science, climate, hydrology, biomedical, chemistry, biodiversity, materials, and astronomy discovery
+- Read-only TAP/ADQL enforcement for IRSA and ESO archive queries
+- Internal APIs under `/v1/science`
+- Scoped public APIs under `/api/v1/science` with `data:read`
+- Python, JavaScript, WordPress, JSON Schema, deployment, and CLI support
+- No paid API or credit-card-required production dependency
 
 Connector groups:
 
@@ -41,11 +37,26 @@ International law and UN v2.7.1
   un.comtrade
   unhcr.population
   ohchr.uhri-recommendations
+
+Scientific data v2.7.2
+  nasa.cmr-collections
+  nasa.apod
+  noaa.ncei-data
+  ecmwf.open-data-index
+  usgs.water-instantaneous
+  ncbi.entrez-search
+  pubchem.compound-properties
+  gbif.occurrences
+  materials-project.summary
+  mast.observations
+  heasarc.xamin
+  irsa.tap
+  eso.tap
 ```
 
-Core remains the shared governance and delivery layer. Site Intelligence owns public maps and dashboards; Research Lab owns scientific investigation; Workbench owns calculation and modeling; Decision Studio owns synthesis; Knowledge Library owns source and methodology records; Research Librarian owns discovery and routing.
+Core is the shared integration layer. Site Intelligence owns public maps and observatories; Research Lab owns scientific investigation; Workbench owns calculations and modeling; Decision Studio owns synthesis; Knowledge Library owns source and methodology records; Research Librarian owns discovery and routing.
 
-See `docs/INTERNATIONAL_LAW_UN_CONNECTORS_V271.md`, `RELEASE_NOTES_V271.md`, and `deployment/platform-core-v271.env.example`.
+See `docs/SCIENTIFIC_DATA_CONNECTORS_V272.md`, `RELEASE_NOTES_V272.md`, and `deployment/platform-core-v272.env.example`.
 
 ## Live-data routes
 
@@ -555,3 +566,7 @@ MIT
 ## v2.7.1 international-law APIs
 
 Core v2.7.1 adds a dedicated legal-record store and official-source connector pack. Internal routes begin with `/v1/international-law`; scoped public routes begin with `/api/v1/international-law` and require `data:read`. See `docs/INTERNATIONAL_LAW_UN_CONNECTORS_V271.md`.
+
+## v2.7.2 scientific-data APIs
+
+Core v2.7.2 adds normalized scientific discovery and provenance. Internal routes begin with `/v1/science`; scoped public routes begin with `/api/v1/science` and require `data:read`. See `docs/SCIENTIFIC_DATA_CONNECTORS_V272.md`.

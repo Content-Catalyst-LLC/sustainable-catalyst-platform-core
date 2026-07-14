@@ -4,7 +4,7 @@ Tags: knowledge graph, entity registry, provenance, live data, sustainable catal
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.0
-Stable tag: 2.7.1
+Stable tag: 2.7.2
 License: MIT
 
 WordPress status, live-data gateway, and entity lookup client for Sustainable Catalyst Platform Core.
@@ -17,10 +17,18 @@ WordPress status, live-data gateway, and entity lookup client for Sustainable Ca
 4. Use [sc_platform_core_status].
 5. Use [sc_platform_core_live_data_status].
 6. Use [sc_platform_core_international_law_status].
-7. Use [sc_platform_core_entity id="sc:product:workbench"].
+7. Use [sc_platform_core_science_status].
+8. Use [sc_platform_core_entity id="sc:product:workbench"].
 
 The plugin never exposes the Platform Core write key in frontend code.
 
+
+== 2.7.2 ==
+
+* Adds the Scientific Data Connector Pack status shortcode.
+* Displays configured science connectors and normalized scientific-record totals.
+* Supports Earth science, climate, hydrology, biomedical, chemistry, biodiversity, materials, and astronomy discovery.
+* Preserves provider identifiers, access links, license, attribution, content hashes, and raw-ingestion provenance.
 
 == 2.7.1 ==
 

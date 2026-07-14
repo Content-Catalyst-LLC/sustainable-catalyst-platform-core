@@ -302,6 +302,7 @@ class RegistryStats(BaseModel):
     live_data_ingestion_runs: int
     live_data_observations: int
     international_law_records: int
+    scientific_data_records: int
     entities_by_type: dict[str, int]
     relationships_by_predicate: dict[str, int]
     relationships_by_status: dict[str, int]
@@ -1874,3 +1875,49 @@ class InternationalLawStats(BaseModel):
     by_legal_body: dict[str, int]
     public_records: int
 
+
+
+class ScientificDataRecordRead(BaseModel):
+    id: str
+    connector_id: str
+    source_id: str
+    raw_record_id: str | None
+    source_record_id: str
+    record_type: str
+    discipline: str
+    title: str
+    summary: str | None
+    dataset_id: str | None
+    collection: str | None
+    mission: str | None
+    instrument: str | None
+    target: str | None
+    doi: str | None
+    access_url: str | None
+    landing_page_url: str | None
+    geometry: dict[str, Any] | None = Field(default=None, validation_alias="geometry_json", serialization_alias="geometry")
+    observation_start: datetime | None
+    observation_end: datetime | None
+    published_at: datetime | None
+    identifiers: dict[str, Any] = Field(default_factory=dict, validation_alias="identifiers_json", serialization_alias="identifiers")
+    keywords: list[str] = Field(default_factory=list, validation_alias="keywords_json", serialization_alias="keywords")
+    variables: list[str] = Field(default_factory=list, validation_alias="variables_json", serialization_alias="variables")
+    file_formats: list[str] = Field(default_factory=list, validation_alias="file_formats_json", serialization_alias="file_formats")
+    quality_status: str
+    license_name: str | None
+    attribution: str | None
+    content_hash: str
+    metadata: dict[str, Any] = Field(default_factory=dict, validation_alias="metadata_json", serialization_alias="metadata")
+    public: bool
+    created_at: datetime
+    updated_at: datetime
+    model_config = ConfigDict(from_attributes=True)
+
+
+class ScientificDataStats(BaseModel):
+    records: int
+    public_records: int
+    by_record_type: dict[str, int]
+    by_discipline: dict[str, int]
+    by_source: dict[str, int]
+    by_mission: dict[str, int]

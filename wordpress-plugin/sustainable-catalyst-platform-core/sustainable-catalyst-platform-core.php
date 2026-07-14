@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name: Sustainable Catalyst Platform Core
- * Description: WordPress connector for Sustainable Catalyst Platform Core registry, graph, evidence, developer, gateway, free live-data, and international-law services.
- * Version: 2.7.1
+ * Description: WordPress connector for Sustainable Catalyst Platform Core registry, graph, evidence, developer, gateway, free live-data, international-law, and scientific-data services.
+ * Version: 2.7.2
  * Author: Content Catalyst LLC
  * License: MIT
  */
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('SCPC_VERSION', '2.7.1');
+define('SCPC_VERSION', '2.7.2');
 define('SCPC_OPTION_BACKEND_URL', 'scpc_backend_url');
 define('SCPC_OPTION_READ_KEY', 'scpc_read_key');
 
@@ -85,6 +85,7 @@ function scpc_render_settings_page() {
         <code>[sc_platform_core_status]</code><br />
         <code>[sc_platform_core_live_data_status]</code><br />
         <code>[sc_platform_core_international_law_status]</code><br />
+        <code>[sc_platform_core_science_status]</code><br />
         <code>[sc_platform_core_entity id="sc:product:workbench"]</code><br />
         <code>[sc_platform_core_relationships id="sc:product:research-librarian"]</code><br />
         <code>[sc_knowledge_explorer]</code><br />
@@ -246,6 +247,51 @@ function scpc_international_law_status_shortcode() {
     return ob_get_clean();
 }
 add_shortcode('sc_platform_core_international_law_status', 'scpc_international_law_status_shortcode');
+
+function scpc_science_status_shortcode() {
+    $stats = scpc_api_get('/v1/science/stats');
+    $health = scpc_api_get('/v1/live/connectors/health');
+
+    if (is_wp_error($stats) || is_wp_error($health)) {
+        $error = is_wp_error($stats) ? $stats : $health;
+        return '<div class="scpc-card scpc-error"><strong>Scientific Data Connector Pack unavailable</strong><p>' .
+            esc_html($error->get_error_message()) .
+            '</p></div>';
+    }
+
+    $records = isset($stats['records']) ? intval($stats['records']) : 0;
+    $public_records = isset($stats['public_records']) ? intval($stats['public_records']) : 0;
+    $science_connectors = 0;
+    $configured = 0;
+    $science_domains = ['earth_science', 'space_science', 'atmospheric_science', 'hydrology', 'biomedical_science', 'chemistry', 'biodiversity', 'materials_science', 'astronomy'];
+    foreach (($health['connectors'] ?? []) as $connector) {
+        $domain = isset($connector['domain']) ? (string) $connector['domain'] : '';
+        if (in_array($domain, $science_domains, true)) {
+            $science_connectors++;
+            if (($connector['configuration_status'] ?? '') === 'configured') {
+                $configured++;
+            }
+        }
+    }
+
+    ob_start();
+    ?>
+    <section class="scpc-card">
+        <p class="scpc-kicker">Free official scientific data infrastructure</p>
+        <h3>Sustainable Catalyst Scientific Data Connector Pack</h3>
+        <p>
+            <strong>Version:</strong> <?php echo esc_html(SCPC_VERSION); ?> ·
+            <strong>Connectors:</strong> <?php echo esc_html(number_format_i18n($configured)); ?>/<?php echo esc_html(number_format_i18n($science_connectors)); ?> configured ·
+            <strong>Scientific records:</strong> <?php echo esc_html(number_format_i18n($records)); ?> ·
+            <strong>Public records:</strong> <?php echo esc_html(number_format_i18n($public_records)); ?>
+        </p>
+        <p class="scpc-meta">Earth science, hydrology, biomedical, chemical, biodiversity, materials, and astronomy records retain identifiers, access links, license, attribution, content hashes, and raw-ingestion provenance.</p>
+    </section>
+    <?php
+    return ob_get_clean();
+}
+add_shortcode('sc_platform_core_science_status', 'scpc_science_status_shortcode');
+
 
 function scpc_entity_shortcode($atts) {
     $atts = shortcode_atts(['id' => ''], $atts, 'sc_platform_core_entity');

@@ -1,32 +1,48 @@
-Sustainable Catalyst Platform Core v2.7.1
-International Law and United Nations Connector Pack
-Validation date: 2026-07-14
+Sustainable Catalyst Platform Core v2.7.2
+Scientific Data Connector Pack
+Validated: July 14, 2026
 
-Backend regression suite
-- 75 tests passed
-- Existing v2.0.0 through v2.7.0 compatibility coverage preserved
-- v2.7.1 source, connector, configuration-gate, ingestion, legal-authority,
-  deduplication, provenance, scoped-public-API, SDK, and migration coverage added
+Backend regression tests
+- Legacy registry, graph, evidence, gateway, public API, live-data, and international-law group: 59 passed
+- Scientific connector, signature dossier, and Trust Center group: 27 passed
+- Total: 86 passed
+
+Scientific connector coverage
+- Catalog, free-source policy, source and connector counts
+- NASA CMR collection ingestion, deduplication, and provenance
+- NASA APOD astronomy-image normalization
+- NOAA NCEI environmental observations
+- ECMWF open forecast-index normalization
+- USGS Water instantaneous observations
+- NCBI Entrez identifier discovery
+- PubChem compound properties
+- GBIF biodiversity occurrences and record-level license metadata
+- Materials Project configuration gate and free-key ingestion
+- MAST POST requests and telescope observations
+- HEASARC catalog discovery
+- IRSA and ESO read-only TAP/ADQL discovery
+- Unsafe ADQL rejection
+- Internal and scoped public scientific APIs
+- Python and JavaScript SDK exposure
+- WordPress science-status shortcode syntax
 
 Migration validation
-- Migrations 0001 through 0008 applied successfully
-- Pending migrations: 0
-- Seeded live-data sources: 16
-- Seeded connector definitions: 14
+- Migrations 0001 through 0009 applied on a fresh SQLite database
+- Pending migrations: none
+- Predicate definitions: 24
+- API plans: 3
+- Evaluation definitions: 8
+- Workflow definitions: 3
+- Live-data sources: 28
+- Live-data connectors: 27
+- Scientific data records table present
 
 Static and package validation
 - Python compilation passed
 - PHP syntax passed
 - JavaScript syntax passed
 - Bash syntax passed
-- JSON parsing passed
+- JSON schema and Postman validation passed
+- Strict free-source assertions passed
 - Push-safe secret scan passed
-- SDK ZIP integrity passed
-- WordPress plugin ZIP integrity passed
-- Full repository ZIP integrity passed
-
-Legal-safety validation
-- Security Council resolution symbols are not automatically classified as binding
-- Human-rights recommendations remain explicitly non-binding recommendations
-- Humanitarian reports remain informational records
-- Raw-response, source, connector, content-hash, and authority provenance are retained
+- SDK archive integrity passed

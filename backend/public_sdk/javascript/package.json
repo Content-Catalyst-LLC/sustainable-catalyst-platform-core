@@ -1,6 +1,6 @@
 {
   "name": "@sustainable-catalyst/platform-core-public",
-  "version": "2.7.1",
+  "version": "2.7.2",
   "type": "module",
   "description": "JavaScript client for the Sustainable Catalyst Unified Public API",
   "exports": "./index.mjs"

@@ -19,6 +19,7 @@ from ..models import (
     LiveDataRawRecord,
     LiveDataSource,
     InternationalLawRecord,
+    ScientificDataRecord,
 )
 
 APPROVED_SOURCE_STATUSES = {
@@ -41,6 +42,10 @@ def ensure_utc(value: datetime) -> datetime:
 
 def international_law_record_id(connector_id: str, source_record_id: str, record_type: str) -> str:
     return hashlib.sha256(f"{connector_id}|{source_record_id}|{record_type}".encode("utf-8")).hexdigest()
+
+
+def scientific_data_record_id(connector_id: str, source_record_id: str, record_type: str) -> str:
+    return hashlib.sha256(f"science|{connector_id}|{source_record_id}|{record_type}".encode("utf-8")).hexdigest()
 
 
 def observation_id(connector_id: str, observation: NormalizedObservation) -> str:
@@ -126,6 +131,8 @@ class LiveDataRuntime:
             return "registration_required"
         if connector.id == "ohchr.uhri-recommendations" and not self.settings.uhri_api_url:
             return "endpoint_registration_required"
+        if connector.id == "materials-project.summary" and not self.settings.materials_project_api_key:
+            return "credential_required"
         if not self.settings.live_data_enabled:
             return "subsystem_disabled"
         if not connector.enabled:
@@ -182,6 +189,8 @@ class LiveDataRuntime:
                     request.url,
                     params=request_params,
                     headers=request.headers,
+                    json=request.json_body,
+                    data=request.data,
                 )
             run.http_status = response.status_code
             response.raise_for_status()
@@ -235,6 +244,8 @@ class LiveDataRuntime:
             rejected = 0
             legal_created = 0
             legal_updated = 0
+            scientific_created = 0
+            scientific_updated = 0
             for item in normalized:
                 try:
                     item.observed_at = ensure_utc(item.observed_at)
@@ -326,6 +337,56 @@ class LiveDataRuntime:
                                 setattr(legal_existing, key, value)
                             db.add(legal_existing)
                             legal_updated += 1
+
+                    if item.scientific_record:
+                        science = dict(item.scientific_record)
+                        science_metadata = science.pop("metadata", {})
+                        record_type = str(science.get("record_type") or "scientific_dataset")
+                        science_id = scientific_data_record_id(connector.id, item.source_record_id, record_type)
+                        science_existing = db.get(ScientificDataRecord, science_id)
+                        def science_date(name, fallback=None):
+                            value = science.get(name)
+                            return ensure_utc(value) if isinstance(value, datetime) else fallback
+                        science_values = {
+                            "connector_id": connector.id,
+                            "source_id": source.id,
+                            "raw_record_id": raw.id,
+                            "source_record_id": item.source_record_id,
+                            "record_type": record_type,
+                            "discipline": str(science.get("discipline") or item.domain or "science"),
+                            "title": str(science.get("title") or item.value_text or item.source_record_id),
+                            "summary": science.get("summary"),
+                            "dataset_id": science.get("dataset_id"),
+                            "collection": science.get("collection"),
+                            "mission": science.get("mission"),
+                            "instrument": science.get("instrument"),
+                            "target": science.get("target"),
+                            "doi": science.get("doi"),
+                            "access_url": science.get("access_url"),
+                            "landing_page_url": science.get("landing_page_url"),
+                            "geometry_json": science.get("geometry") or item.geometry,
+                            "observation_start": science_date("observation_start", item.observed_at),
+                            "observation_end": science_date("observation_end"),
+                            "published_at": science_date("published_at", item.published_at),
+                            "identifiers_json": dict(science.get("identifiers") or {}),
+                            "keywords_json": list(science.get("keywords") or []),
+                            "variables_json": list(science.get("variables") or []),
+                            "file_formats_json": list(science.get("file_formats") or []),
+                            "quality_status": str(science.get("quality_status") or item.quality_status),
+                            "license_name": source.license_name,
+                            "attribution": source.attribution,
+                            "content_hash": hashlib.sha256(json.dumps({**science, "metadata": science_metadata}, sort_keys=True, default=str).encode("utf-8")).hexdigest(),
+                            "metadata_json": science_metadata,
+                            "public": bool(item.public and connector.public and source.public and public_records),
+                        }
+                        if science_existing is None:
+                            db.add(ScientificDataRecord(id=science_id, **science_values))
+                            scientific_created += 1
+                        else:
+                            for key, value in science_values.items():
+                                setattr(science_existing, key, value)
+                            db.add(science_existing)
+                            scientific_updated += 1
                 except Exception:
                     rejected += 1
 
@@ -341,6 +402,8 @@ class LiveDataRuntime:
                 "raw_payload_truncated": truncated,
                 "international_law_records_created": legal_created,
                 "international_law_records_updated": legal_updated,
+                "scientific_data_records_created": scientific_created,
+                "scientific_data_records_updated": scientific_updated,
             }
             connector.last_health_status = "operational"
             connector.last_health_checked_at = run.completed_at

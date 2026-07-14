@@ -79,3 +79,23 @@ console.log(await client.verifyDossier("sc:dossier:..."));
 - `GET /api/v1/international-law/authority-taxonomy`
 
 These routes use the existing `data:read` scope. They return normalized public legal records; raw provider payloads and internal connector configuration remain private.
+
+## Scientific data v2.7.2
+
+Python:
+
+```python
+print(client.scientific_records(discipline="astronomy", limit=25))
+print(client.scientific_record("RECORD_ID"))
+print(client.scientific_record_types())
+```
+
+JavaScript:
+
+```javascript
+console.log(await client.scientificRecords({ discipline: "astronomy", limit: 25 }));
+console.log(await client.scientificRecord("RECORD_ID"));
+console.log(await client.scientificRecordTypes());
+```
+
+These public methods use `data:read`. Raw provider payloads and internal provenance are intentionally excluded from the public SDK.

@@ -22,6 +22,7 @@ from ..models import (
     LiveDataIngestionRun,
     LiveDataObservation,
     InternationalLawRecord,
+    ScientificDataRecord,
     LiveDataSource,
     PredicateDefinition,
     ProvenanceActivity,
@@ -57,6 +58,7 @@ def health(request: Request):
         "trust_center": request.app.state.settings.trust_center_enabled,
         "live_data_gateway": request.app.state.settings.live_data_enabled,
         "international_law_un_connector_pack": True,
+        "scientific_data_connector_pack": True,
         "strict_free_sources": request.app.state.settings.live_data_strict_free_sources,
     }
 
@@ -74,6 +76,7 @@ def ready(db: Session = Depends(get_session)):
         "trust_center": "ready",
         "live_data_gateway": "ready",
         "international_law_un_connector_pack": "ready",
+        "scientific_data_connector_pack": "ready",
     }
 
 
@@ -137,6 +140,15 @@ def meta(request: Request):
             "international_law_record_store",
             "united_nations_connector_pack",
             "legal_authority_classification",
+            "scientific_data_connector_pack",
+            "scientific_data_record_store",
+            "scientific_dataset_discovery",
+            "astronomy_archive_discovery",
+            "biomedical_and_chemical_discovery",
+            "biodiversity_occurrence_discovery",
+            "materials_science_discovery",
+            "hydrology_observation_ingestion",
+            "read_only_adql_gateway",
             "weather_reference_connector",
             "earth_observation_reference_connector",
             "hazard_event_reference_connector",
@@ -247,6 +259,7 @@ def stats(db: Session = Depends(get_session)):
         live_data_ingestion_runs=count(LiveDataIngestionRun),
         live_data_observations=count(LiveDataObservation),
         international_law_records=count(InternationalLawRecord),
+        scientific_data_records=count(ScientificDataRecord),
         entities_by_type={key: int(value) for key, value in entity_rows},
         relationships_by_predicate={
             key: int(value) for key, value in predicate_rows

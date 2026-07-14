@@ -225,8 +225,8 @@ def test_registry_stats_include_live_data_counts(client):
     response = client.get("/v1/stats")
     assert response.status_code == 200
     payload = response.json()
-    assert payload["live_data_sources"] == 16
-    assert payload["live_data_connectors"] == 14
+    assert payload["live_data_sources"] == 28
+    assert payload["live_data_connectors"] == 27
     assert payload["live_data_ingestion_runs"] == 0
     assert payload["live_data_observations"] == 0
     assert payload["international_law_records"] == 0
@@ -234,7 +234,7 @@ def test_registry_stats_include_live_data_counts(client):
 
 def test_health_advertises_live_data_gateway(client):
     health = client.get("/health").json()
-    assert health["version"] == "2.7.1"
+    assert health["version"] == "2.7.2"
     assert health["live_data_gateway"] is True
     assert health["strict_free_sources"] is True
 
@@ -282,11 +282,11 @@ def test_scoped_public_live_data_api_sanitizes_connector_configuration(client, w
     sources = client.get("/api/v1/live/sources", headers=headers)
     assert sources.status_code == 200
     assert sources.json()["meta"]["api_version"] == "v1"
-    assert len(sources.json()["data"]) == 16
+    assert len(sources.json()["data"]) == 28
 
     connectors = client.get("/api/v1/live/connectors", headers=headers)
     assert connectors.status_code == 200
-    assert len(connectors.json()["data"]) == 14
+    assert len(connectors.json()["data"]) == 27
     for connector in connectors.json()["data"]:
         assert "base_url" not in connector
         assert "adapter" not in connector

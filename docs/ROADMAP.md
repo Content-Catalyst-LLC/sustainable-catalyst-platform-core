@@ -67,15 +67,19 @@ Completed:
 
 ## v2.7.2 — Scientific Data Connector Pack
 
-Planned:
+Completed:
 
-- NASA Earthdata CMR
-- NOAA and ECMWF
-- USGS water
-- NCBI and PubChem
-- GBIF
-- Materials Project
-- MAST, HEASARC, IRSA, and ESO
+- NASA Earthdata CMR and NASA APOD
+- NOAA NCEI and ECMWF open-data indexes
+- USGS instantaneous water observations
+- NCBI Entrez and PubChem compound properties
+- GBIF biodiversity occurrences
+- Materials Project free-registration integration
+- MAST, HEASARC, IRSA, and ESO astronomy discovery
+- Dedicated scientific-record schema and provenance
+- Read-only TAP/ADQL enforcement
+- Internal and scoped public science APIs
+- Python, JavaScript, WordPress, deployment, and CLI support
 
 ## v2.7.3 — Economics and Official Statistics Connector Pack
 

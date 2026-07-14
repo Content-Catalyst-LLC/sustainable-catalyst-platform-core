@@ -131,6 +131,19 @@ export class PublicApiClient {
     return this.request("/international-law/authority-taxonomy");
   }
 
+  scientificRecords(params = {}) {
+    const query = new URLSearchParams(params);
+    return this.request(`/science/records?${query}`);
+  }
+
+  scientificRecord(recordId) {
+    return this.request(`/science/records/${encodeURIComponent(recordId)}`);
+  }
+
+  scientificRecordTypes() {
+    return this.request("/science/record-types");
+  }
+
   identity() {
     return this.request("/developer/me");
   }

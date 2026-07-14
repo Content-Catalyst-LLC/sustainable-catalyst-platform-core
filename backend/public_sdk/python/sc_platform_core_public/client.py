@@ -131,3 +131,18 @@ class PublicApiClient:
 
     def international_law_authority_taxonomy(self):
         return self.request("GET", "/international-law/authority-taxonomy")
+
+
+# v2.7.2 scientific-data methods are attached here to retain backward-compatible class layout.
+def _scientific_records(self, **params):
+    return self.request("GET", "/science/records", params=params)
+
+def _scientific_record(self, record_id: str):
+    return self.request("GET", f"/science/records/{record_id}")
+
+def _scientific_record_types(self):
+    return self.request("GET", "/science/record-types")
+
+PublicApiClient.scientific_records = _scientific_records
+PublicApiClient.scientific_record = _scientific_record
+PublicApiClient.scientific_record_types = _scientific_record_types
