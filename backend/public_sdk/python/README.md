@@ -15,7 +15,7 @@ print(client.dossiers())
 print(client.verify_dossier("sc:dossier:..."))
 ```
 
-## Live data v2.7.0
+## Live data and international law v2.7.1
 
 ```python
 sources = client.live_sources()
@@ -26,3 +26,8 @@ lineage = client.live_provenance(events[0]["id"])
 ```
 
 These methods require the `data:read` scope.
+
+
+## International law and UN records v2.7.1
+
+Use the international-law record, detail, and authority-taxonomy client methods to consume official-source records without exposing connector configuration or raw payloads.

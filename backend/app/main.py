@@ -23,6 +23,7 @@ from .routers import (
     gateway,
     foundations,
     imports,
+    international_law,
     ledger,
     live_data,
     meta,
@@ -50,7 +51,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             "workflows, tamper-evident audit infrastructure, a unified public API, "
             "developer applications, scoped credentials, usage controls, webhooks, "
             "SDK assets, a public Trust Center, evaluation runs, incidents, "
-            "limitations, attestations, signature dossiers, end-to-end workflows, a unified service gateway, and a governed free live-data connector gateway for Sustainable Catalyst."
+            "limitations, attestations, signature dossiers, end-to-end workflows, a unified service gateway, and a governed free live-data connector gateway, and an international-law and United Nations record layer for Sustainable Catalyst."
         ),
         contact={
             "name": "Sustainable Catalyst",
@@ -116,6 +117,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(gateway.router)
     app.include_router(live_data.router)
     app.include_router(live_data.public_router)
+    app.include_router(international_law.router)
+    app.include_router(international_law.public_router)
     app.include_router(trust_public.router)
     app.include_router(workflow_public.router)
     app.include_router(entities.router)

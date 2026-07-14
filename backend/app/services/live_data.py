@@ -18,6 +18,7 @@ from ..models import (
     LiveDataObservation,
     LiveDataRawRecord,
     LiveDataSource,
+    InternationalLawRecord,
 )
 
 APPROVED_SOURCE_STATUSES = {
@@ -36,6 +37,10 @@ def ensure_utc(value: datetime) -> datetime:
     if value.tzinfo is None:
         return value.replace(tzinfo=timezone.utc)
     return value.astimezone(timezone.utc)
+
+
+def international_law_record_id(connector_id: str, source_record_id: str, record_type: str) -> str:
+    return hashlib.sha256(f"{connector_id}|{source_record_id}|{record_type}".encode("utf-8")).hexdigest()
 
 
 def observation_id(connector_id: str, observation: NormalizedObservation) -> str:
@@ -117,6 +122,10 @@ class LiveDataRuntime:
             return "adapter_missing"
         if connector.id == "fred.series-observations" and not self.settings.fred_api_key:
             return "credential_required"
+        if connector.id == "ocha.reliefweb-reports" and not self.settings.reliefweb_appname:
+            return "registration_required"
+        if connector.id == "ohchr.uhri-recommendations" and not self.settings.uhri_api_url:
+            return "endpoint_registration_required"
         if not self.settings.live_data_enabled:
             return "subsystem_disabled"
         if not connector.enabled:
@@ -224,6 +233,8 @@ class LiveDataRuntime:
             created = 0
             updated = 0
             rejected = 0
+            legal_created = 0
+            legal_updated = 0
             for item in normalized:
                 try:
                     item.observed_at = ensure_utc(item.observed_at)
@@ -268,6 +279,53 @@ class LiveDataRuntime:
                             setattr(existing, key, value)
                         db.add(existing)
                         updated += 1
+
+                    if item.legal_record:
+                        legal = dict(item.legal_record)
+                        legal_metadata = legal.pop("metadata", {})
+                        record_type = str(legal.get("record_type") or "un_official_document")
+                        legal_id = international_law_record_id(connector.id, item.source_record_id, record_type)
+                        legal_existing = db.get(InternationalLawRecord, legal_id)
+                        legal_values = {
+                            "connector_id": connector.id,
+                            "source_id": source.id,
+                            "raw_record_id": raw.id,
+                            "source_record_id": item.source_record_id,
+                            "record_type": record_type,
+                            "authority_level": str(legal.get("authority_level") or "official_report"),
+                            "title": str(legal.get("title") or item.value_text or item.source_record_id),
+                            "official_symbol": legal.get("official_symbol"),
+                            "issuing_body": legal.get("issuing_body"),
+                            "legal_body": legal.get("legal_body"),
+                            "jurisdiction": str(legal.get("jurisdiction") or "international"),
+                            "legal_status": str(legal.get("legal_status") or "official_record"),
+                            "adoption_date": ensure_utc(legal["adoption_date"]) if legal.get("adoption_date") else None,
+                            "publication_date": ensure_utc(legal["publication_date"]) if legal.get("publication_date") else item.published_at,
+                            "entry_into_force_date": ensure_utc(legal["entry_into_force_date"]) if legal.get("entry_into_force_date") else None,
+                            "languages_json": list(legal.get("languages") or []),
+                            "countries_json": list(legal.get("countries") or []),
+                            "subjects_json": list(legal.get("subjects") or []),
+                            "related_instruments_json": list(legal.get("related_instruments") or []),
+                            "related_cases_json": list(legal.get("related_cases") or []),
+                            "related_resolutions_json": list(legal.get("related_resolutions") or []),
+                            "related_sdg_targets_json": list(legal.get("related_sdg_targets") or []),
+                            "canonical_source_url": legal.get("canonical_source_url"),
+                            "citation": legal.get("citation"),
+                            "summary": legal.get("summary"),
+                            "license_name": source.license_name,
+                            "attribution": source.attribution,
+                            "content_hash": hashlib.sha256(json.dumps({**legal, "metadata": legal_metadata}, sort_keys=True, default=str).encode("utf-8")).hexdigest(),
+                            "metadata_json": legal_metadata,
+                            "public": bool(item.public and connector.public and source.public and public_records),
+                        }
+                        if legal_existing is None:
+                            db.add(InternationalLawRecord(id=legal_id, **legal_values))
+                            legal_created += 1
+                        else:
+                            for key, value in legal_values.items():
+                                setattr(legal_existing, key, value)
+                            db.add(legal_existing)
+                            legal_updated += 1
                 except Exception:
                     rejected += 1
 
@@ -281,6 +339,8 @@ class LiveDataRuntime:
                 "request_url": str(response.request.url).split("?")[0],
                 "raw_record_id": raw.id,
                 "raw_payload_truncated": truncated,
+                "international_law_records_created": legal_created,
+                "international_law_records_updated": legal_updated,
             }
             connector.last_health_status = "operational"
             connector.last_health_checked_at = run.completed_at

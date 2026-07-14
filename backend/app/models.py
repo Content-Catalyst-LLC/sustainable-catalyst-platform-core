@@ -1121,3 +1121,49 @@ class LiveDataObservation(Base):
     public: Mapped[bool] = mapped_column(Boolean, default=True, index=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+class InternationalLawRecord(Base):
+    __tablename__ = "international_law_records"
+    __table_args__ = (
+        UniqueConstraint("connector_id", "source_record_id", "record_type", name="uq_international_law_source_type"),
+        Index("ix_international_law_type_date", "record_type", "publication_date"),
+        Index("ix_international_law_authority_date", "authority_level", "publication_date"),
+        Index("ix_international_law_symbol", "official_symbol"),
+        Index("ix_international_law_body", "legal_body", "publication_date"),
+        Index("ix_international_law_public", "public", "publication_date"),
+    )
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    connector_id: Mapped[str] = mapped_column(ForeignKey("live_data_connectors.id", ondelete="RESTRICT"), nullable=False, index=True)
+    source_id: Mapped[str] = mapped_column(ForeignKey("live_data_sources.id", ondelete="RESTRICT"), nullable=False, index=True)
+    raw_record_id: Mapped[str | None] = mapped_column(ForeignKey("live_data_raw_records.id", ondelete="SET NULL"), nullable=True, index=True)
+    source_record_id: Mapped[str] = mapped_column(String(500), nullable=False)
+    record_type: Mapped[str] = mapped_column(String(120), nullable=False, index=True)
+    authority_level: Mapped[str] = mapped_column(String(120), nullable=False, index=True)
+    title: Mapped[str] = mapped_column(Text, nullable=False)
+    official_symbol: Mapped[str | None] = mapped_column(String(500), nullable=True, index=True)
+    issuing_body: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    legal_body: Mapped[str | None] = mapped_column(String(500), nullable=True, index=True)
+    jurisdiction: Mapped[str] = mapped_column(String(120), default="international", index=True)
+    legal_status: Mapped[str] = mapped_column(String(120), default="official_record", index=True)
+    adoption_date: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    publication_date: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True, index=True)
+    entry_into_force_date: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    languages_json: Mapped[list] = mapped_column(JSON, default=list)
+    countries_json: Mapped[list] = mapped_column(JSON, default=list)
+    subjects_json: Mapped[list] = mapped_column(JSON, default=list)
+    related_instruments_json: Mapped[list] = mapped_column(JSON, default=list)
+    related_cases_json: Mapped[list] = mapped_column(JSON, default=list)
+    related_resolutions_json: Mapped[list] = mapped_column(JSON, default=list)
+    related_sdg_targets_json: Mapped[list] = mapped_column(JSON, default=list)
+    canonical_source_url: Mapped[str | None] = mapped_column(String(2000), nullable=True)
+    citation: Mapped[str | None] = mapped_column(Text, nullable=True)
+    summary: Mapped[str | None] = mapped_column(Text, nullable=True)
+    license_name: Mapped[str | None] = mapped_column(String(300), nullable=True)
+    attribution: Mapped[str | None] = mapped_column(Text, nullable=True)
+    content_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    public: Mapped[bool] = mapped_column(Boolean, default=True, index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+

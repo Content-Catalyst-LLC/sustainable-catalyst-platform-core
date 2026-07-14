@@ -38,7 +38,9 @@ curl http://127.0.0.1:8090/v1/live/connectors
 
 7. Run a connector manually
 
-export SC_CORE_WRITE_API_KEY='your-write-key'
+read -rsp "Enter SC_CORE_WRITE_API_KEY: " SC_CORE_WRITE_API_KEY
+export SC_CORE_WRITE_API_KEY
+echo
 
 curl -X POST \
   http://127.0.0.1:8090/v1/live/connectors/usgs.earthquakes/ingest \

@@ -21,6 +21,7 @@ from ..models import (
     LiveDataConnector,
     LiveDataIngestionRun,
     LiveDataObservation,
+    InternationalLawRecord,
     LiveDataSource,
     PredicateDefinition,
     ProvenanceActivity,
@@ -55,6 +56,7 @@ def health(request: Request):
         "dossier_center": request.app.state.settings.dossier_center_enabled,
         "trust_center": request.app.state.settings.trust_center_enabled,
         "live_data_gateway": request.app.state.settings.live_data_enabled,
+        "international_law_un_connector_pack": True,
         "strict_free_sources": request.app.state.settings.live_data_strict_free_sources,
     }
 
@@ -71,6 +73,7 @@ def ready(db: Session = Depends(get_session)):
         "unified_service_gateway": "ready",
         "trust_center": "ready",
         "live_data_gateway": "ready",
+        "international_law_un_connector_pack": "ready",
     }
 
 
@@ -131,6 +134,9 @@ def meta(request: Request):
             "data_freshness_classification",
             "source_license_and_attribution_registry",
             "live_data_provenance",
+            "international_law_record_store",
+            "united_nations_connector_pack",
+            "legal_authority_classification",
             "weather_reference_connector",
             "earth_observation_reference_connector",
             "hazard_event_reference_connector",
@@ -240,6 +246,7 @@ def stats(db: Session = Depends(get_session)):
         live_data_connectors=count(LiveDataConnector),
         live_data_ingestion_runs=count(LiveDataIngestionRun),
         live_data_observations=count(LiveDataObservation),
+        international_law_records=count(InternationalLawRecord),
         entities_by_type={key: int(value) for key, value in entity_rows},
         relationships_by_predicate={
             key: int(value) for key, value in predicate_rows

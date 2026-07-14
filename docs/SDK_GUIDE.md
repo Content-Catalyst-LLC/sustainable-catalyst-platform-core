@@ -70,3 +70,12 @@ console.log(await client.dossiers());
 console.log(await client.dossier("sc:dossier:..."));
 console.log(await client.verifyDossier("sc:dossier:..."));
 ```
+
+
+## International Law and UN v2.7.1
+
+- `GET /api/v1/international-law/records`
+- `GET /api/v1/international-law/records/{record_id}`
+- `GET /api/v1/international-law/authority-taxonomy`
+
+These routes use the existing `data:read` scope. They return normalized public legal records; raw provider payloads and internal connector configuration remain private.

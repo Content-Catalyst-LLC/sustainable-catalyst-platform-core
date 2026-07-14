@@ -222,7 +222,7 @@ class PlatformCoreClient:
     def verify_dossier(self, dossier_id: str):
         return self._request("GET", f"/v1/dossiers/{dossier_id}/verify")
 
-    # Platform Core v2.7.0 free live-data gateway
+    # Platform Core v2.7.1 free live-data and UN connector gateway
     def live_data_sources(self, *, active: bool | None = True, review_status: str | None = None):
         params: dict[str, Any] = {}
         if active is not None: params["active"] = active
@@ -254,4 +254,19 @@ class PlatformCoreClient:
 
     def live_provenance(self, observation_id: str):
         return self._request("GET", f"/v1/live/provenance/{observation_id}")
+
+    def international_law_records(self, **params):
+        return self._request("GET", "/v1/international-law/records", params=params)
+
+    def international_law_record(self, record_id: str):
+        return self._request("GET", f"/v1/international-law/records/{record_id}")
+
+    def international_law_provenance(self, record_id: str):
+        return self._request("GET", f"/v1/international-law/provenance/{record_id}")
+
+    def international_law_authority_taxonomy(self):
+        return self._request("GET", "/v1/international-law/authority-taxonomy")
+
+    def international_law_stats(self):
+        return self._request("GET", "/v1/international-law/stats")
 

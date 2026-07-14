@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/international-law-record-v1.schema.json",
+  "title": "Sustainable Catalyst International Law Record",
+  "type": "object",
+  "required": ["id", "source_record_id", "record_type", "authority_level", "title", "jurisdiction", "legal_status", "content_hash"],
+  "properties": {
+    "id": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "source_record_id": {"type": "string", "minLength": 1, "maxLength": 500},
+    "record_type": {"type": "string"},
+    "authority_level": {"type": "string"},
+    "title": {"type": "string", "minLength": 1},
+    "official_symbol": {"type": ["string", "null"]},
+    "jurisdiction": {"type": "string"},
+    "legal_status": {"type": "string"},
+    "countries": {"type": "array", "items": {"type": "string"}},
+    "subjects": {"type": "array", "items": {"type": "string"}},
+    "canonical_source_url": {"type": ["string", "null"], "format": "uri"},
+    "content_hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "metadata": {"type": "object"}
+  },
+  "additionalProperties": true
+}

@@ -42,3 +42,8 @@ evidence = client.create_evidence_record({
 print(client.evidence_manifest(claim["id"]))
 print(client.verify_ledger())
 ```
+
+
+## International law and UN records v2.7.1
+
+Use the international-law record, detail, and authority-taxonomy client methods to consume official-source records without exposing connector configuration or raw payloads.

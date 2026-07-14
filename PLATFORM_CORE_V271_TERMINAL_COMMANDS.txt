@@ -1,0 +1,86 @@
+SUSTAINABLE CATALYST PLATFORM CORE v2.7.1
+INTERNATIONAL LAW AND UNITED NATIONS CONNECTOR PACK
+
+1. Extract the release and enter the repository
+
+unzip sustainable-catalyst-platform-core-v2.7.1.zip
+cd sustainable-catalyst-platform-core-v2.7.1
+
+2. Create a Python environment
+
+cd backend
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+
+3. Run the complete test suite
+
+PYTHONPATH=".:public_sdk/python" DD_TRACE_ENABLED=false pytest -q -p no:ddtrace
+
+4. Configure local environment
+
+cp .env.example .env
+# Edit .env and keep SC_CORE_LIVE_DATA_STRICT_FREE_SOURCES=true.
+# Optional free registrations:
+#   SC_CORE_FRED_API_KEY
+#   SC_CORE_RELIEFWEB_APPNAME
+#   SC_CORE_UHRI_API_URL
+# UN Population can use SC_CORE_UN_POPULATION_BEARER_TOKEN when required.
+
+5. Run migrations and start Core
+
+python scripts/migrate.py
+./start.sh
+
+6. Check v2.7.1 status and registries
+
+curl http://127.0.0.1:8090/health
+curl http://127.0.0.1:8090/ready
+curl http://127.0.0.1:8090/v1/live/connectors/health
+curl http://127.0.0.1:8090/v1/live/sources
+curl http://127.0.0.1:8090/v1/live/connectors
+curl http://127.0.0.1:8090/v1/international-law/authority-taxonomy
+curl http://127.0.0.1:8090/v1/international-law/stats
+
+7. Read the write key securely for local administrative requests
+
+read -rsp "Enter SC_CORE_WRITE_API_KEY: " SC_CORE_WRITE_API_KEY
+export SC_CORE_WRITE_API_KEY
+echo
+
+8. Ingest official UN Digital Library metadata
+
+curl -X POST \
+  http://127.0.0.1:8090/v1/live/connectors/un.digital-library/ingest \
+  -H 'Content-Type: application/json' \
+  -H "X-SC-API-Key: $SC_CORE_WRITE_API_KEY" \
+  -d '{"parameters":{"query":"S/RES/2728","limit":10},"requested_by":"terminal","run_type":"manual"}'
+
+9. Query normalized legal records and provenance
+
+curl 'http://127.0.0.1:8090/v1/international-law/records?query=2728'
+# Replace RECORD_ID with the returned record identifier.
+curl 'http://127.0.0.1:8090/v1/international-law/provenance/RECORD_ID'
+
+10. Run a free, non-registration-gated UN connector
+
+python scripts/sync_live_data.py \
+  --connector unhcr.population \
+  --parameters '{"year_from":2024,"year_to":2025,"limit":100}' \
+  --requested-by terminal-unhcr
+
+11. Configure registration-gated free connectors when credentials are available
+
+# ReliefWeb requires a free pre-approved application name:
+# export SC_CORE_RELIEFWEB_APPNAME="..."
+# OHCHR UHRI supplies its free endpoint information on request:
+# export SC_CORE_UHRI_API_URL="https://..."
+
+12. Commit and push manually
+
+cd ..
+git status
+git add .
+git commit -m "Build Platform Core v2.7.1 international law and UN connector pack"
+git push origin main

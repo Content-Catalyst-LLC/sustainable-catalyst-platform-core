@@ -122,3 +122,12 @@ class PublicApiClient:
 
     def live_provenance(self, observation_id: str):
         return self.request("GET", f"/live/provenance/{observation_id}")
+
+    def international_law_records(self, **params):
+        return self.request("GET", "/international-law/records", params=params)
+
+    def international_law_record(self, record_id: str):
+        return self.request("GET", f"/international-law/records/{record_id}")
+
+    def international_law_authority_taxonomy(self):
+        return self.request("GET", "/international-law/authority-taxonomy")

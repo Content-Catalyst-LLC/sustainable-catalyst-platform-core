@@ -118,6 +118,19 @@ export class PublicApiClient {
     return this.request(`/live/provenance/${encodeURIComponent(observationId)}`);
   }
 
+  internationalLawRecords(params = {}) {
+    const query = new URLSearchParams(params);
+    return this.request(`/international-law/records?${query}`);
+  }
+
+  internationalLawRecord(recordId) {
+    return this.request(`/international-law/records/${encodeURIComponent(recordId)}`);
+  }
+
+  internationalLawAuthorityTaxonomy() {
+    return this.request("/international-law/authority-taxonomy");
+  }
+
   identity() {
     return this.request("/developer/me");
   }

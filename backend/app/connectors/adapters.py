@@ -4,7 +4,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 import math
 from typing import Any
-from urllib.parse import quote
+from urllib.parse import quote, urlparse
 import xml.etree.ElementTree as ET
 
 import httpx
@@ -76,6 +76,7 @@ class NormalizedObservation:
     quality_status: str = "source_reported"
     methodology_url: str | None = None
     metadata: dict[str, Any] = field(default_factory=dict)
+    legal_record: dict[str, Any] | None = None
     public: bool = True
 
 
@@ -460,6 +461,565 @@ class UnSdgCatalogAdapter(ConnectorAdapter):
         return payload, observations
 
 
+def _first_text(value: Any) -> str | None:
+    if value is None:
+        return None
+    if isinstance(value, str):
+        return value.strip() or None
+    if isinstance(value, dict):
+        for key in ("title", "value", "name", "label", "description", "text"):
+            result = _first_text(value.get(key))
+            if result:
+                return result
+        for item in value.values():
+            result = _first_text(item)
+            if result:
+                return result
+    if isinstance(value, list):
+        for item in value:
+            result = _first_text(item)
+            if result:
+                return result
+    return str(value).strip() or None
+
+
+def _list_text(value: Any) -> list[str]:
+    if value is None:
+        return []
+    values = value if isinstance(value, list) else [value]
+    output: list[str] = []
+    for item in values:
+        text = _first_text(item)
+        if text and text not in output:
+            output.append(text)
+    return output
+
+
+def _record_date(record: dict[str, Any], *keys: str, default: datetime) -> datetime:
+    for key in keys:
+        value = record.get(key)
+        if isinstance(value, dict):
+            value = value.get("value") or value.get("date") or value.get("created") or value.get("original")
+        if value not in (None, ""):
+            try:
+                return parse_datetime(value)
+            except (ValueError, TypeError):
+                continue
+    return default
+
+
+def _un_authority(symbol: str | None, title: str | None) -> tuple[str, str]:
+    symbol_upper = (symbol or "").upper()
+    title_lower = (title or "").lower()
+    if symbol_upper.startswith("S/RES/"):
+        # A document symbol identifies the issuing body and record type, not by
+        # itself the legal basis or binding effect of every operative paragraph.
+        return "security_council_resolution", "official_security_council_resolution"
+    if symbol_upper.startswith("A/RES/"):
+        return "general_assembly_resolution", "recommendatory_resolution"
+    if symbol_upper.startswith("A/HRC/RES/"):
+        return "human_rights_council_resolution", "recommendatory_resolution"
+    if "judgment" in title_lower:
+        return "judgment", "judicial_decision"
+    if "advisory opinion" in title_lower:
+        return "advisory_opinion", "advisory_judicial_opinion"
+    return "un_official_document", "official_report"
+
+
+class UnDigitalLibraryAdapter(ConnectorAdapter):
+    adapter_id = "un_digital_library_search_v1"
+
+    def build_request(self, connector, parameters, settings) -> ConnectorRequest:
+        query = str(self._required(parameters, "query")).strip()
+        page_size = min(max(int(parameters.get("limit", 25)), 1), 100)
+        start = min(max(int(parameters.get("start", 1)), 1), 1000000)
+        fields = parameters.get("fields") or connector.configuration_json.get(
+            "default_fields",
+            "recid,title,document_symbol,publication_date,creation_date,language,subjects,collections,urls",
+        )
+        return ConnectorRequest(
+            method="GET",
+            url=connector.base_url,
+            params={"p": query, "of": "recjson", "rg": page_size, "jrec": start, "ot": fields},
+            headers={"User-Agent": settings.live_data_user_agent, "Accept": "application/json"},
+        )
+
+    def normalize(self, response, *, connector, parameters, retrieved_at):
+        payload = response.json()
+        rows = payload if isinstance(payload, list) else payload.get("records") or payload.get("data") or []
+        observations: list[NormalizedObservation] = []
+        for row in rows:
+            if not isinstance(row, dict):
+                continue
+            recid = str(row.get("recid") or row.get("id") or row.get("record_id") or "").strip()
+            if not recid:
+                continue
+            title = _first_text(row.get("title") or row.get("titles")) or f"UN Digital Library record {recid}"
+            symbol = _first_text(
+                row.get("document_symbol") or row.get("symbol") or row.get("report_number") or row.get("reportnumber")
+            )
+            record_type, authority_level = _un_authority(symbol, title)
+            published_at = _record_date(
+                row, "publication_date", "publication_year", "creation_date", "date", default=retrieved_at
+            )
+            languages = _list_text(row.get("language") or row.get("languages"))
+            subjects = _list_text(row.get("subjects") or row.get("keywords"))
+            canonical_url = _first_text(row.get("url") or row.get("urls")) or f"https://digitallibrary.un.org/record/{recid}"
+            issuing_body = _first_text(row.get("corporate_author") or row.get("author") or row.get("issuing_body")) or "United Nations"
+            observations.append(
+                NormalizedObservation(
+                    source_record_id=recid,
+                    domain="international_law",
+                    metric="un_document_record",
+                    value_text=title,
+                    observed_at=published_at,
+                    published_at=published_at,
+                    freshness_status="official_record",
+                    quality_status="official_metadata",
+                    methodology_url="https://digitallibrary.un.org/help/search-engine-api",
+                    dimensions={
+                        "official_symbol": symbol,
+                        "record_type": record_type,
+                        "authority_level": authority_level,
+                        "languages": languages,
+                        "subjects": subjects,
+                    },
+                    metadata={"source_record": row, "canonical_url": canonical_url},
+                    legal_record={
+                        "record_type": record_type,
+                        "authority_level": authority_level,
+                        "title": title,
+                        "official_symbol": symbol,
+                        "issuing_body": issuing_body,
+                        "legal_body": issuing_body,
+                        "jurisdiction": "international",
+                        "legal_status": "official_record",
+                        "publication_date": published_at,
+                        "languages": languages,
+                        "subjects": subjects,
+                        "countries": _list_text(row.get("countries") or row.get("geographic_terms")),
+                        "canonical_source_url": canonical_url,
+                        "citation": f"United Nations, {symbol or title}.",
+                        "summary": _first_text(row.get("abstract") or row.get("summary")),
+                        "metadata": {"un_digital_library_recid": recid, "source_record": row},
+                    },
+                )
+            )
+        return payload, observations
+
+
+class UnSdgMetadataAdapter(ConnectorAdapter):
+    adapter_id = "un_sdg_metadata_v1"
+
+    def build_request(self, connector, parameters, settings) -> ConnectorRequest:
+        reporting_type = str(parameters.get("reporting_type", "National"))
+        series = str(self._required(parameters, "series")).strip()
+        ref_area = str(parameters.get("ref_area", "ALL")).strip()
+        path = f"SDMXReport/{quote(reporting_type, safe='')}.{quote(series, safe='._-')}.{quote(ref_area, safe='._-')}"
+        return ConnectorRequest(
+            method="GET",
+            url=f"{connector.base_url.rstrip('/')}/{path}",
+            headers={"User-Agent": settings.live_data_user_agent, "Accept": "application/json,application/xml"},
+        )
+
+    def normalize(self, response, *, connector, parameters, retrieved_at):
+        try:
+            payload = response.json()
+        except ValueError:
+            payload = {"document": response.text}
+        series = str(parameters["series"])
+        ref_area = str(parameters.get("ref_area", "ALL"))
+        title = _first_text(payload.get("title") if isinstance(payload, dict) else None) or f"SDG metadata for {series}"
+        return payload, [
+            NormalizedObservation(
+                source_record_id=f"{series}:{ref_area}:{parameters.get('reporting_type', 'National')}",
+                domain="sustainability",
+                metric="sdg_metadata_report",
+                value_text=title,
+                observed_at=retrieved_at,
+                published_at=retrieved_at,
+                freshness_status="official_metadata",
+                quality_status="official_metadata",
+                methodology_url="https://unstats.un.org/SDGMetadataAPI/swagger/index.html",
+                dimensions={"series": series, "ref_area": ref_area, "reporting_type": parameters.get("reporting_type", "National")},
+                metadata={"source_record": payload},
+            )
+        ]
+
+
+class ReliefWebReportsAdapter(ConnectorAdapter):
+    adapter_id = "reliefweb_reports_v2"
+
+    def build_request(self, connector, parameters, settings) -> ConnectorRequest:
+        if not settings.reliefweb_appname:
+            raise ValueError("SC_CORE_RELIEFWEB_APPNAME is required for the ReliefWeb connector.")
+        params: dict[str, Any] = {
+            "appname": settings.reliefweb_appname,
+            "limit": min(max(int(parameters.get("limit", 25)), 1), 1000),
+            "profile": str(parameters.get("profile", "full")),
+            "preset": str(parameters.get("preset", "latest")),
+        }
+        if parameters.get("query"):
+            params["query[value]"] = str(parameters["query"])
+        if parameters.get("country"):
+            params["filter[field]"] = "country.name"
+            params["filter[value]"] = str(parameters["country"])
+        return ConnectorRequest(
+            method="GET",
+            url=connector.base_url,
+            params=params,
+            headers={"User-Agent": settings.live_data_user_agent, "Accept": "application/json"},
+        )
+
+    def normalize(self, response, *, connector, parameters, retrieved_at):
+        payload = response.json()
+        observations: list[NormalizedObservation] = []
+        for item in payload.get("data", []):
+            fields = item.get("fields") or {}
+            record_id = str(item.get("id") or fields.get("id") or "").strip()
+            if not record_id:
+                continue
+            title = _first_text(fields.get("title")) or f"ReliefWeb report {record_id}"
+            dates = fields.get("date") or {}
+            published_at = _record_date(dates, "original", "created", "changed", default=retrieved_at)
+            countries = [entry.get("name") for entry in fields.get("country", []) if isinstance(entry, dict) and entry.get("name")]
+            sources = [entry.get("name") for entry in fields.get("source", []) if isinstance(entry, dict) and entry.get("name")]
+            themes = [entry.get("name") for entry in fields.get("theme", []) if isinstance(entry, dict) and entry.get("name")]
+            canonical_url = _first_text(fields.get("url_alias") or fields.get("url")) or item.get("href")
+            observations.append(
+                NormalizedObservation(
+                    source_record_id=record_id,
+                    domain="humanitarian",
+                    metric="humanitarian_report",
+                    value_text=title,
+                    observed_at=published_at,
+                    published_at=published_at,
+                    freshness_status="latest_report",
+                    quality_status="curated_humanitarian_report",
+                    methodology_url="https://apidoc.reliefweb.int/",
+                    dimensions={"countries": countries, "sources": sources, "themes": themes},
+                    metadata={"source_record": fields, "canonical_url": canonical_url},
+                    legal_record={
+                        "record_type": "humanitarian_report",
+                        "authority_level": "humanitarian_reporting",
+                        "title": title,
+                        "issuing_body": "; ".join(sources) if sources else "ReliefWeb information partner",
+                        "jurisdiction": "international",
+                        "legal_status": "informational",
+                        "publication_date": published_at,
+                        "countries": countries,
+                        "subjects": themes,
+                        "canonical_source_url": canonical_url,
+                        "citation": f"{'; '.join(sources) if sources else 'ReliefWeb'}, {title}.",
+                        "summary": _first_text(fields.get("body") or fields.get("headline")),
+                        "metadata": {"reliefweb_id": record_id, "source_record": fields},
+                    },
+                )
+            )
+        return payload, observations
+
+
+class HdxHapiAdapter(ConnectorAdapter):
+    adapter_id = "hdx_hapi_v2"
+
+    def build_request(self, connector, parameters, settings) -> ConnectorRequest:
+        resource = str(parameters.get("resource") or connector.configuration_json.get("default_resource", "affected-people/refugees-persons-of-concern"))
+        allowed = set(connector.configuration_json.get("allowed_resources", []))
+        if resource not in allowed:
+            raise ValueError(f"Unsupported HDX HAPI resource '{resource}'.")
+        params: dict[str, Any] = {
+            "output_format": "json",
+            "app_identifier": settings.hdx_hapi_app_identifier,
+            "limit": min(max(int(parameters.get("limit", 1000)), 1), 10000),
+            "offset": max(int(parameters.get("offset", 0)), 0),
+        }
+        for key in ("location_code", "admin_level", "reference_period_start_min", "reference_period_end_max"):
+            if parameters.get(key) is not None:
+                params[key] = parameters[key]
+        return ConnectorRequest(
+            method="GET",
+            url=f"{connector.base_url.rstrip('/')}/{resource}",
+            params=params,
+            headers={"User-Agent": settings.live_data_user_agent, "Accept": "application/json"},
+        )
+
+    def normalize(self, response, *, connector, parameters, retrieved_at):
+        payload = response.json()
+        rows = payload.get("data", payload if isinstance(payload, list) else [])
+        resource = str(parameters.get("resource") or connector.configuration_json.get("default_resource"))
+        observations: list[NormalizedObservation] = []
+        for index, row in enumerate(rows):
+            if not isinstance(row, dict):
+                continue
+            value = finite_float(row.get("population") or row.get("funding") or row.get("requirements") or row.get("value"))
+            metric = resource.replace("/", "_").replace("-", "_")
+            observed_at = _record_date(row, "reference_period_end", "reference_period_start", "event_date", default=retrieved_at)
+            record_id = str(row.get("resource_hdx_id") or row.get("id") or f"{metric}:{index}:{observed_at.isoformat()}")
+            geometry = None
+            lat, lon = finite_float(row.get("lat") or row.get("latitude")), finite_float(row.get("lon") or row.get("longitude"))
+            if lat is not None and lon is not None:
+                geometry = {"type": "Point", "coordinates": [lon, lat]}
+            observations.append(
+                NormalizedObservation(
+                    source_record_id=f"{record_id}:{index}",
+                    domain="humanitarian",
+                    metric=metric,
+                    value_number=value,
+                    value_text=None if value is not None else _first_text(row.get("name") or row.get("population_group")),
+                    unit="people" if row.get("population") is not None else None,
+                    geometry=geometry,
+                    observed_at=observed_at,
+                    published_at=retrieved_at,
+                    freshness_status="source_reported",
+                    quality_status="standardized_humanitarian_indicator",
+                    methodology_url="https://hdx-hapi.readthedocs.io/",
+                    dimensions={key: row.get(key) for key in row if key not in {"population", "funding", "requirements", "value"}},
+                    metadata={"resource": resource, "source_record": row},
+                )
+            )
+        return payload, observations
+
+
+class UnPopulationDataAdapter(ConnectorAdapter):
+    adapter_id = "un_population_data_v1"
+
+    def build_request(self, connector, parameters, settings) -> ConnectorRequest:
+        indicators = str(self._required(parameters, "indicators")).strip()
+        locations = str(self._required(parameters, "locations")).strip()
+        start_year = int(self._required(parameters, "start_year"))
+        end_year = int(self._required(parameters, "end_year"))
+        if start_year > end_year:
+            raise ValueError("start_year cannot be after end_year.")
+        url = f"{connector.base_url.rstrip('/')}/data/indicators/{quote(indicators, safe=',')}/locations/{quote(locations, safe=',')}/start/{start_year}/end/{end_year}/"
+        headers = {"User-Agent": settings.live_data_user_agent, "Accept": "application/json"}
+        if settings.un_population_bearer_token:
+            headers["Authorization"] = f"Bearer {settings.un_population_bearer_token}"
+        return ConnectorRequest(method="GET", url=url, params={"format": "json"}, headers=headers)
+
+    def normalize(self, response, *, connector, parameters, retrieved_at):
+        payload = response.json()
+        rows = payload if isinstance(payload, list) else payload.get("data") or payload.get("Data") or []
+        observations: list[NormalizedObservation] = []
+        for row in rows:
+            if not isinstance(row, dict):
+                continue
+            indicator = str(row.get("IndicatorId") or row.get("indicatorId") or row.get("Indicator") or parameters["indicators"])
+            location = str(row.get("Iso3") or row.get("LocationId") or row.get("Location") or "unknown")
+            period = row.get("TimeLabel") or row.get("TimeMid") or row.get("Year")
+            try:
+                observed_at = parse_datetime(str(int(float(period)))) if period is not None else retrieved_at
+            except (ValueError, TypeError):
+                observed_at = retrieved_at
+            value = finite_float(row.get("Value") if "Value" in row else row.get("value"))
+            source_id = f"{location}:{indicator}:{period}:{row.get('SexId')}:{row.get('AgeId')}:{row.get('VariantId')}"
+            observations.append(
+                NormalizedObservation(
+                    source_record_id=source_id,
+                    domain="demographics",
+                    metric=indicator,
+                    value_number=value,
+                    unit=row.get("UnitShortLabel") or row.get("Unit") or row.get("unit"),
+                    observed_at=observed_at,
+                    published_at=retrieved_at,
+                    freshness_status="official_release",
+                    quality_status="official_statistical_observation",
+                    methodology_url="https://population.un.org/dataportalapi/index.html",
+                    dimensions={
+                        "location": row.get("Location"), "location_id": row.get("LocationId"), "iso3": row.get("Iso3"),
+                        "indicator_name": row.get("IndicatorDisplayName") or row.get("Indicator"), "sex": row.get("Sex"),
+                        "age": row.get("AgeLabel"), "variant": row.get("Variant"), "estimate_type": row.get("EstimateType"),
+                        "source": row.get("Source"), "revision": row.get("Revision"), "period": period,
+                    },
+                    metadata={"source_record": row},
+                )
+            )
+        return payload, observations
+
+
+class UnComtradeAdapter(ConnectorAdapter):
+    adapter_id = "un_comtrade_public_v1"
+
+    def build_request(self, connector, parameters, settings) -> ConnectorRequest:
+        reporter = str(self._required(parameters, "reporter_code")).strip()
+        period = str(self._required(parameters, "period")).strip()
+        commodity = str(parameters.get("commodity_code", "TOTAL")).strip()
+        partner = str(parameters.get("partner_code", 0)).strip()
+        flow = str(parameters.get("flow_code", "X,M")).strip()
+        params = {
+            "reporterCode": reporter,
+            "period": period,
+            "cmdCode": commodity,
+            "partnerCode": partner,
+            "flowCode": flow,
+            "partner2Code": str(parameters.get("partner2_code", 0)),
+            "customsCode": str(parameters.get("customs_code", "C00")),
+            "motCode": str(parameters.get("mot_code", 0)),
+            "maxRecords": min(max(int(parameters.get("max_records", 500)), 1), 500),
+            "aggregateBy": 6,
+            "breakdownMode": "classic",
+            "includeDesc": "true",
+        }
+        return ConnectorRequest(method="GET", url=connector.base_url, params=params, headers={"User-Agent": settings.live_data_user_agent, "Accept": "application/json"})
+
+    def normalize(self, response, *, connector, parameters, retrieved_at):
+        payload = response.json()
+        rows = payload.get("data", payload if isinstance(payload, list) else [])
+        observations: list[NormalizedObservation] = []
+        for row in rows:
+            if not isinstance(row, dict):
+                continue
+            period = str(row.get("period") or parameters["period"])
+            observed_at = parse_datetime(period[:4])
+            reporter = str(row.get("reporterCode") or parameters["reporter_code"])
+            partner = str(row.get("partnerCode") or parameters.get("partner_code", 0))
+            commodity = str(row.get("cmdCode") or parameters.get("commodity_code", "TOTAL"))
+            flow = str(row.get("flowCode") or row.get("flowDesc") or "unknown")
+            value = finite_float(row.get("primaryValue") or row.get("TradeValue") or row.get("tradeValue"))
+            observations.append(
+                NormalizedObservation(
+                    source_record_id=f"{reporter}:{partner}:{commodity}:{flow}:{period}",
+                    domain="economics",
+                    metric="international_trade_value",
+                    value_number=value,
+                    unit="USD",
+                    observed_at=observed_at,
+                    published_at=retrieved_at,
+                    freshness_status="latest_release",
+                    quality_status="official_statistical_observation",
+                    methodology_url="https://comtradeapi.un.org/",
+                    dimensions={
+                        "reporter_code": reporter, "reporter": row.get("reporterDesc"), "partner_code": partner,
+                        "partner": row.get("partnerDesc"), "commodity_code": commodity, "commodity": row.get("cmdDesc"),
+                        "flow_code": row.get("flowCode"), "flow": row.get("flowDesc"), "period": period,
+                        "net_weight_kg": finite_float(row.get("netWgt")), "quantity": finite_float(row.get("qty")),
+                    },
+                    metadata={"source_record": row},
+                )
+            )
+        return payload, observations
+
+
+class UnhcrPopulationAdapter(ConnectorAdapter):
+    adapter_id = "unhcr_population_v1"
+
+    def build_request(self, connector, parameters, settings) -> ConnectorRequest:
+        params: dict[str, Any] = {
+            "limit": min(max(int(parameters.get("limit", 100)), 1), 1000),
+            "page": max(int(parameters.get("page", 1)), 1),
+            "yearFrom": int(parameters.get("year_from", parameters.get("year", 2020))),
+            "yearTo": int(parameters.get("year_to", parameters.get("year", 2025))),
+            "cf_type": str(parameters.get("country_code_type", "ISO")),
+        }
+        for key in ("coo", "coa"):
+            if parameters.get(key):
+                params[key] = str(parameters[key])
+        return ConnectorRequest(method="GET", url=connector.base_url, params=params, headers={"User-Agent": settings.live_data_user_agent, "Accept": "application/json"})
+
+    def normalize(self, response, *, connector, parameters, retrieved_at):
+        payload = response.json()
+        rows = payload.get("items") or payload.get("data") or payload.get("results") or []
+        observations: list[NormalizedObservation] = []
+        population_fields = {
+            "refugees": "refugees", "asylum_seekers": "asylum_seekers", "idps": "internally_displaced_persons",
+            "stateless": "stateless_persons", "oip": "other_people_in_need_of_international_protection",
+            "ooc": "others_of_concern", "returned_refugees": "returned_refugees", "returned_idps": "returned_idps",
+        }
+        for row in rows:
+            if not isinstance(row, dict):
+                continue
+            year = row.get("year") or row.get("Year")
+            if year is None:
+                continue
+            observed_at = parse_datetime(str(year))
+            origin = str(row.get("coo_id") or row.get("coo") or row.get("origin") or "all")
+            asylum = str(row.get("coa_id") or row.get("coa") or row.get("asylum") or "all")
+            for field_name, metric in population_fields.items():
+                value = finite_float(row.get(field_name))
+                if value is None:
+                    continue
+                observations.append(
+                    NormalizedObservation(
+                        source_record_id=f"{origin}:{asylum}:{year}:{metric}",
+                        domain="humanitarian",
+                        metric=metric,
+                        value_number=value,
+                        unit="people",
+                        observed_at=observed_at,
+                        published_at=retrieved_at,
+                        freshness_status="annual_release",
+                        quality_status="official_statistical_observation",
+                        methodology_url="https://api.unhcr.org/docs/refugee-statistics.html",
+                        dimensions={"origin_code": origin, "origin": row.get("coo_name"), "asylum_code": asylum, "asylum": row.get("coa_name"), "year": year},
+                        metadata={"source_record": row},
+                    )
+                )
+        return payload, observations
+
+
+class OhchrUhriAdapter(ConnectorAdapter):
+    adapter_id = "ohchr_uhri_v1"
+
+    def build_request(self, connector, parameters, settings) -> ConnectorRequest:
+        if not settings.uhri_api_url:
+            raise ValueError("SC_CORE_UHRI_API_URL is required after obtaining the free OHCHR UHRI API endpoint documentation.")
+        parsed = urlparse(settings.uhri_api_url)
+        if parsed.scheme != "https" or not parsed.hostname:
+            raise ValueError("SC_CORE_UHRI_API_URL must be an absolute HTTPS endpoint supplied by OHCHR.")
+        params: dict[str, Any] = {"limit": min(max(int(parameters.get("limit", 100)), 1), 1000)}
+        for key in ("country", "mechanism", "theme", "sdg", "year"):
+            if parameters.get(key) is not None:
+                params[key] = parameters[key]
+        return ConnectorRequest(method="GET", url=settings.uhri_api_url, params=params, headers={"User-Agent": settings.live_data_user_agent, "Accept": "application/json"})
+
+    def normalize(self, response, *, connector, parameters, retrieved_at):
+        payload = response.json()
+        rows = payload.get("data") or payload.get("items") or payload.get("recommendations") or (payload if isinstance(payload, list) else [])
+        observations: list[NormalizedObservation] = []
+        for index, row in enumerate(rows):
+            if not isinstance(row, dict):
+                continue
+            record_id = str(row.get("id") or row.get("recommendationId") or f"uhri:{index}")
+            text = _first_text(row.get("recommendation") or row.get("text") or row.get("paragraph")) or "OHCHR human-rights recommendation"
+            date = _record_date(row, "date", "sessionDate", "publicationDate", default=retrieved_at)
+            countries = _list_text(row.get("country") or row.get("countries"))
+            themes = _list_text(row.get("theme") or row.get("themes"))
+            sdgs = _list_text(row.get("sdg") or row.get("sdgs"))
+            mechanism = _first_text(row.get("mechanism") or row.get("mechanismName")) or "UN human-rights mechanism"
+            observations.append(
+                NormalizedObservation(
+                    source_record_id=record_id,
+                    domain="international_law",
+                    metric="human_rights_recommendation",
+                    value_text=text,
+                    observed_at=date,
+                    published_at=date,
+                    freshness_status="official_record",
+                    quality_status="official_recommendation",
+                    methodology_url="https://uhri.ohchr.org/en/our-data-api",
+                    dimensions={"countries": countries, "themes": themes, "sdgs": sdgs, "mechanism": mechanism},
+                    metadata={"source_record": row},
+                    legal_record={
+                        "record_type": "human_rights_recommendation",
+                        "authority_level": "non_binding_recommendation",
+                        "title": text[:300],
+                        "issuing_body": mechanism,
+                        "legal_body": mechanism,
+                        "jurisdiction": "international",
+                        "legal_status": "official_recommendation",
+                        "publication_date": date,
+                        "countries": countries,
+                        "subjects": themes,
+                        "related_sdg_targets": sdgs,
+                        "canonical_source_url": _first_text(row.get("url") or row.get("documentUrl")),
+                        "citation": f"{mechanism}, recommendation {record_id}.",
+                        "summary": text,
+                        "metadata": {"uhri_id": record_id, "source_record": row},
+                    },
+                )
+            )
+        return payload, observations
+
+
 ADAPTERS: dict[str, ConnectorAdapter] = {
     adapter.adapter_id: adapter
     for adapter in (
@@ -469,5 +1029,13 @@ ADAPTERS: dict[str, ConnectorAdapter] = {
         WorldBankIndicatorsAdapter(),
         FredSeriesObservationsAdapter(),
         UnSdgCatalogAdapter(),
+        UnDigitalLibraryAdapter(),
+        UnSdgMetadataAdapter(),
+        ReliefWebReportsAdapter(),
+        HdxHapiAdapter(),
+        UnPopulationDataAdapter(),
+        UnComtradeAdapter(),
+        UnhcrPopulationAdapter(),
+        OhchrUhriAdapter(),
     )
 }

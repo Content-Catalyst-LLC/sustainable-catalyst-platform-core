@@ -20,7 +20,7 @@ def _int(name: str, default: int) -> int:
 @dataclass(frozen=True)
 class Settings:
     app_name: str = "Sustainable Catalyst Platform Core"
-    version: str = "2.7.0"
+    version: str = "2.7.1"
     environment: str = "development"
     database_url: str = "sqlite:///./platform_core.db"
     write_api_key: str = ""
@@ -50,11 +50,15 @@ class Settings:
     live_data_enabled: bool = True
     live_data_ingest_enabled: bool = True
     live_data_strict_free_sources: bool = True
-    live_data_user_agent: str = "SustainableCatalystPlatformCore/2.7.0 (+https://sustainablecatalyst.com/contact/)"
+    live_data_user_agent: str = "SustainableCatalystPlatformCore/2.7.1 (+https://sustainablecatalyst.com/contact/)"
     live_data_timeout_seconds: int = 20
     live_data_max_response_bytes: int = 12582912
     live_data_raw_payload_max_bytes: int = 1048576
     fred_api_key: str = ""
+    reliefweb_appname: str = ""
+    hdx_hapi_app_identifier: str = "sustainable-catalyst-platform-core"
+    uhri_api_url: str = ""
+    un_population_bearer_token: str = ""
 
     @classmethod
     def from_env(cls) -> "Settings":
@@ -129,7 +133,7 @@ class Settings:
             live_data_strict_free_sources=_bool("SC_CORE_LIVE_DATA_STRICT_FREE_SOURCES", True),
             live_data_user_agent=os.getenv(
                 "SC_CORE_LIVE_DATA_USER_AGENT",
-                "SustainableCatalystPlatformCore/2.7.0 (+https://sustainablecatalyst.com/contact/)",
+                "SustainableCatalystPlatformCore/2.7.1 (+https://sustainablecatalyst.com/contact/)",
             ).strip(),
             live_data_timeout_seconds=max(
                 1, min(_int("SC_CORE_LIVE_DATA_TIMEOUT_SECONDS", 20), 120)
@@ -141,4 +145,13 @@ class Settings:
                 1024, min(_int("SC_CORE_LIVE_DATA_RAW_PAYLOAD_MAX_BYTES", 1048576), 10485760)
             ),
             fred_api_key=os.getenv("SC_CORE_FRED_API_KEY", "").strip(),
+            reliefweb_appname=os.getenv("SC_CORE_RELIEFWEB_APPNAME", "").strip(),
+            hdx_hapi_app_identifier=os.getenv(
+                "SC_CORE_HDX_HAPI_APP_IDENTIFIER",
+                "sustainable-catalyst-platform-core",
+            ).strip(),
+            uhri_api_url=os.getenv("SC_CORE_UHRI_API_URL", "").strip(),
+            un_population_bearer_token=os.getenv(
+                "SC_CORE_UN_POPULATION_BEARER_TOKEN", ""
+            ).strip(),
         )

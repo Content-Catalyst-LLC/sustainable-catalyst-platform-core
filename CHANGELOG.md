@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.7.1 — 2026-07-14
+
+- Added the International Law and United Nations Connector Pack.
+- Added UN Digital Library, SDG Metadata, ReliefWeb, HDX HAPI, UN Population, UN Comtrade, UNHCR, and OHCHR UHRI adapters.
+- Added a dedicated international-law record store with authority classification and provenance.
+- Added internal and scoped public international-law discovery APIs.
+- Added source registry records for the UN Treaty Collection, ICJ, and International Law Commission without enabling unsupported scraping.
+- Preserved the strict free-source and no-credit-card gate.
+- Added a legal safeguard that does not infer Security Council binding effect from a document symbol alone.
+
 ## 2.7.0 — 2026-07-14
 
 ### Added

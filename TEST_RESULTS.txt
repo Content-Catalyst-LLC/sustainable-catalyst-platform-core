@@ -1,21 +1,32 @@
-Sustainable Catalyst Platform Core v2.7.0
-Free Live Data Gateway and Connector Registry
+Sustainable Catalyst Platform Core v2.7.1
+International Law and United Nations Connector Pack
 Validation date: 2026-07-14
 
 Backend regression suite
-------------------------
-68 passed in 24.98s
+- 75 tests passed
+- Existing v2.0.0 through v2.7.0 compatibility coverage preserved
+- v2.7.1 source, connector, configuration-gate, ingestion, legal-authority,
+  deduplication, provenance, scoped-public-API, SDK, and migration coverage added
 
-Migration smoke test
---------------------
-Migrations applied: 0001 through 0007
-Pending migrations: none
-Seeded live-data sources: 6
-Seeded live-data connectors: 6
+Migration validation
+- Migrations 0001 through 0008 applied successfully
+- Pending migrations: 0
+- Seeded live-data sources: 16
+- Seeded connector definitions: 14
 
-Additional validation
----------------------
-WordPress plugin PHP syntax: passed
-Release push script Bash syntax: passed
-SDK archives: generated
-Live connector tests: deterministic mocked fixtures; no production network calls required
+Static and package validation
+- Python compilation passed
+- PHP syntax passed
+- JavaScript syntax passed
+- Bash syntax passed
+- JSON parsing passed
+- Push-safe secret scan passed
+- SDK ZIP integrity passed
+- WordPress plugin ZIP integrity passed
+- Full repository ZIP integrity passed
+
+Legal-safety validation
+- Security Council resolution symbols are not automatically classified as binding
+- Human-rights recommendations remain explicitly non-binding recommendations
+- Humanitarian reports remain informational records
+- Raw-response, source, connector, content-hash, and authority provenance are retained

@@ -176,6 +176,55 @@
           }
         }
       ]
+    },
+    {
+      "name": "International Law and UN",
+      "item": [
+        {
+          "name": "List international-law records",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/international-law/records?limit=25",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "international-law",
+                "records"
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "25"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Authority taxonomy",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/international-law/authority-taxonomy",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "international-law",
+                "authority-taxonomy"
+              ]
+            }
+          }
+        }
+      ]
     }
   ]
 }

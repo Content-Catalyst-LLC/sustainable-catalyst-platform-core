@@ -1,8 +1,8 @@
-# Sustainable Catalyst Platform Core v2.7.0
+# Sustainable Catalyst Platform Core v2.7.1
 
-**Free Live Data Gateway and Connector Registry**
+**International Law and United Nations Connector Pack**
 
-Platform Core v2.7.0 adds the shared ingestion, normalization, provenance, license, freshness, and API foundation for free weather, Earth observation, hazard, economics, and sustainability sources.
+Platform Core v2.7.1 adds the International Law and United Nations Connector Pack on top of the v2.7.0 free live-data gateway, including dedicated legal-authority records, official-document provenance, and public discovery APIs.
 
 The release adds:
 
@@ -17,24 +17,35 @@ The release adds:
 - Internal APIs under `/v1/live`
 - Scoped public APIs under `/api/v1/live`
 - A new `data:read` developer scope
-- Six official-source reference connectors
+- Sixteen governed free-source records and fourteen connector definitions
 - Python, JavaScript, WordPress, deployment, and scheduling support
-- Migration `0007` and v2.7.0 regression coverage
+- Migration `0008` and v2.7.1 international-law and UN regression coverage
 
-Reference connectors:
+Connector groups:
 
 ```text
-met-no.locationforecast       Global point forecasts
-nasa.gibs-wmts                Satellite imagery layer catalog
-usgs.earthquakes              Near-real-time earthquake events
-world-bank.indicators         Development and sustainability indicators
-fred.series-observations      Economic time series with a free key
-un.sdg-catalog                Official UN SDG V5 catalog records
+Foundation v2.7.0
+  met-no.locationforecast
+  nasa.gibs-wmts
+  usgs.earthquakes
+  world-bank.indicators
+  fred.series-observations
+  un.sdg-catalog
+
+International law and UN v2.7.1
+  un.digital-library
+  un.sdg-metadata
+  ocha.reliefweb-reports
+  ocha.hdx-hapi
+  un.population-data
+  un.comtrade
+  unhcr.population
+  ohchr.uhri-recommendations
 ```
 
 Core remains the shared governance and delivery layer. Site Intelligence owns public maps and dashboards; Research Lab owns scientific investigation; Workbench owns calculation and modeling; Decision Studio owns synthesis; Knowledge Library owns source and methodology records; Research Librarian owns discovery and routing.
 
-See `docs/FREE_LIVE_DATA_GATEWAY_V270.md`, `RELEASE_NOTES_V270.md`, and `deployment/platform-core-v270.env.example`.
+See `docs/INTERNATIONAL_LAW_UN_CONNECTORS_V271.md`, `RELEASE_NOTES_V271.md`, and `deployment/platform-core-v271.env.example`.
 
 ## Live-data routes
 
@@ -539,3 +550,8 @@ The dossier signature verifies the integrity of the frozen Platform Core package
 ## License
 
 MIT
+
+
+## v2.7.1 international-law APIs
+
+Core v2.7.1 adds a dedicated legal-record store and official-source connector pack. Internal routes begin with `/v1/international-law`; scoped public routes begin with `/api/v1/international-law` and require `data:read`. See `docs/INTERNATIONAL_LAW_UN_CONNECTORS_V271.md`.

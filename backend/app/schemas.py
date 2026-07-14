@@ -301,6 +301,7 @@ class RegistryStats(BaseModel):
     live_data_connectors: int
     live_data_ingestion_runs: int
     live_data_observations: int
+    international_law_records: int
     entities_by_type: dict[str, int]
     relationships_by_predicate: dict[str, int]
     relationships_by_status: dict[str, int]
@@ -1820,3 +1821,56 @@ class LiveDataHealthSnapshot(BaseModel):
     operational_connectors: int
     connectors: list[LiveDataHealthConnector]
     generated_at: datetime
+
+InternationalLawRecordType = Literal[
+    "treaty", "treaty_action", "reservation", "declaration", "judgment", "advisory_opinion",
+    "procedural_order", "security_council_resolution", "general_assembly_resolution",
+    "human_rights_council_resolution", "human_rights_recommendation", "ilc_draft_text",
+    "un_official_document", "humanitarian_report", "statistical_observation", "commentary"
+]
+
+
+class InternationalLawRecordRead(BaseModel):
+    id: str
+    connector_id: str
+    source_id: str
+    raw_record_id: str | None
+    source_record_id: str
+    record_type: str
+    authority_level: str
+    title: str
+    official_symbol: str | None
+    issuing_body: str | None
+    legal_body: str | None
+    jurisdiction: str
+    legal_status: str
+    adoption_date: datetime | None
+    publication_date: datetime | None
+    entry_into_force_date: datetime | None
+    languages: list[str] = Field(default_factory=list, validation_alias="languages_json", serialization_alias="languages")
+    countries: list[str] = Field(default_factory=list, validation_alias="countries_json", serialization_alias="countries")
+    subjects: list[str] = Field(default_factory=list, validation_alias="subjects_json", serialization_alias="subjects")
+    related_instruments: list[str] = Field(default_factory=list, validation_alias="related_instruments_json", serialization_alias="related_instruments")
+    related_cases: list[str] = Field(default_factory=list, validation_alias="related_cases_json", serialization_alias="related_cases")
+    related_resolutions: list[str] = Field(default_factory=list, validation_alias="related_resolutions_json", serialization_alias="related_resolutions")
+    related_sdg_targets: list[str] = Field(default_factory=list, validation_alias="related_sdg_targets_json", serialization_alias="related_sdg_targets")
+    canonical_source_url: str | None
+    citation: str | None
+    summary: str | None
+    license_name: str | None
+    attribution: str | None
+    content_hash: str
+    metadata: dict[str, Any] = Field(default_factory=dict, validation_alias="metadata_json", serialization_alias="metadata")
+    public: bool
+    created_at: datetime
+    updated_at: datetime
+    model_config = ConfigDict(from_attributes=True)
+
+
+class InternationalLawStats(BaseModel):
+    records: int
+    by_record_type: dict[str, int]
+    by_authority_level: dict[str, int]
+    by_legal_body: dict[str, int]
+    public_records: int
+

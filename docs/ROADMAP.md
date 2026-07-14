@@ -51,17 +51,19 @@ Completed:
 
 ## v2.7.1 — International Law and United Nations Connector Pack
 
-Planned:
+Completed:
 
-- UN Digital Library
-- UN SDG Data and Metadata
-- OHCHR UHRI
-- OCHA ReliefWeb
-- HDX HAPI
-- UN Population
-- UN Comtrade
-- UNHCR
-- Treaty and international-law schemas
+- UN Digital Library official-document search
+- UN SDG methodology records
+- OHCHR UHRI registration-gated adapter
+- OCHA ReliefWeb registration-gated adapter
+- HDX HAPI humanitarian indicators
+- UN Population data
+- UN Comtrade public-preview records
+- UNHCR population statistics
+- Dedicated international-law record and authority schema
+- Internal and scoped public discovery APIs
+- Metadata-only governance entries for the Treaty Collection, ICJ, and ILC
 
 ## v2.7.2 — Scientific Data Connector Pack
 

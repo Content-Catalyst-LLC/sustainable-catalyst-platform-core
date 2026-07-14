@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name: Sustainable Catalyst Platform Core
- * Description: WordPress connector for Sustainable Catalyst Platform Core registry, graph, evidence, developer, gateway, and free live-data services.
- * Version: 2.7.0
+ * Description: WordPress connector for Sustainable Catalyst Platform Core registry, graph, evidence, developer, gateway, free live-data, and international-law services.
+ * Version: 2.7.1
  * Author: Content Catalyst LLC
  * License: MIT
  */
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('SCPC_VERSION', '2.7.0');
+define('SCPC_VERSION', '2.7.1');
 define('SCPC_OPTION_BACKEND_URL', 'scpc_backend_url');
 define('SCPC_OPTION_READ_KEY', 'scpc_read_key');
 
@@ -84,6 +84,7 @@ function scpc_render_settings_page() {
         <h2>Shortcodes</h2>
         <code>[sc_platform_core_status]</code><br />
         <code>[sc_platform_core_live_data_status]</code><br />
+        <code>[sc_platform_core_international_law_status]</code><br />
         <code>[sc_platform_core_entity id="sc:product:workbench"]</code><br />
         <code>[sc_platform_core_relationships id="sc:product:research-librarian"]</code><br />
         <code>[sc_knowledge_explorer]</code><br />
@@ -201,6 +202,50 @@ function scpc_live_data_status_shortcode() {
     return ob_get_clean();
 }
 add_shortcode('sc_platform_core_live_data_status', 'scpc_live_data_status_shortcode');
+
+
+function scpc_international_law_status_shortcode() {
+    $stats = scpc_api_get('/v1/international-law/stats');
+    $health = scpc_api_get('/v1/live/connectors/health');
+
+    if (is_wp_error($stats) || is_wp_error($health)) {
+        $error = is_wp_error($stats) ? $stats : $health;
+        return '<div class="scpc-card scpc-error"><strong>International Law and UN data unavailable</strong><p>' .
+            esc_html($error->get_error_message()) .
+            '</p></div>';
+    }
+
+    $records = isset($stats['records']) ? intval($stats['records']) : 0;
+    $public_records = isset($stats['public_records']) ? intval($stats['public_records']) : 0;
+    $un_connectors = 0;
+    $configured = 0;
+    foreach (($health['connectors'] ?? []) as $connector) {
+        $id = isset($connector['id']) ? (string) $connector['id'] : '';
+        if (strpos($id, 'un.') === 0 || strpos($id, 'unhcr.') === 0 || strpos($id, 'ocha.') === 0 || strpos($id, 'ohchr.') === 0) {
+            $un_connectors++;
+            if (($connector['configuration_status'] ?? '') === 'configured') {
+                $configured++;
+            }
+        }
+    }
+
+    ob_start();
+    ?>
+    <section class="scpc-card">
+        <p class="scpc-kicker">Official-source legal and UN infrastructure</p>
+        <h3>International Law and United Nations Connector Pack</h3>
+        <p>
+            <strong>Version:</strong> <?php echo esc_html(SCPC_VERSION); ?> ·
+            <strong>Connectors:</strong> <?php echo esc_html(number_format_i18n($configured)); ?>/<?php echo esc_html(number_format_i18n($un_connectors)); ?> configured ·
+            <strong>Legal records:</strong> <?php echo esc_html(number_format_i18n($records)); ?> ·
+            <strong>Public records:</strong> <?php echo esc_html(number_format_i18n($public_records)); ?>
+        </p>
+        <p class="scpc-meta">Records preserve official source, authority class, publication date, citation, content hash, and raw-ingestion provenance. Security Council binding effect is never inferred from a document symbol alone.</p>
+    </section>
+    <?php
+    return ob_get_clean();
+}
+add_shortcode('sc_platform_core_international_law_status', 'scpc_international_law_status_shortcode');
 
 function scpc_entity_shortcode($atts) {
     $atts = shortcode_atts(['id' => ''], $atts, 'sc_platform_core_entity');

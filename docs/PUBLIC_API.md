@@ -109,3 +109,12 @@ GET /api/v1/dossiers/{dossier_id}/verify
 ```
 
 Only public workflow runs and public finalized or superseded dossiers are returned.
+
+
+## International Law and UN v2.7.1
+
+- `GET /api/v1/international-law/records`
+- `GET /api/v1/international-law/records/{record_id}`
+- `GET /api/v1/international-law/authority-taxonomy`
+
+These routes use the existing `data:read` scope. They return normalized public legal records; raw provider payloads and internal connector configuration remain private.
