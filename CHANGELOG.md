@@ -1,5 +1,45 @@
 # Changelog
 
+## 2.7.0 — 2026-07-14
+
+### Added
+
+- Free Live Data Gateway and Connector Registry
+- Migration `0007`
+- Strict free-source and no-credit-card acceptance gate
+- Source license, attribution, automated-access, and redistribution records
+- Connector adapter SDK and runtime
+- Bounded upstream response handling
+- Bounded raw-response persistence with SHA-256 hashes
+- Ingestion run history and connector operational state
+- Stable normalized observations and deduplication
+- Freshness, quality, methodology, and provenance fields
+- Internal `/v1/live` APIs
+- Scoped `/api/v1/live` APIs
+- `data:read` public API scope
+- MET Norway Locationforecast adapter
+- NASA GIBS WMTS adapter
+- USGS earthquake GeoJSON adapter
+- World Bank V2 Indicators adapter
+- FRED Series Observations adapter
+- UN SDG V5 catalog adapter
+- Python and JavaScript SDK methods
+- WordPress Live Data Gateway status shortcode
+- Sync command, deployment configuration, JSON schemas, and documentation
+
+### Security
+
+- Active sources must remain free and credit-card-free in strict mode.
+- Unreviewed or excluded sources cannot be ingested in strict mode.
+- Production connector URLs require HTTPS.
+- Public routes hide adapter, base URL, raw payload, credentials, and internal configuration.
+- Provider credentials remain environment-backed.
+
+### Compatibility
+
+- Preserves all v2.0.0–v2.6.0 routes, migrations, models, and gateway behavior.
+
+
 ## 2.6.0 — Unified Service Gateway and Integration Foundation
 
 - Added environment-backed product service registry.

@@ -1,4 +1,65 @@
-# Sustainable Catalyst Platform Core v2.6.0
+# Sustainable Catalyst Platform Core v2.7.0
+
+**Free Live Data Gateway and Connector Registry**
+
+Platform Core v2.7.0 adds the shared ingestion, normalization, provenance, license, freshness, and API foundation for free weather, Earth observation, hazard, economics, and sustainability sources.
+
+The release adds:
+
+- Strict free-source and no-credit-card acceptance rules
+- Reviewed source, licensing, attribution, and access-policy records
+- A reusable provider adapter SDK
+- Bounded HTTP retrieval and raw-response storage
+- SHA-256 raw-response hashes
+- Ingestion runs and operational connector health
+- Stable normalized observation IDs and deduplication
+- Freshness, quality, methodology, and lineage records
+- Internal APIs under `/v1/live`
+- Scoped public APIs under `/api/v1/live`
+- A new `data:read` developer scope
+- Six official-source reference connectors
+- Python, JavaScript, WordPress, deployment, and scheduling support
+- Migration `0007` and v2.7.0 regression coverage
+
+Reference connectors:
+
+```text
+met-no.locationforecast       Global point forecasts
+nasa.gibs-wmts                Satellite imagery layer catalog
+usgs.earthquakes              Near-real-time earthquake events
+world-bank.indicators         Development and sustainability indicators
+fred.series-observations      Economic time series with a free key
+un.sdg-catalog                Official UN SDG V5 catalog records
+```
+
+Core remains the shared governance and delivery layer. Site Intelligence owns public maps and dashboards; Research Lab owns scientific investigation; Workbench owns calculation and modeling; Decision Studio owns synthesis; Knowledge Library owns source and methodology records; Research Librarian owns discovery and routing.
+
+See `docs/FREE_LIVE_DATA_GATEWAY_V270.md`, `RELEASE_NOTES_V270.md`, and `deployment/platform-core-v270.env.example`.
+
+## Live-data routes
+
+```text
+GET   /v1/live/sources
+POST  /v1/live/sources
+PATCH /v1/live/sources/{source_id}
+GET   /v1/live/connectors
+GET   /v1/live/connectors/health
+POST  /v1/live/connectors/{connector_id}/ingest
+GET   /v1/live/observations/latest
+GET   /v1/live/timeseries
+GET   /v1/live/provenance/{observation_id}
+GET   /v1/live/stats
+
+GET /api/v1/live/sources
+GET /api/v1/live/connectors
+GET /api/v1/live/observations/latest
+GET /api/v1/live/timeseries
+GET /api/v1/live/provenance/{observation_id}
+```
+
+---
+
+## Previous release foundation: v2.6.0
 
 **Unified Service Gateway and Integration Foundation**
 

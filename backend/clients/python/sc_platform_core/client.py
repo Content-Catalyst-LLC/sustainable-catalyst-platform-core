@@ -221,3 +221,37 @@ class PlatformCoreClient:
 
     def verify_dossier(self, dossier_id: str):
         return self._request("GET", f"/v1/dossiers/{dossier_id}/verify")
+
+    # Platform Core v2.7.0 free live-data gateway
+    def live_data_sources(self, *, active: bool | None = True, review_status: str | None = None):
+        params: dict[str, Any] = {}
+        if active is not None: params["active"] = active
+        if review_status: params["review_status"] = review_status
+        return self._request("GET", "/v1/live/sources", params=params)
+
+    def live_data_connectors(self, *, domain: str | None = None, source_id: str | None = None):
+        params: dict[str, Any] = {}
+        if domain: params["domain"] = domain
+        if source_id: params["source_id"] = source_id
+        return self._request("GET", "/v1/live/connectors", params=params)
+
+    def live_data_health(self):
+        return self._request("GET", "/v1/live/connectors/health")
+
+    def ingest_live_data(self, connector_id: str, parameters: dict[str, Any], *, requested_by: str = "python-client", run_type: str = "manual"):
+        return self._request(
+            "POST",
+            f"/v1/live/connectors/{connector_id}/ingest",
+            write=True,
+            json={"parameters": parameters, "requested_by": requested_by, "run_type": run_type},
+        )
+
+    def live_observations(self, **params):
+        return self._request("GET", "/v1/live/observations/latest", params=params)
+
+    def live_timeseries(self, metric: str, **params):
+        return self._request("GET", "/v1/live/timeseries", params={"metric": metric, **params})
+
+    def live_provenance(self, observation_id: str):
+        return self._request("GET", f"/v1/live/provenance/{observation_id}")
+

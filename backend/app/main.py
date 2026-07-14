@@ -7,6 +7,7 @@ from .config import Settings
 from .request_tracing import RequestTraceMiddleware
 from .service_registry import GatewaySettings, ServiceRegistry
 from .services.gateway import GatewayRuntime
+from .services.live_data import LiveDataRuntime
 from .database import Database
 from .migrations import run_migrations
 from .public_api_auth import PublicApiMiddleware
@@ -23,6 +24,7 @@ from .routers import (
     foundations,
     imports,
     ledger,
+    live_data,
     meta,
     predicates,
     public_api,
@@ -48,7 +50,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             "workflows, tamper-evident audit infrastructure, a unified public API, "
             "developer applications, scoped credentials, usage controls, webhooks, "
             "SDK assets, a public Trust Center, evaluation runs, incidents, "
-            "limitations, attestations, signature dossiers, end-to-end workflows, and a unified service gateway for Sustainable Catalyst."
+            "limitations, attestations, signature dossiers, end-to-end workflows, a unified service gateway, and a governed free live-data connector gateway for Sustainable Catalyst."
         ),
         contact={
             "name": "Sustainable Catalyst",
@@ -69,6 +71,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         gateway_settings,
         core_version=settings.version,
     )
+    app.state.live_data_runtime = LiveDataRuntime(settings)
 
     app.add_middleware(PublicApiMiddleware)
 
@@ -111,6 +114,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(predicates.router)
     app.include_router(public_api.router)
     app.include_router(gateway.router)
+    app.include_router(live_data.router)
+    app.include_router(live_data.public_router)
     app.include_router(trust_public.router)
     app.include_router(workflow_public.router)
     app.include_router(entities.router)

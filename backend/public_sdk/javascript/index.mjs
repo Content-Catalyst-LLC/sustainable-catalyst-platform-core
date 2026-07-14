@@ -95,6 +95,29 @@ export class PublicApiClient {
     return this.request(`/dossiers/${encodeURIComponent(dossierId)}/verify`);
   }
 
+  liveSources() {
+    return this.request("/live/sources");
+  }
+
+  liveConnectors(params = {}) {
+    const query = new URLSearchParams(params);
+    return this.request(`/live/connectors?${query}`);
+  }
+
+  liveObservations(params = {}) {
+    const query = new URLSearchParams(params);
+    return this.request(`/live/observations/latest?${query}`);
+  }
+
+  liveTimeseries(metric, params = {}) {
+    const query = new URLSearchParams({ metric, ...params });
+    return this.request(`/live/timeseries?${query}`);
+  }
+
+  liveProvenance(observationId) {
+    return this.request(`/live/provenance/${encodeURIComponent(observationId)}`);
+  }
+
   identity() {
     return this.request("/developer/me");
   }

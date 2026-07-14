@@ -136,6 +136,46 @@
         "method": "GET",
         "url": "{{baseUrl}}/api/v1/dossiers/sc:dossier:YOUR_ID/verify"
       }
+    },
+    {
+      "name": "Free Live Data Gateway",
+      "item": [
+        {
+          "name": "Live Sources",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/live/sources"
+          }
+        },
+        {
+          "name": "Live Connectors",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/live/connectors"
+          }
+        },
+        {
+          "name": "Latest Earthquakes",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/live/observations/latest?connector_id=usgs.earthquakes"
+          }
+        },
+        {
+          "name": "World Bank Timeseries",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/live/timeseries?metric=SP.POP.TOTL&source_id=world-bank"
+          }
+        },
+        {
+          "name": "Observation Provenance",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/live/provenance/{{observationId}}"
+          }
+        }
+      ]
     }
   ]
 }

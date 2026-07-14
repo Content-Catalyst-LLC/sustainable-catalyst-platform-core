@@ -1,0 +1,67 @@
+SUSTAINABLE CATALYST PLATFORM CORE v2.7.0
+FREE LIVE DATA GATEWAY AND CONNECTOR REGISTRY
+
+1. Extract the release and enter the repository
+
+unzip sustainable-catalyst-platform-core-v2.7.0.zip
+cd sustainable-catalyst-platform-core-v2.7.0
+
+2. Create a Python environment
+
+cd backend
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+
+3. Run the test suite
+
+pytest -q
+
+4. Configure local environment
+
+cp .env.example .env
+# Edit .env. Keep SC_CORE_LIVE_DATA_STRICT_FREE_SOURCES=true.
+# SC_CORE_FRED_API_KEY is optional and free; without it, FRED remains disabled.
+
+5. Run migrations and start Core
+
+python scripts/migrate.py
+./start.sh
+
+6. Check the live-data subsystem
+
+curl http://127.0.0.1:8090/health
+curl http://127.0.0.1:8090/v1/live/connectors/health
+curl http://127.0.0.1:8090/v1/live/sources
+curl http://127.0.0.1:8090/v1/live/connectors
+
+7. Run a connector manually
+
+export SC_CORE_WRITE_API_KEY='your-write-key'
+
+curl -X POST \
+  http://127.0.0.1:8090/v1/live/connectors/usgs.earthquakes/ingest \
+  -H 'Content-Type: application/json' \
+  -H "X-SC-API-Key: $SC_CORE_WRITE_API_KEY" \
+  -d '{"parameters":{"feed":"all_hour"},"requested_by":"terminal","run_type":"manual"}'
+
+8. Query normalized observations
+
+curl 'http://127.0.0.1:8090/v1/live/observations/latest?connector_id=usgs.earthquakes'
+curl 'http://127.0.0.1:8090/v1/live/stats'
+
+9. Scheduled command example
+
+python scripts/sync_live_data.py \
+  --connector usgs.earthquakes \
+  --parameters '{"feed":"all_hour"}' \
+  --requested-by cron-usgs
+
+10. Commit and push
+
+cd ..
+git status
+git add .
+git commit -m "Build Platform Core v2.7.0 free live data gateway"
+git push origin main

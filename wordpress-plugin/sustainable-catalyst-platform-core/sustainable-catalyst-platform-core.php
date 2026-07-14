@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name: Sustainable Catalyst Platform Core
- * Description: WordPress connector for Sustainable Catalyst Platform Core registry, graph, evidence, and developer services.
- * Version: 2.6.0
+ * Description: WordPress connector for Sustainable Catalyst Platform Core registry, graph, evidence, developer, gateway, and free live-data services.
+ * Version: 2.7.0
  * Author: Content Catalyst LLC
  * License: MIT
  */
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('SCPC_VERSION', '2.6.0');
+define('SCPC_VERSION', '2.7.0');
 define('SCPC_OPTION_BACKEND_URL', 'scpc_backend_url');
 define('SCPC_OPTION_READ_KEY', 'scpc_read_key');
 
@@ -83,6 +83,7 @@ function scpc_render_settings_page() {
         </form>
         <h2>Shortcodes</h2>
         <code>[sc_platform_core_status]</code><br />
+        <code>[sc_platform_core_live_data_status]</code><br />
         <code>[sc_platform_core_entity id="sc:product:workbench"]</code><br />
         <code>[sc_platform_core_relationships id="sc:product:research-librarian"]</code><br />
         <code>[sc_knowledge_explorer]</code><br />
@@ -162,6 +163,44 @@ function scpc_status_shortcode() {
     return ob_get_clean();
 }
 add_shortcode('sc_platform_core_status', 'scpc_status_shortcode');
+
+
+function scpc_live_data_status_shortcode() {
+    $health = scpc_api_get('/v1/live/connectors/health');
+    $stats = scpc_api_get('/v1/live/stats');
+
+    if (is_wp_error($health) || is_wp_error($stats)) {
+        $error = is_wp_error($health) ? $health : $stats;
+        return '<div class="scpc-card scpc-error"><strong>Live Data Gateway unavailable</strong><p>' .
+            esc_html($error->get_error_message()) .
+            '</p></div>';
+    }
+
+    $overall = isset($health['overall_status']) ? sanitize_text_field($health['overall_status']) : 'unknown';
+    $strict = !empty($health['strict_free_sources']);
+    $operational = isset($health['operational_connectors']) ? intval($health['operational_connectors']) : 0;
+    $connector_count = isset($health['connector_count']) ? intval($health['connector_count']) : 0;
+    $source_count = isset($stats['sources']) ? intval($stats['sources']) : 0;
+    $observation_count = isset($stats['observations']) ? intval($stats['observations']) : 0;
+
+    ob_start();
+    ?>
+    <section class="scpc-card">
+        <p class="scpc-kicker">Free live-data infrastructure</p>
+        <h3>Sustainable Catalyst Live Data Gateway</h3>
+        <p>
+            <strong>Status:</strong> <?php echo esc_html(ucwords(str_replace('_', ' ', $overall))); ?> ·
+            <strong>Free-source gate:</strong> <?php echo $strict ? 'Required' : 'Disabled'; ?> ·
+            <strong>Sources:</strong> <?php echo esc_html(number_format_i18n($source_count)); ?> ·
+            <strong>Connectors:</strong> <?php echo esc_html(number_format_i18n($operational)); ?>/<?php echo esc_html(number_format_i18n($connector_count)); ?> configured ·
+            <strong>Observations:</strong> <?php echo esc_html(number_format_i18n($observation_count)); ?>
+        </p>
+        <p class="scpc-meta">Weather, Earth observation, hazards, economics, and sustainability records retain source, freshness, license, attribution, and provenance metadata.</p>
+    </section>
+    <?php
+    return ob_get_clean();
+}
+add_shortcode('sc_platform_core_live_data_status', 'scpc_live_data_status_shortcode');
 
 function scpc_entity_shortcode($atts) {
     $atts = shortcode_atts(['id' => ''], $atts, 'sc_platform_core_entity');

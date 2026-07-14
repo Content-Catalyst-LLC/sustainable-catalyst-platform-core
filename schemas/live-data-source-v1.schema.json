@@ -1,0 +1,212 @@
+{
+  "$id": "https://sustainablecatalyst.com/schemas/live-data-source-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "access_cost": {
+      "default": "free",
+      "enum": [
+        "free",
+        "paid",
+        "mixed",
+        "unknown"
+      ],
+      "title": "Access Cost",
+      "type": "string"
+    },
+    "active": {
+      "default": true,
+      "title": "Active",
+      "type": "boolean"
+    },
+    "api_key_requirement": {
+      "default": "none",
+      "maxLength": 100,
+      "title": "Api Key Requirement",
+      "type": "string"
+    },
+    "attribution": {
+      "anyOf": [
+        {
+          "maxLength": 10000,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Attribution"
+    },
+    "automated_access_status": {
+      "default": "allowed",
+      "maxLength": 100,
+      "title": "Automated Access Status",
+      "type": "string"
+    },
+    "commercial_use_status": {
+      "default": "review_required",
+      "maxLength": 100,
+      "title": "Commercial Use Status",
+      "type": "string"
+    },
+    "credit_card_required": {
+      "default": false,
+      "title": "Credit Card Required",
+      "type": "boolean"
+    },
+    "description": {
+      "anyOf": [
+        {
+          "maxLength": 20000,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Description"
+    },
+    "documentation_url": {
+      "anyOf": [
+        {
+          "format": "uri",
+          "maxLength": 2083,
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Documentation Url"
+    },
+    "homepage_url": {
+      "anyOf": [
+        {
+          "format": "uri",
+          "maxLength": 2083,
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Homepage Url"
+    },
+    "id": {
+      "pattern": "^[a-z0-9][a-z0-9.-]{1,149}$",
+      "title": "Id",
+      "type": "string"
+    },
+    "last_reviewed_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Last Reviewed At"
+    },
+    "license_name": {
+      "anyOf": [
+        {
+          "maxLength": 300,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "License Name"
+    },
+    "license_url": {
+      "anyOf": [
+        {
+          "format": "uri",
+          "maxLength": 2083,
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "License Url"
+    },
+    "metadata": {
+      "additionalProperties": true,
+      "title": "Metadata",
+      "type": "object"
+    },
+    "name": {
+      "maxLength": 300,
+      "minLength": 1,
+      "title": "Name",
+      "type": "string"
+    },
+    "organization": {
+      "maxLength": 300,
+      "minLength": 1,
+      "title": "Organization",
+      "type": "string"
+    },
+    "public": {
+      "default": true,
+      "title": "Public",
+      "type": "boolean"
+    },
+    "rate_limit_summary": {
+      "anyOf": [
+        {
+          "maxLength": 10000,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Rate Limit Summary"
+    },
+    "redistribution_status": {
+      "default": "review_required",
+      "maxLength": 100,
+      "title": "Redistribution Status",
+      "type": "string"
+    },
+    "review_status": {
+      "default": "LICENSE_REVIEW_REQUIRED",
+      "enum": [
+        "APPROVED_FREE",
+        "APPROVED_WITH_ATTRIBUTION",
+        "APPROVED_METADATA_ONLY",
+        "APPROVED_SELF_HOSTED",
+        "RESEARCH_ONLY",
+        "LICENSE_REVIEW_REQUIRED",
+        "EXCLUDED_PAID",
+        "EXCLUDED_RESTRICTED",
+        "DEPRECATED",
+        "UNAVAILABLE"
+      ],
+      "title": "Review Status",
+      "type": "string"
+    }
+  },
+  "required": [
+    "id",
+    "name",
+    "organization"
+  ],
+  "title": "LiveDataSourceCreate",
+  "type": "object"
+}

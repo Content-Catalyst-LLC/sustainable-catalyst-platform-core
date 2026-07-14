@@ -14,3 +14,15 @@ console.log(await client.workflowDefinitions());
 console.log(await client.dossiers());
 console.log(await client.verifyDossier("sc:dossier:..."));
 ```
+
+## Live data v2.7.0
+
+```js
+const sources = await client.liveSources();
+const connectors = await client.liveConnectors({ domain: "hazards" });
+const events = await client.liveObservations({ connector_id: "usgs.earthquakes" });
+const series = await client.liveTimeseries("SP.POP.TOTL", { source_id: "world-bank" });
+const lineage = await client.liveProvenance(events[0].id);
+```
+
+These methods require the `data:read` scope.

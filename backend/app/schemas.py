@@ -297,6 +297,10 @@ class RegistryStats(BaseModel):
     trust_incidents: int
     known_limitations: int
     trust_attestations: int
+    live_data_sources: int
+    live_data_connectors: int
+    live_data_ingestion_runs: int
+    live_data_observations: int
     entities_by_type: dict[str, int]
     relationships_by_predicate: dict[str, int]
     relationships_by_status: dict[str, int]
@@ -1524,3 +1528,295 @@ class WorkflowPlatformStats(BaseModel):
     dossiers: int
     finalized_dossiers: int
     approvals: int
+
+
+# Platform Core v2.7.0 — Free Live Data Gateway
+LiveDataReviewStatus = Literal[
+    "APPROVED_FREE",
+    "APPROVED_WITH_ATTRIBUTION",
+    "APPROVED_METADATA_ONLY",
+    "APPROVED_SELF_HOSTED",
+    "RESEARCH_ONLY",
+    "LICENSE_REVIEW_REQUIRED",
+    "EXCLUDED_PAID",
+    "EXCLUDED_RESTRICTED",
+    "DEPRECATED",
+    "UNAVAILABLE",
+]
+
+
+class LiveDataSourceCreate(BaseModel):
+    id: str = Field(pattern=r"^[a-z0-9][a-z0-9.-]{1,149}$")
+    name: str = Field(min_length=1, max_length=300)
+    organization: str = Field(min_length=1, max_length=300)
+    description: str | None = Field(default=None, max_length=20000)
+    homepage_url: HttpUrl | None = None
+    documentation_url: HttpUrl | None = None
+    license_name: str | None = Field(default=None, max_length=300)
+    license_url: HttpUrl | None = None
+    attribution: str | None = Field(default=None, max_length=10000)
+    access_cost: Literal["free", "paid", "mixed", "unknown"] = "free"
+    credit_card_required: bool = False
+    api_key_requirement: str = Field(default="none", max_length=100)
+    commercial_use_status: str = Field(default="review_required", max_length=100)
+    redistribution_status: str = Field(default="review_required", max_length=100)
+    automated_access_status: str = Field(default="allowed", max_length=100)
+    rate_limit_summary: str | None = Field(default=None, max_length=10000)
+    review_status: LiveDataReviewStatus = "LICENSE_REVIEW_REQUIRED"
+    last_reviewed_at: datetime | None = None
+    active: bool = True
+    public: bool = True
+    metadata: dict[str, Any] = Field(default_factory=dict)
+
+
+class LiveDataSourceUpdate(BaseModel):
+    name: str | None = Field(default=None, min_length=1, max_length=300)
+    organization: str | None = Field(default=None, min_length=1, max_length=300)
+    description: str | None = Field(default=None, max_length=20000)
+    homepage_url: HttpUrl | None = None
+    documentation_url: HttpUrl | None = None
+    license_name: str | None = Field(default=None, max_length=300)
+    license_url: HttpUrl | None = None
+    attribution: str | None = Field(default=None, max_length=10000)
+    access_cost: Literal["free", "paid", "mixed", "unknown"] | None = None
+    credit_card_required: bool | None = None
+    api_key_requirement: str | None = Field(default=None, max_length=100)
+    commercial_use_status: str | None = Field(default=None, max_length=100)
+    redistribution_status: str | None = Field(default=None, max_length=100)
+    automated_access_status: str | None = Field(default=None, max_length=100)
+    rate_limit_summary: str | None = Field(default=None, max_length=10000)
+    review_status: LiveDataReviewStatus | None = None
+    last_reviewed_at: datetime | None = None
+    active: bool | None = None
+    public: bool | None = None
+    metadata: dict[str, Any] | None = None
+
+
+class LiveDataSourceRead(BaseModel):
+    id: str
+    name: str
+    organization: str
+    description: str | None
+    homepage_url: str | None
+    documentation_url: str | None
+    license_name: str | None
+    license_url: str | None
+    attribution: str | None
+    access_cost: str
+    credit_card_required: bool
+    api_key_requirement: str
+    commercial_use_status: str
+    redistribution_status: str
+    automated_access_status: str
+    rate_limit_summary: str | None
+    review_status: str
+    last_reviewed_at: datetime | None
+    active: bool
+    public: bool
+    metadata: dict[str, Any] = Field(
+        default_factory=dict,
+        validation_alias="metadata_json",
+        serialization_alias="metadata",
+    )
+    created_at: datetime
+    updated_at: datetime
+    model_config = ConfigDict(from_attributes=True)
+
+
+class LiveDataConnectorCreate(BaseModel):
+    id: str = Field(pattern=r"^[a-z0-9][a-z0-9._-]{1,179}$")
+    source_id: str = Field(min_length=2, max_length=150)
+    name: str = Field(min_length=1, max_length=300)
+    domain: str = Field(pattern=r"^[a-z0-9][a-z0-9_-]{1,99}$")
+    description: str | None = Field(default=None, max_length=20000)
+    adapter: str = Field(min_length=1, max_length=180)
+    base_url: HttpUrl
+    refresh_policy: str = Field(default="manual", max_length=100)
+    freshness_window_seconds: int = Field(default=86400, ge=60, le=31536000)
+    timeout_seconds: int = Field(default=20, ge=1, le=120)
+    max_response_bytes: int = Field(default=5242880, ge=1024, le=52428800)
+    schema_version: str = Field(default="1.0", max_length=30)
+    capabilities: list[str] = Field(default_factory=list)
+    configuration: dict[str, Any] = Field(default_factory=dict)
+    enabled: bool = True
+    public: bool = True
+    status: Literal["active", "paused", "deprecated", "disabled"] = "active"
+
+
+class LiveDataConnectorUpdate(BaseModel):
+    source_id: str | None = Field(default=None, min_length=2, max_length=150)
+    name: str | None = Field(default=None, min_length=1, max_length=300)
+    domain: str | None = Field(default=None, pattern=r"^[a-z0-9][a-z0-9_-]{1,99}$")
+    description: str | None = Field(default=None, max_length=20000)
+    adapter: str | None = Field(default=None, min_length=1, max_length=180)
+    base_url: HttpUrl | None = None
+    refresh_policy: str | None = Field(default=None, max_length=100)
+    freshness_window_seconds: int | None = Field(default=None, ge=60, le=31536000)
+    timeout_seconds: int | None = Field(default=None, ge=1, le=120)
+    max_response_bytes: int | None = Field(default=None, ge=1024, le=52428800)
+    schema_version: str | None = Field(default=None, max_length=30)
+    capabilities: list[str] | None = None
+    configuration: dict[str, Any] | None = None
+    enabled: bool | None = None
+    public: bool | None = None
+    status: Literal["active", "paused", "deprecated", "disabled"] | None = None
+
+
+class LiveDataConnectorRead(BaseModel):
+    id: str
+    source_id: str
+    name: str
+    domain: str
+    description: str | None
+    adapter: str
+    base_url: str
+    refresh_policy: str
+    freshness_window_seconds: int
+    timeout_seconds: int
+    max_response_bytes: int
+    schema_version: str
+    capabilities: list[str]
+    configuration: dict[str, Any] = Field(
+        default_factory=dict,
+        validation_alias="configuration_json",
+        serialization_alias="configuration",
+    )
+    enabled: bool
+    public: bool
+    status: str
+    last_health_status: str
+    last_health_checked_at: datetime | None
+    last_success_at: datetime | None
+    last_failure_at: datetime | None
+    last_error: str | None
+    created_at: datetime
+    updated_at: datetime
+    model_config = ConfigDict(from_attributes=True)
+
+
+class LiveDataConnectorPublicRead(BaseModel):
+    id: str
+    source_id: str
+    name: str
+    domain: str
+    description: str | None
+    refresh_policy: str
+    freshness_window_seconds: int
+    schema_version: str
+    capabilities: list[str]
+    enabled: bool
+    status: str
+    last_health_status: str
+    last_health_checked_at: datetime | None
+    last_success_at: datetime | None
+    model_config = ConfigDict(from_attributes=True)
+
+
+class LiveDataIngestRequest(BaseModel):
+    parameters: dict[str, Any] = Field(default_factory=dict)
+    requested_by: str = Field(default="platform-core", min_length=1, max_length=300)
+    run_type: Literal["manual", "scheduled", "replay", "validation"] = "manual"
+
+
+class LiveDataIngestionRunRead(BaseModel):
+    id: str
+    connector_id: str
+    run_type: str
+    status: str
+    requested_by: str
+    parameters: dict[str, Any] = Field(
+        default_factory=dict,
+        validation_alias="parameters_json",
+        serialization_alias="parameters",
+    )
+    http_status: int | None
+    records_received: int
+    records_created: int
+    records_updated: int
+    records_rejected: int
+    raw_content_hash: str | None
+    error_message: str | None
+    details: dict[str, Any] = Field(
+        default_factory=dict,
+        validation_alias="details_json",
+        serialization_alias="details",
+    )
+    started_at: datetime
+    completed_at: datetime | None
+    model_config = ConfigDict(from_attributes=True)
+
+
+class LiveDataObservationRead(BaseModel):
+    id: str
+    connector_id: str
+    source_id: str
+    raw_record_id: str | None
+    source_record_id: str
+    domain: str
+    metric: str
+    value_number: float | None
+    value_text: str | None
+    unit: str | None
+    geometry: dict[str, Any] | None = Field(
+        default=None,
+        validation_alias="geometry_json",
+        serialization_alias="geometry",
+    )
+    dimensions: dict[str, Any] = Field(
+        default_factory=dict,
+        validation_alias="dimensions_json",
+        serialization_alias="dimensions",
+    )
+    observed_at: datetime
+    published_at: datetime | None
+    retrieved_at: datetime
+    freshness_status: str
+    quality_status: str
+    license_name: str | None
+    attribution: str | None
+    methodology_url: str | None
+    raw_record_hash: str | None
+    metadata: dict[str, Any] = Field(
+        default_factory=dict,
+        validation_alias="metadata_json",
+        serialization_alias="metadata",
+    )
+    public: bool
+    created_at: datetime
+    updated_at: datetime
+    model_config = ConfigDict(from_attributes=True)
+
+
+class LiveDataStats(BaseModel):
+    sources: int
+    connectors: int
+    ingestion_runs: int
+    raw_records: int
+    observations: int
+    connectors_by_domain: dict[str, int]
+    observations_by_freshness: dict[str, int]
+
+
+class LiveDataHealthConnector(BaseModel):
+    id: str
+    source_id: str
+    domain: str
+    status: str
+    configuration_status: str
+    last_health_status: str
+    last_health_checked_at: datetime | None
+    last_success_at: datetime | None
+    last_failure_at: datetime | None
+    last_error: str | None
+
+
+class LiveDataHealthSnapshot(BaseModel):
+    enabled: bool
+    ingest_enabled: bool
+    strict_free_sources: bool
+    overall_status: str
+    source_count: int
+    connector_count: int
+    operational_connectors: int
+    connectors: list[LiveDataHealthConnector]
+    generated_at: datetime

@@ -18,6 +18,10 @@ from ..models import (
     ImportJob,
     KnownLimitation,
     LedgerEntry,
+    LiveDataConnector,
+    LiveDataIngestionRun,
+    LiveDataObservation,
+    LiveDataSource,
     PredicateDefinition,
     ProvenanceActivity,
     ProvenanceLink,
@@ -50,6 +54,8 @@ def health(request: Request):
         "workflow_engine": request.app.state.settings.workflow_engine_enabled,
         "dossier_center": request.app.state.settings.dossier_center_enabled,
         "trust_center": request.app.state.settings.trust_center_enabled,
+        "live_data_gateway": request.app.state.settings.live_data_enabled,
+        "strict_free_sources": request.app.state.settings.live_data_strict_free_sources,
     }
 
 
@@ -64,6 +70,7 @@ def ready(db: Session = Depends(get_session)):
         "unified_public_api": "ready",
         "unified_service_gateway": "ready",
         "trust_center": "ready",
+        "live_data_gateway": "ready",
     }
 
 
@@ -115,6 +122,20 @@ def meta(request: Request):
             "aggregated_downstream_health",
             "cross_service_request_tracing",
             "bounded_service_proxy",
+            "free_live_data_gateway",
+            "free_source_acceptance_gate",
+            "live_data_source_registry",
+            "live_data_connector_sdk",
+            "bounded_raw_response_cache",
+            "normalized_live_observations",
+            "data_freshness_classification",
+            "source_license_and_attribution_registry",
+            "live_data_provenance",
+            "weather_reference_connector",
+            "earth_observation_reference_connector",
+            "hazard_event_reference_connector",
+            "economic_indicator_reference_connectors",
+            "sustainability_reference_connector",
             "per_service_circuit_breakers",
             "hashed_developer_credentials",
             "scoped_api_access",
@@ -157,6 +178,10 @@ def meta(request: Request):
             "external_snapshot_object_storage_adapter",
             "developer_self_service_billing",
             "distributed_rate_limit_backend",
+            "distributed_connector_workers",
+            "server_sent_live_data_events",
+            "scientific_object_storage_adapter",
+            "postgis_geospatial_indexing",
         ],
     )
 
@@ -211,6 +236,10 @@ def stats(db: Session = Depends(get_session)):
         trust_incidents=count(TrustIncident),
         known_limitations=count(KnownLimitation),
         trust_attestations=count(TrustAttestation),
+        live_data_sources=count(LiveDataSource),
+        live_data_connectors=count(LiveDataConnector),
+        live_data_ingestion_runs=count(LiveDataIngestionRun),
+        live_data_observations=count(LiveDataObservation),
         entities_by_type={key: int(value) for key, value in entity_rows},
         relationships_by_predicate={
             key: int(value) for key, value in predicate_rows

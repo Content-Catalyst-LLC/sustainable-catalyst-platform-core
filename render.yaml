@@ -47,13 +47,27 @@ services:
         value: "true"
       - key: SC_CORE_TRUST_STALE_AFTER_DAYS
         value: "90"
+      - key: SC_CORE_LIVE_DATA_ENABLED
+        value: "true"
+      - key: SC_CORE_LIVE_DATA_INGEST_ENABLED
+        value: "true"
+      - key: SC_CORE_LIVE_DATA_STRICT_FREE_SOURCES
+        value: "true"
+      - key: SC_CORE_LIVE_DATA_USER_AGENT
+        value: SustainableCatalystPlatformCore/2.7.0 (+https://sustainablecatalyst.com/contact/)
+      - key: SC_CORE_LIVE_DATA_TIMEOUT_SECONDS
+        value: "20"
+      - key: SC_CORE_LIVE_DATA_MAX_RESPONSE_BYTES
+        value: "12582912"
+      - key: SC_CORE_LIVE_DATA_RAW_PAYLOAD_MAX_BYTES
+        value: "1048576"
 
 databases:
   - name: sustainable-catalyst-platform-core-db
     databaseName: sustainable_catalyst_platform_core
     user: sustainable_catalyst_platform_core
 
-# Platform Core v2.5.0
+# Platform Core v2.7.0
 # Add these secret values in Render rather than committing them:
 # SC_CORE_WORKFLOW_ENGINE_ENABLED=true
 # SC_CORE_DOSSIER_CENTER_ENABLED=true
@@ -61,3 +75,6 @@ databases:
 # SC_CORE_DOSSIER_SIGNING_KEY_ID=sc-platform-core-production
 # SC_CORE_DOSSIER_REQUIRED_APPROVALS=1
 # SC_CORE_DOSSIER_MAX_RECORDS=500
+
+# Optional free credential for the FRED reference connector:
+# SC_CORE_FRED_API_KEY=<free-registered-key>

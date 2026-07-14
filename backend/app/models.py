@@ -955,3 +955,169 @@ def _prevent_dossier_approval_update(mapper, connection, target):
 @event.listens_for(DossierApproval, "before_delete")
 def _prevent_dossier_approval_delete(mapper, connection, target):
     raise RuntimeError("Dossier approvals are append-only and cannot be deleted.")
+
+
+class LiveDataSource(Base):
+    __tablename__ = "live_data_sources"
+    __table_args__ = (
+        Index("ix_live_source_review_active", "review_status", "active"),
+        Index("ix_live_source_public_name", "public", "name"),
+    )
+
+    id: Mapped[str] = mapped_column(String(150), primary_key=True)
+    name: Mapped[str] = mapped_column(String(300), nullable=False)
+    organization: Mapped[str] = mapped_column(String(300), nullable=False)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    homepage_url: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    documentation_url: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    license_name: Mapped[str | None] = mapped_column(String(300), nullable=True)
+    license_url: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    attribution: Mapped[str | None] = mapped_column(Text, nullable=True)
+    access_cost: Mapped[str] = mapped_column(String(50), default="free", index=True)
+    credit_card_required: Mapped[bool] = mapped_column(Boolean, default=False)
+    api_key_requirement: Mapped[str] = mapped_column(String(50), default="none")
+    commercial_use_status: Mapped[str] = mapped_column(String(100), default="review_required")
+    redistribution_status: Mapped[str] = mapped_column(String(100), default="review_required")
+    automated_access_status: Mapped[str] = mapped_column(String(100), default="allowed")
+    rate_limit_summary: Mapped[str | None] = mapped_column(Text, nullable=True)
+    review_status: Mapped[str] = mapped_column(String(80), default="LICENSE_REVIEW_REQUIRED", index=True)
+    last_reviewed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    active: Mapped[bool] = mapped_column(Boolean, default=True, index=True)
+    public: Mapped[bool] = mapped_column(Boolean, default=True, index=True)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class LiveDataConnector(Base):
+    __tablename__ = "live_data_connectors"
+    __table_args__ = (
+        Index("ix_live_connector_domain_status", "domain", "status"),
+        Index("ix_live_connector_source_enabled", "source_id", "enabled"),
+        Index("ix_live_connector_health", "last_health_status", "last_health_checked_at"),
+    )
+
+    id: Mapped[str] = mapped_column(String(180), primary_key=True)
+    source_id: Mapped[str] = mapped_column(
+        ForeignKey("live_data_sources.id", ondelete="RESTRICT"), nullable=False, index=True
+    )
+    name: Mapped[str] = mapped_column(String(300), nullable=False)
+    domain: Mapped[str] = mapped_column(String(100), nullable=False, index=True)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    adapter: Mapped[str] = mapped_column(String(180), nullable=False)
+    base_url: Mapped[str] = mapped_column(String(1000), nullable=False)
+    refresh_policy: Mapped[str] = mapped_column(String(100), default="manual")
+    freshness_window_seconds: Mapped[int] = mapped_column(Integer, default=86400)
+    timeout_seconds: Mapped[int] = mapped_column(Integer, default=20)
+    max_response_bytes: Mapped[int] = mapped_column(Integer, default=5242880)
+    schema_version: Mapped[str] = mapped_column(String(30), default="1.0")
+    capabilities: Mapped[list] = mapped_column(JSON, default=list)
+    configuration_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    enabled: Mapped[bool] = mapped_column(Boolean, default=True, index=True)
+    public: Mapped[bool] = mapped_column(Boolean, default=True, index=True)
+    status: Mapped[str] = mapped_column(String(50), default="active", index=True)
+    last_health_status: Mapped[str] = mapped_column(String(50), default="unknown", index=True)
+    last_health_checked_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    last_success_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    last_failure_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    last_error: Mapped[str | None] = mapped_column(Text, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class LiveDataIngestionRun(Base):
+    __tablename__ = "live_data_ingestion_runs"
+    __table_args__ = (
+        Index("ix_live_run_connector_started", "connector_id", "started_at"),
+        Index("ix_live_run_status_started", "status", "started_at"),
+    )
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    connector_id: Mapped[str] = mapped_column(
+        ForeignKey("live_data_connectors.id", ondelete="RESTRICT"), nullable=False, index=True
+    )
+    run_type: Mapped[str] = mapped_column(String(50), default="manual")
+    status: Mapped[str] = mapped_column(String(50), default="running", index=True)
+    requested_by: Mapped[str] = mapped_column(String(300), default="platform-core")
+    parameters_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    http_status: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    records_received: Mapped[int] = mapped_column(Integer, default=0)
+    records_created: Mapped[int] = mapped_column(Integer, default=0)
+    records_updated: Mapped[int] = mapped_column(Integer, default=0)
+    records_rejected: Mapped[int] = mapped_column(Integer, default=0)
+    raw_content_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    error_message: Mapped[str | None] = mapped_column(Text, nullable=True)
+    details_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    started_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+
+class LiveDataRawRecord(Base):
+    __tablename__ = "live_data_raw_records"
+    __table_args__ = (
+        Index("ix_live_raw_connector_retrieved", "connector_id", "retrieved_at"),
+        Index("ix_live_raw_hash", "content_hash"),
+    )
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    connector_id: Mapped[str] = mapped_column(
+        ForeignKey("live_data_connectors.id", ondelete="RESTRICT"), nullable=False, index=True
+    )
+    ingestion_run_id: Mapped[str] = mapped_column(
+        ForeignKey("live_data_ingestion_runs.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    source_record_id: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    media_type: Mapped[str] = mapped_column(String(150), default="application/json")
+    payload_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    content_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    size_bytes: Mapped[int] = mapped_column(Integer, default=0)
+    truncated: Mapped[bool] = mapped_column(Boolean, default=False)
+    retrieved_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class LiveDataObservation(Base):
+    __tablename__ = "live_data_observations"
+    __table_args__ = (
+        UniqueConstraint(
+            "connector_id", "source_record_id", "metric", "observed_at",
+            name="uq_live_observation_source_metric_time",
+        ),
+        Index("ix_live_observation_domain_metric_time", "domain", "metric", "observed_at"),
+        Index("ix_live_observation_connector_time", "connector_id", "observed_at"),
+        Index("ix_live_observation_source_time", "source_id", "observed_at"),
+        Index("ix_live_observation_freshness", "freshness_status", "retrieved_at"),
+        Index("ix_live_observation_public", "public", "observed_at"),
+    )
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    connector_id: Mapped[str] = mapped_column(
+        ForeignKey("live_data_connectors.id", ondelete="RESTRICT"), nullable=False, index=True
+    )
+    source_id: Mapped[str] = mapped_column(
+        ForeignKey("live_data_sources.id", ondelete="RESTRICT"), nullable=False, index=True
+    )
+    raw_record_id: Mapped[str | None] = mapped_column(
+        ForeignKey("live_data_raw_records.id", ondelete="SET NULL"), nullable=True, index=True
+    )
+    source_record_id: Mapped[str] = mapped_column(String(500), nullable=False)
+    domain: Mapped[str] = mapped_column(String(100), nullable=False, index=True)
+    metric: Mapped[str] = mapped_column(String(200), nullable=False, index=True)
+    value_number: Mapped[float | None] = mapped_column(Float, nullable=True)
+    value_text: Mapped[str | None] = mapped_column(Text, nullable=True)
+    unit: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    geometry_json: Mapped[dict | None] = mapped_column(JSON, nullable=True)
+    dimensions_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    observed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, index=True)
+    published_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    retrieved_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, index=True)
+    freshness_status: Mapped[str] = mapped_column(String(50), default="unknown", index=True)
+    quality_status: Mapped[str] = mapped_column(String(50), default="source_reported", index=True)
+    license_name: Mapped[str | None] = mapped_column(String(300), nullable=True)
+    attribution: Mapped[str | None] = mapped_column(Text, nullable=True)
+    methodology_url: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    raw_record_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    public: Mapped[bool] = mapped_column(Boolean, default=True, index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)

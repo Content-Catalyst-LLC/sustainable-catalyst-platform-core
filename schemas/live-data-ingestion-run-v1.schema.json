@@ -1,0 +1,120 @@
+{
+  "$id": "https://sustainablecatalyst.com/schemas/live-data-ingestion-run-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "completed_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Completed At"
+    },
+    "connector_id": {
+      "title": "Connector Id",
+      "type": "string"
+    },
+    "details_json": {
+      "additionalProperties": true,
+      "title": "Details Json",
+      "type": "object"
+    },
+    "error_message": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Error Message"
+    },
+    "http_status": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Http Status"
+    },
+    "id": {
+      "title": "Id",
+      "type": "string"
+    },
+    "parameters_json": {
+      "additionalProperties": true,
+      "title": "Parameters Json",
+      "type": "object"
+    },
+    "raw_content_hash": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Raw Content Hash"
+    },
+    "records_created": {
+      "title": "Records Created",
+      "type": "integer"
+    },
+    "records_received": {
+      "title": "Records Received",
+      "type": "integer"
+    },
+    "records_rejected": {
+      "title": "Records Rejected",
+      "type": "integer"
+    },
+    "records_updated": {
+      "title": "Records Updated",
+      "type": "integer"
+    },
+    "requested_by": {
+      "title": "Requested By",
+      "type": "string"
+    },
+    "run_type": {
+      "title": "Run Type",
+      "type": "string"
+    },
+    "started_at": {
+      "format": "date-time",
+      "title": "Started At",
+      "type": "string"
+    },
+    "status": {
+      "title": "Status",
+      "type": "string"
+    }
+  },
+  "required": [
+    "id",
+    "connector_id",
+    "run_type",
+    "status",
+    "requested_by",
+    "http_status",
+    "records_received",
+    "records_created",
+    "records_updated",
+    "records_rejected",
+    "raw_content_hash",
+    "error_message",
+    "started_at",
+    "completed_at"
+  ],
+  "title": "LiveDataIngestionRunRead",
+  "type": "object"
+}

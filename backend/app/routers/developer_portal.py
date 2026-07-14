@@ -74,7 +74,7 @@ footer{padding:28px 24px;border-top:1px solid var(--line);color:var(--muted)}
 </header>
 <main>
 <section class="grid">
-<article class="card"><p class="eyebrow">One surface</p><h3><code>/api/v1</code></h3><p>Stable external routes for entities, graph paths, claims, evidence manifests, ledger verification, usage, and webhooks.</p></article>
+<article class="card"><p class="eyebrow">One surface</p><h3><code>/api/v1</code></h3><p>Stable external routes for entities, graph paths, claims, evidence manifests, live-data observations, ledger verification, usage, and webhooks.</p></article>
 <article class="card"><p class="eyebrow">Scoped access</p><h3>Hashed API keys</h3><p>Keys are shown once, stored only as SHA-256 hashes, assigned explicit scopes, and governed by approved applications and plans.</p></article>
 <article class="card"><p class="eyebrow">Observable use</p><h3>Quotas and request IDs</h3><p>Every response returns request and rate-limit headers. Usage records retain hashed client identifiers rather than raw addresses.</p></article>
 </section>
@@ -368,7 +368,7 @@ def postman_collection(request: Request):
 @router.get("/developers/sdk/python.zip")
 def python_sdk(request: Request):
     _require_portal(request)
-    path = SDK_ROOT / "downloads" / "sc-platform-core-public-python-v2.5.0.zip"
+    path = SDK_ROOT / "downloads" / "sc-platform-core-public-python-v2.7.0.zip"
     if not path.exists():
         raise HTTPException(status_code=404, detail="Python SDK is unavailable.")
     return FileResponse(
@@ -384,7 +384,7 @@ def javascript_sdk(request: Request):
     path = (
         SDK_ROOT
         / "downloads"
-        / "sc-platform-core-public-javascript-v2.5.0.zip"
+        / "sc-platform-core-public-javascript-v2.7.0.zip"
     )
     if not path.exists():
         raise HTTPException(status_code=404, detail="JavaScript SDK is unavailable.")

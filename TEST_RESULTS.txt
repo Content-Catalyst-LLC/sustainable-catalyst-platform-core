@@ -1,2 +1,21 @@
-.....................................................                    [100%]
-53 passed in 11.53s
+Sustainable Catalyst Platform Core v2.7.0
+Free Live Data Gateway and Connector Registry
+Validation date: 2026-07-14
+
+Backend regression suite
+------------------------
+68 passed in 24.98s
+
+Migration smoke test
+--------------------
+Migrations applied: 0001 through 0007
+Pending migrations: none
+Seeded live-data sources: 6
+Seeded live-data connectors: 6
+
+Additional validation
+---------------------
+WordPress plugin PHP syntax: passed
+Release push script Bash syntax: passed
+SDK archives: generated
+Live connector tests: deterministic mocked fixtures; no production network calls required

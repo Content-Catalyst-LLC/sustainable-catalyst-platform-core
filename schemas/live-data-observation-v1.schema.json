@@ -1,0 +1,211 @@
+{
+  "$id": "https://sustainablecatalyst.com/schemas/live-data-observation-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "attribution": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Attribution"
+    },
+    "connector_id": {
+      "title": "Connector Id",
+      "type": "string"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "dimensions_json": {
+      "additionalProperties": true,
+      "title": "Dimensions Json",
+      "type": "object"
+    },
+    "domain": {
+      "title": "Domain",
+      "type": "string"
+    },
+    "freshness_status": {
+      "title": "Freshness Status",
+      "type": "string"
+    },
+    "geometry_json": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Geometry Json"
+    },
+    "id": {
+      "title": "Id",
+      "type": "string"
+    },
+    "license_name": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "License Name"
+    },
+    "metadata_json": {
+      "additionalProperties": true,
+      "title": "Metadata Json",
+      "type": "object"
+    },
+    "methodology_url": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Methodology Url"
+    },
+    "metric": {
+      "title": "Metric",
+      "type": "string"
+    },
+    "observed_at": {
+      "format": "date-time",
+      "title": "Observed At",
+      "type": "string"
+    },
+    "public": {
+      "title": "Public",
+      "type": "boolean"
+    },
+    "published_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Published At"
+    },
+    "quality_status": {
+      "title": "Quality Status",
+      "type": "string"
+    },
+    "raw_record_hash": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Raw Record Hash"
+    },
+    "raw_record_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Raw Record Id"
+    },
+    "retrieved_at": {
+      "format": "date-time",
+      "title": "Retrieved At",
+      "type": "string"
+    },
+    "source_id": {
+      "title": "Source Id",
+      "type": "string"
+    },
+    "source_record_id": {
+      "title": "Source Record Id",
+      "type": "string"
+    },
+    "unit": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Unit"
+    },
+    "updated_at": {
+      "format": "date-time",
+      "title": "Updated At",
+      "type": "string"
+    },
+    "value_number": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Value Number"
+    },
+    "value_text": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Value Text"
+    }
+  },
+  "required": [
+    "id",
+    "connector_id",
+    "source_id",
+    "raw_record_id",
+    "source_record_id",
+    "domain",
+    "metric",
+    "value_number",
+    "value_text",
+    "unit",
+    "observed_at",
+    "published_at",
+    "retrieved_at",
+    "freshness_status",
+    "quality_status",
+    "license_name",
+    "attribution",
+    "methodology_url",
+    "raw_record_hash",
+    "public",
+    "created_at",
+    "updated_at"
+  ],
+  "title": "LiveDataObservationRead",
+  "type": "object"
+}

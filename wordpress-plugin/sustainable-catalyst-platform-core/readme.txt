@@ -1,13 +1,13 @@
 === Sustainable Catalyst Platform Core ===
 Contributors: content-catalyst
-Tags: knowledge graph, entity registry, provenance, sustainable catalyst
+Tags: knowledge graph, entity registry, provenance, live data, sustainable catalyst
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.0
-Stable tag: 2.6.0
+Stable tag: 2.7.0
 License: MIT
 
-WordPress status and entity lookup client for Sustainable Catalyst Platform Core.
+WordPress status, live-data gateway, and entity lookup client for Sustainable Catalyst Platform Core.
 
 == Installation ==
 
@@ -15,9 +15,18 @@ WordPress status and entity lookup client for Sustainable Catalyst Platform Core
 2. Go to Settings → Platform Core.
 3. Enter the Platform Core backend URL.
 4. Use [sc_platform_core_status].
-5. Use [sc_platform_core_entity id="sc:product:workbench"].
+5. Use [sc_platform_core_live_data_status].
+6. Use [sc_platform_core_entity id="sc:product:workbench"].
 
 The plugin never exposes the Platform Core write key in frontend code.
+
+
+== 2.7.0 ==
+
+* Adds the Live Data Gateway status shortcode.
+* Displays strict free-source policy status, registered sources, configured connectors, and observation totals.
+* Supports Platform Core v2.7.0 weather, Earth observation, hazard, economics, and sustainability connector APIs.
+* Preserves license, attribution, freshness, quality, raw-response hash, and provenance status.
 
 == 2.1.0 ==
 

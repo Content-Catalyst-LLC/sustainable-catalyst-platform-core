@@ -106,3 +106,19 @@ class PublicApiClient:
 
     def verify_dossier(self, dossier_id: str):
         return self.request("GET", f"/dossiers/{dossier_id}/verify")
+
+
+    def live_sources(self):
+        return self.request("GET", "/live/sources")
+
+    def live_connectors(self, **params):
+        return self.request("GET", "/live/connectors", params=params)
+
+    def live_observations(self, **params):
+        return self.request("GET", "/live/observations/latest", params=params)
+
+    def live_timeseries(self, metric: str, **params):
+        return self.request("GET", "/live/timeseries", params={"metric": metric, **params})
+
+    def live_provenance(self, observation_id: str):
+        return self.request("GET", f"/live/provenance/{observation_id}")

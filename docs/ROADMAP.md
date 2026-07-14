@@ -22,28 +22,98 @@ Completed.
 
 ## v2.5.0 — Signature Dossiers and End-to-End Workflows
 
+Completed.
+
+## v2.6.0 — Unified Service Gateway and Integration Foundation
+
+Completed.
+
+## v2.7.0 — Free Live Data Gateway and Connector Registry
+
 Completed:
 
-- Controlled workflow definitions
-- Ordered workflow stages
-- Cross-product responsibilities
-- Dependency enforcement
-- Append-only transitions
-- Frozen dossier records
-- Approval history
-- Canonical dossier snapshots
-- Platform signatures
-- Tamper detection
-- Public dossier verification
-- Dossier Center
+- Strict free-source policy
+- Source, license, and attribution registry
+- Connector SDK
+- Bounded raw-response cache
+- Ingestion runs
+- Normalized observations
+- Freshness and quality classifications
+- Stable IDs and deduplication
+- Provenance API
+- Scoped `data:read` public routes
+- MET Norway reference connector
+- NASA GIBS reference connector
+- USGS earthquake reference connector
+- World Bank reference connector
+- FRED reference connector
+- UN SDG V5 reference connector
 
-## Next platform candidates
+## v2.7.1 — International Law and United Nations Connector Pack
 
-- Asymmetric signing keys and public verification certificates
-- Product callback adapters and workflow automation workers
-- Human task inboxes and due-date notifications
-- Casebooks and private workspaces
-- Exported PDF dossier renderers
-- External archival storage
-- Public trust and dossier feeds
-- Distributed workflow queues and rate-limit counters
+Planned:
+
+- UN Digital Library
+- UN SDG Data and Metadata
+- OHCHR UHRI
+- OCHA ReliefWeb
+- HDX HAPI
+- UN Population
+- UN Comtrade
+- UNHCR
+- Treaty and international-law schemas
+
+## v2.7.2 — Scientific Data Connector Pack
+
+Planned:
+
+- NASA Earthdata CMR
+- NOAA and ECMWF
+- USGS water
+- NCBI and PubChem
+- GBIF
+- Materials Project
+- MAST, HEASARC, IRSA, and ESO
+
+## v2.7.3 — Economics and Official Statistics Connector Pack
+
+Planned:
+
+- IMF
+- OECD
+- Eurostat
+- ECB
+- BIS
+- BEA
+- BLS
+- Census
+- SEC EDGAR
+- FAOSTAT
+- ILOSTAT
+
+## v2.8.0 — Geospatial, Time-Series, and Scientific Data Fabric
+
+Planned:
+
+- PostGIS
+- STAC
+- GeoJSON and vector tiles
+- WMS and WMTS registry
+- SDMX adapters
+- TAP and ADQL adapters
+- FITS, NetCDF, Zarr, GeoParquet, and Cloud Optimized GeoTIFF support
+- PMTiles
+- Scientific object storage
+
+## v2.9.0 — Streaming, Alerts, and Source Reliability
+
+Planned:
+
+- Distributed connector workers
+- Server-Sent Events
+- Alert rules
+- Geographic subscriptions
+- Stale-source detection
+- Dead-letter records
+- Historical replay
+- Provider failover
