@@ -44,10 +44,10 @@ print(client.verify_ledger())
 ```
 
 
-## International law and UN records v2.7.3
+## International law and UN records v2.8.0
 
 Use the international-law record, detail, and authority-taxonomy client methods to consume official-source records without exposing connector configuration or raw payloads.
 
-## Scientific data connector pack v2.7.3
+## Scientific data connector pack v2.8.0
 
 The internal client includes scientific record discovery, provenance, record-type taxonomy, and statistics methods under `/v1/science`.

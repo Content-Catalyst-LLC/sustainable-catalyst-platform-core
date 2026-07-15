@@ -1,4 +1,4 @@
-# Sustainable Catalyst Public API Python Client v2.7.3
+# Sustainable Catalyst Public API Python Client v2.8.0
 
 ```python
 from sc_platform_core_public import PublicApiClient
@@ -43,4 +43,17 @@ Use `scientific_records`, `scientific_record`, and `scientific_record_types` (ca
 records = client.economic_records(indicator_code="GDP", geography_code="USA", limit=25)
 record = client.economic_record(records[0]["id"])
 types = client.economic_record_types()
+```
+
+
+## Data fabric v2.8.0
+
+```python
+capabilities = client.fabric_capabilities()
+features = client.geospatial_features(bbox="-88,41,-87,42")
+series = client.time_series(metric="temperature")
+points = client.time_series_points(series[0]["id"])
+assets = client.scientific_assets(format="fits")
+layers = client.map_layers(layer_type="cog")
+stac = client.stac_search(collections="mast:JWST")
 ```

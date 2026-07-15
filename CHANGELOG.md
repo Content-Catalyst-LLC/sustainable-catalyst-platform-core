@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.8.0 — 2026-07-14
+
+- Added migration `0011` and the geospatial, time-series, scientific-asset, map-layer, and STAC data fabric.
+- Added automatic and idempotent materialization from live observations and scientific records.
+- Added GeoJSON feature collections, bounding-box queries, monthly time-series partition keys, and PostgreSQL PostGIS/BRIN indexes when available.
+- Added STAC 1.0 catalog, collection, item, and search routes.
+- Added FITS, NetCDF, Zarr, GeoParquet, COG, PMTiles, VOTable, GRIB2, WMS, WMTS, SDMX, and TAP/ADQL capability records.
+- Added internal and scoped public APIs, SDK methods, WordPress status, schemas, deployment controls, and regression tests.
+
 ## 2.7.3 — 2026-07-14
 
 - Added migration `0010` and normalized `economic_data_records`.

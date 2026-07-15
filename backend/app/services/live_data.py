@@ -12,6 +12,7 @@ from sqlalchemy import and_, desc, func, select
 from sqlalchemy.orm import Session
 
 from ..connectors import ADAPTERS, NormalizedObservation
+from .data_fabric import materialize_observation, materialize_scientific_record
 from ..models import (
     LiveDataConnector,
     LiveDataIngestionRun,
@@ -277,6 +278,13 @@ class LiveDataRuntime:
             scientific_updated = 0
             economic_created = 0
             economic_updated = 0
+            fabric_series_created = 0
+            fabric_points_created = 0
+            fabric_features_created = 0
+            fabric_assets_created = 0
+            fabric_stac_collections_created = 0
+            fabric_stac_items_created = 0
+            fabric_map_layers_created = 0
             for item in normalized:
                 try:
                     item.observed_at = ensure_utc(item.observed_at)
@@ -314,13 +322,21 @@ class LiveDataRuntime:
                         "public": bool(item.public and connector.public and source.public and public_records),
                     }
                     if existing is None:
-                        db.add(LiveDataObservation(id=record_id, **values))
+                        observation_record = LiveDataObservation(id=record_id, **values)
+                        db.add(observation_record)
                         created += 1
                     else:
+                        observation_record = existing
                         for key, value in values.items():
-                            setattr(existing, key, value)
-                        db.add(existing)
+                            setattr(observation_record, key, value)
+                        db.add(observation_record)
                         updated += 1
+                    db.flush()
+                    if self.settings.data_fabric_enabled and self.settings.data_fabric_auto_materialize:
+                        fabric_counts = materialize_observation(db, observation_record)
+                        fabric_series_created += fabric_counts["series_created"]
+                        fabric_points_created += fabric_counts["points_created"]
+                        fabric_features_created += fabric_counts["features_created"]
 
                     if item.legal_record:
                         legal = dict(item.legal_record)
@@ -464,13 +480,23 @@ class LiveDataRuntime:
                             "public": bool(item.public and connector.public and source.public and public_records),
                         }
                         if science_existing is None:
-                            db.add(ScientificDataRecord(id=science_id, **science_values))
+                            science_record = ScientificDataRecord(id=science_id, **science_values)
+                            db.add(science_record)
                             scientific_created += 1
                         else:
+                            science_record = science_existing
                             for key, value in science_values.items():
-                                setattr(science_existing, key, value)
-                            db.add(science_existing)
+                                setattr(science_record, key, value)
+                            db.add(science_record)
                             scientific_updated += 1
+                        db.flush()
+                        if self.settings.data_fabric_enabled and self.settings.data_fabric_auto_materialize:
+                            science_fabric_counts = materialize_scientific_record(db, science_record)
+                            fabric_assets_created += science_fabric_counts["assets_created"]
+                            fabric_stac_collections_created += science_fabric_counts["stac_collections_created"]
+                            fabric_stac_items_created += science_fabric_counts["stac_items_created"]
+                            fabric_features_created += science_fabric_counts["features_created"]
+                            fabric_map_layers_created += science_fabric_counts["map_layers_created"]
                 except Exception:
                     rejected += 1
 
@@ -490,6 +516,13 @@ class LiveDataRuntime:
                 "scientific_data_records_updated": scientific_updated,
                 "economic_data_records_created": economic_created,
                 "economic_data_records_updated": economic_updated,
+                "fabric_time_series_created": fabric_series_created,
+                "fabric_time_series_points_created": fabric_points_created,
+                "fabric_geospatial_features_created": fabric_features_created,
+                "fabric_scientific_assets_created": fabric_assets_created,
+                "fabric_stac_collections_created": fabric_stac_collections_created,
+                "fabric_stac_items_created": fabric_stac_items_created,
+                "fabric_map_layers_created": fabric_map_layers_created,
             }
             connector.last_health_status = "operational"
             connector.last_health_checked_at = run.completed_at

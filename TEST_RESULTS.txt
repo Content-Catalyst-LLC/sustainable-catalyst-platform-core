@@ -1,26 +1,32 @@
-SUSTAINABLE CATALYST PLATFORM CORE v2.7.3
-ECONOMICS AND OFFICIAL STATISTICS CONNECTOR PACK
-
+SUSTAINABLE CATALYST PLATFORM CORE v2.8.0
+GEOSPATIAL, TIME-SERIES, AND SCIENTIFIC DATA FABRIC
 Validation date: 2026-07-14
 
-Automated tests
-- Platform regression group: 59 passed
-- Economics, scientific, and dossier group (third-party pytest plugin autoload disabled in clean-room): 26 passed
-- Trust Center group with third-party pytest plugin autoload disabled: 9 passed
-- Total: 94 passed
+RESULT: PASS
 
-Additional validation
-- Python compilation: passed
-- PHP syntax: passed
-- JavaScript syntax and economics SDK route test: passed
-- Bash syntax: passed
-- JSON and JSON Schema validation: passed
-- Migrations 0001 through 0010: passed
-- Pending migrations: none
-- Governed sources seeded: 40
-- Connector definitions seeded: 39
-- New v2.7.3 economics connectors: 12
-- Strict free-source violations: none
-- Credential parameter redaction: passed
-- Credential-bearing URL sanitization: passed
-- SDK ZIP integrity: passed
+Regression groups
+- Core platform, graph, evidence, gateway, public API, live data, and international law: 59 passed
+- Data fabric, economics, science, and signature dossiers: 31 passed
+- Trust Center: 9 passed
+- Total: 99 passed
+
+Database
+- Migrations 0001 through 0011 apply on a fresh database
+- No pending migrations after upgrade
+- 40 governed free-source records
+- 39 connector definitions
+- PostGIS activation is optional and fail-safe
+- Portable GeoJSON and numeric bbox queries remain available without PostGIS
+
+Release checks
+- Python compilation: PASS
+- PHP syntax: PASS
+- JavaScript syntax: PASS
+- Bash syntax: PASS
+- JSON schemas and Postman collections: PASS
+- Strict free-source policy: PASS
+- Credential redaction: PASS
+- Push-safe secret scan: PASS
+- BUILD_MANIFEST verification: PASS
+- ZIP integrity: PASS
+- Fresh-extraction validation: PASS
