@@ -18,6 +18,7 @@ MIGRATIONS = [
     ("0007", "Free live-data source registry, connector definitions, ingestion runs, bounded raw records, normalized observations, freshness, and provenance."),
     ("0008", "International-law and United Nations connector pack, dedicated legal-authority records, official-document provenance, and public discovery APIs."),
     ("0009", "Scientific data connector pack, normalized scientific dataset records, astronomy and laboratory discovery, and public science APIs."),
+    ("0010", "Economics and official-statistics connector pack, normalized economic records, revisions, releases, and public economics APIs."),
 ]
 
 def _seed_predicates(database: Database) -> int:

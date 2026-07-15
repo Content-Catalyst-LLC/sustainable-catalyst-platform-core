@@ -8,7 +8,7 @@ import json
 import math
 import re
 from typing import Any
-from urllib.parse import quote, urlparse
+from urllib.parse import parse_qsl, quote, urlencode, urlparse, urlunparse
 import xml.etree.ElementTree as ET
 
 import httpx
@@ -45,6 +45,13 @@ def parse_datetime(value: Any, *, default: datetime | None = None) -> datetime:
         result = result.replace(tzinfo=timezone.utc)
     return result.astimezone(timezone.utc)
 
+
+
+def sanitized_request_url(value: Any) -> str:
+    parsed = urlparse(str(value))
+    sensitive = {"api_key", "apikey", "key", "userid", "user_id", "token", "access_token", "registrationkey", "authorization"}
+    query = [(key, "[redacted]" if key.lower() in sensitive else item) for key, item in parse_qsl(parsed.query, keep_blank_values=True)]
+    return urlunparse((parsed.scheme, parsed.netloc, parsed.path, parsed.params, urlencode(query, doseq=True), parsed.fragment))
 
 def finite_float(value: Any) -> float | None:
     if value in (None, "", ".", "..", "NaN", "nan"):
@@ -84,6 +91,7 @@ class NormalizedObservation:
     metadata: dict[str, Any] = field(default_factory=dict)
     legal_record: dict[str, Any] | None = None
     scientific_record: dict[str, Any] | None = None
+    economic_record: dict[str, Any] | None = None
     public: bool = True
 
 
@@ -1417,6 +1425,213 @@ class IvoaTapJsonAdapter(ConnectorAdapter):
         return payload,observations
 
 
+def _period_datetime(value: Any, fallback: datetime) -> datetime:
+    text=str(value or '').strip()
+    if not text: return fallback
+    try: return parse_datetime(text)
+    except ValueError: pass
+    match=re.match(r'^(\d{4})-Q([1-4])$',text)
+    if match: return datetime(int(match.group(1)),(int(match.group(2))-1)*3+1,1,tzinfo=timezone.utc)
+    match=re.match(r'^(\d{4})-M(\d{2})$',text)
+    if match: return datetime(int(match.group(1)),int(match.group(2)),1,tzinfo=timezone.utc)
+    match=re.match(r'^(\d{4})-(\d{2})$',text)
+    if match: return datetime(int(match.group(1)),int(match.group(2)),1,tzinfo=timezone.utc)
+    return fallback
+
+
+def _row_value(row: dict[str,Any], *keys: str):
+    for key in keys:
+        value=row.get(key)
+        if value not in (None,''): return value
+    return None
+
+
+class SdmxCsvObservationsAdapter(ConnectorAdapter):
+    adapter_id='sdmx_csv_observations_v1'
+    def build_request(self,connector,parameters,settings):
+        config=connector.configuration_json or {}
+        base=connector.base_url.rstrip('/')
+        if config.get('endpoint_env')=='SC_CORE_IMF_API_BASE_URL':
+            base=settings.imf_api_base_url.rstrip('/')
+            if not base: raise ValueError('IMF API base URL requires free portal configuration.')
+        style=config.get('path_style','flow_key')
+        if style=='agency_dataset':
+            agency=str(self._required(parameters,'agency')); dataset=str(self._required(parameters,'dataset')); key=str(self._required(parameters,'key'))
+            version=str(parameters.get('version') or '').strip(); flow=f'{agency},{dataset}'+(f',{version}' if version else '')
+            url=f'{base}/{quote(flow,safe=",@")}/{quote(key,safe=".+")}'
+        else:
+            flow=str(self._required(parameters,'flow_ref')); key=str(self._required(parameters,'key')); url=f'{base}/{quote(flow,safe=",@")}/{quote(key,safe=".+")}'
+        params={k:parameters.get(k) for k in ('startPeriod','endPeriod','updatedAfter','firstNObservations','lastNObservations') if parameters.get(k) is not None}
+        params['format']=parameters.get('format') or config.get('format','csvfile')
+        params.setdefault('dimensionAtObservation','AllDimensions')
+        headers={'User-Agent':settings.live_data_user_agent,'Accept':'text/csv,application/vnd.sdmx.data+csv'}
+        if connector.id == 'imf.sdmx' and settings.imf_api_token: headers['Authorization']=f'Bearer {settings.imf_api_token}'
+        return ConnectorRequest('GET',url,params=params,headers=headers)
+    def normalize(self,response,*,connector,parameters,retrieved_at):
+        rows=list(csv.DictReader(io.StringIO(response.text.lstrip('\ufeff')))); observations=[]; config=connector.configuration_json or {}; provider=config.get('provider',connector.source_id.upper()); dataset=parameters.get('dataset') or parameters.get('flow_ref')
+        for idx,row in enumerate(rows):
+            period=str(_row_value(row,'TIME_PERIOD','Time period','TIME','Period') or '')
+            value=finite_float(_row_value(row,'OBS_VALUE','Observation value','Value','value'))
+            indicator=str(_row_value(row,'INDICATOR','MEASURE','SUBJECT','TRANSACTION','SERIES','Concept') or dataset or 'observation')
+            geo=_row_value(row,'REF_AREA','LOCATION','GEO','COUNTRY','Reference area'); geo_name=_row_value(row,'Reference area','Country','Geopolitical entity (reporting)','LOCATION_NAME')
+            frequency=_row_value(row,'FREQ','FREQUENCY','Frequency'); unit=_row_value(row,'UNIT_MEASURE','UNIT','Unit of measure','Unit')
+            source_id='|'.join(str(x) for x in (provider,dataset,indicator,geo,period,idx))
+            observed=_period_datetime(period,retrieved_at)
+            dims={k:v for k,v in row.items() if k not in {'OBS_VALUE','Observation value','Value','value','TIME_PERIOD','Time period','TIME','Period'} and v not in (None,'')}
+            name=_row_value(row,'Indicator','MEASURE_LABEL','SUBJECT_LABEL','Series','TITLE') or indicator
+            economic={"record_type":config.get('record_type','official_statistic'),"subject":config.get('subject','economics'),"indicator_code":indicator,"indicator_name":str(name),"dataset_id":str(dataset) if dataset else None,"geography_code":str(geo) if geo else None,"geography_name":str(geo_name) if geo_name else None,"counterpart_code":_row_value(row,'COUNTERPART_AREA','PARTNER','COUNTERPART'),"period":period or None,"period_start":observed,"frequency":str(frequency) if frequency else None,"value_number":value,"value_text":None if value is not None else str(_row_value(row,'OBS_VALUE','Value') or ''),"unit":str(unit) if unit else None,"multiplier":_row_value(row,'UNIT_MULT','MULTIPLIER'),"seasonal_adjustment":_row_value(row,'ADJUSTMENT','SEASONAL_ADJUSTMENT'),"price_basis":_row_value(row,'PRICE_BASE','PRICE_BASIS'),"status":"official_release","published_at":retrieved_at,"dimensions":dims,"source_url":sanitized_request_url(response.request.url),"metadata":{"provider":provider,"row":row}}
+            observations.append(NormalizedObservation(source_record_id=source_id,domain=connector.domain,metric=indicator,value_number=value,value_text=economic['value_text'],unit=economic['unit'],observed_at=observed,published_at=retrieved_at,freshness_status='official_release',quality_status='source_reported',methodology_url=connector.source_id,dimensions=dims,metadata={'provider':provider},economic_record=economic))
+        return rows,observations
+
+
+class EurostatJsonStatAdapter(ConnectorAdapter):
+    adapter_id='eurostat_jsonstat_v1'
+    def build_request(self,connector,parameters,settings):
+        dataset=str(self._required(parameters,'dataset')); params={'lang':parameters.get('lang','en')}
+        for key,value in parameters.items():
+            if key not in {'dataset','lang'} and value is not None: params[key]=value
+        return ConnectorRequest('GET',f"{connector.base_url.rstrip('/')}/{quote(dataset)}",params=params,headers={'User-Agent':settings.live_data_user_agent,'Accept':'application/json'})
+    def normalize(self,response,*,connector,parameters,retrieved_at):
+        payload=response.json(); ids=payload.get('id') or []; sizes=payload.get('size') or []; dimensions=payload.get('dimension') or {}; values=payload.get('value') or {}; observations=[]
+        def labels(dim):
+            cat=(dimensions.get(dim) or {}).get('category') or {}; index=cat.get('index') or {}; label=cat.get('label') or {}
+            if isinstance(index,list): return [(code,label.get(code,code)) for code in index]
+            return sorted(((code,label.get(code,code)) for code,pos in index.items()),key=lambda x:index[x[0]])
+        levels=[labels(dim) for dim in ids]
+        total=1
+        for size in sizes: total*=size
+        for flat in range(total):
+            raw=values.get(str(flat)) if isinstance(values,dict) else (values[flat] if flat<len(values) else None)
+            value=finite_float(raw)
+            if value is None: continue
+            rem=flat; coords=[]
+            for size in reversed(sizes): coords.append(rem%size); rem//=size
+            coords=list(reversed(coords)); row={dim:(levels[i][coord] if coord<len(levels[i]) else (str(coord),str(coord))) for i,(dim,coord) in enumerate(zip(ids,coords))}
+            period=(row.get('time') or row.get('TIME_PERIOD') or ('',''))[0]; geo=(row.get('geo') or row.get('GEO') or ('','')); unit=(row.get('unit') or row.get('UNIT') or ('','')); indicator=parameters['dataset']; observed=_period_datetime(period,retrieved_at)
+            source_id=f"{indicator}|{geo[0]}|{period}|{flat}"; dims={k:v[0] for k,v in row.items()}
+            economic={"record_type":"official_statistic","subject":connector.configuration_json.get('subject','economics'),"indicator_code":indicator,"indicator_name":payload.get('label') or indicator,"dataset_id":indicator,"geography_code":geo[0] or None,"geography_name":geo[1] or None,"period":period or None,"period_start":observed,"frequency":dims.get('freq'),"value_number":value,"unit":unit[1] or unit[0] or None,"status":"official_release","published_at":retrieved_at,"dimensions":dims,"source_url":sanitized_request_url(response.request.url),"metadata":{"updated":payload.get('updated')}}
+            observations.append(NormalizedObservation(source_record_id=source_id,domain='economics',metric=indicator,value_number=value,unit=economic['unit'],observed_at=observed,published_at=retrieved_at,freshness_status='official_release',dimensions=dims,economic_record=economic))
+        return payload,observations
+
+
+class BeaDataAdapter(ConnectorAdapter):
+    adapter_id='bea_data_v1'
+    def build_request(self,connector,parameters,settings):
+        if not settings.bea_api_key: raise ValueError('BEA API key is required.')
+        params={'UserID':settings.bea_api_key,'method':parameters.get('method','GetData'),'datasetname':self._required(parameters,'dataset_name'),'ResultFormat':'JSON'}
+        for k,v in parameters.items():
+            if k not in {'dataset_name','method'} and v is not None: params[k]=v
+        return ConnectorRequest('GET',connector.base_url,params=params,headers={'User-Agent':settings.live_data_user_agent})
+    def normalize(self,response,*,connector,parameters,retrieved_at):
+        payload=response.json(); results=((payload.get('BEAAPI') or {}).get('Results') or {}); data=results.get('Data') or []; rows=data if isinstance(data,list) else data.get('Data',[]); observations=[]
+        for idx,row in enumerate(rows):
+            period=str(_row_value(row,'TimePeriod','Year','Quarter') or ''); value=finite_float(_row_value(row,'DataValue','Value')); indicator=str(_row_value(row,'LineDescription','LineNumber','TableName') or parameters.get('table_name') or parameters['dataset_name']); geo=_row_value(row,'GeoFIPS','GeoName'); observed=_period_datetime(period,retrieved_at); source_id=f"{parameters['dataset_name']}|{indicator}|{geo}|{period}|{idx}"
+            economic={"record_type":"macroeconomic_indicator","subject":"macroeconomics","indicator_code":indicator,"indicator_name":str(_row_value(row,'LineDescription','Description') or indicator),"dataset_id":parameters['dataset_name'],"geography_code":str(geo).strip(' "') if geo else None,"geography_name":_row_value(row,'GeoName'),"period":period or None,"period_start":observed,"frequency":_row_value(row,'CL_UNIT','Frequency'),"value_number":value,"unit":_row_value(row,'UNIT_MULT','Unit'),"status":"official_release","published_at":retrieved_at,"dimensions":row,"source_url":sanitized_request_url(response.request.url),"metadata":{"notes":results.get('Notes')}}
+            observations.append(NormalizedObservation(source_record_id=source_id,domain='economics',metric=indicator,value_number=value,unit=economic['unit'],observed_at=observed,published_at=retrieved_at,freshness_status='official_release',dimensions=row,economic_record=economic))
+        return payload,observations
+
+
+class BlsSeriesAdapter(ConnectorAdapter):
+    adapter_id='bls_series_v2'
+    def build_request(self,connector,parameters,settings):
+        series=parameters.get('series_ids');
+        if isinstance(series,str): series=[x.strip() for x in series.split(',') if x.strip()]
+        if not series: raise ValueError("Parameter 'series_ids' is required.")
+        body={'seriesid':series}
+        for key in ('startyear','endyear','catalog','calculations','annualaverage','aspects'):
+            if parameters.get(key) is not None: body[key]=parameters[key]
+        if settings.bls_registration_key: body['registrationkey']=settings.bls_registration_key
+        return ConnectorRequest('POST',connector.base_url,headers={'User-Agent':settings.live_data_user_agent,'Content-Type':'application/json'},json_body=body)
+    def normalize(self,response,*,connector,parameters,retrieved_at):
+        payload=response.json(); observations=[]
+        for series in ((payload.get('Results') or {}).get('series') or []):
+            sid=str(series.get('seriesID') or 'series'); catalog=series.get('catalog') or {}; name=catalog.get('series_title') or sid
+            for row in series.get('data') or []:
+                period=str(row.get('periodName') or row.get('period') or ''); year=str(row.get('year') or ''); period_code=str(row.get('period') or ''); time=f"{year}-{period_code[1:]}" if period_code.startswith('M') and period_code[1:].isdigit() and period_code!='M13' else year; observed=_period_datetime(time,retrieved_at); value=finite_float(row.get('value')); source_id=f"{sid}|{year}|{period_code}"
+                economic={"record_type":"labour_statistic","subject":"labour","indicator_code":sid,"indicator_name":name,"dataset_id":"BLS Public Data API","geography_code":catalog.get('area_code'),"geography_name":catalog.get('area_name'),"period":f"{year}-{period_code}","period_start":observed,"frequency":"monthly" if period_code.startswith('M') else "annual","value_number":value,"unit":catalog.get('measure_data_type'),"status":"official_release","published_at":retrieved_at,"dimensions":{"period_name":period,"footnotes":row.get('footnotes')},"source_url":sanitized_request_url(response.request.url),"metadata":{"catalog":catalog}}
+                observations.append(NormalizedObservation(source_record_id=source_id,domain='labour',metric=sid,value_number=value,unit=economic['unit'],observed_at=observed,published_at=retrieved_at,freshness_status='official_release',economic_record=economic))
+        return payload,observations
+
+
+class CensusDataAdapter(ConnectorAdapter):
+    adapter_id='census_data_v1'
+    def build_request(self,connector,parameters,settings):
+        year=str(self._required(parameters,'year')); dataset=str(self._required(parameters,'dataset')).strip('/'); params={'get':self._required(parameters,'get'),'for':self._required(parameters,'for')}
+        for key in ('in','ucgid'):
+            if parameters.get(key): params[key]=parameters[key]
+        if settings.census_api_key: params['key']=settings.census_api_key
+        return ConnectorRequest('GET',f"{connector.base_url.rstrip('/')}/{quote(year)}/{dataset}",params=params,headers={'User-Agent':settings.live_data_user_agent})
+    def normalize(self,response,*,connector,parameters,retrieved_at):
+        payload=response.json(); observations=[]
+        if not payload or not isinstance(payload,list): return payload,observations
+        headers=payload[0]
+        for idx,values in enumerate(payload[1:]):
+            row=dict(zip(headers,values)); geo_keys=[k for k in headers if k in {'us','region','division','state','county','tract','place','zip code tabulation area'}]; geo=';'.join(f"{k}:{row.get(k)}" for k in geo_keys); year=str(parameters['year'])
+            for variable in str(parameters['get']).split(','):
+                variable=variable.strip()
+                if variable in {'NAME','GEO_ID'} or variable not in row: continue
+                value=finite_float(row.get(variable)); source_id=f"{parameters['dataset']}|{variable}|{geo}|{year}|{idx}"; observed=_period_datetime(year,retrieved_at)
+                economic={"record_type":"demographic_statistic","subject":"demographics","indicator_code":variable,"indicator_name":variable,"dataset_id":parameters['dataset'],"geography_code":geo or row.get('GEO_ID'),"geography_name":row.get('NAME'),"period":year,"period_start":observed,"frequency":"annual","value_number":value,"value_text":None if value is not None else row.get(variable),"status":"official_release","published_at":retrieved_at,"dimensions":row,"source_url":sanitized_request_url(response.request.url),"metadata":{"vintage":year}}
+                observations.append(NormalizedObservation(source_record_id=source_id,domain='demographics',metric=variable,value_number=value,value_text=economic['value_text'],observed_at=observed,published_at=retrieved_at,freshness_status='official_release',dimensions=row,economic_record=economic))
+        return payload,observations
+
+
+class SecCompanyFactsAdapter(ConnectorAdapter):
+    adapter_id='sec_companyfacts_v1'
+    def build_request(self,connector,parameters,settings):
+        cik=re.sub(r'\D','',str(self._required(parameters,'cik'))).zfill(10)
+        return ConnectorRequest('GET',f"{connector.base_url.rstrip('/')}/CIK{cik}.json",headers={'User-Agent':settings.live_data_user_agent,'Accept-Encoding':'gzip, deflate','Accept':'application/json'})
+    def normalize(self,response,*,connector,parameters,retrieved_at):
+        payload=response.json(); observations=[]; taxonomy=parameters.get('taxonomy') or connector.configuration_json.get('default_taxonomy','us-gaap'); selected=parameters.get('tags'); selected={x.strip() for x in selected.split(',')} if isinstance(selected,str) else set(selected or [])
+        facts=(payload.get('facts') or {}).get(taxonomy) or {}; cik=str(payload.get('cik') or parameters.get('cik')); entity=payload.get('entityName')
+        for tag,definition in facts.items():
+            if selected and tag not in selected: continue
+            for unit,rows in (definition.get('units') or {}).items():
+                for row in rows[-max(1,min(int(parameters.get('limit_per_fact',5)),50)):]:
+                    value=finite_float(row.get('val')); filed=parse_datetime(row.get('filed'),default=retrieved_at); period=row.get('fy') or row.get('end') or row.get('frame'); source_id=f"{cik}|{taxonomy}|{tag}|{unit}|{row.get('accn')}|{row.get('end')}"
+                    economic={"record_type":"company_filing_fact","subject":"company_finance","indicator_code":f"{taxonomy}:{tag}","indicator_name":definition.get('label') or tag,"dataset_id":"SEC EDGAR Company Facts","geography_code":"US","geography_name":"United States","period":str(period) if period else None,"period_start":parse_datetime(row.get('end'),default=filed),"frequency":row.get('fp'),"value_number":value,"value_text":None if value is not None else str(row.get('val')),"unit":unit,"status":"filed","release_name":row.get('form'),"vintage_date":filed,"published_at":filed,"dimensions":{"cik":cik,"entity_name":entity,"accession":row.get('accn'),"form":row.get('form'),"frame":row.get('frame')},"notes":definition.get('description'),"source_url":f"https://www.sec.gov/Archives/edgar/data/{cik.lstrip('0')}/{str(row.get('accn') or '').replace('-','')}/","metadata":{"taxonomy":taxonomy,"fact":tag,"row":row}}
+                    observations.append(NormalizedObservation(source_record_id=source_id,domain='company_finance',metric=tag,value_number=value,value_text=economic['value_text'],unit=unit,observed_at=economic['period_start'],published_at=filed,freshness_status='official_filing',quality_status='xbrl_filing_fact',dimensions=economic['dimensions'],economic_record=economic))
+        return payload,observations
+
+
+class EiaV2DataAdapter(ConnectorAdapter):
+    adapter_id='eia_v2_data_v1'
+    def build_request(self,connector,parameters,settings):
+        if not settings.eia_api_key: raise ValueError('EIA API key is required.')
+        route=str(self._required(parameters,'route')).strip('/'); fields=parameters.get('data_fields'); fields=[x.strip() for x in fields.split(',')] if isinstance(fields,str) else list(fields or [])
+        params={'api_key':settings.eia_api_key,'length':min(int(parameters.get('length',500)),5000)}
+        for field in fields: params.setdefault('data[]',[]); params['data[]'].append(field)
+        for key,value in parameters.items():
+            if key.startswith('facets[') or key.startswith('sort[') or key in {'start','end','offset'}: params[key]=value
+        return ConnectorRequest('GET',f"{connector.base_url.rstrip('/')}/{route}/data/",params=params,headers={'User-Agent':settings.live_data_user_agent})
+    def normalize(self,response,*,connector,parameters,retrieved_at):
+        payload=response.json(); rows=(payload.get('response') or {}).get('data') or []; observations=[]; fields=parameters.get('data_fields'); fields=[x.strip() for x in fields.split(',')] if isinstance(fields,str) else list(fields or [])
+        for idx,row in enumerate(rows):
+            period=str(_row_value(row,'period','date','year') or ''); observed=_period_datetime(period,retrieved_at); geo=_row_value(row,'state','region','country','area-name')
+            for field in fields:
+                if field not in row: continue
+                value=finite_float(row.get(field)); source_id=f"{parameters['route']}|{field}|{geo}|{period}|{idx}"; unit=_row_value(row,f'{field}-units','units','unit')
+                economic={"record_type":"energy_statistic","subject":"energy","indicator_code":field,"indicator_name":field,"dataset_id":parameters['route'],"geography_code":str(geo) if geo else None,"geography_name":_row_value(row,'state-name','region-name','area-name'),"period":period or None,"period_start":observed,"frequency":_row_value(row,'frequency'),"value_number":value,"value_text":None if value is not None else str(row.get(field)),"unit":str(unit) if unit else None,"status":"official_release","published_at":retrieved_at,"dimensions":row,"source_url":sanitized_request_url(response.request.url),"metadata":{"warnings":(payload.get('response') or {}).get('warnings')}}
+                observations.append(NormalizedObservation(source_record_id=source_id,domain='energy',metric=field,value_number=value,value_text=economic['value_text'],unit=economic['unit'],observed_at=observed,published_at=retrieved_at,freshness_status='official_release',dimensions=row,economic_record=economic))
+        return payload,observations
+
+
+class FaostatDataAdapter(ConnectorAdapter):
+    adapter_id='faostat_data_v1'
+    def build_request(self,connector,parameters,settings):
+        domain=str(self._required(parameters,'domain_code')); base=(settings.faostat_api_base_url or connector.base_url).rstrip('/'); params={}
+        for key in ('area_code','item_code','element_code','year','year_from','year_to','page_number','page_size'):
+            if parameters.get(key) is not None: params[key]=parameters[key]
+        return ConnectorRequest('GET',f"{base}/{quote(domain)}",params=params,headers={'User-Agent':settings.live_data_user_agent,'Accept':'application/json'})
+    def normalize(self,response,*,connector,parameters,retrieved_at):
+        payload=response.json(); rows=payload.get('data') or payload.get('Data') or payload.get('items') or []; observations=[]
+        for idx,row in enumerate(rows):
+            year=str(_row_value(row,'Year','year','Year Code') or ''); observed=_period_datetime(year,retrieved_at); area=_row_value(row,'Area Code','area_code','Area'); item=_row_value(row,'Item Code','item_code','Item'); element=_row_value(row,'Element Code','element_code','Element') or 'value'; value=finite_float(_row_value(row,'Value','value')); source_id=f"{parameters['domain_code']}|{area}|{item}|{element}|{year}|{idx}"
+            economic={"record_type":"agriculture_statistic","subject":"agriculture","indicator_code":str(element),"indicator_name":str(_row_value(row,'Element','element') or element),"dataset_id":parameters['domain_code'],"geography_code":str(area) if area else None,"geography_name":_row_value(row,'Area','area'),"period":year or None,"period_start":observed,"frequency":"annual","value_number":value,"value_text":None if value is not None else str(_row_value(row,'Value','value') or ''),"unit":_row_value(row,'Unit','unit'),"status":"official_release","published_at":retrieved_at,"dimensions":{"item_code":item,"item":_row_value(row,'Item','item'),"flag":_row_value(row,'Flag','flag')},"notes":_row_value(row,'Note','note'),"source_url":sanitized_request_url(response.request.url),"metadata":{"row":row}}
+            observations.append(NormalizedObservation(source_record_id=source_id,domain='agriculture',metric=str(element),value_number=value,value_text=economic['value_text'],unit=economic['unit'],observed_at=observed,published_at=retrieved_at,freshness_status='official_release',dimensions=economic['dimensions'],economic_record=economic))
+        return payload,observations
+
+
 ADAPTERS: dict[str, ConnectorAdapter] = {
     adapter.adapter_id: adapter
     for adapter in (
@@ -1446,5 +1661,13 @@ ADAPTERS: dict[str, ConnectorAdapter] = {
         MastObservationsAdapter(),
         HeasarcXaminAdapter(),
         IvoaTapJsonAdapter(),
+        SdmxCsvObservationsAdapter(),
+        EurostatJsonStatAdapter(),
+        BeaDataAdapter(),
+        BlsSeriesAdapter(),
+        CensusDataAdapter(),
+        SecCompanyFactsAdapter(),
+        EiaV2DataAdapter(),
+        FaostatDataAdapter(),
     )
 }

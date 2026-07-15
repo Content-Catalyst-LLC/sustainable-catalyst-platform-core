@@ -23,6 +23,7 @@ from ..models import (
     LiveDataObservation,
     InternationalLawRecord,
     ScientificDataRecord,
+    EconomicDataRecord,
     LiveDataSource,
     PredicateDefinition,
     ProvenanceActivity,
@@ -59,6 +60,7 @@ def health(request: Request):
         "live_data_gateway": request.app.state.settings.live_data_enabled,
         "international_law_un_connector_pack": True,
         "scientific_data_connector_pack": True,
+        "economics_official_statistics_connector_pack": True,
         "strict_free_sources": request.app.state.settings.live_data_strict_free_sources,
     }
 
@@ -77,6 +79,7 @@ def ready(db: Session = Depends(get_session)):
         "live_data_gateway": "ready",
         "international_law_un_connector_pack": "ready",
         "scientific_data_connector_pack": "ready",
+        "economics_official_statistics_connector_pack": "ready",
     }
 
 
@@ -142,6 +145,11 @@ def meta(request: Request):
             "legal_authority_classification",
             "scientific_data_connector_pack",
             "scientific_data_record_store",
+            "economics_official_statistics_connector_pack",
+            "economic_data_record_store",
+            "sdmx_statistics_gateway",
+            "company_filing_facts",
+            "energy_statistics_ingestion",
             "scientific_dataset_discovery",
             "astronomy_archive_discovery",
             "biomedical_and_chemical_discovery",
@@ -260,6 +268,7 @@ def stats(db: Session = Depends(get_session)):
         live_data_observations=count(LiveDataObservation),
         international_law_records=count(InternationalLawRecord),
         scientific_data_records=count(ScientificDataRecord),
+        economic_data_records=count(EconomicDataRecord),
         entities_by_type={key: int(value) for key, value in entity_rows},
         relationships_by_predicate={
             key: int(value) for key, value in predicate_rows

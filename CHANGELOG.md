@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.7.3 — 2026-07-14
+
+- Added migration `0010` and normalized `economic_data_records`.
+- Added twelve governed free official-statistics sources and connectors.
+- Added shared SDMX CSV ingestion for IMF, OECD, ECB, BIS, and ILOSTAT.
+- Added Eurostat JSON-stat, BEA, BLS, Census, SEC EDGAR, EIA, and FAOSTAT adapters.
+- Added internal and scoped public economics APIs, SDK methods, WordPress status, provenance, and tests.
+- Preserved the strict no-paid-provider acceptance gate and fail-closed free-registration controls.
+
 ## 2.7.2 — 2026-07-14
 
 - Added the Scientific Data Connector Pack with 13 connectors over 12 official free-access sources.

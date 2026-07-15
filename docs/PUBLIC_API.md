@@ -130,3 +130,16 @@ GET /api/v1/science/record-types
 ```
 
 The list endpoint supports record type, discipline, source, connector, collection, mission, instrument, target, dataset, query, and observation-date filters. Public endpoints return normalized metadata only; raw provider payloads remain internal.
+
+
+## Economics and official statistics v2.7.3
+
+Credentials with `data:read` may access:
+
+```text
+GET /api/v1/economics/records
+GET /api/v1/economics/records/{record_id}
+GET /api/v1/economics/record-types
+```
+
+The list endpoint supports record type, subject, source, connector, indicator, dataset, geography, frequency, text, and date filters. Public responses expose normalized records only; raw provider payloads, credential configuration, and internal ingestion details remain private.

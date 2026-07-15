@@ -83,7 +83,7 @@ Completed:
 
 ## v2.7.3 — Economics and Official Statistics Connector Pack
 
-Planned:
+Completed:
 
 - IMF
 - OECD
@@ -123,3 +123,8 @@ Planned:
 - Dead-letter records
 - Historical replay
 - Provider failover
+
+- EIA
+- Normalized economic records and provenance
+- Internal and scoped public economics APIs
+- Python, JavaScript, WordPress, deployment, and CLI support

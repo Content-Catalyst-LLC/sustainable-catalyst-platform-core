@@ -1,0 +1,112 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/economic-data-record-v1.schema.json",
+  "title": "Sustainable Catalyst Economic Data Record",
+  "type": "object",
+  "required": [
+    "id",
+    "connector_id",
+    "source_id",
+    "source_record_id",
+    "record_type",
+    "subject",
+    "status",
+    "content_hash",
+    "public"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "connector_id": {
+      "type": "string"
+    },
+    "source_id": {
+      "type": "string"
+    },
+    "source_record_id": {
+      "type": "string"
+    },
+    "record_type": {
+      "type": "string"
+    },
+    "subject": {
+      "type": "string"
+    },
+    "indicator_code": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "indicator_name": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "dataset_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "geography_code": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "period": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "period_start": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "frequency": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "value_number": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "value_text": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "unit": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "status": {
+      "type": "string"
+    },
+    "dimensions": {
+      "type": "object"
+    },
+    "content_hash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "public": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": true
+}

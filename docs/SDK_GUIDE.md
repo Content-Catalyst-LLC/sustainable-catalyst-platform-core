@@ -99,3 +99,24 @@ console.log(await client.scientificRecordTypes());
 ```
 
 These public methods use `data:read`. Raw provider payloads and internal provenance are intentionally excluded from the public SDK.
+
+
+## Economics and official statistics v2.7.3
+
+Python:
+
+```python
+print(client.economic_records(indicator_code="GDP", geography_code="USA", limit=25))
+print(client.economic_record("RECORD_ID"))
+print(client.economic_record_types())
+```
+
+JavaScript:
+
+```javascript
+console.log(await client.economicRecords({ indicator_code: "GDP", geography_code: "USA", limit: 25 }));
+console.log(await client.economicRecord("RECORD_ID"));
+console.log(await client.economicRecordTypes());
+```
+
+These methods use `data:read`. Raw provider payloads and internal connector configuration are intentionally excluded from the public SDK.

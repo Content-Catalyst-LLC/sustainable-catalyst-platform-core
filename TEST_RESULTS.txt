@@ -1,48 +1,26 @@
-Sustainable Catalyst Platform Core v2.7.2
-Scientific Data Connector Pack
-Validated: July 14, 2026
+SUSTAINABLE CATALYST PLATFORM CORE v2.7.3
+ECONOMICS AND OFFICIAL STATISTICS CONNECTOR PACK
 
-Backend regression tests
-- Legacy registry, graph, evidence, gateway, public API, live-data, and international-law group: 59 passed
-- Scientific connector, signature dossier, and Trust Center group: 27 passed
-- Total: 86 passed
+Validation date: 2026-07-14
 
-Scientific connector coverage
-- Catalog, free-source policy, source and connector counts
-- NASA CMR collection ingestion, deduplication, and provenance
-- NASA APOD astronomy-image normalization
-- NOAA NCEI environmental observations
-- ECMWF open forecast-index normalization
-- USGS Water instantaneous observations
-- NCBI Entrez identifier discovery
-- PubChem compound properties
-- GBIF biodiversity occurrences and record-level license metadata
-- Materials Project configuration gate and free-key ingestion
-- MAST POST requests and telescope observations
-- HEASARC catalog discovery
-- IRSA and ESO read-only TAP/ADQL discovery
-- Unsafe ADQL rejection
-- Internal and scoped public scientific APIs
-- Python and JavaScript SDK exposure
-- WordPress science-status shortcode syntax
+Automated tests
+- Platform regression group: 59 passed
+- Economics, scientific, and dossier group (third-party pytest plugin autoload disabled in clean-room): 26 passed
+- Trust Center group with third-party pytest plugin autoload disabled: 9 passed
+- Total: 94 passed
 
-Migration validation
-- Migrations 0001 through 0009 applied on a fresh SQLite database
+Additional validation
+- Python compilation: passed
+- PHP syntax: passed
+- JavaScript syntax and economics SDK route test: passed
+- Bash syntax: passed
+- JSON and JSON Schema validation: passed
+- Migrations 0001 through 0010: passed
 - Pending migrations: none
-- Predicate definitions: 24
-- API plans: 3
-- Evaluation definitions: 8
-- Workflow definitions: 3
-- Live-data sources: 28
-- Live-data connectors: 27
-- Scientific data records table present
-
-Static and package validation
-- Python compilation passed
-- PHP syntax passed
-- JavaScript syntax passed
-- Bash syntax passed
-- JSON schema and Postman validation passed
-- Strict free-source assertions passed
-- Push-safe secret scan passed
-- SDK archive integrity passed
+- Governed sources seeded: 40
+- Connector definitions seeded: 39
+- New v2.7.3 economics connectors: 12
+- Strict free-source violations: none
+- Credential parameter redaction: passed
+- Credential-bearing URL sanitization: passed
+- SDK ZIP integrity: passed

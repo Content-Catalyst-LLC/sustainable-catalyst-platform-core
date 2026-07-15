@@ -12,7 +12,7 @@ def test_v271_catalog_seeds_official_un_and_legal_sources(client):
     assert sources.status_code == 200
     payload = sources.json()
     source_ids = {item['id'] for item in payload}
-    assert len(payload) == 28
+    assert len(payload) == 40
     assert {
         'un-digital-library',
         'ohchr',
@@ -31,7 +31,7 @@ def test_v271_catalog_seeds_official_un_and_legal_sources(client):
     connectors = client.get('/v1/live/connectors')
     assert connectors.status_code == 200
     connector_ids = {item['id'] for item in connectors.json()}
-    assert len(connector_ids) == 27
+    assert len(connector_ids) == 39
     assert {
         'un.digital-library',
         'un.sdg-metadata',
@@ -158,7 +158,7 @@ def test_registration_gated_connectors_fail_closed(client, write_headers):
 
 def test_authority_taxonomy_and_meta_advertise_v271(client):
     health = client.get('/health').json()
-    assert health['version'] == '2.7.2'
+    assert health['version'] == '2.7.3'
     assert health['international_law_un_connector_pack'] is True
 
     taxonomy = client.get('/v1/international-law/authority-taxonomy')
@@ -173,8 +173,8 @@ def test_authority_taxonomy_and_meta_advertise_v271(client):
     assert 'legal_authority_classification' in meta['capabilities']
 
     stats = client.get('/v1/stats').json()
-    assert stats['live_data_sources'] == 28
-    assert stats['live_data_connectors'] == 27
+    assert stats['live_data_sources'] == 40
+    assert stats['live_data_connectors'] == 39
     assert stats['international_law_records'] == 0
 
 

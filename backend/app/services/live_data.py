@@ -20,6 +20,7 @@ from ..models import (
     LiveDataSource,
     InternationalLawRecord,
     ScientificDataRecord,
+    EconomicDataRecord,
 )
 
 APPROVED_SOURCE_STATUSES = {
@@ -28,6 +29,23 @@ APPROVED_SOURCE_STATUSES = {
     "APPROVED_METADATA_ONLY",
     "APPROVED_SELF_HOSTED",
 }
+
+
+SENSITIVE_PARAMETER_PARTS = ("api_key", "apikey", "user_id", "userid", "token", "secret", "password", "authorization", "credential", "registrationkey")
+
+def redact_parameters(value: Any) -> Any:
+    if isinstance(value, dict):
+        result = {}
+        for key, item in value.items():
+            normalized = str(key).lower().replace("-", "_")
+            if any(part in normalized for part in SENSITIVE_PARAMETER_PARTS):
+                result[key] = "[redacted]"
+            else:
+                result[key] = redact_parameters(item)
+        return result
+    if isinstance(value, list):
+        return [redact_parameters(item) for item in value]
+    return value
 
 
 def utcnow() -> datetime:
@@ -46,6 +64,10 @@ def international_law_record_id(connector_id: str, source_record_id: str, record
 
 def scientific_data_record_id(connector_id: str, source_record_id: str, record_type: str) -> str:
     return hashlib.sha256(f"science|{connector_id}|{source_record_id}|{record_type}".encode("utf-8")).hexdigest()
+
+
+def economic_data_record_id(connector_id: str, source_record_id: str, record_type: str) -> str:
+    return hashlib.sha256(f"economics|{connector_id}|{source_record_id}|{record_type}".encode("utf-8")).hexdigest()
 
 
 def observation_id(connector_id: str, observation: NormalizedObservation) -> str:
@@ -133,6 +155,12 @@ class LiveDataRuntime:
             return "endpoint_registration_required"
         if connector.id == "materials-project.summary" and not self.settings.materials_project_api_key:
             return "credential_required"
+        if connector.id == "imf.sdmx" and not self.settings.imf_api_base_url:
+            return "endpoint_registration_required"
+        if connector.id == "bea.statistics" and not self.settings.bea_api_key:
+            return "credential_required"
+        if connector.id == "eia.v2-data" and not self.settings.eia_api_key:
+            return "credential_required"
         if not self.settings.live_data_enabled:
             return "subsystem_disabled"
         if not connector.enabled:
@@ -160,12 +188,13 @@ class LiveDataRuntime:
                 503,
             )
 
-        clean_parameters = dict(parameters or {})
+        request_parameters = dict(parameters or {})
+        stored_parameters = redact_parameters(request_parameters)
         run = LiveDataIngestionRun(
             connector_id=connector.id,
             run_type=run_type,
             requested_by=requested_by,
-            parameters_json=clean_parameters,
+            parameters_json=stored_parameters,
             status="running",
         )
         db.add(run)
@@ -174,7 +203,7 @@ class LiveDataRuntime:
 
         retrieved_at = utcnow()
         try:
-            request = adapter.build_request(connector, clean_parameters, self.settings)
+            request = adapter.build_request(connector, request_parameters, self.settings)
             request_params = {key: value for key, value in request.params.items() if value is not None}
             timeout = min(connector.timeout_seconds, self.settings.live_data_timeout_seconds)
             limits = httpx.Limits(max_connections=10, max_keepalive_connections=5)
@@ -203,7 +232,7 @@ class LiveDataRuntime:
             raw_payload, normalized = adapter.normalize(
                 response,
                 connector=connector,
-                parameters=clean_parameters,
+                parameters=request_parameters,
                 retrieved_at=retrieved_at,
             )
             raw_hash = hashlib.sha256(response.content).hexdigest()
@@ -246,6 +275,8 @@ class LiveDataRuntime:
             legal_updated = 0
             scientific_created = 0
             scientific_updated = 0
+            economic_created = 0
+            economic_updated = 0
             for item in normalized:
                 try:
                     item.observed_at = ensure_utc(item.observed_at)
@@ -338,6 +369,59 @@ class LiveDataRuntime:
                             db.add(legal_existing)
                             legal_updated += 1
 
+                    if item.economic_record:
+                        economic = dict(item.economic_record)
+                        economic_metadata = economic.pop("metadata", {})
+                        record_type = str(economic.get("record_type") or "official_statistic")
+                        economic_id = economic_data_record_id(connector.id, item.source_record_id, record_type)
+                        economic_existing = db.get(EconomicDataRecord, economic_id)
+                        def economic_date(name, fallback=None):
+                            value = economic.get(name)
+                            return ensure_utc(value) if isinstance(value, datetime) else fallback
+                        economic_values = {
+                            "connector_id": connector.id,
+                            "source_id": source.id,
+                            "raw_record_id": raw.id,
+                            "source_record_id": item.source_record_id,
+                            "record_type": record_type,
+                            "subject": str(economic.get("subject") or item.domain or "economics"),
+                            "indicator_code": economic.get("indicator_code"),
+                            "indicator_name": economic.get("indicator_name"),
+                            "dataset_id": economic.get("dataset_id"),
+                            "geography_code": economic.get("geography_code"),
+                            "geography_name": economic.get("geography_name"),
+                            "counterpart_code": economic.get("counterpart_code"),
+                            "period": economic.get("period"),
+                            "period_start": economic_date("period_start", item.observed_at),
+                            "period_end": economic_date("period_end"),
+                            "frequency": economic.get("frequency"),
+                            "value_number": economic.get("value_number", item.value_number),
+                            "value_text": economic.get("value_text", item.value_text),
+                            "unit": economic.get("unit", item.unit),
+                            "multiplier": economic.get("multiplier"),
+                            "seasonal_adjustment": economic.get("seasonal_adjustment"),
+                            "price_basis": economic.get("price_basis"),
+                            "status": str(economic.get("status") or "official_release"),
+                            "release_name": economic.get("release_name"),
+                            "vintage_date": economic_date("vintage_date"),
+                            "published_at": economic_date("published_at", item.published_at),
+                            "dimensions_json": dict(economic.get("dimensions") or item.dimensions or {}),
+                            "notes": economic.get("notes"),
+                            "source_url": economic.get("source_url"),
+                            "license_name": source.license_name,
+                            "attribution": source.attribution,
+                            "content_hash": hashlib.sha256(json.dumps({**economic, "metadata": economic_metadata}, sort_keys=True, default=str).encode("utf-8")).hexdigest(),
+                            "metadata_json": economic_metadata,
+                            "public": bool(item.public and connector.public and source.public and public_records),
+                        }
+                        if economic_existing is None:
+                            db.add(EconomicDataRecord(id=economic_id, **economic_values))
+                            economic_created += 1
+                        else:
+                            for key, value in economic_values.items(): setattr(economic_existing, key, value)
+                            db.add(economic_existing)
+                            economic_updated += 1
+
                     if item.scientific_record:
                         science = dict(item.scientific_record)
                         science_metadata = science.pop("metadata", {})
@@ -404,6 +488,8 @@ class LiveDataRuntime:
                 "international_law_records_updated": legal_updated,
                 "scientific_data_records_created": scientific_created,
                 "scientific_data_records_updated": scientific_updated,
+                "economic_data_records_created": economic_created,
+                "economic_data_records_updated": economic_updated,
             }
             connector.last_health_status = "operational"
             connector.last_health_checked_at = run.completed_at

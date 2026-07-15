@@ -222,7 +222,7 @@ class PlatformCoreClient:
     def verify_dossier(self, dossier_id: str):
         return self._request("GET", f"/v1/dossiers/{dossier_id}/verify")
 
-    # Platform Core v2.7.2 free live-data, UN, and scientific connector gateway
+    # Platform Core v2.7.3 free live-data, UN, and scientific connector gateway
     def live_data_sources(self, *, active: bool | None = True, review_status: str | None = None):
         params: dict[str, Any] = {}
         if active is not None: params["active"] = active
@@ -285,3 +285,18 @@ class PlatformCoreClient:
     def scientific_stats(self):
         return self._request("GET", "/v1/science/stats")
 
+
+    def economic_records(self, **params):
+        return self._request("GET", "/v1/economics/records", params=params)
+
+    def economic_record(self, record_id: str):
+        return self._request("GET", f"/v1/economics/records/{record_id}")
+
+    def economic_provenance(self, record_id: str):
+        return self._request("GET", f"/v1/economics/provenance/{record_id}")
+
+    def economic_record_types(self):
+        return self._request("GET", "/v1/economics/record-types")
+
+    def economic_stats(self):
+        return self._request("GET", "/v1/economics/stats")

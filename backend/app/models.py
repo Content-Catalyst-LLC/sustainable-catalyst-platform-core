@@ -1168,6 +1168,56 @@ class ScientificDataRecord(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
 
+class EconomicDataRecord(Base):
+    __tablename__ = "economic_data_records"
+    __table_args__ = (
+        UniqueConstraint("connector_id", "source_record_id", "record_type", name="uq_economic_data_source_type"),
+        Index("ix_economic_data_subject_indicator", "subject", "indicator_code"),
+        Index("ix_economic_data_geography_period", "geography_code", "period_start"),
+        Index("ix_economic_data_dataset_period", "dataset_id", "period_start"),
+        Index("ix_economic_data_frequency", "frequency", "period_start"),
+        Index("ix_economic_data_public", "public", "published_at"),
+    )
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    connector_id: Mapped[str] = mapped_column(ForeignKey("live_data_connectors.id", ondelete="RESTRICT"), nullable=False, index=True)
+    source_id: Mapped[str] = mapped_column(ForeignKey("live_data_sources.id", ondelete="RESTRICT"), nullable=False, index=True)
+    raw_record_id: Mapped[str | None] = mapped_column(ForeignKey("live_data_raw_records.id", ondelete="SET NULL"), nullable=True, index=True)
+    source_record_id: Mapped[str] = mapped_column(String(700), nullable=False)
+    record_type: Mapped[str] = mapped_column(String(120), nullable=False, index=True)
+    subject: Mapped[str] = mapped_column(String(120), nullable=False, index=True)
+    indicator_code: Mapped[str | None] = mapped_column(String(500), nullable=True, index=True)
+    indicator_name: Mapped[str | None] = mapped_column(Text, nullable=True)
+    dataset_id: Mapped[str | None] = mapped_column(String(500), nullable=True, index=True)
+    geography_code: Mapped[str | None] = mapped_column(String(200), nullable=True, index=True)
+    geography_name: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    counterpart_code: Mapped[str | None] = mapped_column(String(200), nullable=True, index=True)
+    period: Mapped[str | None] = mapped_column(String(100), nullable=True, index=True)
+    period_start: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True, index=True)
+    period_end: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    frequency: Mapped[str | None] = mapped_column(String(80), nullable=True, index=True)
+    value_number: Mapped[float | None] = mapped_column(Float, nullable=True)
+    value_text: Mapped[str | None] = mapped_column(Text, nullable=True)
+    unit: Mapped[str | None] = mapped_column(String(300), nullable=True)
+    multiplier: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    seasonal_adjustment: Mapped[str | None] = mapped_column(String(200), nullable=True)
+    price_basis: Mapped[str | None] = mapped_column(String(200), nullable=True)
+    status: Mapped[str] = mapped_column(String(100), default="official_release", index=True)
+    release_name: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    vintage_date: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True, index=True)
+    published_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True, index=True)
+    dimensions_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    notes: Mapped[str | None] = mapped_column(Text, nullable=True)
+    source_url: Mapped[str | None] = mapped_column(String(2000), nullable=True)
+    license_name: Mapped[str | None] = mapped_column(String(300), nullable=True)
+    attribution: Mapped[str | None] = mapped_column(Text, nullable=True)
+    content_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    public: Mapped[bool] = mapped_column(Boolean, default=True, index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
 class InternationalLawRecord(Base):
     __tablename__ = "international_law_records"
     __table_args__ = (

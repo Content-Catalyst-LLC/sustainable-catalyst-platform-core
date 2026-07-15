@@ -1,19 +1,17 @@
-# Sustainable Catalyst Platform Core v2.7.2
+# Sustainable Catalyst Platform Core v2.7.3
 
-**Scientific Data Connector Pack**
-
-Platform Core v2.7.2 adds governed scientific discovery on top of the v2.7.1 international-law and United Nations layer and the v2.7.0 Free Live Data Gateway. Core remains the shared source-governance, ingestion, normalization, provenance, and delivery service for Sustainable Catalyst products.
+Core v2.7.3 adds the **Economics and Official Statistics Connector Pack** on top of the v2.7.2 scientific layer, v2.7.1 international-law and United Nations layer, and v2.7.0 Free Live Data Gateway. Core remains the shared source-governance, ingestion, normalization, provenance, and delivery service for Sustainable Catalyst products.
 
 The release includes:
 
-- 28 governed free-access source records and 27 connector definitions
-- 13 new scientific connectors over 12 official scientific providers
-- Migration `0009` and a normalized `scientific_data_records` store
-- Raw-response hashing, bounded storage, deduplication, and provenance
-- Earth science, climate, hydrology, biomedical, chemistry, biodiversity, materials, and astronomy discovery
-- Read-only TAP/ADQL enforcement for IRSA and ESO archive queries
-- Internal APIs under `/v1/science`
-- Scoped public APIs under `/api/v1/science` with `data:read`
+- 40 governed free-source records and 39 connector definitions
+- 12 new official-statistics connectors
+- Migration `0010` and a normalized `economic_data_records` store
+- Shared SDMX CSV ingestion for IMF, OECD, ECB, BIS, and ILOSTAT
+- Dedicated Eurostat JSON-stat, BEA, BLS, Census, SEC EDGAR, EIA, and FAOSTAT adapters
+- Source, license, attribution, frequency, release, vintage, content-hash, and raw-ingestion provenance
+- Internal APIs under `/v1/economics`
+- Scoped public APIs under `/api/v1/economics` with `data:read`
 - Python, JavaScript, WordPress, JSON Schema, deployment, and CLI support
 - No paid API or credit-card-required production dependency
 
@@ -52,11 +50,25 @@ Scientific data v2.7.2
   heasarc.xamin
   irsa.tap
   eso.tap
+
+Economics and official statistics v2.7.3
+  imf.sdmx
+  oecd.sdmx
+  eurostat.statistics
+  ecb.sdmx
+  bis.sdmx
+  bea.statistics
+  bls.timeseries
+  census.data
+  sec.companyfacts
+  eia.v2-data
+  faostat.data
+  ilostat.sdmx
 ```
 
 Core is the shared integration layer. Site Intelligence owns public maps and observatories; Research Lab owns scientific investigation; Workbench owns calculations and modeling; Decision Studio owns synthesis; Knowledge Library owns source and methodology records; Research Librarian owns discovery and routing.
 
-See `docs/SCIENTIFIC_DATA_CONNECTORS_V272.md`, `RELEASE_NOTES_V272.md`, and `deployment/platform-core-v272.env.example`.
+See `docs/ECONOMICS_OFFICIAL_STATISTICS_CONNECTORS_V273.md`, `RELEASE_NOTES_V273.md`, and `deployment/platform-core-v273.env.example`.
 
 ## Live-data routes
 
@@ -570,3 +582,8 @@ Core v2.7.1 adds a dedicated legal-record store and official-source connector pa
 ## v2.7.2 scientific-data APIs
 
 Core v2.7.2 adds normalized scientific discovery and provenance. Internal routes begin with `/v1/science`; scoped public routes begin with `/api/v1/science` and require `data:read`. See `docs/SCIENTIFIC_DATA_CONNECTORS_V272.md`.
+
+
+## v2.7.3 economics and official-statistics APIs
+
+Core v2.7.3 adds provider-neutral official-statistics records and provenance. Internal routes begin with `/v1/economics`; scoped public routes begin with `/api/v1/economics` and require `data:read`. See `docs/ECONOMICS_OFFICIAL_STATISTICS_CONNECTORS_V273.md`.

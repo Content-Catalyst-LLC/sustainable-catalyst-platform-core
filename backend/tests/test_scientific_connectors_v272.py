@@ -24,8 +24,8 @@ def test_v272_catalog_and_adapters(client):
     connectors = client.get('/v1/live/connectors').json()
     source_ids = {item['id'] for item in sources}
     connector_ids = {item['id'] for item in connectors}
-    assert len(sources) == 28
-    assert len(connectors) == 27
+    assert len(sources) == 40
+    assert len(connectors) == 39
     assert {'noaa-ncei','ecmwf','usgs-water','ncbi','pubchem','gbif','materials-project','mast','heasarc','irsa','eso','nasa-open-apis'} <= source_ids
     assert {'nasa.cmr-collections','nasa.apod','noaa.ncei-data','ecmwf.open-data-index','usgs.water-instantaneous','ncbi.entrez-search','pubchem.compound-properties','gbif.occurrences','materials-project.summary','mast.observations','heasarc.xamin','irsa.tap','eso.tap'} <= connector_ids
     assert {'nasa_cmr_collections_v1','nasa_apod_v1','noaa_ncei_data_v1','ecmwf_open_data_index_v1','usgs_water_iv_v1','ncbi_entrez_search_v1','pubchem_compound_properties_v1','gbif_occurrence_search_v1','materials_project_summary_v1','mast_observations_v1','heasarc_xamin_v1','ivoa_tap_json_v1'} <= set(ADAPTERS)
@@ -107,14 +107,14 @@ def test_registration_gate_and_read_only_adql(client, write_headers):
 
 def test_health_meta_stats_and_public_science_api(client, write_headers):
     health=client.get('/health').json()
-    assert health['version'] == '2.7.2'
+    assert health['version'] == '2.7.3'
     assert health['scientific_data_connector_pack'] is True
     meta=client.get('/v1/meta').json()
     assert 'scientific_data_record_store' in meta['capabilities']
     assert 'read_only_adql_gateway' in meta['capabilities']
     stats=client.get('/v1/stats').json()
-    assert stats['live_data_sources'] == 28
-    assert stats['live_data_connectors'] == 27
+    assert stats['live_data_sources'] == 40
+    assert stats['live_data_connectors'] == 39
     assert stats['scientific_data_records'] == 0
     types=client.get('/v1/science/record-types')
     assert types.status_code == 200

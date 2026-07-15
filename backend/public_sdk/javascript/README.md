@@ -1,4 +1,4 @@
-# Sustainable Catalyst Public API JavaScript Client v2.5.0
+# Sustainable Catalyst Public API JavaScript Client v2.7.3
 
 ```javascript
 import { PublicApiClient } from "./index.mjs";
@@ -15,7 +15,7 @@ console.log(await client.dossiers());
 console.log(await client.verifyDossier("sc:dossier:..."));
 ```
 
-## Live data and international law v2.7.2
+## Live data gateway v2.7.0
 
 ```js
 const sources = await client.liveSources();
@@ -28,10 +28,19 @@ const lineage = await client.liveProvenance(events[0].id);
 These methods require the `data:read` scope.
 
 
-## International law and UN records v2.7.2
+## International law and UN records v2.7.1
 
 Use the international-law record, detail, and authority-taxonomy client methods to consume official-source records without exposing connector configuration or raw payloads.
 
 ## Scientific data v2.7.2
 
 Use `scientific_records`, `scientific_record`, and `scientific_record_types` (camelCase in JavaScript) to discover normalized public scientific records through the scoped API.
+
+
+## Economics and official statistics v2.7.3
+
+```javascript
+const records = await client.economicRecords({ indicator_code: "GDP", geography_code: "USA", limit: 25 });
+const record = await client.economicRecord(records[0].id);
+const types = await client.economicRecordTypes();
+```

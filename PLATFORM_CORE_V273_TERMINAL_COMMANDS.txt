@@ -1,0 +1,106 @@
+SUSTAINABLE CATALYST PLATFORM CORE v2.7.3
+ECONOMICS AND OFFICIAL STATISTICS CONNECTOR PACK
+
+1. Extract the release and enter the repository
+
+unzip sustainable-catalyst-platform-core-v2.7.3.zip
+cd sustainable-catalyst-platform-core-v2.7.3
+
+2. Create a Python environment
+
+cd backend
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+
+3. Run the regression suite in stable groups
+
+PYTHONPATH=".:public_sdk/python" DD_TRACE_ENABLED=false pytest -q -p no:ddtrace \
+  tests/test_entities.py \
+  tests/test_evidence_ledger_v220.py \
+  tests/test_gateway_v260.py \
+  tests/test_graph.py \
+  tests/test_graph_engine_v210.py \
+  tests/test_health.py \
+  tests/test_import_and_foundations.py \
+  tests/test_international_law_un_v271.py \
+  tests/test_live_data_gateway_v270.py \
+  tests/test_predicates.py \
+  tests/test_public_api_v230.py
+
+PYTHONPATH=".:public_sdk/python" PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest -q \
+  tests/test_economics_connectors_v273.py \
+  tests/test_scientific_connectors_v272.py \
+  tests/test_signature_dossiers_v250.py
+
+PYTHONPATH=".:public_sdk/python" PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 \
+  pytest -q tests/test_trust_center_v240.py
+
+4. Configure local environment
+
+cp .env.example .env
+# Keep SC_CORE_LIVE_DATA_STRICT_FREE_SOURCES=true.
+# No connector in this release requires a paid plan or credit card.
+# Free registration is required only for selected providers:
+#   SC_CORE_IMF_API_BASE_URL
+#   SC_CORE_BEA_API_KEY
+#   SC_CORE_EIA_API_KEY
+# Optional free higher-limit key:
+#   SC_CORE_CENSUS_API_KEY
+
+5. Run migrations and start Core
+
+python scripts/migrate.py
+./start.sh
+
+6. Check v2.7.3 status and economics registries
+
+curl http://127.0.0.1:8090/health
+curl http://127.0.0.1:8090/ready
+curl http://127.0.0.1:8090/v1/live/connectors/health
+curl http://127.0.0.1:8090/v1/economics/record-types
+curl http://127.0.0.1:8090/v1/economics/stats
+
+7. Read the administrative write key securely
+
+read -rsp "Enter SC_CORE_WRITE_API_KEY: " SC_CORE_WRITE_API_KEY
+export SC_CORE_WRITE_API_KEY
+echo
+
+8. Ingest a bounded OECD SDMX series
+
+curl -X POST \
+  http://127.0.0.1:8090/v1/live/connectors/oecd.sdmx/ingest \
+  -H 'Content-Type: application/json' \
+  -H "X-SC-API-Key: $SC_CORE_WRITE_API_KEY" \
+  -d '{"parameters":{"agency":"OECD.SDD.NAD","dataset":"DSD_NAMAIN1@DF_QNA_EXPENDITURE_GROWTH_OECD","key":"USA.Q.B1_GE.GY","startPeriod":"2024"},"requested_by":"terminal","run_type":"manual"}'
+
+9. Ingest BLS public data without a key
+
+curl -X POST \
+  http://127.0.0.1:8090/v1/live/connectors/bls.timeseries/ingest \
+  -H 'Content-Type: application/json' \
+  -H "X-SC-API-Key: $SC_CORE_WRITE_API_KEY" \
+  -d '{"parameters":{"series_ids":["CUUR0000SA0"],"startyear":"2025","endyear":"2026"},"requested_by":"terminal","run_type":"manual"}'
+
+10. Ingest SEC company facts
+
+curl -X POST \
+  http://127.0.0.1:8090/v1/live/connectors/sec.companyfacts/ingest \
+  -H 'Content-Type: application/json' \
+  -H "X-SC-API-Key: $SC_CORE_WRITE_API_KEY" \
+  -d '{"parameters":{"cik":"320193","tags":["Assets","Revenues"],"limit_per_fact":3},"requested_by":"terminal","run_type":"manual"}'
+
+11. Query normalized records and provenance
+
+curl 'http://127.0.0.1:8090/v1/economics/records?limit=25'
+# Replace RECORD_ID with a returned record identifier.
+curl 'http://127.0.0.1:8090/v1/economics/provenance/RECORD_ID'
+
+12. Install and push automatically from Downloads
+
+cd ~/Downloads
+chmod 700 PUSH_PLATFORM_CORE_V273_FINAL.sh
+./PUSH_PLATFORM_CORE_V273_FINAL.sh \
+  ./sustainable-catalyst-platform-core-v2.7.3.zip

@@ -146,3 +146,18 @@ def _scientific_record_types(self):
 PublicApiClient.scientific_records = _scientific_records
 PublicApiClient.scientific_record = _scientific_record
 PublicApiClient.scientific_record_types = _scientific_record_types
+
+
+# v2.7.3 official-statistics methods retain the established public request path.
+def _economic_records(self, **params):
+    return self.request("GET", "/economics/records", params=params)
+
+def _economic_record(self, record_id: str):
+    return self.request("GET", f"/economics/records/{record_id}")
+
+def _economic_record_types(self):
+    return self.request("GET", "/economics/record-types")
+
+PublicApiClient.economic_records = _economic_records
+PublicApiClient.economic_record = _economic_record
+PublicApiClient.economic_record_types = _economic_record_types

@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name: Sustainable Catalyst Platform Core
- * Description: WordPress connector for Sustainable Catalyst Platform Core registry, graph, evidence, developer, gateway, free live-data, international-law, and scientific-data services.
- * Version: 2.7.2
+ * Description: WordPress connector for Sustainable Catalyst Platform Core registry, graph, evidence, developer, gateway, free live-data, international-law, scientific-data, and official-statistics services.
+ * Version: 2.7.3
  * Author: Content Catalyst LLC
  * License: MIT
  */
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('SCPC_VERSION', '2.7.2');
+define('SCPC_VERSION', '2.7.3');
 define('SCPC_OPTION_BACKEND_URL', 'scpc_backend_url');
 define('SCPC_OPTION_READ_KEY', 'scpc_read_key');
 
@@ -86,6 +86,7 @@ function scpc_render_settings_page() {
         <code>[sc_platform_core_live_data_status]</code><br />
         <code>[sc_platform_core_international_law_status]</code><br />
         <code>[sc_platform_core_science_status]</code><br />
+        <code>[sc_platform_core_economics_status]</code><br />
         <code>[sc_platform_core_entity id="sc:product:workbench"]</code><br />
         <code>[sc_platform_core_relationships id="sc:product:research-librarian"]</code><br />
         <code>[sc_knowledge_explorer]</code><br />
@@ -647,3 +648,45 @@ function scpc_workflow_status_shortcode($atts) {
     <?php return ob_get_clean();
 }
 add_shortcode('sc_workflow_status', 'scpc_workflow_status_shortcode');
+
+function scpc_economics_status_shortcode() {
+    $stats = scpc_api_get('/v1/economics/stats');
+    $health = scpc_api_get('/v1/live/connectors/health');
+
+    if (is_wp_error($stats) || is_wp_error($health)) {
+        $error = is_wp_error($stats) ? $stats : $health;
+        return '<div class="scpc-card scpc-error"><strong>Economics connector pack unavailable</strong><p>' .
+            esc_html($error->get_error_message()) .
+            '</p></div>';
+    }
+
+    $economic_ids = [
+        'imf.sdmx', 'oecd.sdmx', 'eurostat.statistics', 'ecb.sdmx',
+        'bis.sdmx', 'bea.statistics', 'bls.timeseries', 'census.data',
+        'sec.companyfacts', 'eia.v2-data', 'faostat.data', 'ilostat.sdmx',
+    ];
+    $configured = 0;
+    if (!empty($health['connectors']) && is_array($health['connectors'])) {
+        foreach ($health['connectors'] as $connector) {
+            if (in_array($connector['id'] ?? '', $economic_ids, true) &&
+                ($connector['configuration_status'] ?? '') === 'configured') {
+                $configured++;
+            }
+        }
+    }
+
+    ob_start();
+    ?>
+    <section class="scpc-card">
+        <p class="scpc-kicker">Free official statistics</p>
+        <h3>Economics and Official Statistics Connector Pack</h3>
+        <p>
+            <strong>Configured connectors:</strong> <?php echo esc_html(number_format_i18n($configured)); ?>/12 ·
+            <strong>Normalized records:</strong> <?php echo esc_html(number_format_i18n(intval($stats['records'] ?? 0))); ?> ·
+            <strong>Public records:</strong> <?php echo esc_html(number_format_i18n(intval($stats['public_records'] ?? 0))); ?>
+        </p>
+    </section>
+    <?php
+    return ob_get_clean();
+}
+add_shortcode('sc_platform_core_economics_status', 'scpc_economics_status_shortcode');

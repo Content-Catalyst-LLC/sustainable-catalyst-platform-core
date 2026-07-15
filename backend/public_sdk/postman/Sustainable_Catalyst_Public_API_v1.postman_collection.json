@@ -2,7 +2,7 @@
   "info": {
     "name": "Sustainable Catalyst Unified Public API v1",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "description": "Registry, graph, evidence, ledger, trust, workflow, signature dossier, usage, and webhook endpoints."
+    "description": "Registry, graph, evidence, ledger, trust, workflow, signature dossier, live data, international law, science, economics, usage, and webhook endpoints."
   },
   "variable": [
     {
@@ -297,6 +297,61 @@
                 "api",
                 "v1",
                 "science",
+                "record-types"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Economics and Official Statistics",
+      "item": [
+        {
+          "name": "List economic records",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_key}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/economics/records?indicator_code=GDP&limit=25",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "economics",
+                "records?indicator_code=GDP&limit=25"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Economic record types",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_key}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/economics/record-types",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "economics",
                 "record-types"
               ]
             }

@@ -54,7 +54,7 @@ services:
       - key: SC_CORE_LIVE_DATA_STRICT_FREE_SOURCES
         value: "true"
       - key: SC_CORE_LIVE_DATA_USER_AGENT
-        value: SustainableCatalystPlatformCore/2.7.2 (+https://sustainablecatalyst.com/contact/)
+        value: SustainableCatalystPlatformCore/2.7.3 (+https://sustainablecatalyst.com/contact/)
       - key: SC_CORE_LIVE_DATA_TIMEOUT_SECONDS
         value: "20"
       - key: SC_CORE_LIVE_DATA_MAX_RESPONSE_BYTES
@@ -75,13 +75,27 @@ services:
         value: ""
       - key: SC_CORE_MATERIALS_PROJECT_API_KEY
         value: ""
+      - key: SC_CORE_IMF_API_BASE_URL
+        value: ""
+      - key: SC_CORE_IMF_API_TOKEN
+        sync: false
+      - key: SC_CORE_BEA_API_KEY
+        sync: false
+      - key: SC_CORE_BLS_REGISTRATION_KEY
+        sync: false
+      - key: SC_CORE_CENSUS_API_KEY
+        sync: false
+      - key: SC_CORE_EIA_API_KEY
+        sync: false
+      - key: SC_CORE_FAOSTAT_API_BASE_URL
+        value: https://fenixservices.fao.org/faostat/api/v1/en/data
 
 databases:
   - name: sustainable-catalyst-platform-core-db
     databaseName: sustainable_catalyst_platform_core
     user: sustainable_catalyst_platform_core
 
-# Platform Core v2.7.2
+# Platform Core v2.7.3
 # Add these secret values in Render rather than committing them:
 # SC_CORE_WORKFLOW_ENGINE_ENABLED=true
 # SC_CORE_DOSSIER_CENTER_ENABLED=true

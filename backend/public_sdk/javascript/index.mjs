@@ -151,4 +151,17 @@ export class PublicApiClient {
   usage(days = 30) {
     return this.request(`/developer/usage?days=${days}`);
   }
+  economicRecords(params = {}) {
+    const query = new URLSearchParams(params);
+    return this.request(`/economics/records?${query}`);
+  }
+
+  economicRecord(recordId) {
+    return this.request(`/economics/records/${encodeURIComponent(recordId)}`);
+  }
+
+  economicRecordTypes() {
+    return this.request('/economics/record-types');
+  }
+
 }

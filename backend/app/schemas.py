@@ -303,6 +303,7 @@ class RegistryStats(BaseModel):
     live_data_observations: int
     international_law_records: int
     scientific_data_records: int
+    economic_data_records: int
     entities_by_type: dict[str, int]
     relationships_by_predicate: dict[str, int]
     relationships_by_status: dict[str, int]
@@ -1921,3 +1922,53 @@ class ScientificDataStats(BaseModel):
     by_discipline: dict[str, int]
     by_source: dict[str, int]
     by_mission: dict[str, int]
+
+
+class EconomicDataRecordRead(BaseModel):
+    id: str
+    connector_id: str
+    source_id: str
+    raw_record_id: str | None
+    source_record_id: str
+    record_type: str
+    subject: str
+    indicator_code: str | None
+    indicator_name: str | None
+    dataset_id: str | None
+    geography_code: str | None
+    geography_name: str | None
+    counterpart_code: str | None
+    period: str | None
+    period_start: datetime | None
+    period_end: datetime | None
+    frequency: str | None
+    value_number: float | None
+    value_text: str | None
+    unit: str | None
+    multiplier: str | None
+    seasonal_adjustment: str | None
+    price_basis: str | None
+    status: str
+    release_name: str | None
+    vintage_date: datetime | None
+    published_at: datetime | None
+    dimensions: dict[str, Any] = Field(default_factory=dict, validation_alias="dimensions_json", serialization_alias="dimensions")
+    notes: str | None
+    source_url: str | None
+    license_name: str | None
+    attribution: str | None
+    content_hash: str
+    metadata: dict[str, Any] = Field(default_factory=dict, validation_alias="metadata_json", serialization_alias="metadata")
+    public: bool
+    created_at: datetime
+    updated_at: datetime
+    model_config = ConfigDict(from_attributes=True)
+
+
+class EconomicDataStats(BaseModel):
+    records: int
+    public_records: int
+    by_record_type: dict[str, int]
+    by_subject: dict[str, int]
+    by_source: dict[str, int]
+    by_frequency: dict[str, int]
