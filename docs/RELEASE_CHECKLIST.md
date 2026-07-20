@@ -1,23 +1,25 @@
-# Release Checklist — v2.8.0
+# Release Checklist — v2.5.0
 
 - [ ] Run all regression tests
-- [ ] Confirm migration `0011`
-- [ ] Confirm 40 source records and 39 connector records remain seeded
-- [ ] Confirm automatic observation materialization
-- [ ] Confirm automatic scientific-record materialization
-- [ ] Confirm idempotent backfill
-- [ ] Confirm GeoJSON FeatureCollection output
-- [ ] Confirm bounding-box filtering
-- [ ] Confirm time-series definitions and points
-- [ ] Confirm monthly partition keys
-- [ ] Confirm STAC root, collections, items, and search
-- [ ] Confirm scientific asset format normalization
-- [ ] Confirm COG and PMTiles map-layer registration
-- [ ] Confirm portable SQLite operation
-- [ ] Confirm PostgreSQL PostGIS failure remains non-fatal
-- [ ] Confirm public routes require `data:read`
-- [ ] Confirm Python and JavaScript SDK assets
-- [ ] Confirm WordPress plugin syntax and shortcode
-- [ ] Validate all JSON Schemas and Postman collection
-- [ ] Confirm push-safe secret scan
-- [ ] Confirm manifest and ZIP integrity
+- [ ] Confirm migration `0006`
+- [ ] Confirm three workflow definitions are seeded
+- [ ] Confirm API plans include `workflow:read` and `dossier:read`
+- [ ] Confirm workflow dependency enforcement
+- [ ] Confirm blocked and failed workflow behavior
+- [ ] Confirm completion content hash
+- [ ] Confirm transition immutability
+- [ ] Confirm every supported dossier record type
+- [ ] Confirm record snapshot hashes
+- [ ] Confirm approval resolution by latest signer decision
+- [ ] Confirm required approval count
+- [ ] Confirm production signing fails closed without a secret
+- [ ] Confirm dossier hash and HMAC signature
+- [ ] Confirm live-record changes do not invalidate a frozen dossier
+- [ ] Confirm frozen-package tampering is detected
+- [ ] Confirm private records are excluded publicly
+- [ ] Confirm public workflow and dossier scopes
+- [ ] Confirm Dossier Center
+- [ ] Confirm Python and JavaScript SDKs
+- [ ] Confirm WordPress connector v2.5.0
+- [ ] Confirm secret scan
+- [ ] Confirm repository and release ZIP integrity

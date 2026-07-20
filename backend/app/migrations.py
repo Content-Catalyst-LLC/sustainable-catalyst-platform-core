@@ -1,6 +1,5 @@
 from __future__ import annotations
-import os
-from sqlalchemy import select, text
+from sqlalchemy import select
 from .database import Base, Database
 from .models import ApiPlan, EvaluationDefinition, LiveDataConnector, LiveDataSource, PredicateDefinition, SchemaMigration, WorkflowDefinition
 from .predicate_catalog import DEFAULT_PREDICATES
@@ -20,7 +19,6 @@ MIGRATIONS = [
     ("0008", "International-law and United Nations connector pack, dedicated legal-authority records, official-document provenance, and public discovery APIs."),
     ("0009", "Scientific data connector pack, normalized scientific dataset records, astronomy and laboratory discovery, and public science APIs."),
     ("0010", "Economics and official-statistics connector pack, normalized economic records, revisions, releases, and public economics APIs."),
-    ("0011", "Geospatial, time-series, STAC, map-layer, and scientific-asset data fabric with portable GeoJSON storage and PostgreSQL spatial indexes."),
 ]
 
 def _seed_predicates(database: Database) -> int:
@@ -108,34 +106,6 @@ def _seed_live_data_registry(database: Database) -> tuple[int, int]:
         session.commit()
     return sources_created, connectors_created
 
-
-def _configure_postgresql_fabric(database: Database) -> dict[str, bool]:
-    result = {"postgis_extension": False, "spatial_index": False, "time_series_brin": False}
-    enabled = os.getenv("SC_CORE_DATA_FABRIC_POSTGIS_AUTO_ENABLE", "true").strip().lower() in {"1", "true", "yes", "on"}
-    if database.engine.dialect.name != "postgresql" or not enabled:
-        return result
-
-    def execute(statement: str) -> bool:
-        try:
-            with database.engine.connect().execution_options(isolation_level="AUTOCOMMIT") as connection:
-                connection.execute(text(statement))
-            return True
-        except Exception:
-            return False
-
-    result["postgis_extension"] = execute("CREATE EXTENSION IF NOT EXISTS postgis")
-    if result["postgis_extension"]:
-        result["spatial_index"] = execute(
-            "CREATE INDEX IF NOT EXISTS ix_geospatial_features_geom_gist "
-            "ON geospatial_features USING GIST "
-            "(ST_SetSRID(ST_GeomFromGeoJSON(geometry_json::text), srid))"
-        )
-    result["time_series_brin"] = execute(
-        "CREATE INDEX IF NOT EXISTS ix_time_series_points_observed_brin "
-        "ON time_series_points USING BRIN (observed_at)"
-    )
-    return result
-
 def run_migrations(database: Database) -> list[str]:
     Base.metadata.create_all(database.engine)
     applied: list[str] = []
@@ -150,7 +120,6 @@ def run_migrations(database: Database) -> list[str]:
     _seed_evaluation_definitions(database)
     _seed_workflow_definitions(database)
     _seed_live_data_registry(database)
-    _configure_postgresql_fabric(database)
     return applied
 
 def migration_status(database: Database) -> dict:

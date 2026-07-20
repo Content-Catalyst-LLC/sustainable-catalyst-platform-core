@@ -51,17 +51,3 @@ Creates:
 - `dossier_approvals`
 
 Migration `0006` also seeds the three default workflow definitions and updates existing API plans with `workflow:read` and `dossier:read`.
-
-## 0011 — Geospatial, Time-Series, and Scientific Data Fabric
-
-Creates:
-
-- `geospatial_features`
-- `time_series_definitions`
-- `time_series_points`
-- `scientific_data_assets`
-- `map_layers`
-- `stac_collections`
-- `stac_items`
-
-PostgreSQL deployments attempt to enable PostGIS, add a GIST expression index over GeoJSON, and add a BRIN index over time-series timestamps. Portable GeoJSON and monthly partition keys remain active when PostGIS extension privileges are unavailable.

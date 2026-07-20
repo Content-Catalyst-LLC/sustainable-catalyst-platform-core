@@ -222,7 +222,7 @@ class PlatformCoreClient:
     def verify_dossier(self, dossier_id: str):
         return self._request("GET", f"/v1/dossiers/{dossier_id}/verify")
 
-    # Platform Core v2.8.0 free live-data, UN, and scientific connector gateway
+    # Platform Core v2.7.3 free live-data, UN, and scientific connector gateway
     def live_data_sources(self, *, active: bool | None = True, review_status: str | None = None):
         params: dict[str, Any] = {}
         if active is not None: params["active"] = active

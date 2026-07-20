@@ -43,21 +43,6 @@ class PublicApiClient:
         payload = response.json()
         return payload["data"]
 
-    def request_raw(self, method: str, path: str, **kwargs: Any) -> Any:
-        response = httpx.request(
-            method,
-            f"{self.base_url}/api/v1{path}",
-            headers={
-                "Authorization": f"Bearer {self.api_key}",
-                "Accept": "application/json",
-            },
-            timeout=self.timeout,
-            **kwargs,
-        )
-        if response.is_error:
-            raise PublicApiError(f"{response.status_code}: {response.text}")
-        return response.json()
-
     def status(self):
         return self.request("GET", "/status")
 
@@ -176,44 +161,3 @@ def _economic_record_types(self):
 PublicApiClient.economic_records = _economic_records
 PublicApiClient.economic_record = _economic_record
 PublicApiClient.economic_record_types = _economic_record_types
-
-
-# v2.8.0 geospatial, time-series, scientific-asset, and map-layer methods.
-def _fabric_capabilities(self):
-    return self.request("GET", "/fabric/capabilities")
-
-def _geospatial_features(self, **params):
-    return self.request("GET", "/fabric/features", params=params)
-
-def _time_series(self, **params):
-    return self.request("GET", "/fabric/timeseries", params=params)
-
-def _time_series_points(self, series_id: str, **params):
-    return self.request("GET", f"/fabric/timeseries/{series_id}/points", params=params)
-
-def _scientific_assets(self, **params):
-    return self.request("GET", "/fabric/assets", params=params)
-
-def _map_layers(self, **params):
-    return self.request("GET", "/fabric/map-layers", params=params)
-
-PublicApiClient.fabric_capabilities = _fabric_capabilities
-PublicApiClient.geospatial_features = _geospatial_features
-PublicApiClient.time_series = _time_series
-PublicApiClient.time_series_points = _time_series_points
-PublicApiClient.scientific_assets = _scientific_assets
-PublicApiClient.map_layers = _map_layers
-
-
-def _stac_catalog(self):
-    return self.request_raw("GET", "/stac")
-
-def _stac_collections(self, **params):
-    return self.request_raw("GET", "/stac/collections", params=params)
-
-def _stac_search(self, **params):
-    return self.request_raw("GET", "/stac/search", params=params)
-
-PublicApiClient.stac_catalog = _stac_catalog
-PublicApiClient.stac_collections = _stac_collections
-PublicApiClient.stac_search = _stac_search

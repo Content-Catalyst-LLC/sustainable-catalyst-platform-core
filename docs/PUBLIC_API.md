@@ -143,25 +143,3 @@ GET /api/v1/economics/record-types
 ```
 
 The list endpoint supports record type, subject, source, connector, indicator, dataset, geography, frequency, text, and date filters. Public responses expose normalized records only; raw provider payloads, credential configuration, and internal ingestion details remain private.
-
-
-## Geospatial, time-series, scientific assets, and STAC v2.8.0
-
-Scoped `data:read` routes:
-
-```text
-GET /api/v1/fabric/capabilities
-GET /api/v1/fabric/features
-GET /api/v1/fabric/features.geojson
-GET /api/v1/fabric/timeseries
-GET /api/v1/fabric/timeseries/{series_id}/points
-GET /api/v1/fabric/assets
-GET /api/v1/fabric/map-layers
-GET /api/v1/stac
-GET /api/v1/stac/collections
-GET /api/v1/stac/collections/{collection_id}
-GET /api/v1/stac/collections/{collection_id}/items
-GET /api/v1/stac/search
-```
-
-STAC and GeoJSON routes return their standard raw documents rather than the Sustainable Catalyst envelope.

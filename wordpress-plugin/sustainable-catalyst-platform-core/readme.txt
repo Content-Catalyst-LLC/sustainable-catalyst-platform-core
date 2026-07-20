@@ -4,7 +4,7 @@ Tags: knowledge graph, entity registry, provenance, live data, sustainable catal
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.0
-Stable tag: 2.8.0
+Stable tag: 2.7.3
 License: MIT
 
 WordPress status, live-data gateway, and entity lookup client for Sustainable Catalyst Platform Core.
@@ -19,16 +19,10 @@ WordPress status, live-data gateway, and entity lookup client for Sustainable Ca
 6. Use [sc_platform_core_international_law_status].
 7. Use [sc_platform_core_science_status].
 8. Use [sc_platform_core_economics_status].
-9. Use [sc_platform_core_data_fabric_status].
-10. Use [sc_platform_core_entity id="sc:product:workbench"].
+9. Use [sc_platform_core_entity id="sc:product:workbench"].
 
 The plugin never exposes the Platform Core write key in frontend code.
 
-
-== 2.8.0 ==
-* Adds the geospatial, time-series, scientific-asset, map-layer, and STAC status shortcode.
-* Displays feature, series, point, asset, map-layer, and STAC totals.
-* Supports GeoJSON, STAC, WMS/WMTS handoffs, COG, PMTiles, FITS, NetCDF, Zarr, GeoParquet, SDMX, and TAP/ADQL capability reporting.
 
 == 2.7.3 ==
 * Adds economics and official-statistics connectors, normalized economic records, SDMX ingestion, SEC facts, EIA, BEA, BLS, Census, FAOSTAT, and public economics APIs.

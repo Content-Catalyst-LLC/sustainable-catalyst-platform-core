@@ -16,7 +16,6 @@ from .routers import (
     dossier_center,
     dossier_public_site,
     developer_portal,
-    data_fabric,
     entities,
     economic_data,
     evidence,
@@ -54,7 +53,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             "workflows, tamper-evident audit infrastructure, a unified public API, "
             "developer applications, scoped credentials, usage controls, webhooks, "
             "SDK assets, a public Trust Center, evaluation runs, incidents, "
-            "limitations, attestations, signature dossiers, end-to-end workflows, a unified service gateway, and a governed free live-data connector gateway, an international-law and United Nations record layer, a scientific data connector and discovery layer, an economics and official-statistics record layer, and a geospatial, time-series, STAC, map-layer, and scientific-asset fabric for Sustainable Catalyst."
+            "limitations, attestations, signature dossiers, end-to-end workflows, a unified service gateway, and a governed free live-data connector gateway, an international-law and United Nations record layer, a scientific data connector and discovery layer, and an economics and official-statistics record layer for Sustainable Catalyst."
         ),
         contact={
             "name": "Sustainable Catalyst",
@@ -126,10 +125,6 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(scientific_data.public_router)
     app.include_router(economic_data.router)
     app.include_router(economic_data.public_router)
-    app.include_router(data_fabric.router)
-    app.include_router(data_fabric.public_router)
-    app.include_router(data_fabric.stac_router)
-    app.include_router(data_fabric.public_stac_router)
     app.include_router(trust_public.router)
     app.include_router(workflow_public.router)
     app.include_router(entities.router)

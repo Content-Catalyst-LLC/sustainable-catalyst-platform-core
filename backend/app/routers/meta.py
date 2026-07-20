@@ -24,13 +24,6 @@ from ..models import (
     InternationalLawRecord,
     ScientificDataRecord,
     EconomicDataRecord,
-    GeospatialFeature,
-    TimeSeriesDefinition,
-    TimeSeriesPoint,
-    ScientificDataAsset,
-    MapLayer,
-    StacCollection,
-    StacItem,
     LiveDataSource,
     PredicateDefinition,
     ProvenanceActivity,
@@ -68,9 +61,6 @@ def health(request: Request):
         "international_law_un_connector_pack": True,
         "scientific_data_connector_pack": True,
         "economics_official_statistics_connector_pack": True,
-        "geospatial_time_series_scientific_data_fabric": request.app.state.settings.data_fabric_enabled,
-        "stac_catalog": request.app.state.settings.data_fabric_enabled,
-        "data_fabric_auto_materialize": request.app.state.settings.data_fabric_auto_materialize,
         "strict_free_sources": request.app.state.settings.live_data_strict_free_sources,
     }
 
@@ -90,8 +80,6 @@ def ready(db: Session = Depends(get_session)):
         "international_law_un_connector_pack": "ready",
         "scientific_data_connector_pack": "ready",
         "economics_official_statistics_connector_pack": "ready",
-        "geospatial_time_series_scientific_data_fabric": "ready",
-        "stac_catalog": "ready",
     }
 
 
@@ -162,20 +150,6 @@ def meta(request: Request):
             "sdmx_statistics_gateway",
             "company_filing_facts",
             "energy_statistics_ingestion",
-            "geospatial_data_fabric",
-            "portable_geojson_store",
-            "postgis_expression_indexing",
-            "bbox_spatial_queries",
-            "geojson_feature_collections",
-            "time_series_registry",
-            "monthly_time_series_partition_keys",
-            "scientific_asset_registry",
-            "stac_1_0_catalog",
-            "stac_item_search",
-            "map_layer_registry",
-            "wms_wmts_handoffs",
-            "cog_pmtiles_asset_handoffs",
-            "fits_netcdf_zarr_geoparquet_registry",
             "scientific_dataset_discovery",
             "astronomy_archive_discovery",
             "biomedical_and_chemical_discovery",
@@ -233,8 +207,7 @@ def meta(request: Request):
             "distributed_connector_workers",
             "server_sent_live_data_events",
             "scientific_object_storage_adapter",
-            "native_raster_processing_workers",
-            "native_scientific_file_parsers",
+            "postgis_geospatial_indexing",
         ],
     )
 
@@ -296,13 +269,6 @@ def stats(db: Session = Depends(get_session)):
         international_law_records=count(InternationalLawRecord),
         scientific_data_records=count(ScientificDataRecord),
         economic_data_records=count(EconomicDataRecord),
-        geospatial_features=count(GeospatialFeature),
-        time_series_definitions=count(TimeSeriesDefinition),
-        time_series_points=count(TimeSeriesPoint),
-        scientific_data_assets=count(ScientificDataAsset),
-        map_layers=count(MapLayer),
-        stac_collections=count(StacCollection),
-        stac_items=count(StacItem),
         entities_by_type={key: int(value) for key, value in entity_rows},
         relationships_by_predicate={
             key: int(value) for key, value in predicate_rows

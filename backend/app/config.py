@@ -20,7 +20,7 @@ def _int(name: str, default: int) -> int:
 @dataclass(frozen=True)
 class Settings:
     app_name: str = "Sustainable Catalyst Platform Core"
-    version: str = "2.8.0"
+    version: str = "2.7.3"
     environment: str = "development"
     database_url: str = "sqlite:///./platform_core.db"
     write_api_key: str = ""
@@ -50,7 +50,7 @@ class Settings:
     live_data_enabled: bool = True
     live_data_ingest_enabled: bool = True
     live_data_strict_free_sources: bool = True
-    live_data_user_agent: str = "SustainableCatalystPlatformCore/2.8.0 (+https://sustainablecatalyst.com/contact/)"
+    live_data_user_agent: str = "SustainableCatalystPlatformCore/2.7.3 (+https://sustainablecatalyst.com/contact/)"
     live_data_timeout_seconds: int = 20
     live_data_max_response_bytes: int = 12582912
     live_data_raw_payload_max_bytes: int = 1048576
@@ -69,9 +69,6 @@ class Settings:
     census_api_key: str = ""
     eia_api_key: str = ""
     faostat_api_base_url: str = "https://fenixservices.fao.org/faostat/api/v1/en/data"
-    data_fabric_enabled: bool = True
-    data_fabric_auto_materialize: bool = True
-    data_fabric_postgis_auto_enable: bool = True
 
     @classmethod
     def from_env(cls) -> "Settings":
@@ -146,7 +143,7 @@ class Settings:
             live_data_strict_free_sources=_bool("SC_CORE_LIVE_DATA_STRICT_FREE_SOURCES", True),
             live_data_user_agent=os.getenv(
                 "SC_CORE_LIVE_DATA_USER_AGENT",
-                "SustainableCatalystPlatformCore/2.8.0 (+https://sustainablecatalyst.com/contact/)",
+                "SustainableCatalystPlatformCore/2.7.3 (+https://sustainablecatalyst.com/contact/)",
             ).strip(),
             live_data_timeout_seconds=max(
                 1, min(_int("SC_CORE_LIVE_DATA_TIMEOUT_SECONDS", 20), 120)
@@ -177,7 +174,4 @@ class Settings:
             census_api_key=os.getenv("SC_CORE_CENSUS_API_KEY", "").strip(),
             eia_api_key=os.getenv("SC_CORE_EIA_API_KEY", "").strip(),
             faostat_api_base_url=os.getenv("SC_CORE_FAOSTAT_API_BASE_URL", "https://fenixservices.fao.org/faostat/api/v1/en/data").strip(),
-            data_fabric_enabled=_bool("SC_CORE_DATA_FABRIC_ENABLED", True),
-            data_fabric_auto_materialize=_bool("SC_CORE_DATA_FABRIC_AUTO_MATERIALIZE", True),
-            data_fabric_postgis_auto_enable=_bool("SC_CORE_DATA_FABRIC_POSTGIS_AUTO_ENABLE", True),
         )

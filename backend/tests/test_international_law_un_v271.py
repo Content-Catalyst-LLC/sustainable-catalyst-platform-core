@@ -158,7 +158,7 @@ def test_registration_gated_connectors_fail_closed(client, write_headers):
 
 def test_authority_taxonomy_and_meta_advertise_v271(client):
     health = client.get('/health').json()
-    assert health['version'] == '2.8.0'
+    assert health['version'] == '2.7.3'
     assert health['international_law_un_connector_pack'] is True
 
     taxonomy = client.get('/v1/international-law/authority-taxonomy')

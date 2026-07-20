@@ -120,8 +120,3 @@ console.log(await client.economicRecordTypes());
 ```
 
 These methods use `data:read`. Raw provider payloads and internal connector configuration are intentionally excluded from the public SDK.
-
-
-## Data fabric v2.8.0
-
-The public SDKs expose fabric capabilities, geospatial features, time-series definitions and points, scientific assets, map layers, and raw STAC catalog/search methods. All methods require `data:read`.
