@@ -1263,3 +1263,220 @@ class InternationalLawRecord(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
 
+
+
+class GeospatialFeature(Base):
+    __tablename__ = "geospatial_features"
+    __table_args__ = (
+        UniqueConstraint("source_id", "source_record_id", "feature_type", name="uq_geospatial_source_feature"),
+        Index("ix_geospatial_feature_dataset_type", "dataset_id", "feature_type"),
+        Index("ix_geospatial_feature_geometry_type", "geometry_type", "observed_at"),
+        Index("ix_geospatial_feature_bbox", "min_x", "min_y", "max_x", "max_y"),
+        Index("ix_geospatial_feature_public", "public", "observed_at"),
+    )
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    source_id: Mapped[str] = mapped_column(ForeignKey("live_data_sources.id", ondelete="RESTRICT"), nullable=False, index=True)
+    connector_id: Mapped[str | None] = mapped_column(ForeignKey("live_data_connectors.id", ondelete="SET NULL"), nullable=True, index=True)
+    raw_record_id: Mapped[str | None] = mapped_column(ForeignKey("live_data_raw_records.id", ondelete="SET NULL"), nullable=True, index=True)
+    observation_id: Mapped[str | None] = mapped_column(ForeignKey("live_data_observations.id", ondelete="SET NULL"), nullable=True, index=True)
+    scientific_record_id: Mapped[str | None] = mapped_column(ForeignKey("scientific_data_records.id", ondelete="SET NULL"), nullable=True, index=True)
+    source_record_id: Mapped[str] = mapped_column(String(700), nullable=False)
+    dataset_id: Mapped[str | None] = mapped_column(String(500), nullable=True, index=True)
+    collection_id: Mapped[str | None] = mapped_column(String(500), nullable=True, index=True)
+    feature_type: Mapped[str] = mapped_column(String(150), default="observation", index=True)
+    geometry_type: Mapped[str] = mapped_column(String(80), nullable=False, index=True)
+    geometry_json: Mapped[dict] = mapped_column(JSON, nullable=False)
+    bbox_json: Mapped[list] = mapped_column(JSON, default=list)
+    min_x: Mapped[float | None] = mapped_column(Float, nullable=True)
+    min_y: Mapped[float | None] = mapped_column(Float, nullable=True)
+    max_x: Mapped[float | None] = mapped_column(Float, nullable=True)
+    max_y: Mapped[float | None] = mapped_column(Float, nullable=True)
+    srid: Mapped[int] = mapped_column(Integer, default=4326)
+    properties_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    observed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True, index=True)
+    valid_until: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    license_name: Mapped[str | None] = mapped_column(String(300), nullable=True)
+    attribution: Mapped[str | None] = mapped_column(Text, nullable=True)
+    content_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    public: Mapped[bool] = mapped_column(Boolean, default=True, index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class TimeSeriesDefinition(Base):
+    __tablename__ = "time_series_definitions"
+    __table_args__ = (
+        UniqueConstraint("connector_id", "metric", "dimension_hash", name="uq_timeseries_connector_metric_dimensions"),
+        Index("ix_timeseries_source_metric", "source_id", "metric"),
+        Index("ix_timeseries_dataset_metric", "dataset_id", "metric"),
+        Index("ix_timeseries_public", "public", "updated_at"),
+    )
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    source_id: Mapped[str] = mapped_column(ForeignKey("live_data_sources.id", ondelete="RESTRICT"), nullable=False, index=True)
+    connector_id: Mapped[str] = mapped_column(ForeignKey("live_data_connectors.id", ondelete="RESTRICT"), nullable=False, index=True)
+    metric: Mapped[str] = mapped_column(String(300), nullable=False, index=True)
+    title: Mapped[str] = mapped_column(String(700), nullable=False)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    dataset_id: Mapped[str | None] = mapped_column(String(500), nullable=True, index=True)
+    domain: Mapped[str] = mapped_column(String(150), nullable=False, index=True)
+    unit: Mapped[str | None] = mapped_column(String(200), nullable=True)
+    frequency: Mapped[str | None] = mapped_column(String(100), nullable=True, index=True)
+    geography_code: Mapped[str | None] = mapped_column(String(200), nullable=True, index=True)
+    dimensions_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    dimension_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    license_name: Mapped[str | None] = mapped_column(String(300), nullable=True)
+    attribution: Mapped[str | None] = mapped_column(Text, nullable=True)
+    public: Mapped[bool] = mapped_column(Boolean, default=True, index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class TimeSeriesPoint(Base):
+    __tablename__ = "time_series_points"
+    __table_args__ = (
+        UniqueConstraint("series_id", "observed_at", "point_hash", name="uq_timeseries_point_time_hash"),
+        Index("ix_timeseries_point_series_time", "series_id", "observed_at"),
+        Index("ix_timeseries_point_partition", "partition_key", "series_id"),
+        Index("ix_timeseries_point_observation", "observation_id"),
+        Index("ix_timeseries_point_public", "public", "observed_at"),
+    )
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    series_id: Mapped[str] = mapped_column(ForeignKey("time_series_definitions.id", ondelete="CASCADE"), nullable=False, index=True)
+    observation_id: Mapped[str | None] = mapped_column(ForeignKey("live_data_observations.id", ondelete="SET NULL"), nullable=True, index=True)
+    raw_record_id: Mapped[str | None] = mapped_column(ForeignKey("live_data_raw_records.id", ondelete="SET NULL"), nullable=True, index=True)
+    observed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, index=True)
+    partition_key: Mapped[str] = mapped_column(String(7), nullable=False, index=True)
+    value_number: Mapped[float | None] = mapped_column(Float, nullable=True)
+    value_text: Mapped[str | None] = mapped_column(Text, nullable=True)
+    quality_status: Mapped[str] = mapped_column(String(100), default="source_reported", index=True)
+    freshness_status: Mapped[str] = mapped_column(String(100), default="unknown", index=True)
+    dimensions_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    point_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    public: Mapped[bool] = mapped_column(Boolean, default=True, index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ScientificDataAsset(Base):
+    __tablename__ = "scientific_data_assets"
+    __table_args__ = (
+        UniqueConstraint("scientific_record_id", "href", "asset_role", name="uq_scientific_asset_record_href_role"),
+        Index("ix_scientific_asset_format_role", "format", "asset_role"),
+        Index("ix_scientific_asset_dataset", "dataset_id"),
+        Index("ix_scientific_asset_public", "public", "created_at"),
+    )
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    scientific_record_id: Mapped[str | None] = mapped_column(ForeignKey("scientific_data_records.id", ondelete="CASCADE"), nullable=True, index=True)
+    source_id: Mapped[str] = mapped_column(ForeignKey("live_data_sources.id", ondelete="RESTRICT"), nullable=False, index=True)
+    connector_id: Mapped[str | None] = mapped_column(ForeignKey("live_data_connectors.id", ondelete="SET NULL"), nullable=True, index=True)
+    raw_record_id: Mapped[str | None] = mapped_column(ForeignKey("live_data_raw_records.id", ondelete="SET NULL"), nullable=True, index=True)
+    dataset_id: Mapped[str | None] = mapped_column(String(500), nullable=True, index=True)
+    title: Mapped[str] = mapped_column(String(1000), nullable=False)
+    asset_role: Mapped[str] = mapped_column(String(100), default="data", index=True)
+    media_type: Mapped[str | None] = mapped_column(String(300), nullable=True)
+    format: Mapped[str] = mapped_column(String(100), nullable=False, index=True)
+    href: Mapped[str] = mapped_column(String(3000), nullable=False)
+    storage_mode: Mapped[str] = mapped_column(String(80), default="remote", index=True)
+    size_bytes: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    checksum: Mapped[str | None] = mapped_column(String(300), nullable=True)
+    stac_roles_json: Mapped[list] = mapped_column(JSON, default=list)
+    variables_json: Mapped[list] = mapped_column(JSON, default=list)
+    spatial_extent_json: Mapped[list] = mapped_column(JSON, default=list)
+    temporal_extent_json: Mapped[list] = mapped_column(JSON, default=list)
+    license_name: Mapped[str | None] = mapped_column(String(300), nullable=True)
+    attribution: Mapped[str | None] = mapped_column(Text, nullable=True)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    public: Mapped[bool] = mapped_column(Boolean, default=True, index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class MapLayer(Base):
+    __tablename__ = "map_layers"
+    __table_args__ = (
+        UniqueConstraint("source_id", "external_layer_id", name="uq_map_layer_source_external"),
+        Index("ix_map_layer_type_status", "layer_type", "status"),
+        Index("ix_map_layer_public", "public", "title"),
+    )
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    source_id: Mapped[str] = mapped_column(ForeignKey("live_data_sources.id", ondelete="RESTRICT"), nullable=False, index=True)
+    connector_id: Mapped[str | None] = mapped_column(ForeignKey("live_data_connectors.id", ondelete="SET NULL"), nullable=True, index=True)
+    external_layer_id: Mapped[str] = mapped_column(String(700), nullable=False)
+    title: Mapped[str] = mapped_column(String(1000), nullable=False)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    layer_type: Mapped[str] = mapped_column(String(80), nullable=False, index=True)
+    endpoint_url: Mapped[str] = mapped_column(String(3000), nullable=False)
+    tile_template: Mapped[str | None] = mapped_column(String(3000), nullable=True)
+    style_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    bounds_json: Mapped[list] = mapped_column(JSON, default=list)
+    min_zoom: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    max_zoom: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    time_enabled: Mapped[bool] = mapped_column(Boolean, default=False)
+    license_name: Mapped[str | None] = mapped_column(String(300), nullable=True)
+    attribution: Mapped[str | None] = mapped_column(Text, nullable=True)
+    status: Mapped[str] = mapped_column(String(80), default="active", index=True)
+    public: Mapped[bool] = mapped_column(Boolean, default=True, index=True)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class StacCollection(Base):
+    __tablename__ = "stac_collections"
+    __table_args__ = (
+        Index("ix_stac_collection_source", "source_id", "public"),
+        Index("ix_stac_collection_updated", "updated_at"),
+    )
+
+    id: Mapped[str] = mapped_column(String(500), primary_key=True)
+    source_id: Mapped[str] = mapped_column(ForeignKey("live_data_sources.id", ondelete="RESTRICT"), nullable=False, index=True)
+    connector_id: Mapped[str | None] = mapped_column(ForeignKey("live_data_connectors.id", ondelete="SET NULL"), nullable=True, index=True)
+    title: Mapped[str] = mapped_column(String(1000), nullable=False)
+    description: Mapped[str] = mapped_column(Text, nullable=False)
+    license_name: Mapped[str | None] = mapped_column(String(300), nullable=True)
+    spatial_extent_json: Mapped[list] = mapped_column(JSON, default=list)
+    temporal_extent_json: Mapped[list] = mapped_column(JSON, default=list)
+    keywords_json: Mapped[list] = mapped_column(JSON, default=list)
+    providers_json: Mapped[list] = mapped_column(JSON, default=list)
+    links_json: Mapped[list] = mapped_column(JSON, default=list)
+    summaries_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    public: Mapped[bool] = mapped_column(Boolean, default=True, index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class StacItem(Base):
+    __tablename__ = "stac_items"
+    __table_args__ = (
+        UniqueConstraint("collection_id", "source_record_id", name="uq_stac_item_collection_source"),
+        Index("ix_stac_item_collection_datetime", "collection_id", "datetime"),
+        Index("ix_stac_item_bbox", "min_x", "min_y", "max_x", "max_y"),
+        Index("ix_stac_item_public", "public", "datetime"),
+    )
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    collection_id: Mapped[str] = mapped_column(ForeignKey("stac_collections.id", ondelete="CASCADE"), nullable=False, index=True)
+    source_id: Mapped[str] = mapped_column(ForeignKey("live_data_sources.id", ondelete="RESTRICT"), nullable=False, index=True)
+    connector_id: Mapped[str | None] = mapped_column(ForeignKey("live_data_connectors.id", ondelete="SET NULL"), nullable=True, index=True)
+    scientific_record_id: Mapped[str | None] = mapped_column(ForeignKey("scientific_data_records.id", ondelete="SET NULL"), nullable=True, index=True)
+    source_record_id: Mapped[str] = mapped_column(String(700), nullable=False)
+    geometry_json: Mapped[dict | None] = mapped_column(JSON, nullable=True)
+    bbox_json: Mapped[list] = mapped_column(JSON, default=list)
+    min_x: Mapped[float | None] = mapped_column(Float, nullable=True)
+    min_y: Mapped[float | None] = mapped_column(Float, nullable=True)
+    max_x: Mapped[float | None] = mapped_column(Float, nullable=True)
+    max_y: Mapped[float | None] = mapped_column(Float, nullable=True)
+    datetime: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True, index=True)
+    start_datetime: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    end_datetime: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    properties_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    assets_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    links_json: Mapped[list] = mapped_column(JSON, default=list)
+    content_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    public: Mapped[bool] = mapped_column(Boolean, default=True, index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)

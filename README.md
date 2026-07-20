@@ -1,95 +1,65 @@
-# Sustainable Catalyst Platform Core v2.7.3
+# Sustainable Catalyst Platform Core v2.8.0
 
-Core v2.7.3 adds the **Economics and Official Statistics Connector Pack** on top of the v2.7.2 scientific layer, v2.7.1 international-law and United Nations layer, and v2.7.0 Free Live Data Gateway. Core remains the shared source-governance, ingestion, normalization, provenance, and delivery service for Sustainable Catalyst products.
+Core v2.8.0 adds the **Geospatial, Time-Series, and Scientific Data Fabric** on top of the v2.7.3 economics layer, v2.7.2 scientific connectors, v2.7.1 international-law and United Nations connectors, and v2.7.0 Free Live Data Gateway.
 
-The release includes:
+The release adds:
 
-- 40 governed free-source records and 39 connector definitions
-- 12 new official-statistics connectors
-- Migration `0010` and a normalized `economic_data_records` store
-- Shared SDMX CSV ingestion for IMF, OECD, ECB, BIS, and ILOSTAT
-- Dedicated Eurostat JSON-stat, BEA, BLS, Census, SEC EDGAR, EIA, and FAOSTAT adapters
-- Source, license, attribution, frequency, release, vintage, content-hash, and raw-ingestion provenance
-- Internal APIs under `/v1/economics`
-- Scoped public APIs under `/api/v1/economics` with `data:read`
-- Python, JavaScript, WordPress, JSON Schema, deployment, and CLI support
+- Migration `0011` and seven additive fabric tables
+- Automatic materialization of normalized observations into time-series definitions and monthly keyed points
+- Automatic materialization of geometries into source-aware GeoJSON features with bounding boxes
+- STAC 1.0 catalog, collection, item, and search routes
+- Scientific asset records for FITS, NetCDF, Zarr, GeoParquet, COG, PMTiles, VOTable, and GRIB2 handoffs
+- Map-layer registry for GeoJSON, WMS, WMTS, COG, PMTiles, raster tiles, and vector tiles
+- Portable SQLite GeoJSON operation and PostgreSQL PostGIS expression indexes when available
+- PostgreSQL BRIN indexing for time-series timestamps and portable `YYYY-MM` partition keys
+- Idempotent backfill of existing v2.7.x observations and scientific records
+- Internal and scoped public APIs, Python and JavaScript SDK methods, WordPress status, JSON Schemas, and deployment controls
 - No paid API or credit-card-required production dependency
 
-Connector groups:
+Core remains the shared source-governance, ingestion, normalization, provenance, and delivery layer. Site Intelligence consumes map layers and GeoJSON; Research Lab consumes STAC and scientific assets; Workbench consumes time series; Decision Studio consumes source-aware derived records; Knowledge Library preserves methods and licenses; Research Librarian discovers and routes records.
+
+## Data-fabric routes
 
 ```text
-Foundation v2.7.0
-  met-no.locationforecast
-  nasa.gibs-wmts
-  usgs.earthquakes
-  world-bank.indicators
-  fred.series-observations
-  un.sdg-catalog
+GET  /v1/fabric/capabilities
+GET  /v1/fabric/stats
+POST /v1/fabric/materialize
+GET  /v1/fabric/features
+GET  /v1/fabric/features.geojson
+GET  /v1/fabric/timeseries
+GET  /v1/fabric/timeseries/{series_id}/points
+GET  /v1/fabric/assets
+GET  /v1/fabric/map-layers
 
-International law and UN v2.7.1
-  un.digital-library
-  un.sdg-metadata
-  ocha.reliefweb-reports
-  ocha.hdx-hapi
-  un.population-data
-  un.comtrade
-  unhcr.population
-  ohchr.uhri-recommendations
+GET /v1/stac
+GET /v1/stac/collections
+GET /v1/stac/collections/{collection_id}
+GET /v1/stac/collections/{collection_id}/items
+GET /v1/stac/search
 
-Scientific data v2.7.2
-  nasa.cmr-collections
-  nasa.apod
-  noaa.ncei-data
-  ecmwf.open-data-index
-  usgs.water-instantaneous
-  ncbi.entrez-search
-  pubchem.compound-properties
-  gbif.occurrences
-  materials-project.summary
-  mast.observations
-  heasarc.xamin
-  irsa.tap
-  eso.tap
-
-Economics and official statistics v2.7.3
-  imf.sdmx
-  oecd.sdmx
-  eurostat.statistics
-  ecb.sdmx
-  bis.sdmx
-  bea.statistics
-  bls.timeseries
-  census.data
-  sec.companyfacts
-  eia.v2-data
-  faostat.data
-  ilostat.sdmx
+GET /api/v1/fabric/capabilities
+GET /api/v1/fabric/features
+GET /api/v1/fabric/features.geojson
+GET /api/v1/fabric/timeseries
+GET /api/v1/fabric/timeseries/{series_id}/points
+GET /api/v1/fabric/assets
+GET /api/v1/fabric/map-layers
+GET /api/v1/stac
+GET /api/v1/stac/collections
+GET /api/v1/stac/search
 ```
 
-Core is the shared integration layer. Site Intelligence owns public maps and observatories; Research Lab owns scientific investigation; Workbench owns calculations and modeling; Decision Studio owns synthesis; Knowledge Library owns source and methodology records; Research Librarian owns discovery and routing.
-
-See `docs/ECONOMICS_OFFICIAL_STATISTICS_CONNECTORS_V273.md`, `RELEASE_NOTES_V273.md`, and `deployment/platform-core-v273.env.example`.
-
-## Live-data routes
+## Existing connector packs
 
 ```text
-GET   /v1/live/sources
-POST  /v1/live/sources
-PATCH /v1/live/sources/{source_id}
-GET   /v1/live/connectors
-GET   /v1/live/connectors/health
-POST  /v1/live/connectors/{connector_id}/ingest
-GET   /v1/live/observations/latest
-GET   /v1/live/timeseries
-GET   /v1/live/provenance/{observation_id}
-GET   /v1/live/stats
-
-GET /api/v1/live/sources
-GET /api/v1/live/connectors
-GET /api/v1/live/observations/latest
-GET /api/v1/live/timeseries
-GET /api/v1/live/provenance/{observation_id}
+v2.7.0  Free Live Data Gateway
+v2.7.1  International Law and United Nations Connector Pack
+v2.7.2  Scientific Data Connector Pack
+v2.7.3  Economics and Official Statistics Connector Pack
+v2.8.0  Geospatial, Time-Series, and Scientific Data Fabric
 ```
+
+See `docs/GEOSPATIAL_TIME_SERIES_SCIENTIFIC_FABRIC_V280.md`, `RELEASE_NOTES_V280.md`, and `deployment/platform-core-v280.env.example`.
 
 ---
 
@@ -586,4 +556,4 @@ Core v2.7.2 adds normalized scientific discovery and provenance. Internal routes
 
 ## v2.7.3 economics and official-statistics APIs
 
-Core v2.7.3 adds provider-neutral official-statistics records and provenance. Internal routes begin with `/v1/economics`; scoped public routes begin with `/api/v1/economics` and require `data:read`. See `docs/ECONOMICS_OFFICIAL_STATISTICS_CONNECTORS_V273.md`.
+Core v2.8.0 adds provider-neutral official-statistics records and provenance. Internal routes begin with `/v1/economics`; scoped public routes begin with `/api/v1/economics` and require `data:read`. See `docs/ECONOMICS_OFFICIAL_STATISTICS_CONNECTORS_V273.md`.

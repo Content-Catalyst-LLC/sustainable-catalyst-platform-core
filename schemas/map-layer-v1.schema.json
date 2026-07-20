@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/map-layer-v1.schema.json",
+  "title": "Sustainable Catalyst Map Layer",
+  "type": "object",
+  "required": ["id", "source_id", "external_layer_id", "title", "layer_type", "endpoint_url", "status"],
+  "properties": {
+    "id": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "source_id": {"type": "string"},
+    "connector_id": {"type": ["string", "null"]},
+    "external_layer_id": {"type": "string"},
+    "title": {"type": "string"},
+    "description": {"type": ["string", "null"]},
+    "layer_type": {"type": "string", "enum": ["geojson", "vector_tiles", "raster_tiles", "wms", "wmts", "cog", "pmtiles", "stac"]},
+    "endpoint_url": {"type": "string", "format": "uri"},
+    "tile_template": {"type": ["string", "null"]},
+    "style": {"type": "object"},
+    "bounds": {"type": "array", "items": {"type": "number"}, "minItems": 0, "maxItems": 4},
+    "min_zoom": {"type": ["integer", "null"]},
+    "max_zoom": {"type": ["integer", "null"]},
+    "time_enabled": {"type": "boolean"},
+    "license_name": {"type": ["string", "null"]},
+    "attribution": {"type": ["string", "null"]},
+    "status": {"type": "string"},
+    "public": {"type": "boolean"},
+    "metadata": {"type": "object"}
+  },
+  "additionalProperties": true
+}

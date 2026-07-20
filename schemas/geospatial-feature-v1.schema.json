@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/geospatial-feature-v1.schema.json",
+  "title": "Sustainable Catalyst Geospatial Feature",
+  "type": "object",
+  "required": ["id", "source_id", "source_record_id", "feature_type", "geometry_type", "geometry", "srid", "content_hash"],
+  "properties": {
+    "id": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "source_id": {"type": "string"},
+    "connector_id": {"type": ["string", "null"]},
+    "source_record_id": {"type": "string", "minLength": 1, "maxLength": 700},
+    "dataset_id": {"type": ["string", "null"]},
+    "collection_id": {"type": ["string", "null"]},
+    "feature_type": {"type": "string"},
+    "geometry_type": {"type": "string"},
+    "geometry": {"type": "object", "required": ["type"]},
+    "bbox": {"type": "array", "items": {"type": "number"}, "minItems": 0, "maxItems": 4},
+    "srid": {"type": "integer", "minimum": 1},
+    "properties": {"type": "object"},
+    "observed_at": {"type": ["string", "null"], "format": "date-time"},
+    "valid_until": {"type": ["string", "null"], "format": "date-time"},
+    "license_name": {"type": ["string", "null"]},
+    "attribution": {"type": ["string", "null"]},
+    "content_hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "public": {"type": "boolean"}
+  },
+  "additionalProperties": true
+}

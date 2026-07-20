@@ -1,4 +1,4 @@
-# Sustainable Catalyst Public API JavaScript Client v2.7.3
+# Sustainable Catalyst Public API JavaScript Client v2.8.0
 
 ```javascript
 import { PublicApiClient } from "./index.mjs";
@@ -43,4 +43,17 @@ Use `scientific_records`, `scientific_record`, and `scientific_record_types` (ca
 const records = await client.economicRecords({ indicator_code: "GDP", geography_code: "USA", limit: 25 });
 const record = await client.economicRecord(records[0].id);
 const types = await client.economicRecordTypes();
+```
+
+
+## Data fabric v2.8.0
+
+```javascript
+const capabilities = await client.fabricCapabilities();
+const features = await client.geospatialFeatures({ bbox: "-88,41,-87,42" });
+const series = await client.timeSeries({ metric: "temperature" });
+const points = await client.timeSeriesPoints(series[0].id);
+const assets = await client.scientificAssets({ format: "fits" });
+const layers = await client.mapLayers({ layer_type: "cog" });
+const stac = await client.stacSearch({ collections: "mast:JWST" });
 ```

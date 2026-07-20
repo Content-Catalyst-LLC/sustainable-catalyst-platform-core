@@ -107,7 +107,7 @@ def test_registration_gate_and_read_only_adql(client, write_headers):
 
 def test_health_meta_stats_and_public_science_api(client, write_headers):
     health=client.get('/health').json()
-    assert health['version'] == '2.7.3'
+    assert health['version'] == '2.8.0'
     assert health['scientific_data_connector_pack'] is True
     meta=client.get('/v1/meta').json()
     assert 'scientific_data_record_store' in meta['capabilities']

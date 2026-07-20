@@ -1,0 +1,103 @@
+SUSTAINABLE CATALYST PLATFORM CORE v2.8.0
+GEOSPATIAL, TIME-SERIES, AND SCIENTIFIC DATA FABRIC
+
+1. Extract the release and enter the repository
+
+unzip sustainable-catalyst-platform-core-v2.8.0.zip
+cd sustainable-catalyst-platform-core-v2.8.0
+
+2. Create a Python environment
+
+cd backend
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+
+3. Run the 99-test regression suite in stable groups
+
+PYTHONPATH=".:public_sdk/python" DD_TRACE_ENABLED=false pytest -q -p no:ddtrace \
+  tests/test_entities.py \
+  tests/test_evidence_ledger_v220.py \
+  tests/test_gateway_v260.py \
+  tests/test_graph.py \
+  tests/test_graph_engine_v210.py \
+  tests/test_health.py \
+  tests/test_import_and_foundations.py \
+  tests/test_international_law_un_v271.py \
+  tests/test_live_data_gateway_v270.py \
+  tests/test_predicates.py \
+  tests/test_public_api_v230.py
+
+PYTHONPATH=".:public_sdk/python" PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest -q \
+  tests/test_data_fabric_v280.py \
+  tests/test_economics_connectors_v273.py \
+  tests/test_scientific_connectors_v272.py \
+  tests/test_signature_dossiers_v250.py
+
+PYTHONPATH=".:public_sdk/python" PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 \
+  pytest -q tests/test_trust_center_v240.py
+
+4. Configure local environment
+
+cp .env.example .env
+# Keep SC_CORE_LIVE_DATA_STRICT_FREE_SOURCES=true.
+# Portable GeoJSON storage works on SQLite and PostgreSQL.
+# PostgreSQL deployments may enable PostGIS automatically when the database
+# role has permission; failure falls back safely to portable GeoJSON.
+#
+# SC_CORE_DATA_FABRIC_ENABLED=true
+# SC_CORE_DATA_FABRIC_AUTO_MATERIALIZE=true
+# SC_CORE_DATA_FABRIC_POSTGIS_AUTO_ENABLE=true
+
+5. Run migrations and start Core
+
+python scripts/migrate.py
+./start.sh
+
+6. Check v2.8.0 and fabric status
+
+curl http://127.0.0.1:8090/health
+curl http://127.0.0.1:8090/ready
+curl http://127.0.0.1:8090/v1/fabric/capabilities
+curl http://127.0.0.1:8090/v1/fabric/stats
+curl http://127.0.0.1:8090/v1/stac
+
+7. Read the administrative write key securely
+
+read -rsp "Enter SC_CORE_WRITE_API_KEY: " SC_CORE_WRITE_API_KEY
+export SC_CORE_WRITE_API_KEY
+echo
+
+8. Backfill existing v2.7.x normalized records into the fabric
+
+curl -X POST \
+  http://127.0.0.1:8090/v1/fabric/materialize \
+  -H "X-SC-API-Key: $SC_CORE_WRITE_API_KEY"
+
+The operation is idempotent. Existing features, points, assets, STAC items,
+and map-layer records are updated or reused rather than duplicated.
+
+9. Query GeoJSON features
+
+curl 'http://127.0.0.1:8090/v1/fabric/features.geojson?limit=100'
+
+10. Query time-series definitions and points
+
+curl 'http://127.0.0.1:8090/v1/fabric/timeseries?limit=25'
+# Replace SERIES_ID with a returned series identifier.
+curl 'http://127.0.0.1:8090/v1/fabric/timeseries/SERIES_ID/points?limit=100'
+
+11. Query scientific assets, map layers, and STAC
+
+curl 'http://127.0.0.1:8090/v1/fabric/assets?limit=25'
+curl 'http://127.0.0.1:8090/v1/fabric/map-layers?limit=25'
+curl 'http://127.0.0.1:8090/v1/stac/collections'
+curl 'http://127.0.0.1:8090/v1/stac/search?limit=25'
+
+12. Install and push automatically from Downloads
+
+cd ~/Downloads
+chmod 700 PUSH_PLATFORM_CORE_V280_FINAL.sh
+./PUSH_PLATFORM_CORE_V280_FINAL.sh \
+  ./sustainable-catalyst-platform-core-v2.8.0.zip

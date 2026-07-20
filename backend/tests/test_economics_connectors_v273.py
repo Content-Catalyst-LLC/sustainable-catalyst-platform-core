@@ -55,7 +55,7 @@ def test_registration_gates_health_meta_and_public_api(client,write_headers):
     assert statuses['imf.sdmx']=='endpoint_registration_required'; assert statuses['bea.statistics']=='credential_required'; assert statuses['eia.v2-data']=='credential_required'
     assert client.post('/v1/live/connectors/eia.v2-data/ingest',headers=write_headers,json={'parameters':{'route':'electricity/rto/region-data','data_fields':['value']},'requested_by':'pytest'}).status_code==503
     meta=client.get('/v1/meta').json(); assert 'economic_data_record_store' in meta['capabilities']; assert 'sdmx_statistics_gateway' in meta['capabilities']
-    health_root=client.get('/health').json(); assert health_root['version']=='2.7.3'; assert health_root['economics_official_statistics_connector_pack'] is True
+    health_root=client.get('/health').json(); assert health_root['version']=='2.8.0'; assert health_root['economics_official_statistics_connector_pack'] is True
     stats=client.get('/v1/stats').json(); assert stats['live_data_sources']==40; assert stats['live_data_connectors']==39; assert stats['economic_data_records']==0
     key=_public_key(client,write_headers); public=client.get('/api/v1/economics/record-types',headers={'Authorization':f'Bearer {key}'}); assert public.status_code==200; assert 'macroeconomic_indicator' in public.json()['data']
 

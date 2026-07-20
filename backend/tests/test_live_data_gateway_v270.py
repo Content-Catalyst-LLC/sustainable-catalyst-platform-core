@@ -234,7 +234,7 @@ def test_registry_stats_include_live_data_counts(client):
 
 def test_health_advertises_live_data_gateway(client):
     health = client.get("/health").json()
-    assert health["version"] == "2.7.3"
+    assert health["version"] == "2.8.0"
     assert health["live_data_gateway"] is True
     assert health["strict_free_sources"] is True
 

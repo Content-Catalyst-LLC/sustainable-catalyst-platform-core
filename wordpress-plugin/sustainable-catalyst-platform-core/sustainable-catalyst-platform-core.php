@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name: Sustainable Catalyst Platform Core
- * Description: WordPress connector for Sustainable Catalyst Platform Core registry, graph, evidence, developer, gateway, free live-data, international-law, scientific-data, and official-statistics services.
- * Version: 2.7.3
+ * Description: WordPress connector for Sustainable Catalyst Platform Core registry, graph, evidence, developer, gateway, free live-data, international-law, scientific-data, official-statistics, geospatial, time-series, STAC, and map-layer services.
+ * Version: 2.8.0
  * Author: Content Catalyst LLC
  * License: MIT
  */
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('SCPC_VERSION', '2.7.3');
+define('SCPC_VERSION', '2.8.0');
 define('SCPC_OPTION_BACKEND_URL', 'scpc_backend_url');
 define('SCPC_OPTION_READ_KEY', 'scpc_read_key');
 
@@ -87,6 +87,7 @@ function scpc_render_settings_page() {
         <code>[sc_platform_core_international_law_status]</code><br />
         <code>[sc_platform_core_science_status]</code><br />
         <code>[sc_platform_core_economics_status]</code><br />
+        <code>[sc_platform_core_data_fabric_status]</code><br />
         <code>[sc_platform_core_entity id="sc:product:workbench"]</code><br />
         <code>[sc_platform_core_relationships id="sc:product:research-librarian"]</code><br />
         <code>[sc_knowledge_explorer]</code><br />
@@ -690,3 +691,37 @@ function scpc_economics_status_shortcode() {
     return ob_get_clean();
 }
 add_shortcode('sc_platform_core_economics_status', 'scpc_economics_status_shortcode');
+
+
+function scpc_data_fabric_status_shortcode() {
+    $stats = scpc_api_get('/v1/fabric/stats');
+    $capabilities = scpc_api_get('/v1/fabric/capabilities');
+
+    if (is_wp_error($stats) || is_wp_error($capabilities)) {
+        $error = is_wp_error($stats) ? $stats : $capabilities;
+        return '<div class="scpc-card scpc-error"><strong>Data fabric unavailable</strong><p>' .
+            esc_html($error->get_error_message()) .
+            '</p></div>';
+    }
+
+    $postgis_mode = isset($stats['postgis_mode']) ? sanitize_text_field($stats['postgis_mode']) : 'unknown';
+    ob_start();
+    ?>
+    <section class="scpc-card">
+        <p class="scpc-kicker">Geospatial and scientific data infrastructure</p>
+        <h3>Geospatial, Time-Series, and Scientific Data Fabric</h3>
+        <p>
+            <strong>Version:</strong> <?php echo esc_html(SCPC_VERSION); ?> ·
+            <strong>Spatial mode:</strong> <?php echo esc_html(ucwords(str_replace('_', ' ', $postgis_mode))); ?> ·
+            <strong>Features:</strong> <?php echo esc_html(number_format_i18n(intval($stats['geospatial_features'] ?? 0))); ?> ·
+            <strong>Time series:</strong> <?php echo esc_html(number_format_i18n(intval($stats['time_series'] ?? 0))); ?> ·
+            <strong>Points:</strong> <?php echo esc_html(number_format_i18n(intval($stats['time_series_points'] ?? 0))); ?> ·
+            <strong>Assets:</strong> <?php echo esc_html(number_format_i18n(intval($stats['scientific_assets'] ?? 0))); ?> ·
+            <strong>STAC items:</strong> <?php echo esc_html(number_format_i18n(intval($stats['stac_items'] ?? 0))); ?>
+        </p>
+        <p class="scpc-meta">GeoJSON, STAC, WMS/WMTS handoffs, COG, PMTiles, FITS, NetCDF, Zarr, GeoParquet, SDMX, and TAP/ADQL capabilities are source-aware and license-preserving.</p>
+    </section>
+    <?php
+    return ob_get_clean();
+}
+add_shortcode('sc_platform_core_data_fabric_status', 'scpc_data_fabric_status_shortcode');

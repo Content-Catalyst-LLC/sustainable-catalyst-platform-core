@@ -22,6 +22,21 @@ export class PublicApiClient {
     return payload.data;
   }
 
+  async requestRaw(path, options = {}) {
+    const response = await fetch(`${this.baseUrl}/api/v1${path}`, {
+      ...options,
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${this.apiKey}`,
+        ...(options.headers || {}),
+      },
+    });
+    if (!response.ok) {
+      throw new PublicApiError(`${response.status}: ${await response.text()}`);
+    }
+    return response.json();
+  }
+
   status() {
     return this.request("/status");
   }
@@ -162,6 +177,49 @@ export class PublicApiClient {
 
   economicRecordTypes() {
     return this.request('/economics/record-types');
+  }
+
+  fabricCapabilities() {
+    return this.request("/fabric/capabilities");
+  }
+
+  geospatialFeatures(params = {}) {
+    const query = new URLSearchParams(params);
+    return this.request(`/fabric/features?${query}`);
+  }
+
+  timeSeries(params = {}) {
+    const query = new URLSearchParams(params);
+    return this.request(`/fabric/timeseries?${query}`);
+  }
+
+  timeSeriesPoints(seriesId, params = {}) {
+    const query = new URLSearchParams(params);
+    return this.request(`/fabric/timeseries/${encodeURIComponent(seriesId)}/points?${query}`);
+  }
+
+  scientificAssets(params = {}) {
+    const query = new URLSearchParams(params);
+    return this.request(`/fabric/assets?${query}`);
+  }
+
+  mapLayers(params = {}) {
+    const query = new URLSearchParams(params);
+    return this.request(`/fabric/map-layers?${query}`);
+  }
+
+  stacCatalog() {
+    return this.requestRaw("/stac");
+  }
+
+  stacCollections(params = {}) {
+    const query = new URLSearchParams(params);
+    return this.requestRaw(`/stac/collections?${query}`);
+  }
+
+  stacSearch(params = {}) {
+    const query = new URLSearchParams(params);
+    return this.requestRaw(`/stac/search?${query}`);
   }
 
 }

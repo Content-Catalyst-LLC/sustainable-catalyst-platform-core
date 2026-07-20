@@ -358,6 +358,123 @@
           }
         }
       ]
+    },
+    {
+      "name": "Geospatial, Time-Series, and Scientific Data Fabric",
+      "item": [
+        {
+          "name": "Fabric capabilities",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_key}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{base_url}}/api/v1/fabric/capabilities"
+          }
+        },
+        {
+          "name": "GeoJSON features",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_key}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{base_url}}/api/v1/fabric/features.geojson?limit=100"
+          }
+        },
+        {
+          "name": "Time-series definitions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_key}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{base_url}}/api/v1/fabric/timeseries?limit=25"
+          }
+        },
+        {
+          "name": "Time-series points",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_key}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{base_url}}/api/v1/fabric/timeseries/{{series_id}}/points?limit=100"
+          }
+        },
+        {
+          "name": "Scientific assets",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_key}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{base_url}}/api/v1/fabric/assets?limit=25"
+          }
+        },
+        {
+          "name": "Map layers",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_key}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{base_url}}/api/v1/fabric/map-layers?limit=25"
+          }
+        },
+        {
+          "name": "STAC catalog",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_key}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{base_url}}/api/v1/stac"
+          }
+        },
+        {
+          "name": "STAC search",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_key}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{base_url}}/api/v1/stac/search?limit=25"
+          }
+        }
+      ]
     }
   ]
 }

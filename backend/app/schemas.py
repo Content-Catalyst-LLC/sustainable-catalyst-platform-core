@@ -304,6 +304,13 @@ class RegistryStats(BaseModel):
     international_law_records: int
     scientific_data_records: int
     economic_data_records: int
+    geospatial_features: int
+    time_series_definitions: int
+    time_series_points: int
+    scientific_data_assets: int
+    map_layers: int
+    stac_collections: int
+    stac_items: int
     entities_by_type: dict[str, int]
     relationships_by_predicate: dict[str, int]
     relationships_by_status: dict[str, int]
@@ -1972,3 +1979,138 @@ class EconomicDataStats(BaseModel):
     by_subject: dict[str, int]
     by_source: dict[str, int]
     by_frequency: dict[str, int]
+
+
+class GeospatialFeatureRead(BaseModel):
+    id: str
+    source_id: str
+    connector_id: str | None
+    raw_record_id: str | None
+    observation_id: str | None
+    scientific_record_id: str | None
+    source_record_id: str
+    dataset_id: str | None
+    collection_id: str | None
+    feature_type: str
+    geometry_type: str
+    geometry: dict[str, Any] = Field(validation_alias="geometry_json", serialization_alias="geometry")
+    bbox: list[float] = Field(default_factory=list, validation_alias="bbox_json", serialization_alias="bbox")
+    srid: int
+    properties: dict[str, Any] = Field(default_factory=dict, validation_alias="properties_json", serialization_alias="properties")
+    observed_at: datetime | None
+    valid_until: datetime | None
+    license_name: str | None
+    attribution: str | None
+    content_hash: str
+    public: bool
+    created_at: datetime
+    updated_at: datetime
+    model_config = ConfigDict(from_attributes=True)
+
+
+class TimeSeriesDefinitionRead(BaseModel):
+    id: str
+    source_id: str
+    connector_id: str
+    metric: str
+    title: str
+    description: str | None
+    dataset_id: str | None
+    domain: str
+    unit: str | None
+    frequency: str | None
+    geography_code: str | None
+    dimensions: dict[str, Any] = Field(default_factory=dict, validation_alias="dimensions_json", serialization_alias="dimensions")
+    dimension_hash: str
+    license_name: str | None
+    attribution: str | None
+    public: bool
+    created_at: datetime
+    updated_at: datetime
+    model_config = ConfigDict(from_attributes=True)
+
+
+class TimeSeriesPointRead(BaseModel):
+    id: str
+    series_id: str
+    observation_id: str | None
+    raw_record_id: str | None
+    observed_at: datetime
+    partition_key: str
+    value_number: float | None
+    value_text: str | None
+    quality_status: str
+    freshness_status: str
+    dimensions: dict[str, Any] = Field(default_factory=dict, validation_alias="dimensions_json", serialization_alias="dimensions")
+    point_hash: str
+    public: bool
+    created_at: datetime
+    model_config = ConfigDict(from_attributes=True)
+
+
+class ScientificDataAssetRead(BaseModel):
+    id: str
+    scientific_record_id: str | None
+    source_id: str
+    connector_id: str | None
+    raw_record_id: str | None
+    dataset_id: str | None
+    title: str
+    asset_role: str
+    media_type: str | None
+    format: str
+    href: str
+    storage_mode: str
+    size_bytes: int | None
+    checksum: str | None
+    stac_roles: list[str] = Field(default_factory=list, validation_alias="stac_roles_json", serialization_alias="stac_roles")
+    variables: list[str] = Field(default_factory=list, validation_alias="variables_json", serialization_alias="variables")
+    spatial_extent: list[Any] = Field(default_factory=list, validation_alias="spatial_extent_json", serialization_alias="spatial_extent")
+    temporal_extent: list[Any] = Field(default_factory=list, validation_alias="temporal_extent_json", serialization_alias="temporal_extent")
+    license_name: str | None
+    attribution: str | None
+    metadata: dict[str, Any] = Field(default_factory=dict, validation_alias="metadata_json", serialization_alias="metadata")
+    public: bool
+    created_at: datetime
+    updated_at: datetime
+    model_config = ConfigDict(from_attributes=True)
+
+
+class MapLayerRead(BaseModel):
+    id: str
+    source_id: str
+    connector_id: str | None
+    external_layer_id: str
+    title: str
+    description: str | None
+    layer_type: str
+    endpoint_url: str
+    tile_template: str | None
+    style: dict[str, Any] = Field(default_factory=dict, validation_alias="style_json", serialization_alias="style")
+    bounds: list[float] = Field(default_factory=list, validation_alias="bounds_json", serialization_alias="bounds")
+    min_zoom: int | None
+    max_zoom: int | None
+    time_enabled: bool
+    license_name: str | None
+    attribution: str | None
+    status: str
+    public: bool
+    metadata: dict[str, Any] = Field(default_factory=dict, validation_alias="metadata_json", serialization_alias="metadata")
+    created_at: datetime
+    updated_at: datetime
+    model_config = ConfigDict(from_attributes=True)
+
+
+class DataFabricStats(BaseModel):
+    geospatial_features: int
+    time_series: int
+    time_series_points: int
+    scientific_assets: int
+    map_layers: int
+    stac_collections: int
+    stac_items: int
+    assets_by_format: dict[str, int]
+    map_layers_by_type: dict[str, int]
+    database_dialect: str
+    postgis_mode: str
+    time_series_partitioning: str
