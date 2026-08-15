@@ -12,9 +12,9 @@ from app.services.facilities import FACILITY_TYPES, OBSERVATION_KINDS
 
 def main():
     settings=Settings.from_env(); db=Database(settings.database_url); applied=run_migrations(db); status=migration_status(db)
-    assert settings.version=='2.11.0'; assert '0013' in status['applied']; assert not status['pending']
+    assert settings.version=='2.12.0'; assert '0013' in status['applied']; assert not status['pending']
     assert {'hospital','school','water-facility','power-facility','crossing','food-distribution'} <= FACILITY_TYPES
     assert {'operational-status','damage-status','access-status','service-status'} <= OBSERVATION_KINDS
-    print('PASS - Core v2.11.0 operational facility registry validation')
+    print('PASS - Core v2.12.0 operational facility registry validation')
     print('applied_now=', ','.join(applied) or 'none')
 if __name__=='__main__': main()

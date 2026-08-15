@@ -257,3 +257,14 @@ def _humanitarian_country_summary(self, country_code: str):
 
 PublicApiClient.humanitarian_conditions = _humanitarian_conditions
 PublicApiClient.humanitarian_country_summary = _humanitarian_country_summary
+
+
+# v2.12.0 country evidence federation and reconciliation helpers
+def _country_evidence_federation(self, country_code: str):
+    return self.request("GET", f"/country-evidence/country/{country_code}/federation")
+
+def _country_evidence_reconcile(self, country_code: str, concept: str):
+    return self.request("GET", f"/country-evidence/country/{country_code}/reconcile", params={"concept": concept})
+
+PublicApiClient.country_evidence_federation = _country_evidence_federation
+PublicApiClient.country_evidence_reconcile = _country_evidence_reconcile

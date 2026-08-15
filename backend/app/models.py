@@ -1706,3 +1706,26 @@ class HumanitarianCondition(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
 
 
+
+# v2.12.0 — Country Evidence Federation & Reconciliation
+class CountryEvidenceReconciliation(Base):
+    __tablename__ = "country_evidence_reconciliations"
+    __table_args__ = (
+        UniqueConstraint("request_fingerprint", name="uq_country_evidence_reconciliation_fingerprint"),
+        Index("ix_country_evidence_reconciliation_country_concept", "country_code", "concept"),
+        Index("ix_country_evidence_reconciliation_state_time", "decision_state", "created_at"),
+    )
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    country_code: Mapped[str] = mapped_column(String(3), nullable=False, index=True)
+    concept: Mapped[str] = mapped_column(String(500), nullable=False, index=True)
+    decision_state: Mapped[str] = mapped_column(String(100), nullable=False, index=True)
+    selected_record_family: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    selected_record_id: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    selected_source: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    selected_authority_role: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    request_fingerprint: Mapped[str] = mapped_column(String(64), nullable=False)
+    candidates_json: Mapped[list] = mapped_column(JSON, default=list)
+    rationale_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    public: Mapped[bool] = mapped_column(Boolean, default=True, index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)

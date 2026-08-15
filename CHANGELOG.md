@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.12.0 — 2026-08-14
+
+- Added Country Evidence Federation & Reconciliation.
+- Added migration `0015` and persisted reconciliation audits.
+- Added non-blending comparability guards for concept, semantic class, unit and geography.
+- Added public country federation/reconciliation APIs and SDK helpers.
+- Added WordPress country-evidence status surface.
+
 ## 2.11.0 — 2026-08-14
 
 - Added Humanitarian Access & Essential Services Fabric and migration `0014`.

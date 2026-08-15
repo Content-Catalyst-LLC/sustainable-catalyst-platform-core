@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/country-evidence-reconciliation-v1.schema.json",
+  "title": "Country Evidence Reconciliation",
+  "type": "object",
+  "required": ["country_code", "concept", "decision_state", "do_not_blend"],
+  "properties": {
+    "country_code": {"type": "string", "pattern": "^[A-Z]{3}$"},
+    "concept": {"type": "string", "minLength": 1},
+    "decision_state": {"type": "string"},
+    "selected": {"type": ["object", "null"]},
+    "candidates": {"type": "array", "items": {"type": "object"}},
+    "discrepancies": {"type": "array", "items": {"type": "object"}},
+    "do_not_blend": {"const": true},
+    "automatic_averaging": {"const": false}
+  },
+  "additionalProperties": true
+}

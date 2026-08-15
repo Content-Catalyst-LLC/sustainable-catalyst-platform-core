@@ -253,4 +253,13 @@ export class PublicApiClient {
     return this.request(`/humanitarian/country/${encodeURIComponent(countryCode)}/summary`);
   }
 
+  countryEvidenceFederation(countryCode) {
+    return this.request(`/country-evidence/country/${encodeURIComponent(countryCode)}/federation`);
+  }
+
+  countryEvidenceReconcile(countryCode, concept) {
+    const query = new URLSearchParams({ concept });
+    return this.request(`/country-evidence/country/${encodeURIComponent(countryCode)}/reconcile?${query}`);
+  }
+
 }

@@ -78,6 +78,7 @@ def health(request: Request):
         "strict_free_sources": request.app.state.settings.live_data_strict_free_sources,
         "operational_evidence_facility_registry": True,
         "humanitarian_access_essential_services_fabric": request.app.state.settings.humanitarian_fabric_enabled,
+        "country_evidence_federation_reconciliation": request.app.state.settings.country_evidence_federation_enabled,
     }
 
 
@@ -144,6 +145,7 @@ async def ready(request: Request, db: Session = Depends(get_session)):
         "provider_failover": "ready" if settings.provider_failover_enabled else "disabled",
         "operational_evidence_facility_registry": "ready",
         "humanitarian_access_essential_services_fabric": "ready" if settings.humanitarian_fabric_enabled else "disabled",
+        "country_evidence_federation_reconciliation": "ready" if settings.country_evidence_federation_enabled else "disabled",
         "external_provider_health_release_blocking": False,
         "services": [
             {

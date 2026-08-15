@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name: Sustainable Catalyst Platform Core
- * Description: WordPress connector for Sustainable Catalyst Platform Core registry, graph, evidence, developer, gateway, free live-data, international-law, scientific-data, official-statistics, geospatial, time-series, STAC, map-layer, streaming, alerts, source-reliability, and operational-facility, humanitarian-access, and essential-services evidence services.
- * Version: 2.11.0
+ * Description: WordPress connector for Sustainable Catalyst Platform Core registry, graph, evidence, developer, gateway, free live-data, international-law, scientific-data, official-statistics, geospatial, time-series, STAC, map-layer, streaming, alerts, source-reliability, and operational-facility, humanitarian-access, essential-services, and country-evidence federation and reconciliation services.
+ * Version: 2.12.0
  * Author: Content Catalyst LLC
  * License: MIT
  */
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('SCPC_VERSION', '2.11.0');
+define('SCPC_VERSION', '2.12.0');
 define('SCPC_OPTION_BACKEND_URL', 'scpc_backend_url');
 define('SCPC_OPTION_READ_KEY', 'scpc_read_key');
 
@@ -92,6 +92,7 @@ function scpc_render_settings_page() {
         <code>[sc_platform_core_reliability_status]</code><br />
         <code>[sc_platform_core_facility_registry_status]</code><br />
         <code>[sc_platform_core_humanitarian_status]</code><br />
+        <code>[sc_platform_core_country_evidence_status country="PSE"]</code><br />
         <code>[sc_platform_core_entity id="sc:product:workbench"]</code><br />
         <code>[sc_platform_core_relationships id="sc:product:research-librarian"]</code><br />
         <code>[sc_knowledge_explorer]</code><br />
@@ -378,6 +379,31 @@ function scpc_humanitarian_status_shortcode() {
     <?php return ob_get_clean();
 }
 add_shortcode('sc_platform_core_humanitarian_status', 'scpc_humanitarian_status_shortcode');
+
+
+function scpc_country_evidence_status_shortcode($atts) {
+    $atts = shortcode_atts(['country' => 'PSE'], $atts, 'sc_platform_core_country_evidence_status');
+    $country = strtoupper(sanitize_text_field($atts['country']));
+    $status = scpc_api_get('/v1/country-evidence/readiness');
+    $federation = scpc_api_get('/v1/country-evidence/country/' . rawurlencode($country) . '/federation');
+    if (is_wp_error($status) || is_wp_error($federation)) {
+        $error = is_wp_error($status) ? $status : $federation;
+        return '<div class="scpc-card scpc-error"><strong>Country evidence federation unavailable</strong><p>' . esc_html($error->get_error_message()) . '</p></div>';
+    }
+    $records = isset($federation['records']) ? intval($federation['records']) : 0;
+    $facilities = isset($federation['facilities']) ? intval($federation['facilities']) : 0;
+    ob_start(); ?>
+    <section class="scpc-card">
+        <p class="scpc-kicker">Country evidence federation</p>
+        <h3><?php echo esc_html($country); ?> evidence hierarchy</h3>
+        <p><strong>Status:</strong> <?php echo esc_html(ucfirst($status['status'] ?? 'unknown')); ?> ·
+        <strong>Evidence records:</strong> <?php echo esc_html(number_format_i18n($records)); ?> ·
+        <strong>Facilities:</strong> <?php echo esc_html(number_format_i18n($facilities)); ?></p>
+        <p class="scpc-meta">Primary official, operational, intergovernmental and harmonized benchmark evidence remain separate. Core does not automatically average source disagreements or substitute subnational conditions for national statistics.</p>
+    </section>
+    <?php return ob_get_clean();
+}
+add_shortcode('sc_platform_core_country_evidence_status', 'scpc_country_evidence_status_shortcode');
 
 function scpc_entity_shortcode($atts) {
     $atts = shortcode_atts(['id' => ''], $atts, 'sc_platform_core_entity');

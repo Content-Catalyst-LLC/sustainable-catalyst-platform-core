@@ -1,13 +1,13 @@
-Sustainable Catalyst Platform Core v2.11.0
-Humanitarian Access & Essential Services Fabric
+Sustainable Catalyst Platform Core v2.12.0
+Country Evidence Federation & Reconciliation
 Validation date: 2026-08-14
 
-Deterministic tests: 155 / 155 PASS
-- Inherited v2.10.0 line: 143 / 143 PASS
-- New v2.11.0 humanitarian tests: 12 / 12 PASS
+Deterministic tests: 166 / 166 PASS
+- Inherited v2.11.0 line: 155 / 155 PASS
+- New v2.12.0 country evidence tests: 11 / 11 PASS
 
 Migration validation:
-- 0001 through 0014 applied
+- 0001 through 0015 applied
 - pending migrations: 0
 
 Registry preservation:
@@ -15,23 +15,19 @@ Registry preservation:
 - connector definitions: 39
 
 Targeted validation:
+- country evidence federation/reconciliation: PASS
 - humanitarian fabric: PASS
 - operational facility registry: PASS
 - streaming/source reliability: PASS
 - developer SDK delivery: PASS
 
-Static validation:
-- Python compilation: PASS
-- PHP syntax: PASS
-- Bash syntax: PASS
-- JSON parse: 61 files PASS
-- secret scan: 0 findings
-
 Semantic safeguards:
-- structural baselines are not current operational conditions: PASS
-- ReliefWeb report metadata is not auto-promoted to operational claims: PASS
+- exact concept required before reconciliation: PASS
+- structural baselines remain separate from operational conditions: PASS
+- subnational scope cannot replace national scope: PASS
+- different reference periods are not automatically contradictions: PASS
+- preferred official source absence is explicit: PASS
+- automatic averaging: disabled
+- knowledge-context truth precedence: excluded
 - zero records means unknown, not normal: PASS
-- synthetic crisis severity: disabled
-- automatic legal conclusion: disabled
-- automatic causal attribution: disabled
 - external provider health release blocking: false

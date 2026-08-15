@@ -97,3 +97,15 @@ Completed:
 - Zero records means unknown, not normal
 - No synthetic severity, legal conclusion or causal attribution
 - Public APIs, SDKs, WordPress status, migration `0014`, schemas and validation
+
+
+## v2.12.0 — Country Evidence Federation & Reconciliation
+Completed:
+
+- Country evidence lanes across official/published statistics, operational humanitarian conditions and facility evidence
+- Authority-role precedence with explicit preferred-source fallback
+- Exact concept, semantic class, unit and geographic-scope compatibility guards
+- Material discrepancy detection without automatic averaging
+- Different-period and subnational-scope non-conflict rules
+- Persisted reconciliation audits
+- Public API, SDK, WordPress status, migration `0015`, schema and validation

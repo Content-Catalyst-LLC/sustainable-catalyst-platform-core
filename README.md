@@ -1,3 +1,17 @@
+# Sustainable Catalyst Platform Core v2.12.0
+
+Core v2.12.0 adds **Country Evidence Federation & Reconciliation** on top of the operational facility and humanitarian evidence layers. Country data is organized by evidence authority and semantic role, with explicit comparability guards and no automatic averaging.
+
+Key v2.12.0 additions:
+- country evidence federation across official statistics, humanitarian conditions and facility evidence;
+- primary-official, sector-official, operational, intergovernmental and harmonized-benchmark authority roles;
+- source-selection rationale and preferred-source fallback reporting;
+- geographic, semantic, unit and reference-period compatibility checks;
+- persisted reconciliation audits;
+- public APIs, SDK helpers and WordPress status surface.
+
+---
+
 # Sustainable Catalyst Platform Core v2.11.0
 
 Core v2.11.0 adds **Humanitarian Access & Essential Services Fabric** on top of the v2.10.0 Operational Evidence & Facility Registry. Humanitarian conditions are stored as dated, source-aware observations rather than flattened into a crisis score or inferred legal/causal conclusion.
