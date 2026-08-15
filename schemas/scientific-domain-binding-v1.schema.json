@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/scientific-domain-binding-v1.schema.json",
+  "title": "Scientific Domain Binding",
+  "type": "object",
+  "required": ["subject_type", "subject_id", "domain", "subdomain", "classification_basis", "routing_only", "truth_precedence"],
+  "properties": {
+    "subject_type": {"enum": ["scientific_record", "time_series", "map_layer"]},
+    "subject_id": {"type": "string", "minLength": 1},
+    "domain": {"enum": ["earth", "ocean", "space"]},
+    "subdomain": {"type": "string", "minLength": 1},
+    "classification_basis": {"type": "string", "minLength": 1},
+    "classification_evidence": {"type": "array", "items": {"type": "string"}},
+    "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+    "is_primary": {"type": "boolean"},
+    "routing_only": {"const": true},
+    "truth_precedence": {"const": "none"},
+    "public": {"type": "boolean"}
+  },
+  "additionalProperties": true
+}

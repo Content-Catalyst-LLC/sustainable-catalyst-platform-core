@@ -79,6 +79,7 @@ def health(request: Request):
         "operational_evidence_facility_registry": True,
         "humanitarian_access_essential_services_fabric": request.app.state.settings.humanitarian_fabric_enabled,
         "country_evidence_federation_reconciliation": request.app.state.settings.country_evidence_federation_enabled,
+        "earth_ocean_space_scientific_service_fabric": request.app.state.settings.scientific_service_fabric_enabled,
     }
 
 
@@ -146,6 +147,7 @@ async def ready(request: Request, db: Session = Depends(get_session)):
         "operational_evidence_facility_registry": "ready",
         "humanitarian_access_essential_services_fabric": "ready" if settings.humanitarian_fabric_enabled else "disabled",
         "country_evidence_federation_reconciliation": "ready" if settings.country_evidence_federation_enabled else "disabled",
+        "earth_ocean_space_scientific_service_fabric": "ready" if settings.scientific_service_fabric_enabled else "disabled",
         "external_provider_health_release_blocking": False,
         "services": [
             {
@@ -228,6 +230,11 @@ def meta(request: Request):
             "universal_entity_registry",
             "operational_evidence_facility_registry",
             "humanitarian_access_essential_services_fabric",
+            "earth_ocean_space_scientific_service_fabric",
+            "scientific_domain_routing",
+            "ocean_front_door_contract",
+            "space_front_door_contract",
+            "scientific_routing_non_truth_precedence",
             "controlled_predicate_registry",
             "relationship_review_workflow",
             "bounded_graph_traversal",

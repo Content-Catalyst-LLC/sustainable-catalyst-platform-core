@@ -262,4 +262,32 @@ export class PublicApiClient {
     return this.request(`/country-evidence/country/${encodeURIComponent(countryCode)}/reconcile?${query}`);
   }
 
+  scientificDomains() {
+    return this.request(`/scientific-fabric/domains`);
+  }
+
+  scientificDomain(domain) {
+    return this.request(`/scientific-fabric/domains/${encodeURIComponent(domain)}`);
+  }
+
+  scientificDomainRecords(domain, params = {}) {
+    const query = new URLSearchParams(params);
+    return this.request(`/scientific-fabric/domains/${encodeURIComponent(domain)}/records?${query}`);
+  }
+
+  scientificDomainAssets(domain, params = {}) {
+    const query = new URLSearchParams(params);
+    return this.request(`/scientific-fabric/domains/${encodeURIComponent(domain)}/assets?${query}`);
+  }
+
+  scientificDomainTimeSeries(domain, params = {}) {
+    const query = new URLSearchParams(params);
+    return this.request(`/scientific-fabric/domains/${encodeURIComponent(domain)}/timeseries?${query}`);
+  }
+
+  scientificDomainMapLayers(domain, params = {}) {
+    const query = new URLSearchParams(params);
+    return this.request(`/scientific-fabric/domains/${encodeURIComponent(domain)}/map-layers?${query}`);
+  }
+
 }

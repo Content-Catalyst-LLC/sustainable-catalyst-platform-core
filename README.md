@@ -1,3 +1,20 @@
+# Sustainable Catalyst Platform Core v2.13.0
+
+Core v2.13.0 adds **Earth, Ocean, Space & Scientific Service Fabric** on top of the scientific connector pack and geospatial/time-series/STAC asset fabric. Scientific records, time series and map layers can now be routed into first-class Earth, Ocean and Space discovery domains while retaining their original source and provenance.
+
+Key v2.13.0 additions:
+- first-class Earth, Ocean and Space domain front-door contracts;
+- persisted scientific-domain bindings with explicit classification basis and confidence;
+- Ocean presented independently rather than hidden inside generic Earth science;
+- domain-specific records, assets, time-series and map-layer APIs;
+- mission and source summaries for domain discovery;
+- automatic routing refresh for newly ingested scientific records;
+- routing-only semantics with `truth_precedence = none`;
+- zero routed records explicitly means no indexed records, not no science;
+- migration `0016`, public API/SDK helpers, WordPress status, schema and regression coverage.
+
+---
+
 # Sustainable Catalyst Platform Core v2.12.0
 
 Core v2.12.0 adds **Country Evidence Federation & Reconciliation** on top of the operational facility and humanitarian evidence layers. Country data is organized by evidence authority and semantic role, with explicit comparability guards and no automatic averaging.
@@ -60,6 +77,8 @@ v2.8.1  Production Integration & Readiness Repair
 v2.9.0  Streaming, Alerts, and Source Reliability
 v2.10.0 Operational Evidence & Facility Registry
 v2.11.0 Humanitarian Access & Essential Services Fabric
+v2.12.0 Country Evidence Federation & Reconciliation
+v2.13.0 Earth, Ocean, Space & Scientific Service Fabric
 ```
 
 ---

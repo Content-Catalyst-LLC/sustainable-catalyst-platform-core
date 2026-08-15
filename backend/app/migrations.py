@@ -25,6 +25,7 @@ MIGRATIONS = [
     ("0013", "Operational facility registry, source identifiers, facility-level status observations, geospatial facility lookup, and provenance-preserving operational evidence history."),
     ("0014", "Humanitarian access and essential-services condition fabric with facility linkage, structured-source materialization, semantic roles, and provenance-preserving country evidence."),
     ("0015", "Country evidence federation and reconciliation with authority-role precedence, comparability guards, discrepancy detection, and auditable non-blending selection records."),
+    ("0016", "Earth, ocean, space, and scientific service routing with persisted domain bindings, explicit classification provenance, and non-truth-precedence navigation indexes."),
 ]
 
 def _seed_predicates(database: Database) -> int:

@@ -268,3 +268,33 @@ def _country_evidence_reconcile(self, country_code: str, concept: str):
 
 PublicApiClient.country_evidence_federation = _country_evidence_federation
 PublicApiClient.country_evidence_reconcile = _country_evidence_reconcile
+
+# v2.13.0 Earth, Ocean, Space & Scientific Service Fabric helpers
+def _scientific_domains(self):
+    return self.request("GET", "/scientific-fabric/domains")
+
+def _scientific_domain(self, domain: str):
+    return self.request("GET", f"/scientific-fabric/domains/{domain}")
+
+def _scientific_domain_records(self, domain: str, **params):
+    clean={k:v for k,v in params.items() if v is not None}
+    return self.request("GET", f"/scientific-fabric/domains/{domain}/records", params=clean)
+
+def _scientific_domain_assets(self, domain: str, **params):
+    clean={k:v for k,v in params.items() if v is not None}
+    return self.request("GET", f"/scientific-fabric/domains/{domain}/assets", params=clean)
+
+def _scientific_domain_time_series(self, domain: str, **params):
+    clean={k:v for k,v in params.items() if v is not None}
+    return self.request("GET", f"/scientific-fabric/domains/{domain}/timeseries", params=clean)
+
+def _scientific_domain_map_layers(self, domain: str, **params):
+    clean={k:v for k,v in params.items() if v is not None}
+    return self.request("GET", f"/scientific-fabric/domains/{domain}/map-layers", params=clean)
+
+PublicApiClient.scientific_domains = _scientific_domains
+PublicApiClient.scientific_domain = _scientific_domain
+PublicApiClient.scientific_domain_records = _scientific_domain_records
+PublicApiClient.scientific_domain_assets = _scientific_domain_assets
+PublicApiClient.scientific_domain_time_series = _scientific_domain_time_series
+PublicApiClient.scientific_domain_map_layers = _scientific_domain_map_layers

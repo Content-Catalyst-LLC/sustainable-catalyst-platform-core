@@ -74,7 +74,7 @@ services:
       - key: SC_CORE_LIVE_DATA_STRICT_FREE_SOURCES
         value: "true"
       - key: SC_CORE_LIVE_DATA_USER_AGENT
-        value: SustainableCatalystPlatformCore/2.12.0 (+https://sustainablecatalyst.com/contact/)
+        value: SustainableCatalystPlatformCore/2.13.0 (+https://sustainablecatalyst.com/contact/)
       - key: SC_CORE_LIVE_DATA_TIMEOUT_SECONDS
         value: "20"
       - key: SC_CORE_LIVE_DATA_MAX_RESPONSE_BYTES
@@ -135,13 +135,15 @@ services:
         value: "true"
       - key: SC_CORE_DATA_FABRIC_POSTGIS_AUTO_ENABLE
         value: "true"
+      - key: SC_CORE_SCIENTIFIC_SERVICE_FABRIC_ENABLED
+        value: "true"
 
 databases:
   - name: sustainable-catalyst-platform-core-db
     databaseName: sustainable_catalyst_platform_core
     user: sustainable_catalyst_platform_core
 
-# Platform Core v2.12.0
+# Platform Core v2.13.0
 # Add these secret values in Render rather than committing them:
 # SC_CORE_WORKFLOW_ENGINE_ENABLED=true
 # SC_CORE_DOSSIER_CENTER_ENABLED=true

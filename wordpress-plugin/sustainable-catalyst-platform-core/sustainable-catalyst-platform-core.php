@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name: Sustainable Catalyst Platform Core
- * Description: WordPress connector for Sustainable Catalyst Platform Core registry, graph, evidence, developer, gateway, free live-data, international-law, scientific-data, official-statistics, geospatial, time-series, STAC, map-layer, streaming, alerts, source-reliability, and operational-facility, humanitarian-access, essential-services, and country-evidence federation and reconciliation services.
- * Version: 2.12.0
+ * Description: WordPress connector for Sustainable Catalyst Platform Core registry, graph, evidence, developer, gateway, free live-data, international-law, scientific-data, official-statistics, geospatial, time-series, STAC, map-layer, streaming, alerts, source-reliability, and operational-facility, humanitarian-access, essential-services, and country-evidence federation and reconciliation, and Earth/Ocean/Space scientific-service routing services.
+ * Version: 2.13.0
  * Author: Content Catalyst LLC
  * License: MIT
  */
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('SCPC_VERSION', '2.12.0');
+define('SCPC_VERSION', '2.13.0');
 define('SCPC_OPTION_BACKEND_URL', 'scpc_backend_url');
 define('SCPC_OPTION_READ_KEY', 'scpc_read_key');
 
@@ -93,6 +93,7 @@ function scpc_render_settings_page() {
         <code>[sc_platform_core_facility_registry_status]</code><br />
         <code>[sc_platform_core_humanitarian_status]</code><br />
         <code>[sc_platform_core_country_evidence_status country="PSE"]</code><br />
+        <code>[sc_platform_core_scientific_fabric_status]</code><br />
         <code>[sc_platform_core_entity id="sc:product:workbench"]</code><br />
         <code>[sc_platform_core_relationships id="sc:product:research-librarian"]</code><br />
         <code>[sc_knowledge_explorer]</code><br />
@@ -404,6 +405,31 @@ function scpc_country_evidence_status_shortcode($atts) {
     <?php return ob_get_clean();
 }
 add_shortcode('sc_platform_core_country_evidence_status', 'scpc_country_evidence_status_shortcode');
+
+
+function scpc_scientific_fabric_status_shortcode() {
+    $status = scpc_api_get('/v1/scientific-fabric/readiness');
+    if (is_wp_error($status)) {
+        return '<div class="scpc-card scpc-error"><strong>Scientific service fabric unavailable</strong><p>' .
+            esc_html($status->get_error_message()) . '</p></div>';
+    }
+    $summaries = isset($status['domain_summaries']) && is_array($status['domain_summaries']) ? $status['domain_summaries'] : [];
+    $earth = isset($summaries['earth']['records']) ? intval($summaries['earth']['records']) : 0;
+    $ocean = isset($summaries['ocean']['records']) ? intval($summaries['ocean']['records']) : 0;
+    $space = isset($summaries['space']['records']) ? intval($summaries['space']['records']) : 0;
+    ob_start(); ?>
+    <section class="scpc-card">
+        <p class="scpc-kicker">Scientific service routing</p>
+        <h3>Earth · Ocean · Space</h3>
+        <p><strong>Status:</strong> <?php echo esc_html(ucfirst($status['status'] ?? 'unknown')); ?> ·
+        <strong>Earth:</strong> <?php echo esc_html(number_format_i18n($earth)); ?> ·
+        <strong>Ocean:</strong> <?php echo esc_html(number_format_i18n($ocean)); ?> ·
+        <strong>Space:</strong> <?php echo esc_html(number_format_i18n($space)); ?></p>
+        <p class="scpc-meta">Domain bindings are navigation and service-routing metadata only. They do not modify source records, create scientific observations, or carry factual Truth precedence.</p>
+    </section>
+    <?php return ob_get_clean();
+}
+add_shortcode('sc_platform_core_scientific_fabric_status', 'scpc_scientific_fabric_status_shortcode');
 
 function scpc_entity_shortcode($atts) {
     $atts = shortcode_atts(['id' => ''], $atts, 'sc_platform_core_entity');

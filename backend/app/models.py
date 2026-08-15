@@ -1729,3 +1729,28 @@ class CountryEvidenceReconciliation(Base):
     rationale_json: Mapped[dict] = mapped_column(JSON, default=dict)
     public: Mapped[bool] = mapped_column(Boolean, default=True, index=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+# v2.13.0 — Earth, Ocean, Space & Scientific Service Fabric
+class ScientificDomainBinding(Base):
+    __tablename__ = "scientific_domain_bindings"
+    __table_args__ = (
+        UniqueConstraint("subject_type", "subject_id", "domain", name="uq_scientific_domain_subject_domain"),
+        Index("ix_scientific_domain_domain_subdomain", "domain", "subdomain"),
+        Index("ix_scientific_domain_subject", "subject_type", "subject_id"),
+        Index("ix_scientific_domain_public", "public", "domain"),
+    )
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    subject_type: Mapped[str] = mapped_column(String(80), nullable=False, index=True)
+    subject_id: Mapped[str] = mapped_column(String(128), nullable=False, index=True)
+    domain: Mapped[str] = mapped_column(String(32), nullable=False, index=True)
+    subdomain: Mapped[str] = mapped_column(String(80), nullable=False, index=True)
+    classification_basis: Mapped[str] = mapped_column(String(80), nullable=False)
+    classification_evidence_json: Mapped[list] = mapped_column(JSON, default=list)
+    confidence: Mapped[float] = mapped_column(Float, default=0.0)
+    is_primary: Mapped[bool] = mapped_column(Boolean, default=True, index=True)
+    routing_only: Mapped[bool] = mapped_column(Boolean, default=True)
+    truth_precedence: Mapped[str] = mapped_column(String(32), default="none")
+    public: Mapped[bool] = mapped_column(Boolean, default=True, index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)

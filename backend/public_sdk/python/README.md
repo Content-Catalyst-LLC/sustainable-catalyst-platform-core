@@ -1,4 +1,4 @@
-# Sustainable Catalyst Public API Python Client v2.12.0
+# Sustainable Catalyst Public API Python Client v2.13.0
 
 ```python
 from sc_platform_core_public import PublicApiClient
@@ -59,19 +59,23 @@ stac = client.stac_search(collections="mast:JWST")
 ```
 
 
-## Streaming v2.12.0
+## Streaming v2.13.0
 
 The public client exposes a reliability stream URL helper for the Server-Sent Events endpoint. SSE consumers must send the normal scoped Bearer credential. Public streams contain only events explicitly marked public.
 
-## Operational facilities v2.12.0
+## Operational facilities v2.13.0
 
 List public facilities by country/type/bbox, retrieve a public facility, and inspect dated facility observations. Operational, damage, access, service, capacity, and supply dimensions remain distinct.
 
 
-## Humanitarian access and essential services v2.12.0
+## Humanitarian access and essential services v2.13.0
 
 Query public humanitarian-condition records and country summaries while preserving service domain, evidence role, facility linkage, source, period, and provenance. Structural baselines are not presented as current operational conditions.
 
-## Country evidence federation v2.12.0
+## Country evidence federation v2.13.0
 
 Use `country_evidence_federation(country_code)` for the country evidence lanes and `country_evidence_reconcile(country_code, concept)` for non-blending source selection with explicit comparability and fallback rationale.
+
+
+## Earth, Ocean, Space scientific fabric v2.13.0
+Discover routed scientific domains and retrieve domain-specific records, assets, time series, and map layers. Domain routing is navigation metadata only and has no factual Truth precedence.

@@ -1,3 +1,11 @@
+## 2.13.0 — 2026-08-15
+
+- Added Earth, Ocean, Space & Scientific Service Fabric.
+- Added persisted scientific domain routing bindings and migration `0016`.
+- Added domain-specific scientific records, assets, time-series and map-layer APIs.
+- Added mission/source summaries and automatic routing refresh for scientific ingestion.
+- Domain routing is explicitly non-truth-precedence metadata and never rewrites source observations.
+
 # Changelog
 
 ## 2.12.0 — 2026-08-14

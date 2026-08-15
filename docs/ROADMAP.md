@@ -109,3 +109,16 @@ Completed:
 - Different-period and subnational-scope non-conflict rules
 - Persisted reconciliation audits
 - Public API, SDK, WordPress status, migration `0015`, schema and validation
+
+
+## v2.13.0 — Earth, Ocean, Space & Scientific Service Fabric
+Completed:
+
+- First-class Earth, Ocean and Space domain routing
+- Persisted routing bindings for scientific records, time series and map layers
+- Domain-specific records, assets, time-series and map-layer APIs
+- Mission/source summaries and Ocean-first discoverability
+- Routing classification provenance and confidence
+- `truth_precedence = none` for all domain bindings
+- Automatic binding refresh for new scientific ingestion
+- Public API, SDK, WordPress status, migration `0016`, schema and validation

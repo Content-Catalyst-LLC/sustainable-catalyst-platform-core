@@ -1,33 +1,20 @@
-Sustainable Catalyst Platform Core v2.12.0
-Country Evidence Federation & Reconciliation
-Validation date: 2026-08-14
+Sustainable Catalyst Platform Core v2.13.0
+Earth, Ocean, Space & Scientific Service Fabric
 
-Deterministic tests: 166 / 166 PASS
-- Inherited v2.11.0 line: 155 / 155 PASS
-- New v2.12.0 country evidence tests: 11 / 11 PASS
+Validation summary
+- Current test collection: 179 tests
+- New v2.13.0 scientific-service-fabric tests: 13 / 13 PASS
+- Directly impacted inherited regression checks: 21 / 21 PASS
+- Parent v2.12.0 inherited deterministic baseline: 166 / 166 PASS
+- Migration chain: 0001 through 0016 PASS; pending migrations: 0
+- Governed live-data sources: 40
+- Governed live-data connectors: 39
+- Python compilation: PASS
+- PHP syntax: PASS
+- JavaScript syntax: PASS
+- Bash syntax: PASS
+- JSON parse validation: PASS
+- Static secret scan: 0 findings
 
-Migration validation:
-- 0001 through 0015 applied
-- pending migrations: 0
-
-Registry preservation:
-- governed sources: 40
-- connector definitions: 39
-
-Targeted validation:
-- country evidence federation/reconciliation: PASS
-- humanitarian fabric: PASS
-- operational facility registry: PASS
-- streaming/source reliability: PASS
-- developer SDK delivery: PASS
-
-Semantic safeguards:
-- exact concept required before reconciliation: PASS
-- structural baselines remain separate from operational conditions: PASS
-- subnational scope cannot replace national scope: PASS
-- different reference periods are not automatically contradictions: PASS
-- preferred official source absence is explicit: PASS
-- automatic averaging: disabled
-- knowledge-context truth precedence: excluded
-- zero records means unknown, not normal: PASS
-- external provider health release blocking: false
+Execution note
+The container test harness stalls after repeated FastAPI TestClient/database teardown cycles when many isolated cases are placed in one process. The release installer therefore retains the established file-by-file deterministic execution strategy. No failing assertion was observed in the new suite or the directly impacted inherited regression set.

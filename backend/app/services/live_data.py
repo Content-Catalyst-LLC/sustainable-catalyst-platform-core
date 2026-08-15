@@ -13,6 +13,7 @@ from sqlalchemy.orm import Session
 
 from ..connectors import ADAPTERS, NormalizedObservation
 from .data_fabric import materialize_observation, materialize_scientific_record
+from .scientific_service_fabric import materialize_record_binding
 from .humanitarian import materialize_live_observation
 from .reliability import emit_event, evaluate_alerts
 from ..models import (
@@ -287,6 +288,7 @@ class LiveDataRuntime:
             fabric_stac_collections_created = 0
             fabric_stac_items_created = 0
             fabric_map_layers_created = 0
+            scientific_domain_bindings_refreshed = 0
             changed_observations = []
             for item in normalized:
                 try:
@@ -501,6 +503,8 @@ class LiveDataRuntime:
                             fabric_stac_items_created += science_fabric_counts["stac_items_created"]
                             fabric_features_created += science_fabric_counts["features_created"]
                             fabric_map_layers_created += science_fabric_counts["map_layers_created"]
+                        if self.settings.scientific_service_fabric_enabled:
+                            scientific_domain_bindings_refreshed += materialize_record_binding(db, science_record)
                 except Exception:
                     rejected += 1
 
@@ -527,6 +531,7 @@ class LiveDataRuntime:
                 "fabric_stac_collections_created": fabric_stac_collections_created,
                 "fabric_stac_items_created": fabric_stac_items_created,
                 "fabric_map_layers_created": fabric_map_layers_created,
+                "scientific_domain_bindings_refreshed": scientific_domain_bindings_refreshed,
             }
             connector.last_health_status = "operational"
             connector.last_health_checked_at = run.completed_at

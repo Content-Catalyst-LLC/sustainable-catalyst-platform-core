@@ -27,7 +27,7 @@ def main() -> int:
         "external_provider_health_release_blocking": False,
     }
     print(json.dumps(payload, indent=2))
-    if settings.version != "2.12.0" or not payload["migration_0012_applied"] or status["pending"]:
+    if settings.version != "2.13.0" or not payload["migration_0012_applied"] or status["pending"]:
         return 2
     return 0
 

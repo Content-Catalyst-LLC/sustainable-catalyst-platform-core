@@ -10,7 +10,7 @@ from app.services.country_evidence import AUTHORITY_PRECEDENCE, reconcile_candid
 
 def main():
     settings=Settings.from_env(); db=Database(settings.database_url); run_migrations(db); status=migration_status(db)
-    assert settings.version=='2.12.0'; assert '0015' in status['applied']; assert not status['pending']
+    assert settings.version=='2.13.0'; assert '0015' in status['applied']; assert not status['pending']
     assert AUTHORITY_PRECEDENCE['primary-official'] < AUTHORITY_PRECEDENCE['harmonized-benchmark']
     result=reconcile_candidates('PSE','electricity',[
         {'record_family':'economic-statistic','record_id':'wb','concept':'electricity','source_id':'world-bank','publisher':'World Bank','evidence_class':'harmonized-benchmark','semantic_role':'structural-baseline','geographic_scope':'PSE','reference_period':'2024','value_number':100,'unit':'percent'},
@@ -20,5 +20,5 @@ def main():
     assert result['rationale']['structural_baselines_never_substitute_for_operational_conditions'] is True
     assert result['rationale']['subnational_scope_never_substitutes_for_national_scope'] is True
     print({'version':settings.version,'migration_0015_applied':True,'pending_migrations':status['pending'],'authority_roles':len(AUTHORITY_PRECEDENCE),'automatic_averaging':False,'external_provider_health_release_blocking':False})
-    print('PASS - Core v2.12.0 country evidence federation and reconciliation validation')
+    print('PASS - Core v2.13.0 country evidence federation and reconciliation validation')
 if __name__=='__main__': main()
