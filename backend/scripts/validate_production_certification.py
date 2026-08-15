@@ -11,7 +11,7 @@ try:
  with d.session_factory() as session:
   cp=certification.create_recovery_checkpoint(session,d,s); assert certification.verify_recovery_checkpoint(cp)['valid']
   row,detail=certification.run_certification(session,d,s,{'release_ready':True,'required_blockers':[]})
-  assert row.state=='certified' and detail['migration_head']=='0020' and not detail['pending_migrations']
+  assert row.state=='certified' and detail['migration_head']=='0021' and not detail['pending_migrations']
   assert detail['recovery']['database_backup_embedded'] is False and detail['recovery']['external_backup_required_for_full_restore'] is True
  print({'version':s.version,'migration_0020_applied':True,'pending_migrations':st['pending'],'certification_state':'certified','recovery_checkpoint_integrity':'sha256','database_backup_embedded':False,'external_provider_health_release_blocking':False})
  print(f'PASS - Core {s.version} production certification migration assurance and recovery readiness validation')

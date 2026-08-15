@@ -2026,3 +2026,59 @@ class RecoveryReadinessCheckpoint(Base):
     checkpoint_hash: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
     expires_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True, index=True)
+
+
+# v2.18.0 — Observability, SLOs & Production Operations
+class ObservabilityMetricSample(Base):
+    __tablename__ = "observability_metric_samples"
+    __table_args__ = (
+        Index("ix_observability_metric_time", "metric_name", "observed_at"),
+        Index("ix_observability_service_time", "service", "observed_at"),
+        Index("ix_observability_status_time", "status_class", "observed_at"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    service: Mapped[str] = mapped_column(String(100), nullable=False, default="platform-core", index=True)
+    metric_name: Mapped[str] = mapped_column(String(120), nullable=False, index=True)
+    value: Mapped[float] = mapped_column(Float, nullable=False)
+    unit: Mapped[str] = mapped_column(String(40), nullable=False, default="count")
+    method: Mapped[str | None] = mapped_column(String(16), nullable=True)
+    route: Mapped[str | None] = mapped_column(String(600), nullable=True)
+    status_code: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    status_class: Mapped[str | None] = mapped_column(String(20), nullable=True, index=True)
+    request_id: Mapped[str | None] = mapped_column(String(128), nullable=True, index=True)
+    labels_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    observed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, index=True)
+
+class ServiceLevelObjective(Base):
+    __tablename__ = "service_level_objectives"
+    __table_args__ = (
+        UniqueConstraint("service", "name", name="uq_slo_service_name"),
+        Index("ix_slo_service_enabled", "service", "enabled"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    service: Mapped[str] = mapped_column(String(100), nullable=False, default="platform-core", index=True)
+    name: Mapped[str] = mapped_column(String(240), nullable=False)
+    indicator: Mapped[str] = mapped_column(String(60), nullable=False, index=True)
+    target: Mapped[float] = mapped_column(Float, nullable=False)
+    comparison: Mapped[str] = mapped_column(String(8), nullable=False, default=">=")
+    window_minutes: Mapped[int] = mapped_column(Integer, nullable=False, default=60)
+    minimum_samples: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
+    enabled: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True, index=True)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+class ProductionDeploymentMarker(Base):
+    __tablename__ = "production_deployment_markers"
+    __table_args__ = (
+        Index("ix_deployment_release_time", "release", "created_at"),
+        Index("ix_deployment_environment_time", "environment", "created_at"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    release: Mapped[str] = mapped_column(String(40), nullable=False, index=True)
+    environment: Mapped[str] = mapped_column(String(40), nullable=False, default="production", index=True)
+    state: Mapped[str] = mapped_column(String(40), nullable=False, default="deployed", index=True)
+    commit_sha: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    actor: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, index=True)

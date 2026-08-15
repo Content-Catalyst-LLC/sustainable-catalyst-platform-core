@@ -122,3 +122,19 @@ Completed:
 - `truth_precedence = none` for all domain bindings
 - Automatic binding refresh for new scientific ingestion
 - Public API, SDK, WordPress status, migration `0016`, schema and validation
+
+
+## v2.14.0 — Cross-Product Evidence Exchange
+Completed.
+
+## v2.15.0 — Distributed Processing, Storage & Scale
+Completed.
+
+## v2.16.0 — Governance, Access & Audit Control Plane
+Completed.
+
+## v2.17.0 — Production Certification, Migration Assurance & Recovery Readiness
+Completed.
+
+## v2.18.0 — Observability, SLOs & Production Operations
+Completed: first-party request telemetry, aggregate service windows, persisted SLOs, deployment markers, retention compaction, public-safe production status, and local-first monitoring with no paid-provider requirement.

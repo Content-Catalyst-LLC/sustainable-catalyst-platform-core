@@ -1,0 +1,8 @@
+Platform Core v2.18.0 R1 — Certification Migration Lineage & Promotion Repair
+
+cd ~/Downloads
+chmod +x repair_and_resume_platform_core_v2_18_0_r1_macos.sh
+./repair_and_resume_platform_core_v2_18_0_r1_macos.sh \
+  sustainable-catalyst-platform-core-v2.18.0-release-bundle-REPAIRED-R1.zip
+
+Core runtime version remains 2.18.0.

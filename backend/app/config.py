@@ -20,7 +20,7 @@ def _int(name: str, default: int) -> int:
 @dataclass(frozen=True)
 class Settings:
     app_name: str = "Sustainable Catalyst Platform Core"
-    version: str = "2.17.0"
+    version: str = "2.18.0"
     environment: str = "development"
     database_url: str = "sqlite:///./platform_core.db"
     write_api_key: str = ""
@@ -53,7 +53,7 @@ class Settings:
     live_data_enabled: bool = True
     live_data_ingest_enabled: bool = True
     live_data_strict_free_sources: bool = True
-    live_data_user_agent: str = "SustainableCatalystPlatformCore/2.17.0 (+https://sustainablecatalyst.com/contact/)"
+    live_data_user_agent: str = "SustainableCatalystPlatformCore/2.18.0 (+https://sustainablecatalyst.com/contact/)"
     live_data_timeout_seconds: int = 20
     live_data_max_response_bytes: int = 12582912
     live_data_raw_payload_max_bytes: int = 1048576
@@ -104,6 +104,13 @@ class Settings:
     certification_require_gateway_release_ready: bool = False
     recovery_checkpoint_enabled: bool = True
     recovery_checkpoint_retention_hours: int = 720
+    observability_control_plane_enabled: bool = True
+    observability_request_metrics_enabled: bool = True
+    observability_public_status_enabled: bool = True
+    observability_retention_hours: int = 720
+    observability_default_window_minutes: int = 60
+    observability_default_availability_target: float = 99.0
+    observability_default_latency_p95_ms: int = 1000
 
     @classmethod
     def from_env(cls) -> "Settings":
@@ -181,7 +188,7 @@ class Settings:
             live_data_strict_free_sources=_bool("SC_CORE_LIVE_DATA_STRICT_FREE_SOURCES", True),
             live_data_user_agent=os.getenv(
                 "SC_CORE_LIVE_DATA_USER_AGENT",
-                "SustainableCatalystPlatformCore/2.17.0 (+https://sustainablecatalyst.com/contact/)",
+                "SustainableCatalystPlatformCore/2.18.0 (+https://sustainablecatalyst.com/contact/)",
             ).strip(),
             live_data_timeout_seconds=max(
                 1, min(_int("SC_CORE_LIVE_DATA_TIMEOUT_SECONDS", 20), 120)
@@ -244,4 +251,11 @@ class Settings:
             certification_require_gateway_release_ready=_bool("SC_CORE_CERTIFICATION_REQUIRE_GATEWAY_RELEASE_READY", False),
             recovery_checkpoint_enabled=_bool("SC_CORE_RECOVERY_CHECKPOINT_ENABLED", True),
             recovery_checkpoint_retention_hours=max(24, min(_int("SC_CORE_RECOVERY_CHECKPOINT_RETENTION_HOURS", 720), 87600)),
+            observability_control_plane_enabled=_bool("SC_CORE_OBSERVABILITY_CONTROL_PLANE_ENABLED", True),
+            observability_request_metrics_enabled=_bool("SC_CORE_OBSERVABILITY_REQUEST_METRICS_ENABLED", True),
+            observability_public_status_enabled=_bool("SC_CORE_OBSERVABILITY_PUBLIC_STATUS_ENABLED", True),
+            observability_retention_hours=max(24, min(_int("SC_CORE_OBSERVABILITY_RETENTION_HOURS", 720), 87600)),
+            observability_default_window_minutes=max(1, min(_int("SC_CORE_OBSERVABILITY_DEFAULT_WINDOW_MINUTES", 60), 10080)),
+            observability_default_availability_target=max(0.0, min(float(os.getenv("SC_CORE_OBSERVABILITY_DEFAULT_AVAILABILITY_TARGET", "99.0")), 100.0)),
+            observability_default_latency_p95_ms=max(1, min(_int("SC_CORE_OBSERVABILITY_DEFAULT_LATENCY_P95_MS", 1000), 600000)),
         )

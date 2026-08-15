@@ -321,7 +321,13 @@ def _governance_readiness(self):
 PublicApiClient.governance_readiness = _governance_readiness
 
 
-# v2.17.0 Production Certification public readiness helper
+# v2.18.0 Production Certification public readiness helper
 def _certification_readiness(self):
     return self.request("GET", "/certification/readiness")
 PublicApiClient.certification_readiness = _certification_readiness
+
+
+# v2.18.0 Observability public status helper
+def _observability_status(self):
+    return self.request("GET", "/observability/status")
+PublicApiClient.observability_status = _observability_status

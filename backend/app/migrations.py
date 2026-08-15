@@ -2,7 +2,7 @@ from __future__ import annotations
 import os
 from sqlalchemy import select, text
 from .database import Base, Database
-from .models import ApiPlan, EvaluationDefinition, LiveDataConnector, LiveDataSource, PredicateDefinition, SchemaMigration, WorkflowDefinition
+from .models import ApiPlan, EvaluationDefinition, LiveDataConnector, LiveDataSource, PredicateDefinition, SchemaMigration, WorkflowDefinition, ServiceLevelObjective
 from .predicate_catalog import DEFAULT_PREDICATES
 from .api_plan_catalog import DEFAULT_API_PLANS
 from .evaluation_catalog import DEFAULT_EVALUATION_DEFINITIONS
@@ -30,6 +30,7 @@ MIGRATIONS = [
     ("0018", "Distributed processing, partition leases, storage-object registry, backpressure, retention, compaction, and scale diagnostics control plane."),
     ("0019", "Governance policies, principal-role bindings, persisted access decisions, tamper-evident audit chain, retention policy controls, and public-safe governance readiness."),
     ("0020", "Production certification runs, migration-assurance snapshots, recovery checkpoints, integrity verification, and release-recovery readiness records."),
+    ("0021", "First-party observability metrics, service-level objectives, deployment markers, retention, and public-safe production operations status."),
 ]
 
 def _seed_predicates(database: Database) -> int:
@@ -145,6 +146,21 @@ def _configure_postgresql_fabric(database: Database) -> dict[str, bool]:
     )
     return result
 
+
+def _seed_observability_slos(database: Database) -> int:
+    created=0
+    defaults=[
+        {"service":"platform-core","name":"Core availability","indicator":"availability_percent","target":99.0,"comparison":">=","window_minutes":60,"minimum_samples":5,"metadata_json":{"seed":"platform-core-v2.18.0"}},
+        {"service":"platform-core","name":"Core p95 latency","indicator":"latency_p95_ms","target":1000.0,"comparison":"<=","window_minutes":60,"minimum_samples":5,"metadata_json":{"seed":"platform-core-v2.18.0"}},
+    ]
+    with database.session_factory() as session:
+        for payload in defaults:
+            existing=session.scalar(select(ServiceLevelObjective).where(ServiceLevelObjective.service==payload["service"],ServiceLevelObjective.name==payload["name"]))
+            if existing is None:
+                session.add(ServiceLevelObjective(**payload)); created+=1
+        session.commit()
+    return created
+
 def run_migrations(database: Database) -> list[str]:
     Base.metadata.create_all(database.engine)
     applied: list[str] = []
@@ -160,6 +176,7 @@ def run_migrations(database: Database) -> list[str]:
     _seed_workflow_definitions(database)
     _seed_live_data_registry(database)
     _configure_postgresql_fabric(database)
+    _seed_observability_slos(database)
     return applied
 
 def migration_status(database: Database) -> dict:

@@ -1,3 +1,19 @@
+# Sustainable Catalyst Platform Core v2.18.0
+
+Core v2.18.0 adds **Observability, SLOs & Production Operations**: a local-first operational telemetry and service-level-objective layer that makes Core performance and release behavior auditable without requiring a paid monitoring vendor.
+
+Key v2.18.0 additions:
+- non-fatal request duration/status telemetry with query-string exclusion;
+- aggregate availability, error-rate and p95 latency windows;
+- persisted SLO definitions and met/breached/insufficient-data evaluation;
+- seeded Platform Core availability and p95 latency objectives;
+- production deployment markers and retention compaction;
+- public-safe aggregate status with no raw request IDs or operator metadata;
+- additive migration `0021`;
+- no evidence/Truth-precedence effect from operational telemetry.
+
+---
+
 # Sustainable Catalyst Platform Core v2.14.0
 
 Core v2.14.0 adds **Cross-Product Evidence Exchange**: a governed, reference-first handoff contract for moving evidence and analytical references between Sustainable Catalyst products without rewriting canonical records or promoting derived artifacts into new Truth sources.

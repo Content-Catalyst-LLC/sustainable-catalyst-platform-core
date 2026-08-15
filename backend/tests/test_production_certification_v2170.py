@@ -15,20 +15,24 @@ def db():
 def test_migration_head_and_readiness():
  d,p=db()
  try:
-  s=Settings(database_url='sqlite:///'+p); m=certification.migration_assurance(d); assert m['schema_head']=='0020' and m['zero_pending'] and m['head_matches']
+  s=Settings(database_url='sqlite:///'+p); m=certification.migration_assurance(d); assert m['schema_head']=='0021' and m['zero_pending'] and m['head_matches']
   with d.session_factory() as session:
    r=certification.readiness(session,s); assert r['enabled'] and r['database_backup_embedded'] is False and r['external_provider_health_release_blocking'] is False
  finally: os.unlink(p)
 
-def test_upgrade_from_recorded_0019_state_applies_only_0020():
+def test_upgrade_from_recorded_0019_state_applies_current_head():
  fd,p=tempfile.mkstemp(suffix='.db'); os.close(fd); d=Database('sqlite:///'+p)
  try:
   from app.database import Base; Base.metadata.create_all(d.engine)
   with d.session_factory() as session:
+   # Model a real v2.16.0 / migration-0019 state. Do not pre-record
+   # migrations introduced after 0019; the current migration engine must
+   # discover and apply every later migration in order.
    for version,description in MIGRATIONS:
-    if version!='0020': session.add(SchemaMigration(version=version,description=description))
+    if version <= '0019':
+     session.add(SchemaMigration(version=version,description=description))
    session.commit()
-  assert run_migrations(d)==['0020']; assert migration_status(d)['pending']==[]
+  assert run_migrations(d)==['0020','0021']; assert migration_status(d)['pending']==[]
  finally: os.unlink(p)
 
 def test_recovery_checkpoint_integrity_and_contract():
@@ -66,7 +70,7 @@ def test_certification_can_require_first_party_gateway_readiness():
 def test_public_readiness_does_not_expose_records():
  fd,p=tempfile.mkstemp(suffix='.db'); os.close(fd)
  try:
-  app=create_app(Settings(database_url='sqlite:///'+p)); c=TestClient(app); r=c.get('/api/v1/certification/readiness'); assert r.status_code in (200,401,403); internal=c.get('/v1/certification/readiness'); assert internal.status_code==200; body=internal.json(); assert body['release']=='2.17.0'; assert body['migration_assurance']['schema_head']=='0020'; assert body['database_backup_embedded'] is False
+  app=create_app(Settings(database_url='sqlite:///'+p)); c=TestClient(app); r=c.get('/api/v1/certification/readiness'); assert r.status_code in (200,401,403); internal=c.get('/v1/certification/readiness'); assert internal.status_code==200; body=internal.json(); assert body['release']=='2.18.0'; assert body['migration_assurance']['schema_head']=='0021'; assert body['database_backup_embedded'] is False
  finally: os.unlink(p)
 
 def test_internal_api_creates_and_verifies_checkpoint():

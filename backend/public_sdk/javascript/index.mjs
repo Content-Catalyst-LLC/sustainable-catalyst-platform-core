@@ -306,4 +306,9 @@ export class PublicApiClient {
     return this.request(`/certification/readiness`);
   }
 
+
+  observabilityStatus() {
+    return this.request(`/observability/status`);
+  }
+
 }

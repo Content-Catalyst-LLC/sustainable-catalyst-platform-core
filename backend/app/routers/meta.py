@@ -84,6 +84,7 @@ def health(request: Request):
         "distributed_processing_storage_scale": request.app.state.settings.scale_control_plane_enabled,
         "governance_access_audit_control_plane": request.app.state.settings.governance_control_plane_enabled,
         "production_certification_migration_recovery": request.app.state.settings.production_certification_enabled,
+        "observability_slo_production_operations": request.app.state.settings.observability_control_plane_enabled,
     }
 
 
@@ -156,6 +157,7 @@ async def ready(request: Request, db: Session = Depends(get_session)):
         "distributed_processing_storage_scale": "ready" if settings.scale_control_plane_enabled else "disabled",
         "governance_access_audit_control_plane": "ready" if settings.governance_control_plane_enabled else "disabled",
         "production_certification_migration_recovery": "ready" if settings.production_certification_enabled else "disabled",
+        "observability_slo_production_operations": "ready" if settings.observability_control_plane_enabled else "disabled",
         "external_provider_health_release_blocking": False,
         "services": [
             {

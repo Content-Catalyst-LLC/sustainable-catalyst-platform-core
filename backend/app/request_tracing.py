@@ -34,6 +34,13 @@ class RequestTraceMiddleware(BaseHTTPMiddleware):
         response.headers["X-Request-ID"] = final_request_id
         response.headers["X-SC-Core-Version"] = request.app.state.settings.version
         response.headers["Server-Timing"] = f"core;dur={elapsed_ms}"
+        try:
+            if request.app.state.settings.observability_control_plane_enabled and request.app.state.settings.observability_request_metrics_enabled:
+                from .services.observability import record_request
+                with request.app.state.database.session_factory() as db:
+                    record_request(db, method=request.method, route=request.url.path, status_code=response.status_code, duration_ms=elapsed_ms, request_id=final_request_id)
+        except Exception:
+            LOGGER.exception("observability_request_metric_failed request_id=%s", final_request_id)
         LOGGER.info(
             "core_request request_id=%s method=%s path=%s status=%s duration_ms=%s",
             final_request_id,
