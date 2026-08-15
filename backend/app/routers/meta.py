@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, Request
+from urllib.parse import urlsplit
 from sqlalchemy import func, select, text
 from sqlalchemy.orm import Session
 
@@ -76,22 +77,122 @@ def health(request: Request):
 
 
 @router.get("/ready")
-def ready(db: Session = Depends(get_session)):
+async def ready(request: Request, db: Session = Depends(get_session)):
+    """Deployment readiness.
+
+    `/health` is intentionally a liveness endpoint.  `/ready` is stricter: a
+    first-party product service marked REQUIRED must be configured, enabled, and
+    operational before Core reports release readiness. Optional integrations are
+    visible but do not block Core from serving its own registry/evidence/data
+    fabric capabilities.
+    """
     db.execute(text("SELECT 1"))
+    gateway = await request.app.state.gateway_runtime.health_snapshot()
+    settings = request.app.state.settings
+    configuration_blockers: list[str] = []
+    if settings.public_base_url_required:
+        parsed = urlsplit(settings.public_base_url)
+        if parsed.scheme not in {"http", "https"} or not parsed.netloc:
+            configuration_blockers.append("public_base_url")
+    if (
+        settings.required_cors_origin
+        and settings.required_cors_origin not in settings.cors_origins
+    ):
+        configuration_blockers.append("required_cors_origin")
+    release_ready = bool(gateway["release_ready"] and not configuration_blockers)
+    gateway_state = (
+        "disabled"
+        if gateway["gateway"] == "disabled"
+        else ("ready" if gateway["release_ready"] else "blocked")
+    )
     return {
-        "ok": True,
+        "ok": release_ready,
+        "core_version": settings.version,
+        "public_base_url_configured": bool(settings.public_base_url),
+        "public_base_url_required": settings.public_base_url_required,
+        "required_cors_origin_configured": (
+            not settings.required_cors_origin
+            or settings.required_cors_origin in settings.cors_origins
+        ),
+        "configuration_blockers": configuration_blockers,
         "database": "ready",
         "knowledge_graph": "ready",
         "evidence_ledger": "ready",
-        "unified_public_api": "ready",
-        "unified_service_gateway": "ready",
-        "trust_center": "ready",
-        "live_data_gateway": "ready",
+        "unified_public_api": "ready" if settings.public_api_enabled else "disabled",
+        "unified_service_gateway": gateway_state,
+        "gateway_overall_status": gateway["overall_status"],
+        "required_service_count": gateway["required_service_count"],
+        "required_ready_count": gateway["required_ready_count"],
+        "required_blockers": gateway["required_blockers"],
+        "configured_service_count": gateway["configured_service_count"],
+        "trust_center": "ready" if settings.trust_center_enabled else "disabled",
+        "live_data_gateway": "ready" if settings.live_data_enabled else "disabled",
         "international_law_un_connector_pack": "ready",
         "scientific_data_connector_pack": "ready",
         "economics_official_statistics_connector_pack": "ready",
-        "geospatial_time_series_scientific_data_fabric": "ready",
-        "stac_catalog": "ready",
+        "geospatial_time_series_scientific_data_fabric": (
+            "ready" if settings.data_fabric_enabled else "disabled"
+        ),
+        "stac_catalog": "ready" if settings.data_fabric_enabled else "disabled",
+        "services": [
+            {
+                "service_id": item["service_id"],
+                "name": item["name"],
+                "required": item["required"],
+                "configured": item["configured"],
+                "enabled": item["enabled"],
+                "status": item["status"],
+                "readiness": item["readiness"],
+                "upstream_version": item.get("upstream_version"),
+            }
+            for item in gateway["services"]
+        ],
+    }
+
+
+@router.get("/integration/readiness")
+async def integration_readiness(request: Request):
+    """Public-safe first-party integration status with no URLs or tokens."""
+    gateway = await request.app.state.gateway_runtime.health_snapshot()
+    settings = request.app.state.settings
+    configuration_blockers: list[str] = []
+    if settings.public_base_url_required:
+        parsed = urlsplit(settings.public_base_url)
+        if parsed.scheme not in {"http", "https"} or not parsed.netloc:
+            configuration_blockers.append("public_base_url")
+    if (
+        settings.required_cors_origin
+        and settings.required_cors_origin not in settings.cors_origins
+    ):
+        configuration_blockers.append("required_cors_origin")
+    release_ready = bool(gateway["release_ready"] and not configuration_blockers)
+    return {
+        "ok": release_ready,
+        "core_version": settings.version,
+        "public_base_url_configured": bool(settings.public_base_url),
+        "required_cors_origin_configured": (
+            not settings.required_cors_origin
+            or settings.required_cors_origin in settings.cors_origins
+        ),
+        "configuration_blockers": configuration_blockers,
+        "gateway": gateway["gateway"],
+        "overall_status": gateway["overall_status"],
+        "required_service_count": gateway["required_service_count"],
+        "required_ready_count": gateway["required_ready_count"],
+        "required_blockers": gateway["required_blockers"],
+        "services": [
+            {
+                "service_id": item["service_id"],
+                "name": item["name"],
+                "required": item["required"],
+                "configured": item["configured"],
+                "enabled": item["enabled"],
+                "status": item["status"],
+                "readiness": item["readiness"],
+                "upstream_version": item.get("upstream_version"),
+            }
+            for item in gateway["services"]
+        ],
     }
 
 

@@ -1,4 +1,4 @@
-# Sustainable Catalyst Public API JavaScript Client v2.8.0
+# Sustainable Catalyst Public API JavaScript Client v2.8.1
 
 ```javascript
 import { PublicApiClient } from "./index.mjs";
@@ -46,7 +46,7 @@ const types = await client.economicRecordTypes();
 ```
 
 
-## Data fabric v2.8.0
+## Data fabric v2.8.1
 
 ```javascript
 const capabilities = await client.fabricCapabilities();

@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Sustainable Catalyst Platform Core
  * Description: WordPress connector for Sustainable Catalyst Platform Core registry, graph, evidence, developer, gateway, free live-data, international-law, scientific-data, official-statistics, geospatial, time-series, STAC, and map-layer services.
- * Version: 2.8.0
+ * Version: 2.8.1
  * Author: Content Catalyst LLC
  * License: MIT
  */
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('SCPC_VERSION', '2.8.0');
+define('SCPC_VERSION', '2.8.1');
 define('SCPC_OPTION_BACKEND_URL', 'scpc_backend_url');
 define('SCPC_OPTION_READ_KEY', 'scpc_read_key');
 
@@ -83,6 +83,7 @@ function scpc_render_settings_page() {
         </form>
         <h2>Shortcodes</h2>
         <code>[sc_platform_core_status]</code><br />
+        <code>[sc_platform_core_integration_readiness]</code><br />
         <code>[sc_platform_core_live_data_status]</code><br />
         <code>[sc_platform_core_international_law_status]</code><br />
         <code>[sc_platform_core_science_status]</code><br />
@@ -147,7 +148,9 @@ function scpc_status_shortcode() {
             '</p></div>';
     }
 
+    $ready = scpc_api_get('/ready');
     $stats = scpc_api_get('/v1/stats');
+    $release_ready = (!is_wp_error($ready) && !empty($ready['ok']));
     $entities = (!is_wp_error($stats) && isset($stats['entities'])) ? intval($stats['entities']) : 0;
     $relationships = (!is_wp_error($stats) && isset($stats['relationships'])) ? intval($stats['relationships']) : 0;
 
@@ -158,6 +161,7 @@ function scpc_status_shortcode() {
         <h3>Sustainable Catalyst Platform Core</h3>
         <p>
             <strong>Status:</strong> Online ·
+            <strong>Readiness:</strong> <?php echo $release_ready ? 'Ready' : 'Blocked'; ?> ·
             <strong>Version:</strong> <?php echo esc_html($health['version']); ?> ·
             <strong>Entities:</strong> <?php echo esc_html(number_format_i18n($entities)); ?> ·
             <strong>Relationships:</strong> <?php echo esc_html(number_format_i18n($relationships)); ?>
@@ -167,6 +171,42 @@ function scpc_status_shortcode() {
     return ob_get_clean();
 }
 add_shortcode('sc_platform_core_status', 'scpc_status_shortcode');
+
+function scpc_integration_readiness_shortcode() {
+    $readiness = scpc_api_get('/integration/readiness');
+    if (is_wp_error($readiness)) {
+        return '<div class="scpc-card scpc-error"><strong>Platform integration readiness unavailable</strong><p>' .
+            esc_html($readiness->get_error_message()) .
+            '</p></div>';
+    }
+
+    $ready = !empty($readiness['ok']);
+    $overall = isset($readiness['overall_status']) ? sanitize_text_field($readiness['overall_status']) : 'unknown';
+    $required = isset($readiness['required_service_count']) ? intval($readiness['required_service_count']) : 0;
+    $required_ready = isset($readiness['required_ready_count']) ? intval($readiness['required_ready_count']) : 0;
+    $blockers = isset($readiness['required_blockers']) && is_array($readiness['required_blockers'])
+        ? array_map('sanitize_text_field', $readiness['required_blockers'])
+        : [];
+
+    ob_start();
+    ?>
+    <section class="scpc-card <?php echo $ready ? '' : 'scpc-error'; ?>">
+        <p class="scpc-kicker">Production integration readiness</p>
+        <h3>Platform Core service fabric</h3>
+        <p>
+            <strong>Release readiness:</strong> <?php echo $ready ? 'Ready' : 'Blocked'; ?> ·
+            <strong>Gateway:</strong> <?php echo esc_html(ucwords(str_replace('_', ' ', $overall))); ?> ·
+            <strong>Required services:</strong> <?php echo esc_html($required_ready . '/' . $required); ?> ready
+        </p>
+        <?php if (!$ready && $blockers) : ?>
+            <p class="scpc-meta"><strong>Blocking integrations:</strong> <?php echo esc_html(implode(', ', $blockers)); ?></p>
+        <?php endif; ?>
+        <p class="scpc-meta">Liveness and deployment readiness are evaluated separately. Service URLs and service tokens are never exposed by this status surface.</p>
+    </section>
+    <?php
+    return ob_get_clean();
+}
+add_shortcode('sc_platform_core_integration_readiness', 'scpc_integration_readiness_shortcode');
 
 
 function scpc_live_data_status_shortcode() {

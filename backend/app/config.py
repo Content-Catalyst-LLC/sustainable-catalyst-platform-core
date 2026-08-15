@@ -20,12 +20,15 @@ def _int(name: str, default: int) -> int:
 @dataclass(frozen=True)
 class Settings:
     app_name: str = "Sustainable Catalyst Platform Core"
-    version: str = "2.8.0"
+    version: str = "2.8.1"
     environment: str = "development"
     database_url: str = "sqlite:///./platform_core.db"
     write_api_key: str = ""
     public_reads: bool = True
     cors_origins: tuple[str, ...] = ("http://127.0.0.1:8090",)
+    public_base_url: str = ""
+    public_base_url_required: bool = False
+    required_cors_origin: str = ""
     log_level: str = "INFO"
     max_graph_depth: int = 4
     page_size_max: int = 200
@@ -50,7 +53,7 @@ class Settings:
     live_data_enabled: bool = True
     live_data_ingest_enabled: bool = True
     live_data_strict_free_sources: bool = True
-    live_data_user_agent: str = "SustainableCatalystPlatformCore/2.8.0 (+https://sustainablecatalyst.com/contact/)"
+    live_data_user_agent: str = "SustainableCatalystPlatformCore/2.8.1 (+https://sustainablecatalyst.com/contact/)"
     live_data_timeout_seconds: int = 20
     live_data_max_response_bytes: int = 12582912
     live_data_raw_payload_max_bytes: int = 1048576
@@ -99,6 +102,9 @@ class Settings:
             write_api_key=os.getenv("SC_CORE_WRITE_API_KEY", "").strip(),
             public_reads=_bool("SC_CORE_PUBLIC_READS", True),
             cors_origins=origins,
+            public_base_url=os.getenv("SC_CORE_PUBLIC_BASE_URL", "").strip().rstrip("/"),
+            public_base_url_required=_bool("SC_CORE_PUBLIC_BASE_URL_REQUIRED", False),
+            required_cors_origin=os.getenv("SC_CORE_REQUIRED_CORS_ORIGIN", "").strip().rstrip("/"),
             log_level=os.getenv("SC_CORE_LOG_LEVEL", "INFO").strip().upper(),
             max_graph_depth=max(1, min(_int("SC_CORE_MAX_GRAPH_DEPTH", 4), 6)),
             page_size_max=max(10, min(_int("SC_CORE_PAGE_SIZE_MAX", 200), 1000)),
@@ -146,7 +152,7 @@ class Settings:
             live_data_strict_free_sources=_bool("SC_CORE_LIVE_DATA_STRICT_FREE_SOURCES", True),
             live_data_user_agent=os.getenv(
                 "SC_CORE_LIVE_DATA_USER_AGENT",
-                "SustainableCatalystPlatformCore/2.8.0 (+https://sustainablecatalyst.com/contact/)",
+                "SustainableCatalystPlatformCore/2.8.1 (+https://sustainablecatalyst.com/contact/)",
             ).strip(),
             live_data_timeout_seconds=max(
                 1, min(_int("SC_CORE_LIVE_DATA_TIMEOUT_SECONDS", 20), 120)

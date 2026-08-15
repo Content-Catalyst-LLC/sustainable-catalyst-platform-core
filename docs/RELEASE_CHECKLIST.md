@@ -1,23 +1,23 @@
-# Release Checklist — v2.8.0
+# Release Checklist — v2.8.1
 
-- [ ] Run all regression tests
-- [ ] Confirm migration `0011`
-- [ ] Confirm 40 source records and 39 connector records remain seeded
-- [ ] Confirm automatic observation materialization
-- [ ] Confirm automatic scientific-record materialization
-- [ ] Confirm idempotent backfill
-- [ ] Confirm GeoJSON FeatureCollection output
-- [ ] Confirm bounding-box filtering
-- [ ] Confirm time-series definitions and points
-- [ ] Confirm monthly partition keys
-- [ ] Confirm STAC root, collections, items, and search
-- [ ] Confirm scientific asset format normalization
-- [ ] Confirm COG and PMTiles map-layer registration
-- [ ] Confirm portable SQLite operation
-- [ ] Confirm PostgreSQL PostGIS failure remains non-fatal
-- [ ] Confirm public routes require `data:read`
-- [ ] Confirm Python and JavaScript SDK assets
-- [ ] Confirm WordPress plugin syntax and shortcode
-- [ ] Validate all JSON Schemas and Postman collection
-- [ ] Confirm push-safe secret scan
-- [ ] Confirm manifest and ZIP integrity
+- [x] Confirm Core version markers are 2.8.1
+- [x] Preserve migrations 0001 through 0011 with no new schema migration
+- [x] Confirm `/health` remains liveness-only
+- [x] Confirm `/ready` blocks on required first-party integration failures
+- [x] Confirm optional unconfigured services do not block Core readiness
+- [x] Confirm public-safe `/integration/readiness` exposes no base URLs or service tokens
+- [x] Confirm distinct unconfigured / disabled / unavailable / circuit / configuration / version states
+- [x] Confirm required service-token policy is enforced when enabled
+- [x] Confirm expected upstream version prefix is enforced when configured
+- [x] Confirm missing upstream version blocks an expected-version contract
+- [x] Confirm canonical public Core URL requirement can block readiness
+- [x] Confirm required Sustainable Catalyst CORS origin can block readiness
+- [x] Confirm Render leaves Core and Site Intelligence URLs deployment-supplied
+- [x] Confirm Site Intelligence is required in the production Render blueprint
+- [x] Confirm WordPress integration-readiness shortcode
+- [x] Confirm Python and JavaScript public SDK version identity
+- [x] Run all 114 deterministic tests
+- [x] Validate Python, PHP, JavaScript, Bash, JSON, ZIP, and manifest integrity
+- [x] Run push-safe secret scan
+- [x] Verify release bundle checksums
+- [x] Verify clean extraction against BUILD_MANIFEST.json

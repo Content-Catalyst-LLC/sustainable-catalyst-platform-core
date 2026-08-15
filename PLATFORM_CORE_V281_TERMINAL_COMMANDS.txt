@@ -1,0 +1,37 @@
+SUSTAINABLE CATALYST PLATFORM CORE v2.8.1
+PRODUCTION INTEGRATION & READINESS REPAIR
+
+1. Extract the repository ZIP
+
+unzip sustainable-catalyst-platform-core-v2.8.1-repository.zip
+cd sustainable-catalyst-platform-core-v2.8.1
+
+2. Create environment
+
+cd backend
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+
+3. Run tests
+
+PYTHONPATH=".:public_sdk/python" PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest -q tests
+
+4. Configure production readiness
+
+cp ../deployment/platform-core-v281.env.example .env
+# Set SC_CORE_PUBLIC_BASE_URL to the canonical deployed Core URL.
+# Set SC_CORE_SITE_INTELLIGENCE_URL to the deployed Site Intelligence backend.
+# Do not commit service tokens.
+
+5. Run migrations and start Core
+
+python scripts/migrate.py
+./start.sh
+
+6. Verify
+
+curl http://127.0.0.1:8090/health
+curl http://127.0.0.1:8090/ready
+curl http://127.0.0.1:8090/integration/readiness

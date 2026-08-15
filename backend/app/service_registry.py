@@ -79,6 +79,9 @@ class ServiceDefinition:
     service_token: str = ""
     public_reads: bool = True
     public_invocation: bool = False
+    required: bool = False
+    token_required: bool = False
+    expected_version_prefix: str = ""
     allowed_methods: tuple[str, ...] = ("GET", "HEAD", "OPTIONS")
     capabilities: tuple[str, ...] = ()
 
@@ -94,6 +97,7 @@ class ServiceDefinition:
         payload.pop("base_url", None)
         payload.pop("service_token", None)
         payload["configured"] = self.configured
+        payload["service_token_configured"] = bool(self.service_token)
         return payload
 
 
@@ -185,6 +189,11 @@ class ServiceRegistry:
                     public_invocation=_bool(
                         f"{env_prefix}_PUBLIC_INVOCATION", False
                     ),
+                    required=_bool(f"{env_prefix}_REQUIRED", False),
+                    token_required=_bool(f"{env_prefix}_TOKEN_REQUIRED", False),
+                    expected_version_prefix=os.getenv(
+                        f"{env_prefix}_EXPECTED_VERSION_PREFIX", ""
+                    ).strip(),
                     allowed_methods=tuple(method.upper() for method in methods),
                 )
             )

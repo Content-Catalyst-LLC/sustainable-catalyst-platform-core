@@ -1,4 +1,4 @@
-# Sustainable Catalyst Public API Python Client v2.8.0
+# Sustainable Catalyst Public API Python Client v2.8.1
 
 ```python
 from sc_platform_core_public import PublicApiClient
@@ -46,7 +46,7 @@ types = client.economic_record_types()
 ```
 
 
-## Data fabric v2.8.0
+## Data fabric v2.8.1
 
 ```python
 capabilities = client.fabric_capabilities()

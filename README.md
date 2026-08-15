@@ -1,4 +1,35 @@
-# Sustainable Catalyst Platform Core v2.8.0
+# Sustainable Catalyst Platform Core v2.8.1
+
+Core v2.8.1 adds **Production Integration & Readiness Repair** on top of the v2.8.0 geospatial, time-series, and scientific data fabric.
+
+The release separates **liveness** from **deployment readiness**. `/health` answers whether Core is alive; `/ready` now verifies first-party service requirements and production configuration before declaring the release ready. A service explicitly marked `REQUIRED` cannot be unconfigured, disabled, unavailable, circuit-open, or version-incompatible without appearing as a readiness blocker.
+
+Key v2.8.1 additions:
+
+- Public-safe `/integration/readiness` service status with no upstream URLs or service tokens.
+- Required/optional service semantics for Site Intelligence, Workbench, Decision Studio, Research Librarian, Catalyst Finance, and Narrative Risk.
+- Distinct `unconfigured`, `disabled`, `operational`, `degraded`, `unavailable`, `circuit_open`, `configuration_error`, and `version_unreported`, and `version_mismatch` service states.
+- Canonical public Core URL and required CORS-origin production checks.
+- Optional service-token requirements and safe token-configuration reporting.
+- Upstream product-version reporting and expected-version-prefix checks.
+- Render/deployment template that treats Site Intelligence as the first required production integration.
+- WordPress `[sc_platform_core_integration_readiness]` status surface.
+- v2.8.0 data fabric, connector packs, entity/evidence/provenance contracts, SDKs, and APIs remain backward compatible.
+
+## Production readiness contract
+
+```text
+GET /health                 # liveness; does not claim downstream readiness
+GET /ready                  # deployment/release readiness
+GET /integration/readiness  # public-safe first-party integration state
+GET /v1/gateway/health      # authenticated operator diagnostics
+```
+
+For production deployments, configure `SC_CORE_PUBLIC_BASE_URL` and `SC_CORE_SITE_INTELLIGENCE_URL`. The v2.8.1 Render blueprint marks both as deployment-supplied values and requires Site Intelligence readiness without making transient third-party providers part of the release gate.
+
+---
+
+## v2.8.0 foundation
 
 Core v2.8.0 adds the **Geospatial, Time-Series, and Scientific Data Fabric** on top of the v2.7.3 economics layer, v2.7.2 scientific connectors, v2.7.1 international-law and United Nations connectors, and v2.7.0 Free Live Data Gateway.
 
@@ -57,6 +88,7 @@ v2.7.1  International Law and United Nations Connector Pack
 v2.7.2  Scientific Data Connector Pack
 v2.7.3  Economics and Official Statistics Connector Pack
 v2.8.0  Geospatial, Time-Series, and Scientific Data Fabric
+v2.8.1  Production Integration & Readiness Repair
 ```
 
 See `docs/GEOSPATIAL_TIME_SERIES_SCIENTIFIC_FABRIC_V280.md`, `RELEASE_NOTES_V280.md`, and `deployment/platform-core-v280.env.example`.

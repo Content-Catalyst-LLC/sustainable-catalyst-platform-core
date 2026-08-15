@@ -268,12 +268,57 @@ class GatewayRuntime:
             headers=response_headers,
         )
 
+    @staticmethod
+    def _upstream_version(response: httpx.Response) -> str:
+        try:
+            payload = response.json()
+        except (ValueError, json.JSONDecodeError):
+            return ""
+        if not isinstance(payload, dict):
+            return ""
+        direct = payload.get("version")
+        if isinstance(direct, str):
+            return direct.strip()
+        data = payload.get("data")
+        if isinstance(data, dict) and isinstance(data.get("version"), str):
+            return data["version"].strip()
+        return ""
+
     async def check_health(self, service: ServiceDefinition) -> dict:
         base = service.public_dict()
-        if not service.enabled or not service.configured:
-            return {**base, "status": "disabled", "latency_ms": None}
+        if not service.configured:
+            return {
+                **base,
+                "status": "unconfigured",
+                "readiness": "blocked" if service.required else "optional",
+                "latency_ms": None,
+                "upstream_version": None,
+            }
+        if not service.enabled:
+            return {
+                **base,
+                "status": "disabled",
+                "readiness": "blocked" if service.required else "optional",
+                "latency_ms": None,
+                "upstream_version": None,
+            }
+        if service.token_required and not service.service_token:
+            return {
+                **base,
+                "status": "configuration_error",
+                "readiness": "blocked" if service.required else "degraded",
+                "latency_ms": None,
+                "upstream_version": None,
+                "configuration_issue": "service_token_required",
+            }
         if await self._circuit_is_open(service.service_id):
-            return {**base, "status": "circuit_open", "latency_ms": None}
+            return {
+                **base,
+                "status": "circuit_open",
+                "readiness": "blocked" if service.required else "degraded",
+                "latency_ms": None,
+                "upstream_version": None,
+            }
 
         path = service.health_path.strip() or "/health"
         url = f"{service.base_url.rstrip('/')}/{path.lstrip('/')}"
@@ -287,7 +332,13 @@ class GatewayRuntime:
             ) as client:
                 response = await client.get(url, headers=headers)
             latency_ms = round((time.perf_counter() - started) * 1000, 2)
+            upstream_version = self._upstream_version(response)
             status = "operational" if response.status_code < 400 else "degraded"
+            if status == "operational" and service.expected_version_prefix:
+                if not upstream_version:
+                    status = "version_unreported"
+                elif not upstream_version.startswith(service.expected_version_prefix):
+                    status = "version_mismatch"
             if response.status_code >= 500:
                 await self._record_failure(service.service_id)
             else:
@@ -295,30 +346,71 @@ class GatewayRuntime:
             return {
                 **base,
                 "status": status,
+                "readiness": (
+                    "ready"
+                    if status == "operational"
+                    else ("blocked" if service.required else "degraded")
+                ),
                 "status_code": response.status_code,
                 "latency_ms": latency_ms,
+                "upstream_version": upstream_version or None,
             }
         except (httpx.TimeoutException, httpx.HTTPError):
             await self._record_failure(service.service_id)
-            return {**base, "status": "unavailable", "latency_ms": None}
+            return {
+                **base,
+                "status": "unavailable",
+                "readiness": "blocked" if service.required else "degraded",
+                "latency_ms": None,
+                "upstream_version": None,
+            }
 
     async def health_snapshot(self) -> dict:
         services = self.registry.list()
         if not self.settings.enabled:
+            results = [
+                {
+                    **service.public_dict(),
+                    "status": "gateway_disabled",
+                    "readiness": "blocked" if service.required else "optional",
+                    "latency_ms": None,
+                    "upstream_version": None,
+                }
+                for service in services
+            ]
+            required_blockers = [
+                item["service_id"] for item in results if item.get("required")
+            ]
             return {
                 "gateway": "disabled",
                 "overall_status": "disabled",
+                "release_ready": not required_blockers,
                 "service_count": len(services),
+                "configured_service_count": sum(
+                    1 for item in results if item.get("configured")
+                ),
                 "active_service_count": 0,
-                "services": [
-                    {**service.public_dict(), "status": "gateway_disabled", "latency_ms": None}
-                    for service in services
-                ],
+                "required_service_count": len(required_blockers),
+                "required_ready_count": 0,
+                "required_blockers": required_blockers,
+                "services": results,
             }
+
         results = await asyncio.gather(*(self.check_health(item) for item in services))
-        active = [item for item in results if item["status"] != "disabled"]
+        active = [
+            item
+            for item in results
+            if item["status"] not in {"disabled", "unconfigured"}
+        ]
+        required = [item for item in results if item.get("required")]
+        required_ready = [item for item in required if item["status"] == "operational"]
+        required_blockers = [
+            item["service_id"] for item in required if item["status"] != "operational"
+        ]
         statuses = {item["status"] for item in active}
-        if not active:
+        if required_blockers:
+            overall = "degraded" if active else "unavailable"
+        elif not active:
             overall = "unconfigured"
         elif statuses <= {"operational"}:
             overall = "operational"
@@ -327,9 +419,17 @@ class GatewayRuntime:
         else:
             overall = "unavailable"
         return {
-            "gateway": "operational" if self.settings.enabled else "disabled",
+            "gateway": "operational",
             "overall_status": overall,
+            "release_ready": not required_blockers,
             "service_count": len(results),
+            "configured_service_count": sum(
+                1 for item in results if item.get("configured")
+            ),
             "active_service_count": len(active),
+            "required_service_count": len(required),
+            "required_ready_count": len(required_ready),
+            "required_blockers": required_blockers,
             "services": results,
         }
+

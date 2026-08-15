@@ -56,6 +56,19 @@ Deferred to later infrastructure releases:
 - Native scientific-file parsers
 - Distributed spatial and time-series workers
 
+
+## v2.8.1 — Production Integration & Readiness Repair
+Completed:
+
+- Separates `/health` liveness from `/ready` deployment readiness
+- Adds required and optional first-party service semantics
+- Distinguishes unconfigured, disabled, operational, degraded, unavailable, circuit-open, configuration-error, version-unreported, and version-mismatch states
+- Adds canonical public Core URL and required CORS-origin configuration checks
+- Adds service-token requirement checks without exposing tokens
+- Adds public-safe `/integration/readiness` and authenticated gateway diagnostics
+- Makes Site Intelligence the first required production product integration in the Render blueprint
+- Preserves all v2.0.0–v2.8.0 routes, migrations, source registries, connector packs, and data-fabric contracts
+
 ## v2.9.0 — Streaming, Alerts, and Source Reliability
 Planned:
 

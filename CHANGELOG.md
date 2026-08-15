@@ -1,5 +1,17 @@
 # Changelog
 
+## 2.8.1 — 2026-08-14
+
+- Separated `/health` liveness from `/ready` production/deployment readiness.
+- Added required/optional service semantics and per-service readiness states.
+- Required first-party integrations now block release readiness when unconfigured, disabled, unavailable, circuit-open, missing a required service token, version-unreported, or version-incompatible.
+- Added safe upstream-version reporting and expected-version-prefix validation.
+- Added canonical public Core URL and required CORS-origin configuration gates.
+- Added public-safe `/integration/readiness` without exposing upstream URLs or service tokens.
+- Added production Render configuration for the Site Intelligence integration.
+- Added WordPress integration-readiness status and v2.8.1 regression tests.
+- Preserved the v2.8.0 data fabric and all v2.0.0–v2.8.0 routes and migrations.
+
 ## 2.8.0 — 2026-07-14
 
 - Added migration `0011` and the geospatial, time-series, scientific-asset, map-layer, and STAC data fabric.

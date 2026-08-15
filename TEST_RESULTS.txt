@@ -1,32 +1,38 @@
-SUSTAINABLE CATALYST PLATFORM CORE v2.8.0
-GEOSPATIAL, TIME-SERIES, AND SCIENTIFIC DATA FABRIC
-Validation date: 2026-07-14
+SUSTAINABLE CATALYST PLATFORM CORE v2.8.1
+PRODUCTION INTEGRATION & READINESS REPAIR
+Validation date: 2026-08-14
 
 RESULT: PASS
 
 Regression groups
-- Core platform, graph, evidence, gateway, public API, live data, and international law: 59 passed
-- Data fabric, economics, science, and signature dossiers: 31 passed
-- Trust Center: 9 passed
-- Total: 99 passed
+- Inherited v2.8.0 platform/data-fabric suite: 99 passed
+- v2.8.1 production integration and readiness: 15 passed
+- Total: 114 passed
+
+Production integration
+- /health remains liveness-only
+- /ready blocks required unconfigured/disabled/unavailable integrations
+- Optional integrations remain non-blocking
+- Missing required service token: blocked before network call
+- Expected upstream version mismatch: blocked
+- Expected upstream version unreported: blocked
+- Canonical Core URL requirement: verified
+- Required Sustainable Catalyst CORS origin: verified
+- Public-safe integration status redacts URLs and tokens
 
 Database
 - Migrations 0001 through 0011 apply on a fresh database
-- No pending migrations after upgrade
+- No pending migrations
 - 40 governed free-source records
 - 39 connector definitions
-- PostGIS activation is optional and fail-safe
-- Portable GeoJSON and numeric bbox queries remain available without PostGIS
 
 Release checks
 - Python compilation: PASS
 - PHP syntax: PASS
 - JavaScript syntax: PASS
 - Bash syntax: PASS
-- JSON schemas and Postman collections: PASS
-- Strict free-source policy: PASS
-- Credential redaction: PASS
-- Push-safe secret scan: PASS
-- BUILD_MANIFEST verification: PASS
-- ZIP integrity: PASS
-- Fresh-extraction validation: PASS
+- JSON parsing: PASS
+- Render YAML parsing: PASS
+- Public SDK ZIP integrity: PASS
+- Production configuration validator: PASS
+- Push-safe secret scan: PASS (0 findings)

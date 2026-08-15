@@ -4,7 +4,7 @@ Tags: knowledge graph, entity registry, provenance, live data, sustainable catal
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.0
-Stable tag: 2.8.0
+Stable tag: 2.8.1
 License: MIT
 
 WordPress status, live-data gateway, and entity lookup client for Sustainable Catalyst Platform Core.
@@ -15,15 +15,22 @@ WordPress status, live-data gateway, and entity lookup client for Sustainable Ca
 2. Go to Settings → Platform Core.
 3. Enter the Platform Core backend URL.
 4. Use [sc_platform_core_status].
-5. Use [sc_platform_core_live_data_status].
-6. Use [sc_platform_core_international_law_status].
-7. Use [sc_platform_core_science_status].
-8. Use [sc_platform_core_economics_status].
-9. Use [sc_platform_core_data_fabric_status].
-10. Use [sc_platform_core_entity id="sc:product:workbench"].
+5. Use [sc_platform_core_integration_readiness] for public-safe service readiness.
+6. Use [sc_platform_core_live_data_status].
+7. Use [sc_platform_core_international_law_status].
+8. Use [sc_platform_core_science_status].
+9. Use [sc_platform_core_economics_status].
+10. Use [sc_platform_core_data_fabric_status].
+11. Use [sc_platform_core_entity id="sc:product:workbench"].
 
 The plugin never exposes the Platform Core write key in frontend code.
 
+
+== 2.8.1 ==
+* Separates liveness from deployment readiness.
+* Adds public-safe integration readiness with per-service configured, enabled, required, status, and upstream-version state.
+* Required first-party services now block release readiness when unconfigured, disabled, unavailable, version-unreported, or version-incompatible.
+* Adds [sc_platform_core_integration_readiness].
 
 == 2.8.0 ==
 * Adds the geospatial, time-series, scientific-asset, map-layer, and STAC status shortcode.
