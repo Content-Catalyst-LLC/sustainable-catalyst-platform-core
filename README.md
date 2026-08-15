@@ -1,8 +1,20 @@
-# Sustainable Catalyst Platform Core v2.9.0
+# Sustainable Catalyst Platform Core v2.10.0
 
-Core v2.9.0 adds **Streaming, Alerts, and Source Reliability** on top of the v2.8.1 production-integration readiness line. It turns the live-data gateway into a persistent operational fabric without making transient third-party provider health a release blocker.
+Core v2.10.0 adds **Operational Evidence & Facility Registry** on top of the v2.9.0 streaming/reliability line. Stable facilities are separated from dated operational observations so hospitals, schools, shelters, crossings, water/power assets and other essential infrastructure retain history, provenance and conflicting evidence instead of collapsing into one mutable status.
 
-Key v2.9.0 additions:
+
+Key v2.10.0 additions:
+
+- first-class operational facilities with stable identity, ISO3 geography, coordinates/geometry, and source identifiers;
+- facility classes for hospitals, clinics, schools, universities, shelters, crossings, food distribution, water, power, ports, airports, communications and warehouses;
+- dated operational, damage, access, service, capacity and supply observations;
+- provenance fields for publisher, source record, URL, methodology, evidence class, confidence and geographic scope;
+- history-preserving current-state projection by observation dimension, with no automatic conflict flattening;
+- bbox/country/type query surfaces and public-data boundary;
+- facility observation stream events for v2.9.0 alert/stream integration;
+- additive migration `0013`.
+
+Inherited v2.9.0 reliability capabilities:
 
 - Migration `0012` for persistent connector work items, dead-letter records, stream events, alert rules, and geographic subscriptions.
 - Database-backed connector queue with worker leases, retries, maximum-attempt policy, and distributed worker IDs.
@@ -109,6 +121,7 @@ v2.7.3  Economics and Official Statistics Connector Pack
 v2.8.0  Geospatial, Time-Series, and Scientific Data Fabric
 v2.8.1  Production Integration & Readiness Repair
 v2.9.0  Streaming, Alerts, and Source Reliability
+v2.10.0 Operational Evidence & Facility Registry
 ```
 
 See `docs/GEOSPATIAL_TIME_SERIES_SCIENTIFIC_FABRIC_V280.md`, `RELEASE_NOTES_V280.md`, and `deployment/platform-core-v280.env.example`.

@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/operational-facility-v1.schema.json",
+  "title": "Sustainable Catalyst Operational Facility v1",
+  "type": "object",
+  "required": [
+    "name",
+    "facility_type",
+    "country_code"
+  ],
+  "properties": {
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "facility_type": {
+      "enum": [
+        "airport",
+        "clinic",
+        "communications-facility",
+        "crossing",
+        "food-distribution",
+        "health-center",
+        "hospital",
+        "other",
+        "port",
+        "power-facility",
+        "school",
+        "shelter",
+        "university",
+        "warehouse",
+        "water-facility"
+      ]
+    },
+    "country_code": {
+      "type": "string",
+      "pattern": "^[A-Z]{3}$"
+    },
+    "latitude": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": -90,
+      "maximum": 90
+    },
+    "longitude": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": -180,
+      "maximum": 180
+    },
+    "public": {
+      "type": "boolean"
+    }
+  }
+}

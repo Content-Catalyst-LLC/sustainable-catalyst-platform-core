@@ -227,4 +227,20 @@ export class PublicApiClient {
     return `${this.baseUrl}/api/v1/reliability/stream?${query}`;
   }
 
+  facilities(params = {}) {
+    const clean = Object.fromEntries(Object.entries(params).filter(([, value]) => value !== null && value !== undefined));
+    const query = new URLSearchParams(clean);
+    return this.request(`/facilities?${query}`);
+  }
+
+  facility(facilityId) {
+    return this.request(`/facilities/${encodeURIComponent(facilityId)}`);
+  }
+
+  facilityObservations(facilityId, params = {}) {
+    const clean = Object.fromEntries(Object.entries(params).filter(([, value]) => value !== null && value !== undefined));
+    const query = new URLSearchParams(clean);
+    return this.request(`/facilities/${encodeURIComponent(facilityId)}/observations?${query}`);
+  }
+
 }

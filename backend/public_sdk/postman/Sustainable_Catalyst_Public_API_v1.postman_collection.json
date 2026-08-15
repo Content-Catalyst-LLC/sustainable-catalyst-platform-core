@@ -510,7 +510,7 @@
             }
           ]
         },
-        "description": "Core v2.9.0 scoped public SSE snapshot. Only events explicitly marked public are emitted."
+        "description": "Core v2.10.0 scoped public SSE snapshot. Only events explicitly marked public are emitted."
       }
     }
   ]

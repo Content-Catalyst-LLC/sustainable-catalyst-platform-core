@@ -1,3 +1,10 @@
+## 2.10.0 — 2026-08-14
+
+- Added Operational Evidence & Facility Registry for hospitals, clinics, schools, universities, shelters, crossings, essential-service infrastructure and related public-interest facilities.
+- Added stable source identifiers, geospatial lookup and provenance-preserving dated facility observations.
+- Added operational, damage, access, service, capacity and supply status dimensions without automatic cross-source flattening.
+- Added migration `0013`, facility APIs, public query surfaces, stream-event integration, schemas, validation and regression coverage.
+
 # Changelog
 
 ## 2.9.0 — 2026-08-14

@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name: Sustainable Catalyst Platform Core
- * Description: WordPress connector for Sustainable Catalyst Platform Core registry, graph, evidence, developer, gateway, free live-data, international-law, scientific-data, official-statistics, geospatial, time-series, STAC, map-layer, streaming, alerts, and source-reliability services.
- * Version: 2.9.0
+ * Description: WordPress connector for Sustainable Catalyst Platform Core registry, graph, evidence, developer, gateway, free live-data, international-law, scientific-data, official-statistics, geospatial, time-series, STAC, map-layer, streaming, alerts, source-reliability, and operational-facility evidence services.
+ * Version: 2.10.0
  * Author: Content Catalyst LLC
  * License: MIT
  */
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('SCPC_VERSION', '2.9.0');
+define('SCPC_VERSION', '2.10.0');
 define('SCPC_OPTION_BACKEND_URL', 'scpc_backend_url');
 define('SCPC_OPTION_READ_KEY', 'scpc_read_key');
 
@@ -90,6 +90,7 @@ function scpc_render_settings_page() {
         <code>[sc_platform_core_economics_status]</code><br />
         <code>[sc_platform_core_data_fabric_status]</code><br />
         <code>[sc_platform_core_reliability_status]</code><br />
+        <code>[sc_platform_core_facility_registry_status]</code><br />
         <code>[sc_platform_core_entity id="sc:product:workbench"]</code><br />
         <code>[sc_platform_core_relationships id="sc:product:research-librarian"]</code><br />
         <code>[sc_knowledge_explorer]</code><br />
@@ -335,6 +336,27 @@ function scpc_science_status_shortcode() {
 }
 add_shortcode('sc_platform_core_science_status', 'scpc_science_status_shortcode');
 
+
+function scpc_facility_registry_status_shortcode() {
+    $status = scpc_api_get('/v1/facilities/readiness');
+    if (is_wp_error($status)) {
+        return '<div class="scpc-card scpc-error"><strong>Facility Registry unavailable</strong><p>' .
+            esc_html($status->get_error_message()) . '</p></div>';
+    }
+    $facilities = isset($status['facilities']) ? intval($status['facilities']) : 0;
+    $observations = isset($status['observations']) ? intval($status['observations']) : 0;
+    ob_start(); ?>
+    <section class="scpc-card">
+        <p class="scpc-kicker">Operational evidence infrastructure</p>
+        <h3>Facility Registry</h3>
+        <p><strong>Status:</strong> <?php echo esc_html(ucfirst($status['status'] ?? 'unknown')); ?> ·
+        <strong>Facilities:</strong> <?php echo esc_html(number_format_i18n($facilities)); ?> ·
+        <strong>Observations:</strong> <?php echo esc_html(number_format_i18n($observations)); ?></p>
+        <p class="scpc-meta">Facility identity is separate from dated operational, damage, access, service, capacity, and supply observations. Missing evidence is not interpreted as normal operation.</p>
+    </section>
+    <?php return ob_get_clean();
+}
+add_shortcode('sc_platform_core_facility_registry_status', 'scpc_facility_registry_status_shortcode');
 
 function scpc_entity_shortcode($atts) {
     $atts = shortcode_atts(['id' => ''], $atts, 'sc_platform_core_entity');

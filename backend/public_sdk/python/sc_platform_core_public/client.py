@@ -228,3 +228,20 @@ def _reliability_stream_url(self, *, after_id: int = 0, event_type: str | None =
     return f"{self.base_url}/api/v1/reliability/stream?{urlencode(params)}"
 
 PublicApiClient.reliability_stream_url = _reliability_stream_url
+
+
+# v2.10.0 operational facility registry helpers
+def _facilities(self, **params):
+    clean={k:v for k,v in params.items() if v is not None}
+    return self.request("GET", "/facilities", params=clean)
+
+def _facility(self, facility_id: str):
+    return self.request("GET", f"/facilities/{facility_id}")
+
+def _facility_observations(self, facility_id: str, **params):
+    clean={k:v for k,v in params.items() if v is not None}
+    return self.request("GET", f"/facilities/{facility_id}/observations", params=clean)
+
+PublicApiClient.facilities = _facilities
+PublicApiClient.facility = _facility
+PublicApiClient.facility_observations = _facility_observations

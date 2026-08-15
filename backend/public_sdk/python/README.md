@@ -1,4 +1,4 @@
-# Sustainable Catalyst Public API Python Client v2.9.0
+# Sustainable Catalyst Public API Python Client v2.10.0
 
 ```python
 from sc_platform_core_public import PublicApiClient
@@ -59,6 +59,10 @@ stac = client.stac_search(collections="mast:JWST")
 ```
 
 
-## Streaming v2.9.0
+## Streaming v2.10.0
 
 The public client exposes a reliability stream URL helper for the Server-Sent Events endpoint. SSE consumers must send the normal scoped Bearer credential. Public streams contain only events explicitly marked public.
+
+## Operational facilities v2.10.0
+
+List public facilities by country/type/bbox, retrieve a public facility, and inspect dated facility observations. Operational, damage, access, service, capacity, and supply dimensions remain distinct.

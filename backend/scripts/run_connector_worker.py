@@ -48,7 +48,7 @@ async def run(*, once: bool, worker_id: str, idle_seconds: float) -> int:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Sustainable Catalyst Core v2.9.0 connector worker")
+    parser = argparse.ArgumentParser(description="Sustainable Catalyst Core v2.10.0 connector worker")
     parser.add_argument("--once", action="store_true", help="Process at most one queued item and exit")
     parser.add_argument("--worker-id", default=f"{socket.gethostname()}:{os.getpid()}")
     parser.add_argument("--idle-seconds", type=float, default=2.0)

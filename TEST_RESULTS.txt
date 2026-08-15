@@ -1,26 +1,25 @@
-Sustainable Catalyst Platform Core v2.9.0 — Validation Results
+Sustainable Catalyst Platform Core v2.10.0 — Validation Results
 Date: 2026-08-14
 
-Deterministic pytest lineage: 133 / 133 PASS
-- Inherited v2.8.1 and earlier regression tests: 114 / 114 PASS
-- v2.9.0 streaming/alerts/reliability tests: 19 / 19 PASS
+Deterministic pytest lineage: 143 / 143 PASS
+- Inherited v2.9.0 and earlier regression tests: 133 / 133 PASS
+- v2.10.0 Operational Evidence & Facility Registry tests: 10 / 10 PASS
 
-Validated v2.9.0 behaviors:
-- migration 0012 applied; no pending migrations
-- persistent connector queue and leases
-- credential-like queue parameters stripped before persistence
-- retry and dead-letter transition
-- append-only replay into a new work item
-- stale-source detection
-- explicit provider failover groups
-- automatic failover only with explicit parameter compatibility
-- numeric and text-valued alert rules
-- geographic bbox alert filtering
-- geographic subscriptions
-- SSE snapshot and Last-Event-ID resume
-- public/private event persistence boundary
-- standalone worker queue-empty smoke
-- external provider health non-blocking for release readiness
+Validated v2.10.0 behaviors:
+- migration 0013 applied; no pending migrations
+- stable facility identity separate from dated operational evidence
+- hospital, clinic, school, university, shelter, water, power, crossing, port, airport, communications, food-distribution and warehouse facility classes
+- exact namespace/value source-identifier deduplication
+- operational, damage, access, service, capacity and supply dimensions remain separate
+- observation history retained rather than overwritten
+- publisher, source record, URL, evidence class, geography, methodology, confidence and provenance round-trip
+- country/type/bbox facility query
+- public visibility boundary
+- facility observation stream-event integration
+- missing evidence is not interpreted as normal operation
+- external provider health remains non-blocking for release readiness
+
+Inherited v2.9.0 streaming/reliability capabilities remain green.
 
 Static validation:
 - Python compilation PASS
@@ -30,3 +29,16 @@ Static validation:
 - Bash syntax PASS
 - render.yaml parse PASS
 - push-safe secret scan: 0 findings
+
+v2.10.0 R1 promotion repair validation:
+- Runtime/schema feature set unchanged from the 143 / 143 passing v2.10.0 validation lineage
+- corrected BUILD_MANIFEST release assertion: 2.10.0 PASS
+- corrected current deploy-installer syntax target PASS
+- corrected inherited reliability test target to test_streaming_alerts_reliability_v290.py PASS
+- all push-script referenced pytest modules exist PASS
+- all push-script referenced bash syntax targets exist PASS
+- v2.10.0 release contract PASS
+- v2.10.0 R1 promotion repair contract PASS
+- Python repair-validator compilation PASS
+- PHP plugin syntax PASS
+- Bash syntax PASS
