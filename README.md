@@ -666,3 +666,8 @@ Core v2.8.0 adds provider-neutral official-statistics records and provenance. In
 
 ## v2.16.0 Governance, Access & Audit Control Plane
 Central policy decisions, scoped roles, tamper-evident audit events, and retention controls are available under `/v1/governance`. Public API exposure is readiness-only.
+
+
+## v2.17.0 Production Certification, Migration Assurance & Recovery Readiness
+
+Core now provides a persisted certification plane for migration-head assurance, zero-pending migration checks, governance-audit integrity, first-party readiness policy, and tamper-evident recovery checkpoint metadata. Recovery checkpoints intentionally do **not** embed a database backup; full restore still requires an operator-managed external backup or managed database snapshot. Transient third-party provider health remains non-blocking for release certification.

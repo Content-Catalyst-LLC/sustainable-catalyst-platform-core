@@ -1988,3 +1988,41 @@ class GovernanceRetentionPolicy(Base):
     enabled: Mapped[bool] = mapped_column(Boolean, default=True)
     metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+# v2.17.0 — Production Certification, Migration Assurance & Recovery Readiness
+class ProductionCertificationRun(Base):
+    __tablename__ = "production_certification_runs"
+    __table_args__ = (
+        Index("ix_production_certification_release_state", "release", "state", "created_at"),
+        Index("ix_production_certification_created", "created_at"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    release: Mapped[str] = mapped_column(String(40), nullable=False, index=True)
+    state: Mapped[str] = mapped_column(String(40), nullable=False, default="blocked", index=True)
+    migration_head: Mapped[str] = mapped_column(String(20), nullable=False)
+    pending_migrations_json: Mapped[list] = mapped_column(JSON, default=list)
+    checks_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    blockers_json: Mapped[list] = mapped_column(JSON, default=list)
+    gateway_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    recovery_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    certification_hash: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    completed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class RecoveryReadinessCheckpoint(Base):
+    __tablename__ = "recovery_readiness_checkpoints"
+    __table_args__ = (
+        Index("ix_recovery_checkpoint_release_created", "release", "created_at"),
+        Index("ix_recovery_checkpoint_expires", "expires_at"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    release: Mapped[str] = mapped_column(String(40), nullable=False, index=True)
+    schema_head: Mapped[str] = mapped_column(String(20), nullable=False)
+    migration_inventory_json: Mapped[list] = mapped_column(JSON, default=list)
+    table_inventory_json: Mapped[list] = mapped_column(JSON, default=list)
+    row_counts_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    recovery_contract_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    checkpoint_hash: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    expires_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True, index=True)

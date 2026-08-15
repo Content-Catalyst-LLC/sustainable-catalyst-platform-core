@@ -20,7 +20,7 @@ def _int(name: str, default: int) -> int:
 @dataclass(frozen=True)
 class Settings:
     app_name: str = "Sustainable Catalyst Platform Core"
-    version: str = "2.16.0"
+    version: str = "2.17.0"
     environment: str = "development"
     database_url: str = "sqlite:///./platform_core.db"
     write_api_key: str = ""
@@ -53,7 +53,7 @@ class Settings:
     live_data_enabled: bool = True
     live_data_ingest_enabled: bool = True
     live_data_strict_free_sources: bool = True
-    live_data_user_agent: str = "SustainableCatalystPlatformCore/2.16.0 (+https://sustainablecatalyst.com/contact/)"
+    live_data_user_agent: str = "SustainableCatalystPlatformCore/2.17.0 (+https://sustainablecatalyst.com/contact/)"
     live_data_timeout_seconds: int = 20
     live_data_max_response_bytes: int = 12582912
     live_data_raw_payload_max_bytes: int = 1048576
@@ -98,6 +98,12 @@ class Settings:
     governance_enforcement_mode: str = "audit"
     governance_audit_retention_hours: int = 8760
     governance_decision_retention_hours: int = 2160
+    production_certification_enabled: bool = True
+    certification_require_zero_pending_migrations: bool = True
+    certification_require_valid_audit_chain: bool = True
+    certification_require_gateway_release_ready: bool = False
+    recovery_checkpoint_enabled: bool = True
+    recovery_checkpoint_retention_hours: int = 720
 
     @classmethod
     def from_env(cls) -> "Settings":
@@ -175,7 +181,7 @@ class Settings:
             live_data_strict_free_sources=_bool("SC_CORE_LIVE_DATA_STRICT_FREE_SOURCES", True),
             live_data_user_agent=os.getenv(
                 "SC_CORE_LIVE_DATA_USER_AGENT",
-                "SustainableCatalystPlatformCore/2.16.0 (+https://sustainablecatalyst.com/contact/)",
+                "SustainableCatalystPlatformCore/2.17.0 (+https://sustainablecatalyst.com/contact/)",
             ).strip(),
             live_data_timeout_seconds=max(
                 1, min(_int("SC_CORE_LIVE_DATA_TIMEOUT_SECONDS", 20), 120)
@@ -232,4 +238,10 @@ class Settings:
             governance_enforcement_mode=(lambda value: value if value in {"audit", "enforce"} else "audit")(os.getenv("SC_CORE_GOVERNANCE_ENFORCEMENT_MODE", "audit").strip().lower()),
             governance_audit_retention_hours=max(8760, min(_int("SC_CORE_GOVERNANCE_AUDIT_RETENTION_HOURS", 8760), 876000)),
             governance_decision_retention_hours=max(24, min(_int("SC_CORE_GOVERNANCE_DECISION_RETENTION_HOURS", 2160), 87600)),
+            production_certification_enabled=_bool("SC_CORE_PRODUCTION_CERTIFICATION_ENABLED", True),
+            certification_require_zero_pending_migrations=_bool("SC_CORE_CERTIFICATION_REQUIRE_ZERO_PENDING_MIGRATIONS", True),
+            certification_require_valid_audit_chain=_bool("SC_CORE_CERTIFICATION_REQUIRE_VALID_AUDIT_CHAIN", True),
+            certification_require_gateway_release_ready=_bool("SC_CORE_CERTIFICATION_REQUIRE_GATEWAY_RELEASE_READY", False),
+            recovery_checkpoint_enabled=_bool("SC_CORE_RECOVERY_CHECKPOINT_ENABLED", True),
+            recovery_checkpoint_retention_hours=max(24, min(_int("SC_CORE_RECOVERY_CHECKPOINT_RETENTION_HOURS", 720), 87600)),
         )

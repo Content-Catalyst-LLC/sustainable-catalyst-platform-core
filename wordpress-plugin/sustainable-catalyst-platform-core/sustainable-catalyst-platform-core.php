@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Sustainable Catalyst Platform Core
  * Description: WordPress connector for Sustainable Catalyst Platform Core registry, graph, evidence, developer, gateway, free live-data, international-law, scientific-data, official-statistics, geospatial, time-series, STAC, map-layer, streaming, alerts, source-reliability, and operational-facility, humanitarian-access, essential-services, and country-evidence federation and reconciliation, and Earth/Ocean/Space scientific-service routing, cross-product exchange, distributed scale-control services, and governance/access/audit control-plane services.
- * Version: 2.16.0
+ * Version: 2.17.0
  * Author: Content Catalyst LLC
  * License: MIT
  */
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('SCPC_VERSION', '2.16.0');
+define('SCPC_VERSION', '2.17.0');
 define('SCPC_OPTION_BACKEND_URL', 'scpc_backend_url');
 define('SCPC_OPTION_READ_KEY', 'scpc_read_key');
 
@@ -935,3 +935,15 @@ function scpc_governance_status_shortcode() {
     return '<div class="scpc-status"><strong>Governance:</strong> ' . $status . ' &middot; Enforcement: ' . $mode . ' &middot; Audit: ' . $chain . '</div>';
 }
 add_shortcode('sc_platform_core_governance_status', 'scpc_governance_status_shortcode');
+
+
+add_shortcode('sc_platform_core_certification_status', function () {
+    $base = rtrim((string) get_option('scpc_core_url', ''), '/');
+    if (!$base) return '<div class="scpc-status">Core certification status unavailable: Core URL not configured.</div>';
+    $response = wp_remote_get($base . '/api/v1/certification/readiness', array('timeout' => 10));
+    if (is_wp_error($response)) return '<div class="scpc-status">Core certification status unavailable.</div>';
+    $payload = json_decode(wp_remote_retrieve_body($response), true);
+    $data = isset($payload['data']) ? $payload['data'] : array();
+    $state = (!empty($data['zero_pending_migrations'])) ? 'Migration Ready' : 'Migration Attention Required';
+    return '<div class="scpc-status"><strong>Core Production Certification</strong><br>' . esc_html($state) . ' · Schema ' . esc_html(isset($data['schema_head']) ? $data['schema_head'] : 'unknown') . '</div>';
+});

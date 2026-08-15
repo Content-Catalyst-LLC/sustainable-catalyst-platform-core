@@ -29,6 +29,7 @@ MIGRATIONS = [
     ("0017", "Cross-product evidence exchange packages, canonical artifact references, governed snapshots, receipts, idempotency, and non-destructive provenance-preserving handoff records."),
     ("0018", "Distributed processing, partition leases, storage-object registry, backpressure, retention, compaction, and scale diagnostics control plane."),
     ("0019", "Governance policies, principal-role bindings, persisted access decisions, tamper-evident audit chain, retention policy controls, and public-safe governance readiness."),
+    ("0020", "Production certification runs, migration-assurance snapshots, recovery checkpoints, integrity verification, and release-recovery readiness records."),
 ]
 
 def _seed_predicates(database: Database) -> int:

@@ -302,4 +302,8 @@ export class PublicApiClient {
     return this.request(`/governance/readiness`);
   }
 
+  certificationReadiness() {
+    return this.request(`/certification/readiness`);
+  }
+
 }

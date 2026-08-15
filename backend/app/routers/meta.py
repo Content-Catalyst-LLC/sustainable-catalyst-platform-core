@@ -83,6 +83,7 @@ def health(request: Request):
         "cross_product_evidence_exchange": request.app.state.settings.cross_product_exchange_enabled,
         "distributed_processing_storage_scale": request.app.state.settings.scale_control_plane_enabled,
         "governance_access_audit_control_plane": request.app.state.settings.governance_control_plane_enabled,
+        "production_certification_migration_recovery": request.app.state.settings.production_certification_enabled,
     }
 
 
@@ -154,6 +155,7 @@ async def ready(request: Request, db: Session = Depends(get_session)):
         "cross_product_evidence_exchange": "ready" if settings.cross_product_exchange_enabled else "disabled",
         "distributed_processing_storage_scale": "ready" if settings.scale_control_plane_enabled else "disabled",
         "governance_access_audit_control_plane": "ready" if settings.governance_control_plane_enabled else "disabled",
+        "production_certification_migration_recovery": "ready" if settings.production_certification_enabled else "disabled",
         "external_provider_health_release_blocking": False,
         "services": [
             {
@@ -240,6 +242,9 @@ def meta(request: Request):
             "cross_product_evidence_exchange",
             "distributed_processing_storage_scale",
             "governance_access_audit_control_plane",
+            "production_certification_migration_recovery",
+            "migration_assurance",
+            "recovery_readiness_checkpoints",
             "policy_based_access_decisions",
             "tamper_evident_governance_audit",
             "governance_retention_policies",

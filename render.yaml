@@ -161,6 +161,18 @@ services:
         value: "8760"
       - key: SC_CORE_GOVERNANCE_DECISION_RETENTION_HOURS
         value: "2160"
+      - key: SC_CORE_PRODUCTION_CERTIFICATION_ENABLED
+        value: "true"
+      - key: SC_CORE_CERTIFICATION_REQUIRE_ZERO_PENDING_MIGRATIONS
+        value: "true"
+      - key: SC_CORE_CERTIFICATION_REQUIRE_VALID_AUDIT_CHAIN
+        value: "true"
+      - key: SC_CORE_CERTIFICATION_REQUIRE_GATEWAY_RELEASE_READY
+        value: "false"
+      - key: SC_CORE_RECOVERY_CHECKPOINT_ENABLED
+        value: "true"
+      - key: SC_CORE_RECOVERY_CHECKPOINT_RETENTION_HOURS
+        value: "720"
 
 databases:
   - name: sustainable-catalyst-platform-core-db
@@ -178,3 +190,5 @@ databases:
 
 # Optional free credential for the FRED reference connector:
 # SC_CORE_FRED_API_KEY=<free-registered-key>
+
+# v2.17.0
