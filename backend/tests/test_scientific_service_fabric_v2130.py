@@ -36,10 +36,10 @@ def public_key(client, write_headers):
 def test_release_readiness_and_migration(client):
     assert any(version == '0016' for version,_ in MIGRATIONS)
     health=client.get('/health').json()
-    assert health['version']=='2.18.0'
+    assert health['version']=='2.19.0'
     assert health['earth_ocean_space_scientific_service_fabric'] is True
     ready=client.get('/v1/scientific-fabric/readiness').json()
-    assert ready['release']=='2.18.0'
+    assert ready['release']=='2.19.0'
     assert ready['migration_0016_applied'] is True
     assert ready['domains']==['earth','ocean','space']
     assert ready['truth_precedence']=='none'

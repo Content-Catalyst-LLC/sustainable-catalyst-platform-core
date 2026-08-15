@@ -1,16 +1,17 @@
-# Sustainable Catalyst Platform Core v2.18.0
+# Sustainable Catalyst Platform Core v2.19.0
 
-Core v2.18.0 adds **Observability, SLOs & Production Operations**: a local-first operational telemetry and service-level-objective layer that makes Core performance and release behavior auditable without requiring a paid monitoring vendor.
+Core v2.19.0 adds **Incident Response, Change Control & Rollback Coordination** above the v2.18.0 observability/SLO layer. It turns production signals into governed operational records without allowing telemetry correlation to become causal attribution or an automatic deployment mutation.
 
-Key v2.18.0 additions:
-- non-fatal request duration/status telemetry with query-string exclusion;
-- aggregate availability, error-rate and p95 latency windows;
-- persisted SLO definitions and met/breached/insufficient-data evaluation;
-- seeded Platform Core availability and p95 latency objectives;
-- production deployment markers and retention compaction;
-- public-safe aggregate status with no raw request IDs or operator metadata;
-- additive migration `0021`;
-- no evidence/Truth-precedence effect from operational telemetry.
+Key v2.19.0 additions:
+- governed operational incident records with internal/private/restricted visibility only;
+- append-only SHA-256-linked incident event history and tamper verification;
+- idempotent incident creation and explicit state-transition rules;
+- risk-aware change controls with approval required for high/critical risk by default;
+- rollback assessment that can reference deployment markers and SLO evaluations;
+- operator acknowledgement required before a rollback can be recorded as executed;
+- hard-disabled automatic rollback and causal attribution from correlation;
+- aggregate-only public operational status;
+- additive migration `0022`.
 
 ---
 

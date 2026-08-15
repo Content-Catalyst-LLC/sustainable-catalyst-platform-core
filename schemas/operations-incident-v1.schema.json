@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/operations-incident-v1.schema.json",
+  "title": "Sustainable Catalyst Operational Incident",
+  "type": "object",
+  "required": ["title", "service", "severity", "state"],
+  "properties": {
+    "title": {"type": "string", "minLength": 1},
+    "service": {"type": "string"},
+    "severity": {"enum": ["sev1", "sev2", "sev3", "sev4"]},
+    "state": {"enum": ["open", "investigating", "mitigated", "resolved", "closed"]},
+    "source": {"enum": ["manual", "slo", "deployment", "reliability", "certification", "other"]},
+    "visibility": {"enum": ["internal", "private", "restricted"]}
+  },
+  "additionalProperties": true
+}

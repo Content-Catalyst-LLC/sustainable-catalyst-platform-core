@@ -23,9 +23,9 @@ def post_reconcile(client, headers, candidates, concept="population", persist=Tr
 
 
 def test_release_readiness(client):
-    assert client.get("/health").json()["version"] == "2.18.0"
+    assert client.get("/health").json()["version"] == "2.19.0"
     body = client.get("/v1/country-evidence/readiness").json()
-    assert body["release"] == "2.18.0"
+    assert body["release"] == "2.19.0"
     assert body["migration_0015_applied"] is True
     assert body["exact_concept_required"] is True
     assert body["automatic_averaging"] is False

@@ -10,5 +10,5 @@ def main():
         r=observability.readiness(s,settings); assert r['enabled']; assert r['paid_monitoring_provider_required'] is False
         names={x.name for x in observability.list_slos(s,'platform-core')}; assert {'Core availability','Core p95 latency'} <= names
     print({'version':settings.version,'migration_0021_applied':True,'pending_migrations':m['pending'],'external_monitoring_provider_required':False,'default_slos':2})
-    print('PASS - Core v2.18.0 observability SLO and production operations validation')
+    print(f'PASS - Core {settings.version} observability SLO and production operations validation')
 if __name__=='__main__': main()

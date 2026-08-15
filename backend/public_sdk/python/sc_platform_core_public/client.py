@@ -331,3 +331,9 @@ PublicApiClient.certification_readiness = _certification_readiness
 def _observability_status(self):
     return self.request("GET", "/observability/status")
 PublicApiClient.observability_status = _observability_status
+
+
+# v2.19.0 Incident Response & Change Control public status helper
+def _operations_status(self):
+    return self.request("GET", "/operations/status")
+PublicApiClient.operations_status = _operations_status

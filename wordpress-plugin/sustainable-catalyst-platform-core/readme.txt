@@ -4,7 +4,7 @@ Tags: knowledge graph, entity registry, provenance, live data, sustainable catal
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.0
-Stable tag: 2.18.0
+Stable tag: 2.19.0
 License: MIT
 
 WordPress status, live-data gateway, and entity lookup client for Sustainable Catalyst Platform Core.
@@ -27,6 +27,11 @@ WordPress status, live-data gateway, and entity lookup client for Sustainable Ca
 
 The plugin never exposes the Platform Core write key in frontend code.
 
+
+== 2.19.0 ==
+* Adds governed incident response, change approval, and operator-confirmed rollback coordination.
+* Adds [sc_platform_core_operations_status].
+* Automatic rollback and causal attribution are disabled.
 
 == 2.18.0 ==
 * Adds local-first Core observability, SLO evaluation, deployment markers, and aggregate public production status.

@@ -2082,3 +2082,90 @@ class ProductionDeploymentMarker(Base):
     actor: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
     metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, index=True)
+
+# v2.19.0 — Incident Response, Change Control & Rollback Coordination
+class OperationsIncident(Base):
+    __tablename__ = "operations_incidents"
+    __table_args__ = (
+        UniqueConstraint("idempotency_key", name="uq_operations_incident_idempotency"),
+        Index("ix_operations_incident_service_state", "service", "state", "created_at"),
+        Index("ix_operations_incident_severity_state", "severity", "state", "created_at"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    idempotency_key: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    title: Mapped[str] = mapped_column(String(300), nullable=False)
+    service: Mapped[str] = mapped_column(String(100), nullable=False, default="platform-core", index=True)
+    environment: Mapped[str] = mapped_column(String(40), nullable=False, default="production", index=True)
+    severity: Mapped[str] = mapped_column(String(20), nullable=False, default="sev3", index=True)
+    state: Mapped[str] = mapped_column(String(40), nullable=False, default="open", index=True)
+    source: Mapped[str] = mapped_column(String(40), nullable=False, default="manual", index=True)
+    source_ref: Mapped[str | None] = mapped_column(String(255), nullable=True, index=True)
+    summary: Mapped[str | None] = mapped_column(Text, nullable=True)
+    owner: Mapped[str] = mapped_column(String(255), nullable=False, default="unassigned")
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal", index=True)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    detected_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, index=True)
+    mitigated_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    resolved_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+class OperationsIncidentEvent(Base):
+    __tablename__ = "operations_incident_events"
+    __table_args__ = (Index("ix_operations_incident_event_order", "incident_id", "created_at", "id"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    incident_id: Mapped[str] = mapped_column(ForeignKey("operations_incidents.id", ondelete="CASCADE"), nullable=False, index=True)
+    event_type: Mapped[str] = mapped_column(String(60), nullable=False, index=True)
+    previous_state: Mapped[str | None] = mapped_column(String(40), nullable=True)
+    new_state: Mapped[str | None] = mapped_column(String(40), nullable=True)
+    actor: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    note: Mapped[str | None] = mapped_column(Text, nullable=True)
+    details_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    previous_event_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    event_hash: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, index=True)
+
+class ChangeControlRecord(Base):
+    __tablename__ = "change_control_records"
+    __table_args__ = (
+        UniqueConstraint("change_key", name="uq_change_control_key"),
+        Index("ix_change_control_environment_state", "environment", "state", "created_at"),
+        Index("ix_change_control_release", "release", "created_at"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    change_key: Mapped[str] = mapped_column(String(255), nullable=False)
+    service: Mapped[str] = mapped_column(String(100), nullable=False, default="platform-core", index=True)
+    release: Mapped[str | None] = mapped_column(String(40), nullable=True, index=True)
+    environment: Mapped[str] = mapped_column(String(40), nullable=False, default="production", index=True)
+    change_type: Mapped[str] = mapped_column(String(40), nullable=False, default="deployment", index=True)
+    risk: Mapped[str] = mapped_column(String(20), nullable=False, default="medium", index=True)
+    state: Mapped[str] = mapped_column(String(40), nullable=False, default="planned", index=True)
+    actor: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    approval_required: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    approved_by: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    incident_id: Mapped[str | None] = mapped_column(ForeignKey("operations_incidents.id", ondelete="SET NULL"), nullable=True, index=True)
+    deployment_marker_id: Mapped[str | None] = mapped_column(ForeignKey("production_deployment_markers.id", ondelete="SET NULL"), nullable=True, index=True)
+    details_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    planned_start_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    started_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+class RollbackCoordinationRecord(Base):
+    __tablename__ = "rollback_coordination_records"
+    __table_args__ = (Index("ix_rollback_incident_state", "incident_id", "state", "created_at"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    incident_id: Mapped[str] = mapped_column(ForeignKey("operations_incidents.id", ondelete="CASCADE"), nullable=False, index=True)
+    deployment_marker_id: Mapped[str | None] = mapped_column(ForeignKey("production_deployment_markers.id", ondelete="SET NULL"), nullable=True, index=True)
+    recommendation: Mapped[str] = mapped_column(String(40), nullable=False, default="review", index=True)
+    state: Mapped[str] = mapped_column(String(40), nullable=False, default="proposed", index=True)
+    rationale: Mapped[str] = mapped_column(Text, nullable=False)
+    evidence_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    operator_actor: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    operator_note: Mapped[str | None] = mapped_column(Text, nullable=True)
+    automatic_execution: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    causal_attribution: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, index=True)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+

@@ -20,7 +20,7 @@ def _int(name: str, default: int) -> int:
 @dataclass(frozen=True)
 class Settings:
     app_name: str = "Sustainable Catalyst Platform Core"
-    version: str = "2.18.0"
+    version: str = "2.19.0"
     environment: str = "development"
     database_url: str = "sqlite:///./platform_core.db"
     write_api_key: str = ""
@@ -53,7 +53,7 @@ class Settings:
     live_data_enabled: bool = True
     live_data_ingest_enabled: bool = True
     live_data_strict_free_sources: bool = True
-    live_data_user_agent: str = "SustainableCatalystPlatformCore/2.18.0 (+https://sustainablecatalyst.com/contact/)"
+    live_data_user_agent: str = "SustainableCatalystPlatformCore/2.19.0 (+https://sustainablecatalyst.com/contact/)"
     live_data_timeout_seconds: int = 20
     live_data_max_response_bytes: int = 12582912
     live_data_raw_payload_max_bytes: int = 1048576
@@ -111,6 +111,10 @@ class Settings:
     observability_default_window_minutes: int = 60
     observability_default_availability_target: float = 99.0
     observability_default_latency_p95_ms: int = 1000
+    incident_change_control_enabled: bool = True
+    incident_public_status_enabled: bool = True
+    incident_retention_hours: int = 8760
+    change_high_risk_approval_required: bool = True
 
     @classmethod
     def from_env(cls) -> "Settings":
@@ -188,7 +192,7 @@ class Settings:
             live_data_strict_free_sources=_bool("SC_CORE_LIVE_DATA_STRICT_FREE_SOURCES", True),
             live_data_user_agent=os.getenv(
                 "SC_CORE_LIVE_DATA_USER_AGENT",
-                "SustainableCatalystPlatformCore/2.18.0 (+https://sustainablecatalyst.com/contact/)",
+                "SustainableCatalystPlatformCore/2.19.0 (+https://sustainablecatalyst.com/contact/)",
             ).strip(),
             live_data_timeout_seconds=max(
                 1, min(_int("SC_CORE_LIVE_DATA_TIMEOUT_SECONDS", 20), 120)
@@ -258,4 +262,8 @@ class Settings:
             observability_default_window_minutes=max(1, min(_int("SC_CORE_OBSERVABILITY_DEFAULT_WINDOW_MINUTES", 60), 10080)),
             observability_default_availability_target=max(0.0, min(float(os.getenv("SC_CORE_OBSERVABILITY_DEFAULT_AVAILABILITY_TARGET", "99.0")), 100.0)),
             observability_default_latency_p95_ms=max(1, min(_int("SC_CORE_OBSERVABILITY_DEFAULT_LATENCY_P95_MS", 1000), 600000)),
+            incident_change_control_enabled=_bool("SC_CORE_INCIDENT_CHANGE_CONTROL_ENABLED", True),
+            incident_public_status_enabled=_bool("SC_CORE_INCIDENT_PUBLIC_STATUS_ENABLED", True),
+            incident_retention_hours=max(168, min(_int("SC_CORE_INCIDENT_RETENTION_HOURS", 8760), 876000)),
+            change_high_risk_approval_required=_bool("SC_CORE_CHANGE_HIGH_RISK_APPROVAL_REQUIRED", True),
         )

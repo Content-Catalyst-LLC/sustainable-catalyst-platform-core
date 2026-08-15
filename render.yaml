@@ -74,7 +74,7 @@ services:
       - key: SC_CORE_LIVE_DATA_STRICT_FREE_SOURCES
         value: "true"
       - key: SC_CORE_LIVE_DATA_USER_AGENT
-        value: SustainableCatalystPlatformCore/2.18.0 (+https://sustainablecatalyst.com/contact/)
+        value: SustainableCatalystPlatformCore/2.19.0 (+https://sustainablecatalyst.com/contact/)
       - key: SC_CORE_LIVE_DATA_TIMEOUT_SECONDS
         value: "20"
       - key: SC_CORE_LIVE_DATA_MAX_RESPONSE_BYTES
@@ -187,6 +187,14 @@ services:
         value: "99.0"
       - key: SC_CORE_OBSERVABILITY_DEFAULT_LATENCY_P95_MS
         value: "1000"
+      - key: SC_CORE_INCIDENT_CHANGE_CONTROL_ENABLED
+        value: "true"
+      - key: SC_CORE_INCIDENT_PUBLIC_STATUS_ENABLED
+        value: "true"
+      - key: SC_CORE_INCIDENT_RETENTION_HOURS
+        value: "8760"
+      - key: SC_CORE_CHANGE_HIGH_RISK_APPROVAL_REQUIRED
+        value: "true"
 
 databases:
   - name: sustainable-catalyst-platform-core-db

@@ -138,3 +138,7 @@ Completed.
 
 ## v2.18.0 — Observability, SLOs & Production Operations
 Completed: first-party request telemetry, aggregate service windows, persisted SLOs, deployment markers, retention compaction, public-safe production status, and local-first monitoring with no paid-provider requirement.
+
+
+## v2.19.0 — Incident Response, Change Control & Rollback Coordination
+Completed: governed operational incidents, hash-linked event history, risk-aware change controls, operator-confirmed rollback coordination, and aggregate public operations status.

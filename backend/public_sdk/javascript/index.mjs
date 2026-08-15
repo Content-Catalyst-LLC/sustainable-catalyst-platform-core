@@ -311,4 +311,9 @@ export class PublicApiClient {
     return this.request(`/observability/status`);
   }
 
+
+  operationsStatus() {
+    return this.request(`/operations/status`);
+  }
+
 }

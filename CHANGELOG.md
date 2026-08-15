@@ -1,3 +1,9 @@
+# Changelog
+
+## 2.19.0
+- Incident Response, Change Control & Rollback Coordination.
+- Adds migration 0022, hash-linked incident events, high-risk approval gates, operator-confirmed rollback assessment, and aggregate public operational status.
+
 ## 2.14.0 — 2026-08-15
 
 - Added Cross-Product Evidence Exchange and migration `0017`.

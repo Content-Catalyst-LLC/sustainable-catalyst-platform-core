@@ -3,11 +3,11 @@ from datetime import datetime, timezone, timedelta
 import hashlib, json
 from sqlalchemy import inspect, select, text, func
 from sqlalchemy.orm import Session
-from ..migrations import migration_status
+from ..migrations import MIGRATIONS, migration_status
 from ..models import ProductionCertificationRun, RecoveryReadinessCheckpoint
 from .governance import verify_audit_chain
 
-SCHEMA_HEAD="0021"
+SCHEMA_HEAD=MIGRATIONS[-1][0]
 
 def _now(): return datetime.now(timezone.utc)
 def _stable(value): return json.dumps(value, sort_keys=True, separators=(",",":"), default=str).encode()
@@ -24,7 +24,7 @@ def migration_assurance(database) -> dict:
 def _table_inventory(session: Session):
     bind=session.get_bind(); names=sorted(inspect(bind).get_table_names())
     counts={}
-    critical={"schema_migrations","entities","evidence_records","live_data_sources","operational_facilities","humanitarian_conditions","cross_product_exchange_packages","governance_audit_events","scale_processing_jobs","production_certification_runs","recovery_readiness_checkpoints","observability_metric_samples","service_level_objectives","production_deployment_markers"}
+    critical={"schema_migrations","entities","evidence_records","live_data_sources","operational_facilities","humanitarian_conditions","cross_product_exchange_packages","governance_audit_events","scale_processing_jobs","production_certification_runs","recovery_readiness_checkpoints","observability_metric_samples","service_level_objectives","production_deployment_markers","operations_incidents","operations_incident_events","change_control_records","rollback_coordination_records"}
     for name in names:
         if name in critical:
             try: counts[name]=int(session.execute(text(f'SELECT COUNT(*) FROM "{name}"')).scalar_one())

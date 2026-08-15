@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name: Sustainable Catalyst Platform Core
- * Description: WordPress connector for Sustainable Catalyst Platform Core registry, graph, evidence, developer, gateway, free live-data, international-law, scientific-data, official-statistics, geospatial, time-series, STAC, map-layer, streaming, alerts, source-reliability, and operational-facility, humanitarian-access, essential-services, and country-evidence federation and reconciliation, and Earth/Ocean/Space scientific-service routing, cross-product exchange, distributed scale-control services, and governance/access/audit, production-certification/recovery, and observability/SLO production-operations services.
- * Version: 2.18.0
+ * Description: WordPress connector for Sustainable Catalyst Platform Core registry, graph, evidence, developer, gateway, free live-data, international-law, scientific-data, official-statistics, geospatial, time-series, STAC, map-layer, streaming, alerts, source-reliability, and operational-facility, humanitarian-access, essential-services, and country-evidence federation and reconciliation, and Earth/Ocean/Space scientific-service routing, cross-product exchange, distributed scale-control services, and governance/access/audit, production-certification/recovery, and observability/SLO production-operations services, plus incident-response, change-control, and rollback-coordination services.
+ * Version: 2.19.0
  * Author: Content Catalyst LLC
  * License: MIT
  */
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('SCPC_VERSION', '2.18.0');
+define('SCPC_VERSION', '2.19.0');
 define('SCPC_OPTION_BACKEND_URL', 'scpc_backend_url');
 define('SCPC_OPTION_READ_KEY', 'scpc_read_key');
 
@@ -96,6 +96,7 @@ function scpc_render_settings_page() {
         <code>[sc_platform_core_scientific_fabric_status]</code><br />
         <code>[sc_platform_core_scale_status]</code><br />
         <code>[sc_platform_core_governance_status]</code><br />
+        <code>[sc_platform_core_operations_status]</code><br />
         <code>[sc_platform_core_entity id="sc:product:workbench"]</code><br />
         <code>[sc_platform_core_relationships id="sc:product:research-librarian"]</code><br />
         <code>[sc_knowledge_explorer]</code><br />
@@ -959,3 +960,20 @@ function scpc_observability_status_shortcode() {
     return '<div class="scpc-status"><strong>Core Observability &amp; SLOs</strong><br />' . $status . ' · release ' . $release . ' · ' . $slos . ' SLOs · ' . $samples . ' metric samples</div>';
 }
 add_shortcode('sc_platform_core_observability_status', 'scpc_observability_status_shortcode');
+function scpc_operations_status_shortcode() {
+    $status = scpc_api_get('/v1/operations/readiness');
+    if (is_wp_error($status)) {
+        return '<div class="scpc-card scpc-error"><strong>Platform operations status unavailable</strong><p>' . esc_html($status->get_error_message()) . '</p></div>';
+    }
+    $open = isset($status['open_incidents']) ? intval($status['open_incidents']) : 0;
+    $changes = isset($status['active_changes']) ? intval($status['active_changes']) : 0;
+    ob_start(); ?>
+    <section class="scpc-card">
+      <p class="scpc-kicker">Incident response & change control</p>
+      <h3>Platform Operations</h3>
+      <p><strong>Open incidents:</strong> <?php echo esc_html(number_format_i18n($open)); ?> · <strong>Active changes:</strong> <?php echo esc_html(number_format_i18n($changes)); ?> · <strong>Rollback:</strong> Operator-confirmed</p>
+      <p class="scpc-meta">Automatic rollback and causal attribution from correlation are disabled.</p>
+    </section><?php return ob_get_clean();
+}
+add_shortcode('sc_platform_core_operations_status', 'scpc_operations_status_shortcode');
+

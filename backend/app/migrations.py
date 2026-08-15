@@ -31,6 +31,7 @@ MIGRATIONS = [
     ("0019", "Governance policies, principal-role bindings, persisted access decisions, tamper-evident audit chain, retention policy controls, and public-safe governance readiness."),
     ("0020", "Production certification runs, migration-assurance snapshots, recovery checkpoints, integrity verification, and release-recovery readiness records."),
     ("0021", "First-party observability metrics, service-level objectives, deployment markers, retention, and public-safe production operations status."),
+    ("0022", "Operational incidents, append-only incident-event integrity chain, governed change controls, and operator-confirmed rollback coordination."),
 ]
 
 def _seed_predicates(database: Database) -> int:
