@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name: Sustainable Catalyst Platform Core
- * Description: WordPress connector for Sustainable Catalyst Platform Core registry, graph, evidence, developer, gateway, free live-data, international-law, scientific-data, official-statistics, geospatial, time-series, STAC, map-layer, streaming, alerts, source-reliability, and operational-facility, humanitarian-access, essential-services, and country-evidence federation and reconciliation, and Earth/Ocean/Space scientific-service routing, cross-product exchange, distributed scale-control services, and governance/access/audit, production-certification/recovery, and observability/SLO production-operations services, plus incident-response, change-control, rollback-coordination, continuity, backup-verification, and disaster-recovery services.
- * Version: 2.20.0
+ * Description: WordPress connector for Sustainable Catalyst Platform Core registry, graph, evidence, developer, gateway, free live-data, international-law, scientific-data, official-statistics, geospatial, time-series, STAC, map-layer, streaming, alerts, source-reliability, and operational-facility, humanitarian-access, essential-services, and country-evidence federation and reconciliation, and Earth/Ocean/Space scientific-service routing, cross-product exchange, distributed scale-control services, and governance/access/audit, production-certification/recovery, and observability/SLO production-operations services, plus incident-response, change-control, rollback-coordination, continuity, backup-verification, disaster-recovery, and multi-region resilience/failover-coordination services.
+ * Version: 2.21.0
  * Author: Content Catalyst LLC
  * License: MIT
  */
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('SCPC_VERSION', '2.20.0');
+define('SCPC_VERSION', '2.21.0');
 define('SCPC_OPTION_BACKEND_URL', 'scpc_backend_url');
 define('SCPC_OPTION_READ_KEY', 'scpc_read_key');
 
@@ -987,3 +987,14 @@ function scpc_continuity_status_shortcode() {
     return '<div class="scpc-status"><strong>Core Continuity &amp; Disaster Recovery</strong><br />' . $state . ' · ' . esc_html($rpo) . ' · ' . esc_html($rto) . '<br /><span class="scpc-meta">Backups remain operator-controlled; automatic database restore is disabled.</span></div>';
 }
 add_shortcode('sc_platform_core_continuity_status', 'scpc_continuity_status_shortcode');
+
+
+function scpc_resilience_status_shortcode() {
+    $status = scpc_api_get('/v1/resilience/readiness');
+    if (is_wp_error($status)) return '<div class="scpc-status scpc-status--error">Core resilience status unavailable.</div>';
+    $state = esc_html($status['state'] ?? 'unknown');
+    $groups = intval($status['failover_groups'] ?? 0);
+    $blocked = intval($status['blocked_groups'] ?? 0);
+    return '<div class="scpc-status"><strong>Core Multi-Region Resilience</strong><br />' . $state . ' · ' . $groups . ' failover groups · ' . $blocked . ' blocked<br /><span class="scpc-meta">Automatic failover is disabled; write failover requires replication safety.</span></div>';
+}
+add_shortcode('sc_platform_core_resilience_status', 'scpc_resilience_status_shortcode');

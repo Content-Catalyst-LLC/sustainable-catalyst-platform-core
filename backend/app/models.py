@@ -2233,3 +2233,67 @@ class RestoreRehearsalRecord(Base):
     started_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
     completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True, index=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+# v2.21.0 — Multi-Region Resilience & Failover Coordination
+class RegionServiceStatusRecord(Base):
+    __tablename__ = "region_service_status_records"
+    __table_args__ = (
+        UniqueConstraint("service", "environment", "region_key", name="uq_region_service_status"),
+        Index("ix_region_service_health", "service", "environment", "health_state", "observed_at"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    service: Mapped[str] = mapped_column(String(100), nullable=False, default="platform-core", index=True)
+    environment: Mapped[str] = mapped_column(String(40), nullable=False, default="production", index=True)
+    region_key: Mapped[str] = mapped_column(String(100), nullable=False, index=True)
+    role: Mapped[str] = mapped_column(String(30), nullable=False, default="standby", index=True)
+    health_state: Mapped[str] = mapped_column(String(30), nullable=False, default="unknown", index=True)
+    readiness_state: Mapped[str] = mapped_column(String(30), nullable=False, default="unknown", index=True)
+    replication_state: Mapped[str] = mapped_column(String(30), nullable=False, default="unknown", index=True)
+    replication_lag_seconds: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    read_eligible: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    write_eligible: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    recovery_priority: Mapped[int] = mapped_column(Integer, nullable=False, default=100)
+    endpoint_ref: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    observed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+class FailoverGroupRecord(Base):
+    __tablename__ = "failover_group_records"
+    __table_args__ = (UniqueConstraint("group_key", name="uq_failover_group_key"), Index("ix_failover_group_service", "service", "environment"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    group_key: Mapped[str] = mapped_column(String(255), nullable=False)
+    service: Mapped[str] = mapped_column(String(100), nullable=False, default="platform-core", index=True)
+    environment: Mapped[str] = mapped_column(String(40), nullable=False, default="production", index=True)
+    active_region: Mapped[str] = mapped_column(String(100), nullable=False)
+    candidate_regions_json: Mapped[list] = mapped_column(JSON, default=list)
+    strategy: Mapped[str] = mapped_column(String(40), nullable=False, default="operator-coordinated")
+    degraded_read_only_allowed: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    max_replication_lag_seconds: Mapped[int] = mapped_column(Integer, nullable=False, default=300)
+    automatic_failover: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+class FailoverAssessmentRecord(Base):
+    __tablename__ = "failover_assessment_records"
+    __table_args__ = (Index("ix_failover_assessment_group_state", "group_id", "state", "created_at"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    group_id: Mapped[str] = mapped_column(ForeignKey("failover_group_records.id", ondelete="CASCADE"), nullable=False, index=True)
+    source_region: Mapped[str] = mapped_column(String(100), nullable=False)
+    target_region: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    recommendation: Mapped[str] = mapped_column(String(40), nullable=False, default="stay", index=True)
+    state: Mapped[str] = mapped_column(String(40), nullable=False, default="proposed", index=True)
+    reason: Mapped[str] = mapped_column(String(255), nullable=False, default="")
+    read_only: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    automatic_execution: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    infrastructure_actuation_by_core: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    replication_safe_for_write: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    acknowledged_by: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    approved_by: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    executed_by: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    evidence_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, index=True)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)

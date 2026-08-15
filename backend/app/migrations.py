@@ -33,6 +33,7 @@ MIGRATIONS = [
     ("0021", "First-party observability metrics, service-level objectives, deployment markers, retention, and public-safe production operations status."),
     ("0022", "Operational incidents, append-only incident-event integrity chain, governed change controls, and operator-confirmed rollback coordination."),
     ("0023", "Continuity, backup-artifact verification, disaster-recovery objectives, restore rehearsals, RPO/RTO evidence, and certification integration."),
+    ("0024", "Multi-region service health, failover groups, replication-aware failover assessments, read-only degraded mode, and operator-coordinated recovery routing."),
 ]
 
 def _seed_predicates(database: Database) -> int:

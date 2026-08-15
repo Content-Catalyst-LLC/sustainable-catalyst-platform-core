@@ -146,3 +146,7 @@ Completed: governed operational incidents, hash-linked event history, risk-aware
 
 ## v2.20.0 — Continuity, Backup Verification & Disaster Recovery
 Completed: backup artifact registry, checksum verification/attestation, disaster-recovery objectives, isolated SQLite restore rehearsals, externally evidenced production restore drills, RPO/RTO evaluation, public-safe continuity status, and optional certification gates.
+
+
+## v2.21.0 — Multi-Region Resilience & Failover Coordination
+Completed: provider-neutral region/service health, replication-aware failover groups, read-only degraded-mode coordination, explicit operator decision lineage, public-safe resilience status, and optional certification gating.

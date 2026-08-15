@@ -33,6 +33,7 @@ from .routers import (
     observability,
     operations,
     continuity,
+    resilience,
     foundations,
     imports,
     international_law,
@@ -66,7 +67,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             "workflows, tamper-evident audit infrastructure, a unified public API, "
             "developer applications, scoped credentials, usage controls, webhooks, "
             "SDK assets, a public Trust Center, evaluation runs, incidents, "
-            "limitations, attestations, signature dossiers, end-to-end workflows, a unified service gateway, and a governed free live-data connector gateway, an international-law and United Nations record layer, a scientific data connector and discovery layer, an economics and official-statistics record layer, a geospatial, time-series, STAC, map-layer, and scientific-asset fabric, a streaming, alerts, connector-worker, replay, stale-source, and provider-failover reliability plane, and a provenance-preserving operational facility and status-observation registry, and a humanitarian access and essential-services evidence fabric, plus a country evidence federation and reconciliation plane, and an Earth, Ocean, Space, and Scientific Service Fabric, plus a governed Cross-Product Evidence Exchange for Sustainable Catalyst, and a distributed processing, storage, backpressure, retention, and scale-control plane, plus a governance, access-decision, retention-policy, and tamper-evident audit control plane, and a production certification, migration-assurance, and recovery-readiness control plane, plus a first-party observability, service-level-objective, and production-operations control plane, and an incident-response, change-control, and operator-confirmed rollback-coordination plane, plus continuity, backup-verification, restore-rehearsal, and disaster-recovery objective controls."
+            "limitations, attestations, signature dossiers, end-to-end workflows, a unified service gateway, and a governed free live-data connector gateway, an international-law and United Nations record layer, a scientific data connector and discovery layer, an economics and official-statistics record layer, a geospatial, time-series, STAC, map-layer, and scientific-asset fabric, a streaming, alerts, connector-worker, replay, stale-source, and provider-failover reliability plane, and a provenance-preserving operational facility and status-observation registry, and a humanitarian access and essential-services evidence fabric, plus a country evidence federation and reconciliation plane, and an Earth, Ocean, Space, and Scientific Service Fabric, plus a governed Cross-Product Evidence Exchange for Sustainable Catalyst, and a distributed processing, storage, backpressure, retention, and scale-control plane, plus a governance, access-decision, retention-policy, and tamper-evident audit control plane, and a production certification, migration-assurance, and recovery-readiness control plane, plus a first-party observability, service-level-objective, and production-operations control plane, and an incident-response, change-control, and operator-confirmed rollback-coordination plane, plus continuity, backup-verification, restore-rehearsal, and disaster-recovery objective controls, and multi-region resilience, replication-aware failover assessment, degraded-mode routing, and operator-coordinated recovery controls."
         ),
         contact={
             "name": "Sustainable Catalyst",
@@ -162,6 +163,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(operations.public_router)
     app.include_router(continuity.router)
     app.include_router(continuity.public_router)
+    app.include_router(resilience.router)
+    app.include_router(resilience.public_router)
     app.include_router(international_law.router)
     app.include_router(international_law.public_router)
     app.include_router(scientific_data.router)

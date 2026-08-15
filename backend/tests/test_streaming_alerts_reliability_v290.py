@@ -23,7 +23,7 @@ def test_v290_readiness_surface(client, write_headers):
     response = client.get('/v1/reliability/readiness', headers=write_headers)
     assert response.status_code == 200
     body = response.json()
-    assert body['release'] == '2.20.0'
+    assert body['release'] == '2.21.0'
     assert body['streaming_enabled'] is True
     assert body['worker_enabled'] is True
     assert body['provider_failover_enabled'] is True

@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Region Service Status",
+  "type": "object",
+  "required": [
+    "region_key",
+    "health_state",
+    "readiness_state"
+  ],
+  "properties": {
+    "region_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "service": {
+      "type": "string"
+    },
+    "environment": {
+      "type": "string"
+    },
+    "health_state": {
+      "enum": [
+        "degraded",
+        "healthy",
+        "maintenance",
+        "unavailable",
+        "unknown"
+      ]
+    },
+    "readiness_state": {
+      "enum": [
+        "blocked",
+        "degraded",
+        "ready",
+        "unknown"
+      ]
+    },
+    "replication_state": {
+      "enum": [
+        "current",
+        "lagging",
+        "not-applicable",
+        "unknown"
+      ]
+    },
+    "replication_lag_seconds": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "read_eligible": {
+      "type": "boolean"
+    },
+    "write_eligible": {
+      "type": "boolean"
+    }
+  }
+}

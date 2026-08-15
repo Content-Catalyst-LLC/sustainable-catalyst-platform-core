@@ -320,4 +320,8 @@ export class PublicApiClient {
     return this.request(`/continuity/status`);
   }
 
+  resilienceStatus() {
+    return this.request(`/resilience/status`);
+  }
+
 }

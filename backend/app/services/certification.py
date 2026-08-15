@@ -24,7 +24,7 @@ def migration_assurance(database) -> dict:
 def _table_inventory(session: Session):
     bind=session.get_bind(); names=sorted(inspect(bind).get_table_names())
     counts={}
-    critical={"schema_migrations","entities","evidence_records","live_data_sources","operational_facilities","humanitarian_conditions","cross_product_exchange_packages","governance_audit_events","scale_processing_jobs","production_certification_runs","recovery_readiness_checkpoints","observability_metric_samples","service_level_objectives","production_deployment_markers","operations_incidents","operations_incident_events","change_control_records","rollback_coordination_records","backup_artifact_records","disaster_recovery_objectives","restore_rehearsal_records"}
+    critical={"schema_migrations","entities","evidence_records","live_data_sources","operational_facilities","humanitarian_conditions","cross_product_exchange_packages","governance_audit_events","scale_processing_jobs","production_certification_runs","recovery_readiness_checkpoints","observability_metric_samples","service_level_objectives","production_deployment_markers","operations_incidents","operations_incident_events","change_control_records","rollback_coordination_records","backup_artifact_records","disaster_recovery_objectives","restore_rehearsal_records","region_service_status_records","failover_group_records","failover_assessment_records"}
     for name in names:
         if name in critical:
             try: counts[name]=int(session.execute(text(f'SELECT COUNT(*) FROM "{name}"')).scalar_one())
@@ -55,7 +55,9 @@ def run_certification(session: Session, database, settings, gateway_snapshot: di
     checkpoint_check=verify_recovery_checkpoint(checkpoint) if checkpoint else {"valid":False}
     from .continuity import certification_snapshot
     continuity=certification_snapshot(session,settings) if settings.continuity_disaster_recovery_enabled else {"state":"disabled","recent_verified_backup":False,"recent_restore_rehearsal":False,"rpo_met":False,"rto_met":False,"database_backup_embedded":False,"automatic_database_restore_enabled":False}
-    checks={"database_roundtrip":db_roundtrip,"migration_head_matches":mig['head_matches'],"zero_pending_migrations":mig['zero_pending'],"governance_audit_chain_valid":bool(audit.get('valid')),"recovery_checkpoint_valid":bool(checkpoint_check.get('valid')) if settings.recovery_checkpoint_enabled else True,"gateway_release_ready":bool(gateway.get('release_ready',False)),"recent_verified_backup":bool(continuity.get('recent_verified_backup')),"recent_restore_rehearsal":bool(continuity.get('recent_restore_rehearsal')),"rpo_met":bool(continuity.get('rpo_met')),"rto_met":bool(continuity.get('rto_met')),"external_provider_health_release_blocking":False}
+    from .resilience import certification_snapshot as resilience_certification_snapshot
+    resilience=resilience_certification_snapshot(session,settings) if settings.multi_region_resilience_enabled else {"state":"disabled","multi_region_ready":False,"automatic_failover_enabled":False,"infrastructure_actuation_by_core":False}
+    checks={"database_roundtrip":db_roundtrip,"migration_head_matches":mig['head_matches'],"zero_pending_migrations":mig['zero_pending'],"governance_audit_chain_valid":bool(audit.get('valid')),"recovery_checkpoint_valid":bool(checkpoint_check.get('valid')) if settings.recovery_checkpoint_enabled else True,"gateway_release_ready":bool(gateway.get('release_ready',False)),"recent_verified_backup":bool(continuity.get('recent_verified_backup')),"recent_restore_rehearsal":bool(continuity.get('recent_restore_rehearsal')),"rpo_met":bool(continuity.get('rpo_met')),"rto_met":bool(continuity.get('rto_met')),"multi_region_ready":bool(resilience.get('multi_region_ready')),"external_provider_health_release_blocking":False}
     blockers=[]
     if not settings.production_certification_enabled: blockers.append("production_certification_disabled")
     if not db_roundtrip: blockers.append("database_roundtrip")
@@ -66,8 +68,9 @@ def run_certification(session: Session, database, settings, gateway_snapshot: di
     if settings.certification_require_gateway_release_ready and not gateway.get('release_ready',False): blockers.append("required_first_party_services")
     if settings.certification_require_recent_verified_backup and not continuity.get('recent_verified_backup'): blockers.append("recent_verified_backup")
     if settings.certification_require_recent_restore_rehearsal and not continuity.get('recent_restore_rehearsal'): blockers.append("recent_restore_rehearsal")
+    if settings.certification_require_multi_region_ready and not resilience.get('multi_region_ready'): blockers.append("multi_region_resilience")
     state="certified" if not blockers else "blocked"
-    recovery={"checkpoint_id":checkpoint.id if checkpoint else None,"checkpoint_valid":checkpoint_check.get('valid',False),"database_backup_embedded":False,"external_backup_required_for_full_restore":True,"disaster_recovery":continuity}
+    recovery={"checkpoint_id":checkpoint.id if checkpoint else None,"checkpoint_valid":checkpoint_check.get('valid',False),"database_backup_embedded":False,"external_backup_required_for_full_restore":True,"disaster_recovery":continuity,"multi_region_resilience":resilience}
     core={"release":settings.version,"state":state,"migration_head":mig['schema_head'],"pending_migrations":mig['pending'],"checks":checks,"blockers":blockers,"gateway":{"release_ready":gateway.get('release_ready',False),"required_blockers":gateway.get('required_blockers',[])},"recovery":recovery}
     row=ProductionCertificationRun(release=settings.version,state=state,migration_head=mig['schema_head'] or "",pending_migrations_json=mig['pending'],checks_json=checks,blockers_json=blockers,gateway_json=core['gateway'],recovery_json=recovery,certification_hash=_hash(core),completed_at=_now())
     session.add(row); session.commit(); session.refresh(row); return row,core

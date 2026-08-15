@@ -1,4 +1,4 @@
-# Sustainable Catalyst Public API JavaScript Client v2.20.0
+# Sustainable Catalyst Public API JavaScript Client v2.21.0
 
 ```javascript
 import { PublicApiClient } from "./index.mjs";
@@ -86,16 +86,16 @@ Discover routed scientific domains and retrieve domain-specific records, assets,
 The public SDK exposes exchange readiness/capability metadata only. Exchange package contents remain an authenticated internal Core surface.
 
 
-## Distributed scale v2.20.0
+## Distributed scale v2.21.0
 Use `/api/v1/scale/readiness` for public-safe capacity and backpressure state. Processing job payloads remain operator-only.
 
 
-## Governance v2.20.0
+## Governance v2.21.0
 Use `governance_readiness` / `governanceReadiness()` to inspect the public-safe governance control-plane status. Policy, decision, and audit data are intentionally not exposed through the public API.
 
-## Production certification v2.20.0
+## Production certification v2.21.0
 Public-safe certification readiness reports migration head, zero-pending state, and recovery-checkpoint capability without exposing certification records.
 
 
-## Observability v2.20.0
+## Observability v2.21.0
 Public-safe aggregate production status is available through the observability status helper. Request IDs, raw request telemetry, SLO definitions, and operator deployment metadata are not exposed by this helper.

@@ -343,3 +343,9 @@ PublicApiClient.operations_status = _operations_status
 def _continuity_status(self):
     return self.request("GET", "/continuity/status")
 PublicApiClient.continuity_status = _continuity_status
+
+
+# v2.21.0 Multi-Region Resilience public status helper
+def _resilience_status(self):
+    return self.request("GET", "/resilience/status")
+PublicApiClient.resilience_status = _resilience_status

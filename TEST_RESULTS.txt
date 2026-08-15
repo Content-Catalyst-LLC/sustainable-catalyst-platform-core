@@ -1,34 +1,41 @@
-Sustainable Catalyst Platform Core v2.20.0 — Validation Record
+Platform Core v2.21.0 — Validation Record
+=========================================
+Backend collection: 265 tests (253 inherited + 12 new v2.21.0 resilience tests).
 
-Backend test collection: 253 tests (241 inherited + 12 new v2.20.0 continuity/DR tests).
+Verified deterministic subsets:
+- v2.21.0 multi-region resilience: 12/12 PASS in isolated runs
+- production certification: 8/8 PASS
+- continuity / disaster recovery: 12/12 PASS
+- incident / change / rollback: 12/12 PASS
+- observability / SLO: 10/10 PASS
+- production integration: 15/15 PASS
+- unified public API / SDK: 9/9 PASS
+- health/readiness: 2/2 PASS
 
-Verified in this build environment:
-- v2.20.0 continuity/backup/DR suite: 12/12 PASS
-- production certification regression: 8/8 PASS
-- observability/SLO regression: 10/10 PASS
-- incident/change/rollback regression: 12/12 PASS
-- production integration regression: 15/15 PASS
-- unified public API/SDK regression: 9/9 PASS
-- health/readiness regression: 2/2 PASS
-- fresh migrations 0001-0023: PASS; pending migrations: 0
-- streaming/reliability validator: PASS
-- operational facilities validator: PASS
-- humanitarian access validator: PASS
-- country evidence validator: PASS
-- Earth/Ocean/Space scientific service fabric validator: PASS
-- cross-product exchange validator: PASS
-- distributed scale validator: PASS
-- governance validator: PASS
-- production certification validator: PASS
-- observability validator: PASS
-- incident/change/rollback validator: PASS
-- continuity/backup/DR validator: PASS
-- connector worker --once: queue-empty / PASS
+Promotion-critical validation:
+- fresh migration 0001 -> 0024: PASS; pending=[]
+- streaming/reliability: PASS
+- operational facilities: PASS
+- humanitarian access: PASS
+- country evidence: PASS
+- Earth/Ocean/Space scientific fabric: PASS
+- cross-product exchange: PASS
+- distributed scale: PASS
+- governance: PASS
+- production certification: PASS
+- observability: PASS
+- incident/change control: PASS
+- continuity / disaster recovery: PASS
+- multi-region resilience / failover coordination: PASS
+- connector worker --once: queue-empty
+
+Static/artifact-source validation:
 - Python compilation: PASS
 - PHP syntax: PASS
 - JavaScript syntax: PASS
 - Bash syntax: PASS
-- JSON parsing: 72 files PASS
+- JSON/GeoJSON parsing: 74 files PASS
+- render.yaml parse: PASS
 - static secret scan: 0 findings
 
-Container note: the full 253-test suite is not claimed as a single-process 253/253 result because long-lived FastAPI TestClient teardown can stall in this environment. The macOS installer runs every backend test file in a fresh pytest process before Git promotion.
+The macOS installer retains a file-by-file full-suite promotion gate before Git commit/push. A single-process all-test claim is intentionally not recorded because long-lived FastAPI TestClient teardown can stall in this build container.

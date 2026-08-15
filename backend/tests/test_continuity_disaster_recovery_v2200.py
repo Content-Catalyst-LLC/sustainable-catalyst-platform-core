@@ -17,7 +17,7 @@ def make_backup(root):
 
 def test_migration_and_readiness_surface():
     with tempfile.TemporaryDirectory() as td:
-        p=os.path.join(td,'core.db'); app=create_app(settings_for('sqlite:///'+p,td)); c=TestClient(app); b=c.get('/v1/continuity/readiness').json(); assert b['release']=='2.20.0' and b['migration_0023_applied'] is True and b['database_backup_embedded'] is False and b['automatic_database_restore_enabled'] is False
+        p=os.path.join(td,'core.db'); app=create_app(settings_for('sqlite:///'+p,td)); c=TestClient(app); b=c.get('/v1/continuity/readiness').json(); assert b['release']=='2.21.0' and b['migration_0023_applied'] is True and b['database_backup_embedded'] is False and b['automatic_database_restore_enabled'] is False
 
 def test_backup_registration_idempotent_and_secret_scrubbed():
     with tempfile.TemporaryDirectory() as td:
@@ -86,7 +86,7 @@ def test_internal_api_backup_attestation_and_external_drill_roundtrip():
     with tempfile.TemporaryDirectory() as td:
         app=create_app(settings_for('sqlite:///'+os.path.join(td,'core.db'))); c=TestClient(app); payload={'backup_key':'api-pg','database_engine':'postgresql','storage_kind':'operator-managed','storage_uri':'operator://pg/api','checksum_sha256':'c'*64}; r=c.post('/v1/continuity/backups',json=payload); assert r.status_code==200; bid=r.json()['id']; a=c.post(f'/v1/continuity/backups/{bid}/attest-verification',json={'actor':'ops','observed_checksum_sha256':'c'*64,'evidence':{}}); assert a.status_code==200 and a.json()['verification_state']=='attested'; drill=c.post(f'/v1/continuity/backups/{bid}/restore-rehearsals/external',json={'state':'passed','operator_actor':'ops','schema_head':'0023','duration_ms':1000,'integrity_checks':{'ok':True},'evidence':{}}); assert drill.status_code==200 and drill.json()['automatic_restore'] is False
 
-def test_migration_rehearsal_from_0022_applies_only_0023():
+def test_migration_rehearsal_from_0022_applies_current_head():
     with tempfile.TemporaryDirectory() as td:
         p=os.path.join(td,'core.db'); d=Database('sqlite:///'+p); Base.metadata.create_all(d.engine)
         from app.models import SchemaMigration
@@ -95,4 +95,4 @@ def test_migration_rehearsal_from_0022_applies_only_0023():
             for version,description in MIGRATIONS:
                 if version<='0022': db.add(SchemaMigration(version=version,description=description))
             db.commit()
-        assert run_migrations(d)==['0023']; assert migration_status(d)['pending']==[]
+        expected=[version for version,_ in MIGRATIONS if version>'0022']; assert run_migrations(d)==expected; assert migration_status(d)['pending']==[]

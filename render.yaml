@@ -74,7 +74,7 @@ services:
       - key: SC_CORE_LIVE_DATA_STRICT_FREE_SOURCES
         value: "true"
       - key: SC_CORE_LIVE_DATA_USER_AGENT
-        value: SustainableCatalystPlatformCore/2.20.0 (+https://sustainablecatalyst.com/contact/)
+        value: SustainableCatalystPlatformCore/2.21.0 (+https://sustainablecatalyst.com/contact/)
       - key: SC_CORE_LIVE_DATA_TIMEOUT_SECONDS
         value: "20"
       - key: SC_CORE_LIVE_DATA_MAX_RESPONSE_BYTES
@@ -190,6 +190,10 @@ services:
       - key: SC_CORE_INCIDENT_CHANGE_CONTROL_ENABLED
         value: "true"
       - key: SC_CORE_CONTINUITY_DISASTER_RECOVERY_ENABLED
+        value: "true"
+      - key: SC_CORE_MULTI_REGION_RESILIENCE_ENABLED
+        value: "true"
+      - key: SC_CORE_MULTI_REGION_DEGRADED_READ_ONLY_ENABLED
         value: "true"
       - key: SC_CORE_CONTINUITY_PUBLIC_STATUS_ENABLED
         value: "true"

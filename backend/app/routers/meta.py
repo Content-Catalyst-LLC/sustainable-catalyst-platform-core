@@ -87,6 +87,7 @@ def health(request: Request):
         "observability_slo_production_operations": request.app.state.settings.observability_control_plane_enabled,
         "incident_response_change_control_rollback": request.app.state.settings.incident_change_control_enabled,
         "continuity_backup_verification_disaster_recovery": request.app.state.settings.continuity_disaster_recovery_enabled,
+        "multi_region_resilience_failover_coordination": request.app.state.settings.multi_region_resilience_enabled,
     }
 
 
@@ -162,6 +163,7 @@ async def ready(request: Request, db: Session = Depends(get_session)):
         "observability_slo_production_operations": "ready" if settings.observability_control_plane_enabled else "disabled",
         "incident_response_change_control_rollback": "ready" if settings.incident_change_control_enabled else "disabled",
         "continuity_backup_verification_disaster_recovery": "ready" if settings.continuity_disaster_recovery_enabled else "disabled",
+        "multi_region_resilience_failover_coordination": "ready" if settings.multi_region_resilience_enabled else "disabled",
         "external_provider_health_release_blocking": False,
         "services": [
             {
@@ -250,6 +252,10 @@ def meta(request: Request):
             "governance_access_audit_control_plane",
             "production_certification_migration_recovery",
             "continuity_backup_verification_disaster_recovery",
+            "multi_region_resilience_failover_coordination",
+            "replication_aware_failover_assessment",
+            "operator_coordinated_failover",
+            "read_only_degraded_mode",
             "incident_response_change_control_rollback",
             "operator_confirmed_rollback",
             "incident_event_integrity_chain",

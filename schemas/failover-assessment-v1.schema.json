@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Failover Assessment",
+  "type": "object",
+  "required": [
+    "group_id",
+    "source_region",
+    "recommendation"
+  ],
+  "properties": {
+    "group_id": {
+      "type": "string"
+    },
+    "source_region": {
+      "type": "string"
+    },
+    "target_region": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "recommendation": {
+      "enum": [
+        "stay",
+        "failover",
+        "failover-read-only",
+        "blocked"
+      ]
+    },
+    "automatic_execution": {
+      "const": false
+    },
+    "infrastructure_actuation_by_core": {
+      "const": false
+    },
+    "replication_safe_for_write": {
+      "type": "boolean"
+    }
+  }
+}
