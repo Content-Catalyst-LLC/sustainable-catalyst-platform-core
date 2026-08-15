@@ -1661,3 +1661,48 @@ class FacilityObservation(Base):
     provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
     public: Mapped[bool] = mapped_column(Boolean, default=True, index=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+# v2.11.0 — Humanitarian Access & Essential Services Fabric
+class HumanitarianCondition(Base):
+    __tablename__ = "humanitarian_conditions"
+    __table_args__ = (
+        UniqueConstraint(
+            "source_id", "source_record_id", "service_domain", "condition_kind", "observed_at",
+            name="uq_humanitarian_condition_source_kind_time",
+        ),
+        Index("ix_humanitarian_condition_country_domain_time", "country_code", "service_domain", "observed_at"),
+        Index("ix_humanitarian_condition_facility_time", "facility_id", "observed_at"),
+        Index("ix_humanitarian_condition_kind_status", "condition_kind", "status_value"),
+        Index("ix_humanitarian_condition_semantic_public", "semantic_role", "public"),
+    )
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    country_code: Mapped[str] = mapped_column(String(3), nullable=False, index=True)
+    admin_area: Mapped[str | None] = mapped_column(String(300), nullable=True, index=True)
+    locality: Mapped[str | None] = mapped_column(String(300), nullable=True)
+    facility_id: Mapped[str | None] = mapped_column(ForeignKey("operational_facilities.id", ondelete="SET NULL"), nullable=True, index=True)
+    service_domain: Mapped[str] = mapped_column(String(80), nullable=False, index=True)
+    condition_kind: Mapped[str] = mapped_column(String(100), nullable=False, index=True)
+    semantic_role: Mapped[str] = mapped_column(String(80), default="humanitarian-indicator", index=True)
+    status_value: Mapped[str | None] = mapped_column(String(160), nullable=True, index=True)
+    value_number: Mapped[float | None] = mapped_column(Float, nullable=True)
+    value_text: Mapped[str | None] = mapped_column(Text, nullable=True)
+    unit: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    observed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, index=True)
+    published_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    publisher: Mapped[str] = mapped_column(String(400), nullable=False)
+    source_id: Mapped[str | None] = mapped_column(ForeignKey("live_data_sources.id", ondelete="SET NULL"), nullable=True, index=True)
+    connector_id: Mapped[str | None] = mapped_column(ForeignKey("live_data_connectors.id", ondelete="SET NULL"), nullable=True, index=True)
+    source_record_id: Mapped[str | None] = mapped_column(String(700), nullable=True)
+    source_url: Mapped[str | None] = mapped_column(String(1800), nullable=True)
+    evidence_class: Mapped[str] = mapped_column(String(100), default="published-evidence", index=True)
+    geographic_scope: Mapped[str | None] = mapped_column(String(250), nullable=True)
+    methodology: Mapped[str | None] = mapped_column(Text, nullable=True)
+    confidence: Mapped[float | None] = mapped_column(Float, nullable=True)
+    dimensions_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    details_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    public: Mapped[bool] = mapped_column(Boolean, default=True, index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+

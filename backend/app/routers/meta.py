@@ -35,6 +35,7 @@ from ..models import (
     LiveDataSource,
     OperationalFacility,
     FacilityObservation,
+    HumanitarianCondition,
     PredicateDefinition,
     ProvenanceActivity,
     ProvenanceLink,
@@ -76,6 +77,7 @@ def health(request: Request):
         "data_fabric_auto_materialize": request.app.state.settings.data_fabric_auto_materialize,
         "strict_free_sources": request.app.state.settings.live_data_strict_free_sources,
         "operational_evidence_facility_registry": True,
+        "humanitarian_access_essential_services_fabric": request.app.state.settings.humanitarian_fabric_enabled,
     }
 
 
@@ -141,6 +143,7 @@ async def ready(request: Request, db: Session = Depends(get_session)):
         "connector_worker": "ready" if settings.reliability_worker_enabled else "disabled",
         "provider_failover": "ready" if settings.provider_failover_enabled else "disabled",
         "operational_evidence_facility_registry": "ready",
+        "humanitarian_access_essential_services_fabric": "ready" if settings.humanitarian_fabric_enabled else "disabled",
         "external_provider_health_release_blocking": False,
         "services": [
             {
@@ -222,6 +225,7 @@ def meta(request: Request):
         capabilities=[
             "universal_entity_registry",
             "operational_evidence_facility_registry",
+            "humanitarian_access_essential_services_fabric",
             "controlled_predicate_registry",
             "relationship_review_workflow",
             "bounded_graph_traversal",

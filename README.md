@@ -1,62 +1,52 @@
-# Sustainable Catalyst Platform Core v2.10.0
+# Sustainable Catalyst Platform Core v2.11.0
 
-Core v2.10.0 adds **Operational Evidence & Facility Registry** on top of the v2.9.0 streaming/reliability line. Stable facilities are separated from dated operational observations so hospitals, schools, shelters, crossings, water/power assets and other essential infrastructure retain history, provenance and conflicting evidence instead of collapsing into one mutable status.
+Core v2.11.0 adds **Humanitarian Access & Essential Services Fabric** on top of the v2.10.0 Operational Evidence & Facility Registry. Humanitarian conditions are stored as dated, source-aware observations rather than flattened into a crisis score or inferred legal/causal conclusion.
 
+Key v2.11.0 additions:
 
-Key v2.10.0 additions:
+- first-class humanitarian condition records for health, education, food, water, electricity, fuel, displacement, communications, shelter, humanitarian access, and protection;
+- independent condition kinds for access, interruption, availability, throughput, population affected, displacement, food security, nutrition, supply, damage, capacity, and operational presence;
+- optional linkage to v2.10.0 facilities while preserving country/geographic evidence that is not facility-specific;
+- explicit semantic roles separating operational conditions, humanitarian indicators, classifications, structural baselines, and contextual reports;
+- automatic materialization only for live-data observations with an explicit structured semantic mapping;
+- HDX HAPI mappings for displacement, humanitarian needs, operational presence, funding, and food-security records;
+- ReliefWeb report metadata is retained as contextual/report evidence and is not automatically promoted into an operational condition;
+- structural baselines such as annual electricity-access percentages are explicitly ineligible for the current-conditions layer;
+- no synthetic crisis severity, automatic legal conclusion, or automatic causal attribution;
+- additive migration `0014`, internal/public APIs, SDK helpers, WordPress status, schema and regression coverage.
 
-- first-class operational facilities with stable identity, ISO3 geography, coordinates/geometry, and source identifiers;
-- facility classes for hospitals, clinics, schools, universities, shelters, crossings, food distribution, water, power, ports, airports, communications and warehouses;
-- dated operational, damage, access, service, capacity and supply observations;
-- provenance fields for publisher, source record, URL, methodology, evidence class, confidence and geographic scope;
-- history-preserving current-state projection by observation dimension, with no automatic conflict flattening;
-- bbox/country/type query surfaces and public-data boundary;
-- facility observation stream events for v2.9.0 alert/stream integration;
-- additive migration `0013`.
-
-Inherited v2.9.0 reliability capabilities:
-
-- Migration `0012` for persistent connector work items, dead-letter records, stream events, alert rules, and geographic subscriptions.
-- Database-backed connector queue with worker leases, retries, maximum-attempt policy, and distributed worker IDs.
-- Standalone connector-worker process for horizontally scaled deployments.
-- Server-Sent Events under `/v1/reliability/stream` and scoped public `/api/v1/reliability/stream`.
-- Threshold and existence alert rules with optional point-in-bounding-box geographic filters.
-- Geographic subscriptions that preserve requested domains, connectors, event types, and geometry.
-- Stale-source detection based on each connector's declared freshness window and last successful ingestion.
-- Immutable dead-letter history plus replay into a new queued work item.
-- Explicit provider-failover groups and priorities. Automatic worker failover requires an explicit `failover_parameters_compatible=true` contract; Core never assumes unrelated sources are interchangeable.
-- Successful ingestion events and alert-trigger events are persisted to the streaming log. Reliability-event emission cannot roll back a successful provider ingestion.
-- v2.8.1 liveness/readiness semantics remain intact; external provider health is visible but remains non-blocking for the Core release gate.
-
-## Reliability routes
+## Humanitarian routes
 
 ```text
-GET  /v1/reliability/readiness
-POST /v1/reliability/queue/{connector_id}
-GET  /v1/reliability/queue
-POST /v1/reliability/worker/run-once
-GET  /v1/reliability/stale-sources
-GET  /v1/reliability/failover/{connector_id}
-GET  /v1/reliability/dead-letters
-POST /v1/reliability/dead-letters/{id}/replay
-POST /v1/reliability/alerts/rules
-GET  /v1/reliability/alerts/rules
-POST /v1/reliability/subscriptions/geographic
-GET  /v1/reliability/subscriptions/geographic
-GET  /v1/reliability/stream
-GET  /api/v1/reliability/stream
+GET  /v1/humanitarian/readiness
+POST /v1/humanitarian/conditions
+GET  /v1/humanitarian/conditions
+GET  /v1/humanitarian/country/{ISO3}/summary
+POST /v1/humanitarian/materialize/live-observation/{observation_id}
+
+GET  /api/v1/humanitarian/conditions
+GET  /api/v1/humanitarian/country/{ISO3}/summary
 ```
 
-Run a worker with:
+The zero-record state is explicitly **unknown, not normal**. Provider outages remain observable but do not independently block Core release readiness.
 
-```bash
-cd backend
-python scripts/run_connector_worker.py
+## Inherited v2.10.0 facility model
+
+Stable facilities remain separate from dated operational, damage, access, service, capacity and supply observations. Humanitarian conditions can link to those facilities when a source identifies one, but country-level reporting is not forced into a facility object.
+
+## Existing release line
+
+```text
+v2.7.0  Free Live Data Gateway
+v2.7.1  International Law and United Nations Connector Pack
+v2.7.2  Scientific Data Connector Pack
+v2.7.3  Economics and Official Statistics Connector Pack
+v2.8.0  Geospatial, Time-Series, and Scientific Data Fabric
+v2.8.1  Production Integration & Readiness Repair
+v2.9.0  Streaming, Alerts, and Source Reliability
+v2.10.0 Operational Evidence & Facility Registry
+v2.11.0 Humanitarian Access & Essential Services Fabric
 ```
-
-Use `--once` for a single deterministic work cycle. Multiple workers may share the same Core database; leases prevent an actively claimed item from being treated as ordinary pending work.
-
-Provider failover is deliberately conservative. A connector may declare `failover_group`, `failover_priority`, and `failover_parameters_compatible`; automatic execution against a backup occurs only when parameter compatibility has been explicitly asserted.
 
 ---
 

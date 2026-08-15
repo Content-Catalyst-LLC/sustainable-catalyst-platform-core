@@ -13,6 +13,7 @@ from sqlalchemy.orm import Session
 
 from ..connectors import ADAPTERS, NormalizedObservation
 from .data_fabric import materialize_observation, materialize_scientific_record
+from .humanitarian import materialize_live_observation
 from .reliability import emit_event, evaluate_alerts
 from ..models import (
     LiveDataConnector,
@@ -534,6 +535,22 @@ class LiveDataRuntime:
             db.add_all([run, connector])
             db.commit()
             db.refresh(run)
+            humanitarian_materialized = 0
+            if self.settings.humanitarian_fabric_enabled and self.settings.humanitarian_auto_materialize:
+                for observation in changed_observations:
+                    try:
+                        materialized, _reason = materialize_live_observation(db, observation)
+                        if materialized is not None:
+                            humanitarian_materialized += 1
+                    except Exception:
+                        # Humanitarian semantic materialization is an additive evidence projection.
+                        # A mapping failure must never roll back successful source ingestion.
+                        pass
+                if humanitarian_materialized:
+                    run.details_json = {**(run.details_json or {}), "humanitarian_conditions_materialized": humanitarian_materialized}
+                    db.add(run)
+                    db.commit()
+                    db.refresh(run)
             try:
                 emit_event(
                     db,

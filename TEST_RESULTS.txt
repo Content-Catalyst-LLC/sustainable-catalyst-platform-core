@@ -1,44 +1,37 @@
-Sustainable Catalyst Platform Core v2.10.0 — Validation Results
-Date: 2026-08-14
+Sustainable Catalyst Platform Core v2.11.0
+Humanitarian Access & Essential Services Fabric
+Validation date: 2026-08-14
 
-Deterministic pytest lineage: 143 / 143 PASS
-- Inherited v2.9.0 and earlier regression tests: 133 / 133 PASS
-- v2.10.0 Operational Evidence & Facility Registry tests: 10 / 10 PASS
+Deterministic tests: 155 / 155 PASS
+- Inherited v2.10.0 line: 143 / 143 PASS
+- New v2.11.0 humanitarian tests: 12 / 12 PASS
 
-Validated v2.10.0 behaviors:
-- migration 0013 applied; no pending migrations
-- stable facility identity separate from dated operational evidence
-- hospital, clinic, school, university, shelter, water, power, crossing, port, airport, communications, food-distribution and warehouse facility classes
-- exact namespace/value source-identifier deduplication
-- operational, damage, access, service, capacity and supply dimensions remain separate
-- observation history retained rather than overwritten
-- publisher, source record, URL, evidence class, geography, methodology, confidence and provenance round-trip
-- country/type/bbox facility query
-- public visibility boundary
-- facility observation stream-event integration
-- missing evidence is not interpreted as normal operation
-- external provider health remains non-blocking for release readiness
+Migration validation:
+- 0001 through 0014 applied
+- pending migrations: 0
 
-Inherited v2.9.0 streaming/reliability capabilities remain green.
+Registry preservation:
+- governed sources: 40
+- connector definitions: 39
+
+Targeted validation:
+- humanitarian fabric: PASS
+- operational facility registry: PASS
+- streaming/source reliability: PASS
+- developer SDK delivery: PASS
 
 Static validation:
-- Python compilation PASS
-- JSON parsing PASS
-- PHP syntax PASS
-- JavaScript syntax PASS
-- Bash syntax PASS
-- render.yaml parse PASS
-- push-safe secret scan: 0 findings
+- Python compilation: PASS
+- PHP syntax: PASS
+- Bash syntax: PASS
+- JSON parse: 61 files PASS
+- secret scan: 0 findings
 
-v2.10.0 R1 promotion repair validation:
-- Runtime/schema feature set unchanged from the 143 / 143 passing v2.10.0 validation lineage
-- corrected BUILD_MANIFEST release assertion: 2.10.0 PASS
-- corrected current deploy-installer syntax target PASS
-- corrected inherited reliability test target to test_streaming_alerts_reliability_v290.py PASS
-- all push-script referenced pytest modules exist PASS
-- all push-script referenced bash syntax targets exist PASS
-- v2.10.0 release contract PASS
-- v2.10.0 R1 promotion repair contract PASS
-- Python repair-validator compilation PASS
-- PHP plugin syntax PASS
-- Bash syntax PASS
+Semantic safeguards:
+- structural baselines are not current operational conditions: PASS
+- ReliefWeb report metadata is not auto-promoted to operational claims: PASS
+- zero records means unknown, not normal: PASS
+- synthetic crisis severity: disabled
+- automatic legal conclusion: disabled
+- automatic causal attribution: disabled
+- external provider health release blocking: false

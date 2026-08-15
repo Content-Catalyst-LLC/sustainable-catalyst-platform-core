@@ -1,3 +1,16 @@
+# Changelog
+
+## 2.11.0 — 2026-08-14
+
+- Added Humanitarian Access & Essential Services Fabric and migration `0014`.
+- Added source-aware conditions for health, education, food, water, electricity, fuel, displacement, communications, shelter, humanitarian access, and protection.
+- Added facility-linked and country-level humanitarian observations without requiring every condition to resolve to a facility.
+- Added semantic roles that separate operational conditions, humanitarian indicators, classifications, structural baselines, and contextual reports.
+- Added conservative structured materialization from HDX HAPI and future explicitly mapped connectors.
+- Explicitly prohibited automatic promotion of ReliefWeb report metadata to operational conditions.
+- Explicitly prohibited synthetic severity scores, automatic legal conclusions, and automatic causal attribution.
+- Added public APIs, SDK helpers, WordPress status, JSON Schema, deployment controls, validation, and regression coverage.
+
 ## 2.10.0 — 2026-08-14
 
 - Added Operational Evidence & Facility Registry for hospitals, clinics, schools, universities, shelters, crossings, essential-service infrastructure and related public-interest facilities.

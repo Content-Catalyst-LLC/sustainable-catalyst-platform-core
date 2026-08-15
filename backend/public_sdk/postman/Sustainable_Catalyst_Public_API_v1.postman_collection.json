@@ -2,7 +2,7 @@
   "info": {
     "name": "Sustainable Catalyst Unified Public API v1",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "description": "Registry, graph, evidence, ledger, trust, workflow, signature dossier, live data, international law, science, economics, usage, and webhook endpoints."
+    "description": "Registry, graph, evidence, ledger, trust, workflow, signature dossier, live data, international law, science, economics, facilities, humanitarian conditions, usage, and webhook endpoints."
   },
   "variable": [
     {
@@ -511,6 +511,27 @@
           ]
         },
         "description": "Core v2.10.0 scoped public SSE snapshot. Only events explicitly marked public are emitted."
+      }
+    },
+    {
+      "name": "Operational Facilities",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/v1/facilities?country_code=PSE&facility_type=hospital"
+      }
+    },
+    {
+      "name": "Humanitarian Conditions",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/v1/humanitarian/conditions?country_code=PSE&service_domain=food"
+      }
+    },
+    {
+      "name": "Humanitarian Country Summary",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/v1/humanitarian/country/PSE/summary"
       }
     }
   ]

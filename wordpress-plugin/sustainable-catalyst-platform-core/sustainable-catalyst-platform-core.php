@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name: Sustainable Catalyst Platform Core
- * Description: WordPress connector for Sustainable Catalyst Platform Core registry, graph, evidence, developer, gateway, free live-data, international-law, scientific-data, official-statistics, geospatial, time-series, STAC, map-layer, streaming, alerts, source-reliability, and operational-facility evidence services.
- * Version: 2.10.0
+ * Description: WordPress connector for Sustainable Catalyst Platform Core registry, graph, evidence, developer, gateway, free live-data, international-law, scientific-data, official-statistics, geospatial, time-series, STAC, map-layer, streaming, alerts, source-reliability, and operational-facility, humanitarian-access, and essential-services evidence services.
+ * Version: 2.11.0
  * Author: Content Catalyst LLC
  * License: MIT
  */
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('SCPC_VERSION', '2.10.0');
+define('SCPC_VERSION', '2.11.0');
 define('SCPC_OPTION_BACKEND_URL', 'scpc_backend_url');
 define('SCPC_OPTION_READ_KEY', 'scpc_read_key');
 
@@ -91,6 +91,7 @@ function scpc_render_settings_page() {
         <code>[sc_platform_core_data_fabric_status]</code><br />
         <code>[sc_platform_core_reliability_status]</code><br />
         <code>[sc_platform_core_facility_registry_status]</code><br />
+        <code>[sc_platform_core_humanitarian_status]</code><br />
         <code>[sc_platform_core_entity id="sc:product:workbench"]</code><br />
         <code>[sc_platform_core_relationships id="sc:product:research-librarian"]</code><br />
         <code>[sc_knowledge_explorer]</code><br />
@@ -357,6 +358,26 @@ function scpc_facility_registry_status_shortcode() {
     <?php return ob_get_clean();
 }
 add_shortcode('sc_platform_core_facility_registry_status', 'scpc_facility_registry_status_shortcode');
+
+function scpc_humanitarian_status_shortcode() {
+    $status = scpc_api_get('/v1/humanitarian/readiness');
+    if (is_wp_error($status)) {
+        return '<div class="scpc-card scpc-error"><strong>Humanitarian evidence fabric unavailable</strong><p>' .
+            esc_html($status->get_error_message()) . '</p></div>';
+    }
+    $records = isset($status['records']) ? intval($status['records']) : 0;
+    ob_start(); ?>
+    <section class="scpc-card">
+        <p class="scpc-kicker">Humanitarian and essential-service evidence</p>
+        <h3>Humanitarian Access & Essential Services Fabric</h3>
+        <p><strong>Status:</strong> <?php echo esc_html(ucfirst($status['status'] ?? 'unknown')); ?> ·
+        <strong>Records:</strong> <?php echo esc_html(number_format_i18n($records)); ?> ·
+        <strong>Structured materialization:</strong> <?php echo !empty($status['auto_materialize_structured_observations']) ? 'Enabled' : 'Disabled'; ?></p>
+        <p class="scpc-meta">Operational conditions, humanitarian indicators, classifications and structural baselines remain distinct. Missing records are not interpreted as normal conditions, and Core does not create synthetic crisis-severity or legal conclusions.</p>
+    </section>
+    <?php return ob_get_clean();
+}
+add_shortcode('sc_platform_core_humanitarian_status', 'scpc_humanitarian_status_shortcode');
 
 function scpc_entity_shortcode($atts) {
     $atts = shortcode_atts(['id' => ''], $atts, 'sc_platform_core_entity');

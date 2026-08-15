@@ -245,3 +245,15 @@ def _facility_observations(self, facility_id: str, **params):
 PublicApiClient.facilities = _facilities
 PublicApiClient.facility = _facility
 PublicApiClient.facility_observations = _facility_observations
+
+
+# v2.11.0 humanitarian access helpers
+def _humanitarian_conditions(self, **params):
+    clean={k:v for k,v in params.items() if v is not None}
+    return self.request("GET", "/humanitarian/conditions", params=clean)
+
+def _humanitarian_country_summary(self, country_code: str):
+    return self.request("GET", f"/humanitarian/country/{country_code}/summary")
+
+PublicApiClient.humanitarian_conditions = _humanitarian_conditions
+PublicApiClient.humanitarian_country_summary = _humanitarian_country_summary

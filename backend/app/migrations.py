@@ -23,6 +23,7 @@ MIGRATIONS = [
     ("0011", "Geospatial, time-series, STAC, map-layer, and scientific-asset data fabric with portable GeoJSON storage and PostgreSQL spatial indexes."),
     ("0012", "Streaming event log, persistent connector work queue, alert rules, geographic subscriptions, dead-letter records, replay, stale-source detection, and provider failover control plane."),
     ("0013", "Operational facility registry, source identifiers, facility-level status observations, geospatial facility lookup, and provenance-preserving operational evidence history."),
+    ("0014", "Humanitarian access and essential-services condition fabric with facility linkage, structured-source materialization, semantic roles, and provenance-preserving country evidence."),
 ]
 
 def _seed_predicates(database: Database) -> int:

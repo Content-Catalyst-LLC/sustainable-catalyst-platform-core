@@ -243,4 +243,14 @@ export class PublicApiClient {
     return this.request(`/facilities/${encodeURIComponent(facilityId)}/observations?${query}`);
   }
 
+  humanitarianConditions(params = {}) {
+    const clean = Object.fromEntries(Object.entries(params).filter(([, value]) => value !== null && value !== undefined));
+    const query = new URLSearchParams(clean);
+    return this.request(`/humanitarian/conditions?${query}`);
+  }
+
+  humanitarianCountrySummary(countryCode) {
+    return this.request(`/humanitarian/country/${encodeURIComponent(countryCode)}/summary`);
+  }
+
 }

@@ -80,3 +80,20 @@ Completed:
 - Dead-letter records
 - Historical replay
 - Provider failover
+
+
+## v2.10.0 — Operational Evidence & Facility Registry
+Completed: stable operational facilities, source identifiers, geospatial lookup, independent dated status dimensions, provenance history and facility stream events.
+
+
+## v2.11.0 — Humanitarian Access & Essential Services Fabric
+Completed:
+
+- Humanitarian conditions across health, education, food, water, electricity, fuel, displacement, communications, shelter and access
+- Facility-linked and country-level evidence
+- Operational/current vs structural/context semantic roles
+- Structured HDX HAPI materialization
+- Report-metadata non-promotion rule
+- Zero records means unknown, not normal
+- No synthetic severity, legal conclusion or causal attribution
+- Public APIs, SDKs, WordPress status, migration `0014`, schemas and validation
