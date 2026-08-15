@@ -81,6 +81,7 @@ def health(request: Request):
         "country_evidence_federation_reconciliation": request.app.state.settings.country_evidence_federation_enabled,
         "earth_ocean_space_scientific_service_fabric": request.app.state.settings.scientific_service_fabric_enabled,
         "cross_product_evidence_exchange": request.app.state.settings.cross_product_exchange_enabled,
+        "distributed_processing_storage_scale": request.app.state.settings.scale_control_plane_enabled,
     }
 
 
@@ -150,6 +151,7 @@ async def ready(request: Request, db: Session = Depends(get_session)):
         "country_evidence_federation_reconciliation": "ready" if settings.country_evidence_federation_enabled else "disabled",
         "earth_ocean_space_scientific_service_fabric": "ready" if settings.scientific_service_fabric_enabled else "disabled",
         "cross_product_evidence_exchange": "ready" if settings.cross_product_exchange_enabled else "disabled",
+        "distributed_processing_storage_scale": "ready" if settings.scale_control_plane_enabled else "disabled",
         "external_provider_health_release_blocking": False,
         "services": [
             {
@@ -234,6 +236,11 @@ def meta(request: Request):
             "humanitarian_access_essential_services_fabric",
             "earth_ocean_space_scientific_service_fabric",
             "cross_product_evidence_exchange",
+            "distributed_processing_storage_scale",
+            "partitioned_processing_jobs",
+            "storage_object_registry",
+            "backpressure_control",
+            "retention_compaction",
             "reference_first_product_handoffs",
             "non_destructive_evidence_exchange",
             "scientific_domain_routing",

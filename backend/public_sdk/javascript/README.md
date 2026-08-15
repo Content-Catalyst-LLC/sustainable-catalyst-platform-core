@@ -1,4 +1,4 @@
-# Sustainable Catalyst Public API JavaScript Client v2.14.0
+# Sustainable Catalyst Public API JavaScript Client v2.15.0
 
 ```javascript
 import { PublicApiClient } from "./index.mjs";
@@ -84,3 +84,7 @@ Discover routed scientific domains and retrieve domain-specific records, assets,
 ## Cross-product evidence exchange v2.14.0
 
 The public SDK exposes exchange readiness/capability metadata only. Exchange package contents remain an authenticated internal Core surface.
+
+
+## Distributed scale v2.15.0
+Use `/api/v1/scale/readiness` for public-safe capacity and backpressure state. Processing job payloads remain operator-only.

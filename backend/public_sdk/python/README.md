@@ -1,4 +1,4 @@
-# Sustainable Catalyst Public API Python Client v2.14.0
+# Sustainable Catalyst Public API Python Client v2.15.0
 
 ```python
 from sc_platform_core_public import PublicApiClient
@@ -84,3 +84,7 @@ Discover routed scientific domains and retrieve domain-specific records, assets,
 ## Cross-product evidence exchange v2.14.0
 
 The public SDK exposes exchange readiness/capability metadata only. Exchange package contents remain an authenticated internal Core surface.
+
+
+## Distributed scale v2.15.0
+Use the public scale readiness endpoint to inspect non-sensitive capacity and backpressure state. Job payloads remain operator-only.

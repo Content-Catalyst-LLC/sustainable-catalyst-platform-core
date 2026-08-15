@@ -20,7 +20,7 @@ def _int(name: str, default: int) -> int:
 @dataclass(frozen=True)
 class Settings:
     app_name: str = "Sustainable Catalyst Platform Core"
-    version: str = "2.14.0"
+    version: str = "2.15.0"
     environment: str = "development"
     database_url: str = "sqlite:///./platform_core.db"
     write_api_key: str = ""
@@ -53,7 +53,7 @@ class Settings:
     live_data_enabled: bool = True
     live_data_ingest_enabled: bool = True
     live_data_strict_free_sources: bool = True
-    live_data_user_agent: str = "SustainableCatalystPlatformCore/2.14.0 (+https://sustainablecatalyst.com/contact/)"
+    live_data_user_agent: str = "SustainableCatalystPlatformCore/2.15.0 (+https://sustainablecatalyst.com/contact/)"
     live_data_timeout_seconds: int = 20
     live_data_max_response_bytes: int = 12582912
     live_data_raw_payload_max_bytes: int = 1048576
@@ -87,6 +87,13 @@ class Settings:
     country_evidence_federation_enabled: bool = True
     scientific_service_fabric_enabled: bool = True
     cross_product_exchange_enabled: bool = True
+    scale_control_plane_enabled: bool = True
+    scale_max_active_jobs: int = 64
+    scale_max_partitions_per_job: int = 256
+    scale_partition_lease_seconds: int = 120
+    scale_inline_result_max_bytes: int = 262144
+    scale_queue_backpressure_threshold: int = 1000
+    scale_completed_retention_hours: int = 168
 
     @classmethod
     def from_env(cls) -> "Settings":
@@ -164,7 +171,7 @@ class Settings:
             live_data_strict_free_sources=_bool("SC_CORE_LIVE_DATA_STRICT_FREE_SOURCES", True),
             live_data_user_agent=os.getenv(
                 "SC_CORE_LIVE_DATA_USER_AGENT",
-                "SustainableCatalystPlatformCore/2.14.0 (+https://sustainablecatalyst.com/contact/)",
+                "SustainableCatalystPlatformCore/2.15.0 (+https://sustainablecatalyst.com/contact/)",
             ).strip(),
             live_data_timeout_seconds=max(
                 1, min(_int("SC_CORE_LIVE_DATA_TIMEOUT_SECONDS", 20), 120)
@@ -210,4 +217,11 @@ class Settings:
             country_evidence_federation_enabled=_bool("SC_CORE_COUNTRY_EVIDENCE_FEDERATION_ENABLED", True),
             scientific_service_fabric_enabled=_bool("SC_CORE_SCIENTIFIC_SERVICE_FABRIC_ENABLED", True),
             cross_product_exchange_enabled=_bool("SC_CORE_CROSS_PRODUCT_EXCHANGE_ENABLED", True),
+            scale_control_plane_enabled=_bool("SC_CORE_SCALE_CONTROL_PLANE_ENABLED", True),
+            scale_max_active_jobs=max(1, min(_int("SC_CORE_SCALE_MAX_ACTIVE_JOBS", 64), 4096)),
+            scale_max_partitions_per_job=max(1, min(_int("SC_CORE_SCALE_MAX_PARTITIONS_PER_JOB", 256), 10000)),
+            scale_partition_lease_seconds=max(5, min(_int("SC_CORE_SCALE_PARTITION_LEASE_SECONDS", 120), 86400)),
+            scale_inline_result_max_bytes=max(1024, min(_int("SC_CORE_SCALE_INLINE_RESULT_MAX_BYTES", 262144), 10485760)),
+            scale_queue_backpressure_threshold=max(1, min(_int("SC_CORE_SCALE_QUEUE_BACKPRESSURE_THRESHOLD", 1000), 1000000)),
+            scale_completed_retention_hours=max(1, min(_int("SC_CORE_SCALE_COMPLETED_RETENTION_HOURS", 168), 87600)),
         )

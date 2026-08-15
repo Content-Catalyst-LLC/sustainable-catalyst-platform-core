@@ -294,4 +294,8 @@ export class PublicApiClient {
     return this.request(`/exchange/readiness`);
   }
 
+  scaleReadiness() {
+    return this.request(`/scale/readiness`);
+  }
+
 }

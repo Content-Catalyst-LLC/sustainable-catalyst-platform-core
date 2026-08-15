@@ -1821,3 +1821,72 @@ class CrossProductExchangeReceipt(Base):
     note: Mapped[str | None] = mapped_column(Text, nullable=True)
     metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+# v2.15.0 — Distributed Processing, Storage & Scale
+class ScaleProcessingJob(Base):
+    __tablename__ = "scale_processing_jobs"
+    __table_args__ = (
+        UniqueConstraint("job_type", "idempotency_key", name="uq_scale_job_type_idempotency"),
+        Index("ix_scale_jobs_state_priority", "state", "priority", "created_at"),
+        Index("ix_scale_jobs_product_state", "origin_product", "state"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    job_type: Mapped[str] = mapped_column(String(100), nullable=False, index=True)
+    origin_product: Mapped[str] = mapped_column(String(80), default="platform-core", index=True)
+    idempotency_key: Mapped[str] = mapped_column(String(128), nullable=False)
+    state: Mapped[str] = mapped_column(String(40), default="queued", index=True)
+    priority: Mapped[int] = mapped_column(Integer, default=100, index=True)
+    partition_count: Mapped[int] = mapped_column(Integer, default=1)
+    completed_partitions: Mapped[int] = mapped_column(Integer, default=0)
+    failed_partitions: Mapped[int] = mapped_column(Integer, default=0)
+    parameters_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    started_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+class ScaleProcessingPartition(Base):
+    __tablename__ = "scale_processing_partitions"
+    __table_args__ = (
+        UniqueConstraint("job_id", "partition_key", name="uq_scale_job_partition_key"),
+        Index("ix_scale_partition_claim", "state", "available_at", "created_at"),
+        Index("ix_scale_partition_job_state", "job_id", "state"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    job_id: Mapped[str] = mapped_column(ForeignKey("scale_processing_jobs.id", ondelete="CASCADE"), nullable=False, index=True)
+    partition_key: Mapped[str] = mapped_column(String(255), nullable=False)
+    state: Mapped[str] = mapped_column(String(40), default="queued", index=True)
+    payload_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    attempt_count: Mapped[int] = mapped_column(Integer, default=0)
+    max_attempts: Mapped[int] = mapped_column(Integer, default=3)
+    lease_owner: Mapped[str | None] = mapped_column(String(255), nullable=True, index=True)
+    lease_expires_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True, index=True)
+    available_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, index=True)
+    storage_object_id: Mapped[str | None] = mapped_column(String(36), nullable=True, index=True)
+    last_error: Mapped[str | None] = mapped_column(Text, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+class ScaleStorageObject(Base):
+    __tablename__ = "scale_storage_objects"
+    __table_args__ = (
+        UniqueConstraint("content_hash", "storage_class", name="uq_scale_storage_hash_class"),
+        Index("ix_scale_storage_retention", "retention_state", "expires_at"),
+        Index("ix_scale_storage_subject", "subject_type", "subject_id"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    storage_class: Mapped[str] = mapped_column(String(40), default="inline", index=True)
+    content_type: Mapped[str] = mapped_column(String(160), default="application/json")
+    byte_size: Mapped[int] = mapped_column(Integer, default=0)
+    content_hash: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
+    inline_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    external_uri: Mapped[str | None] = mapped_column(String(1800), nullable=True)
+    subject_type: Mapped[str | None] = mapped_column(String(100), nullable=True, index=True)
+    subject_id: Mapped[str | None] = mapped_column(String(255), nullable=True, index=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    retention_state: Mapped[str] = mapped_column(String(40), default="active", index=True)
+    expires_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True, index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)

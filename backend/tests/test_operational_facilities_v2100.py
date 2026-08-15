@@ -5,8 +5,8 @@ def create_hospital(client, headers, public=True):
     r=client.post('/v1/facilities',headers=headers,json={'name':'Example General Hospital','facility_type':'hospital','country_code':'PSE','admin_area':'Gaza','latitude':31.50,'longitude':34.46,'public':public,'source_identifiers':[{'namespace':'who-herams','value':'facility-001'}]}); assert r.status_code==200, r.text; return r.json()
 
 def test_release_and_migration(client):
-    assert client.get('/health').json()['version']=='2.14.0'
-    ready=client.get('/v1/facilities/readiness').json(); assert ready['release']=='2.14.0'; assert ready['migration_0013_applied'] is True; assert ready['history_preserving'] is True; assert ready['automatic_conflict_flattening'] is False
+    assert client.get('/health').json()['version']=='2.15.0'
+    ready=client.get('/v1/facilities/readiness').json(); assert ready['release']=='2.15.0'; assert ready['migration_0013_applied'] is True; assert ready['history_preserving'] is True; assert ready['automatic_conflict_flattening'] is False
 
 def test_create_and_deduplicate_facility_by_source_identifier(client,write_headers):
     a=create_hospital(client,write_headers); b=create_hospital(client,write_headers); assert a['id']==b['id']; assert a['country_code']=='PSE'; assert a['facility_type']=='hospital'

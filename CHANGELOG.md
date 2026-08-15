@@ -249,3 +249,6 @@
 ## 2.0.0 — 2026-07-10
 
 - Universal Entity Registry, stable IDs, aliases, relationship foundation, validation records, and integration clients
+
+## 2.15.0
+- Distributed processing, storage-object registry, backpressure, retention and scale diagnostics.

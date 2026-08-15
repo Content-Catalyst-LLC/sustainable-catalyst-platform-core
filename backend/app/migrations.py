@@ -27,6 +27,7 @@ MIGRATIONS = [
     ("0015", "Country evidence federation and reconciliation with authority-role precedence, comparability guards, discrepancy detection, and auditable non-blending selection records."),
     ("0016", "Earth, ocean, space, and scientific service routing with persisted domain bindings, explicit classification provenance, and non-truth-precedence navigation indexes."),
     ("0017", "Cross-product evidence exchange packages, canonical artifact references, governed snapshots, receipts, idempotency, and non-destructive provenance-preserving handoff records."),
+    ("0018", "Distributed processing, partition leases, storage-object registry, backpressure, retention, compaction, and scale diagnostics control plane."),
 ]
 
 def _seed_predicates(database: Database) -> int:

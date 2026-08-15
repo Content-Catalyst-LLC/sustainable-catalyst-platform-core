@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Scale Processing Job",
+  "type": "object",
+  "required": [
+    "job_type",
+    "idempotency_key",
+    "partitions"
+  ],
+  "properties": {
+    "job_type": {
+      "type": "string"
+    },
+    "idempotency_key": {
+      "type": "string"
+    },
+    "partitions": {
+      "type": "array",
+      "minItems": 1
+    }
+  }
+}
