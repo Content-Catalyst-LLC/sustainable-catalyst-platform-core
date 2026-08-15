@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name: Sustainable Catalyst Platform Core
- * Description: WordPress connector for Sustainable Catalyst Platform Core registry, graph, evidence, developer, gateway, free live-data, international-law, scientific-data, official-statistics, geospatial, time-series, STAC, map-layer, streaming, alerts, source-reliability, and operational-facility, humanitarian-access, essential-services, and country-evidence federation and reconciliation, and Earth/Ocean/Space scientific-service routing, cross-product exchange, and distributed scale-control services.
- * Version: 2.15.0
+ * Description: WordPress connector for Sustainable Catalyst Platform Core registry, graph, evidence, developer, gateway, free live-data, international-law, scientific-data, official-statistics, geospatial, time-series, STAC, map-layer, streaming, alerts, source-reliability, and operational-facility, humanitarian-access, essential-services, and country-evidence federation and reconciliation, and Earth/Ocean/Space scientific-service routing, cross-product exchange, distributed scale-control services, and governance/access/audit control-plane services.
+ * Version: 2.16.0
  * Author: Content Catalyst LLC
  * License: MIT
  */
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('SCPC_VERSION', '2.15.0');
+define('SCPC_VERSION', '2.16.0');
 define('SCPC_OPTION_BACKEND_URL', 'scpc_backend_url');
 define('SCPC_OPTION_READ_KEY', 'scpc_read_key');
 
@@ -95,6 +95,7 @@ function scpc_render_settings_page() {
         <code>[sc_platform_core_country_evidence_status country="PSE"]</code><br />
         <code>[sc_platform_core_scientific_fabric_status]</code><br />
         <code>[sc_platform_core_scale_status]</code><br />
+        <code>[sc_platform_core_governance_status]</code><br />
         <code>[sc_platform_core_entity id="sc:product:workbench"]</code><br />
         <code>[sc_platform_core_relationships id="sc:product:research-librarian"]</code><br />
         <code>[sc_knowledge_explorer]</code><br />
@@ -921,3 +922,16 @@ function scpc_scale_status_shortcode() {
     return '<div class="scpc-status"><strong>Distributed Processing &amp; Scale</strong><br />' . esc_html($bp) . ' · queued ' . intval($body['queued_partitions'] ?? 0) . ' · active jobs ' . intval($body['active_jobs'] ?? 0) . '</div>';
 }
 add_shortcode('sc_platform_core_scale_status', 'scpc_scale_status_shortcode');
+
+
+function scpc_governance_status_shortcode() {
+    $response = scpc_api_get('/v1/governance/readiness');
+    if (is_wp_error($response)) {
+        return '<div class="scpc-status scpc-status--error">Governance control plane unavailable.</div>';
+    }
+    $status = esc_html($response['status'] ?? 'unknown');
+    $mode = esc_html($response['enforcement_mode'] ?? 'unknown');
+    $chain = esc_html($response['audit_chain'] ?? 'unknown');
+    return '<div class="scpc-status"><strong>Governance:</strong> ' . $status . ' &middot; Enforcement: ' . $mode . ' &middot; Audit: ' . $chain . '</div>';
+}
+add_shortcode('sc_platform_core_governance_status', 'scpc_governance_status_shortcode');

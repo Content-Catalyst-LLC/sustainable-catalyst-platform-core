@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Governance Audit Event v1",
+  "type": "object",
+  "required": [
+    "event_id",
+    "event_type",
+    "actor_type",
+    "actor_id",
+    "action",
+    "resource_type",
+    "details_hash",
+    "event_hash"
+  ],
+  "properties": {
+    "event_id": {
+      "type": "string"
+    },
+    "event_type": {
+      "type": "string"
+    },
+    "actor_type": {
+      "type": "string"
+    },
+    "actor_id": {
+      "type": "string"
+    },
+    "action": {
+      "type": "string"
+    },
+    "resource_type": {
+      "type": "string"
+    },
+    "resource_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "details_hash": {
+      "type": "string",
+      "minLength": 64,
+      "maxLength": 64
+    },
+    "previous_event_hash": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "event_hash": {
+      "type": "string",
+      "minLength": 64,
+      "maxLength": 64
+    }
+  }
+}

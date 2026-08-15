@@ -82,6 +82,7 @@ def health(request: Request):
         "earth_ocean_space_scientific_service_fabric": request.app.state.settings.scientific_service_fabric_enabled,
         "cross_product_evidence_exchange": request.app.state.settings.cross_product_exchange_enabled,
         "distributed_processing_storage_scale": request.app.state.settings.scale_control_plane_enabled,
+        "governance_access_audit_control_plane": request.app.state.settings.governance_control_plane_enabled,
     }
 
 
@@ -152,6 +153,7 @@ async def ready(request: Request, db: Session = Depends(get_session)):
         "earth_ocean_space_scientific_service_fabric": "ready" if settings.scientific_service_fabric_enabled else "disabled",
         "cross_product_evidence_exchange": "ready" if settings.cross_product_exchange_enabled else "disabled",
         "distributed_processing_storage_scale": "ready" if settings.scale_control_plane_enabled else "disabled",
+        "governance_access_audit_control_plane": "ready" if settings.governance_control_plane_enabled else "disabled",
         "external_provider_health_release_blocking": False,
         "services": [
             {
@@ -237,6 +239,10 @@ def meta(request: Request):
             "earth_ocean_space_scientific_service_fabric",
             "cross_product_evidence_exchange",
             "distributed_processing_storage_scale",
+            "governance_access_audit_control_plane",
+            "policy_based_access_decisions",
+            "tamper_evident_governance_audit",
+            "governance_retention_policies",
             "partitioned_processing_jobs",
             "storage_object_registry",
             "backpressure_control",

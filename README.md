@@ -662,3 +662,7 @@ Core v2.7.2 adds normalized scientific discovery and provenance. Internal routes
 ## v2.7.3 economics and official-statistics APIs
 
 Core v2.8.0 adds provider-neutral official-statistics records and provenance. Internal routes begin with `/v1/economics`; scoped public routes begin with `/api/v1/economics` and require `data:read`. See `docs/ECONOMICS_OFFICIAL_STATISTICS_CONNECTORS_V273.md`.
+
+
+## v2.16.0 Governance, Access & Audit Control Plane
+Central policy decisions, scoped roles, tamper-evident audit events, and retention controls are available under `/v1/governance`. Public API exposure is readiness-only.

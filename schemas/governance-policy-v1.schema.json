@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Governance Policy v1",
+  "type": "object",
+  "required": [
+    "name",
+    "effect",
+    "resource_type",
+    "action"
+  ],
+  "properties": {
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "effect": {
+      "enum": [
+        "allow",
+        "deny"
+      ]
+    },
+    "principal_type": {
+      "type": "string"
+    },
+    "principal_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "product_scope": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "resource_type": {
+      "type": "string"
+    },
+    "action": {
+      "type": "string"
+    },
+    "visibility_ceiling": {
+      "enum": [
+        "public",
+        "internal",
+        "private",
+        "restricted"
+      ]
+    },
+    "priority": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "enabled": {
+      "type": "boolean"
+    }
+  }
+}

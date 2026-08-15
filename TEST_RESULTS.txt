@@ -1,12 +1,15 @@
-Platform Core v2.15.0 — Distributed Processing, Storage & Scale
-
-Collected backend tests: 199
-New v2.15.0 scale tests: 10/10 passed in isolated deterministic runs.
-Targeted inherited readiness regressions executed successfully for health, streaming/reliability, and operational facilities; long combined TestClient sessions in this container can stall during teardown, so the release installer preserves the complete file-by-file 199-test gate for promotion.
-
-Fresh database migration chain: 0001-0018 PASS, pending migrations 0.
-Inherited validator chain: streaming/reliability PASS; operational facilities PASS; humanitarian PASS; country evidence PASS; Earth/Ocean/Space scientific fabric PASS; cross-product exchange PASS.
-v2.15.0 scale validator PASS.
-Connector worker --once: queue-empty PASS.
-Static validation: Python compile PASS; PHP syntax PASS; JavaScript syntax PASS; Bash syntax PASS; JSON/YAML parse PASS.
-No runtime evidence/provenance/reconciliation semantics changed by the scale control plane.
+Platform Core v2.16.0 validation record
+- Backend collection: 211 tests (199 inherited + 12 new governance/access/audit tests)
+- New v2.16.0 governance tests: 12/12 passed in isolated deterministic runs
+- Health/readiness regression: 2/2 passed
+- Public developer SDK asset regression: 1/1 passed
+- Fresh migration chain 0001-0019: PASS; pending migrations: 0
+- Streaming/reliability validator: PASS
+- Operational facility validator: PASS
+- Humanitarian fabric validator: PASS
+- Country evidence validator: PASS
+- Earth/Ocean/Space validator: PASS
+- Cross-product exchange validator: PASS
+- Distributed scale validator: PASS
+- Governance control-plane validator: PASS
+- Container caveat: some inherited multi-test FastAPI TestClient files stall during teardown in this runtime; no assertion failure observed. Installer retains file-by-file full-suite gate on deployment machine.

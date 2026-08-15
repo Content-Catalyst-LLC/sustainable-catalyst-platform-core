@@ -20,7 +20,7 @@ def _int(name: str, default: int) -> int:
 @dataclass(frozen=True)
 class Settings:
     app_name: str = "Sustainable Catalyst Platform Core"
-    version: str = "2.15.0"
+    version: str = "2.16.0"
     environment: str = "development"
     database_url: str = "sqlite:///./platform_core.db"
     write_api_key: str = ""
@@ -53,7 +53,7 @@ class Settings:
     live_data_enabled: bool = True
     live_data_ingest_enabled: bool = True
     live_data_strict_free_sources: bool = True
-    live_data_user_agent: str = "SustainableCatalystPlatformCore/2.15.0 (+https://sustainablecatalyst.com/contact/)"
+    live_data_user_agent: str = "SustainableCatalystPlatformCore/2.16.0 (+https://sustainablecatalyst.com/contact/)"
     live_data_timeout_seconds: int = 20
     live_data_max_response_bytes: int = 12582912
     live_data_raw_payload_max_bytes: int = 1048576
@@ -94,6 +94,10 @@ class Settings:
     scale_inline_result_max_bytes: int = 262144
     scale_queue_backpressure_threshold: int = 1000
     scale_completed_retention_hours: int = 168
+    governance_control_plane_enabled: bool = True
+    governance_enforcement_mode: str = "audit"
+    governance_audit_retention_hours: int = 8760
+    governance_decision_retention_hours: int = 2160
 
     @classmethod
     def from_env(cls) -> "Settings":
@@ -171,7 +175,7 @@ class Settings:
             live_data_strict_free_sources=_bool("SC_CORE_LIVE_DATA_STRICT_FREE_SOURCES", True),
             live_data_user_agent=os.getenv(
                 "SC_CORE_LIVE_DATA_USER_AGENT",
-                "SustainableCatalystPlatformCore/2.15.0 (+https://sustainablecatalyst.com/contact/)",
+                "SustainableCatalystPlatformCore/2.16.0 (+https://sustainablecatalyst.com/contact/)",
             ).strip(),
             live_data_timeout_seconds=max(
                 1, min(_int("SC_CORE_LIVE_DATA_TIMEOUT_SECONDS", 20), 120)
@@ -224,4 +228,8 @@ class Settings:
             scale_inline_result_max_bytes=max(1024, min(_int("SC_CORE_SCALE_INLINE_RESULT_MAX_BYTES", 262144), 10485760)),
             scale_queue_backpressure_threshold=max(1, min(_int("SC_CORE_SCALE_QUEUE_BACKPRESSURE_THRESHOLD", 1000), 1000000)),
             scale_completed_retention_hours=max(1, min(_int("SC_CORE_SCALE_COMPLETED_RETENTION_HOURS", 168), 87600)),
+            governance_control_plane_enabled=_bool("SC_CORE_GOVERNANCE_CONTROL_PLANE_ENABLED", True),
+            governance_enforcement_mode=(lambda value: value if value in {"audit", "enforce"} else "audit")(os.getenv("SC_CORE_GOVERNANCE_ENFORCEMENT_MODE", "audit").strip().lower()),
+            governance_audit_retention_hours=max(8760, min(_int("SC_CORE_GOVERNANCE_AUDIT_RETENTION_HOURS", 8760), 876000)),
+            governance_decision_retention_hours=max(24, min(_int("SC_CORE_GOVERNANCE_DECISION_RETENTION_HOURS", 2160), 87600)),
         )

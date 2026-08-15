@@ -298,4 +298,8 @@ export class PublicApiClient {
     return this.request(`/scale/readiness`);
   }
 
+  governanceReadiness() {
+    return this.request(`/governance/readiness`);
+  }
+
 }

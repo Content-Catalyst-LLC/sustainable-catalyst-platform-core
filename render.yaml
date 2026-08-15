@@ -74,7 +74,7 @@ services:
       - key: SC_CORE_LIVE_DATA_STRICT_FREE_SOURCES
         value: "true"
       - key: SC_CORE_LIVE_DATA_USER_AGENT
-        value: SustainableCatalystPlatformCore/2.15.0 (+https://sustainablecatalyst.com/contact/)
+        value: SustainableCatalystPlatformCore/2.16.0 (+https://sustainablecatalyst.com/contact/)
       - key: SC_CORE_LIVE_DATA_TIMEOUT_SECONDS
         value: "20"
       - key: SC_CORE_LIVE_DATA_MAX_RESPONSE_BYTES
@@ -153,13 +153,21 @@ services:
         value: "1000"
       - key: SC_CORE_SCALE_COMPLETED_RETENTION_HOURS
         value: "168"
+      - key: SC_CORE_GOVERNANCE_CONTROL_PLANE_ENABLED
+        value: "true"
+      - key: SC_CORE_GOVERNANCE_ENFORCEMENT_MODE
+        value: audit
+      - key: SC_CORE_GOVERNANCE_AUDIT_RETENTION_HOURS
+        value: "8760"
+      - key: SC_CORE_GOVERNANCE_DECISION_RETENTION_HOURS
+        value: "2160"
 
 databases:
   - name: sustainable-catalyst-platform-core-db
     databaseName: sustainable_catalyst_platform_core
     user: sustainable_catalyst_platform_core
 
-# Platform Core v2.15.0
+# Platform Core v2.16.0
 # Add these secret values in Render rather than committing them:
 # SC_CORE_WORKFLOW_ENGINE_ENABLED=true
 # SC_CORE_DOSSIER_CENTER_ENABLED=true

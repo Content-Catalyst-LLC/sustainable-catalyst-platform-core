@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Governance Decision v1",
+  "type": "object",
+  "required": [
+    "principal_type",
+    "principal_id",
+    "resource_type",
+    "action",
+    "requested_visibility"
+  ],
+  "properties": {
+    "principal_type": {
+      "type": "string"
+    },
+    "principal_id": {
+      "type": "string"
+    },
+    "product": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "resource_type": {
+      "type": "string"
+    },
+    "resource_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "action": {
+      "type": "string"
+    },
+    "requested_visibility": {
+      "enum": [
+        "public",
+        "internal",
+        "private",
+        "restricted"
+      ]
+    },
+    "context": {
+      "type": "object"
+    }
+  }
+}

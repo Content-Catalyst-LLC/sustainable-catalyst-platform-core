@@ -1890,3 +1890,101 @@ class ScaleStorageObject(Base):
     retention_state: Mapped[str] = mapped_column(String(40), default="active", index=True)
     expires_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True, index=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+# v2.16.0 — Governance, Access & Audit Control Plane
+class GovernancePolicy(Base):
+    __tablename__ = "governance_policies"
+    __table_args__ = (
+        Index("ix_governance_policy_match", "enabled", "resource_type", "action", "priority"),
+        Index("ix_governance_policy_principal", "principal_type", "principal_id"),
+        Index("ix_governance_policy_product", "product_scope"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    name: Mapped[str] = mapped_column(String(240), nullable=False)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    effect: Mapped[str] = mapped_column(String(20), nullable=False, default="deny", index=True)
+    principal_type: Mapped[str] = mapped_column(String(60), nullable=False, default="any", index=True)
+    principal_id: Mapped[str | None] = mapped_column(String(255), nullable=True, index=True)
+    product_scope: Mapped[str | None] = mapped_column(String(100), nullable=True, index=True)
+    resource_type: Mapped[str] = mapped_column(String(120), nullable=False, default="*", index=True)
+    action: Mapped[str] = mapped_column(String(80), nullable=False, default="*", index=True)
+    visibility_ceiling: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
+    priority: Mapped[int] = mapped_column(Integer, default=100, index=True)
+    enabled: Mapped[bool] = mapped_column(Boolean, default=True, index=True)
+    conditions_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+class GovernanceRoleBinding(Base):
+    __tablename__ = "governance_role_bindings"
+    __table_args__ = (
+        UniqueConstraint("principal_type", "principal_id", "role", "product_scope", name="uq_governance_principal_role_scope"),
+        Index("ix_governance_role_principal", "principal_type", "principal_id", "active"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    principal_type: Mapped[str] = mapped_column(String(60), nullable=False, index=True)
+    principal_id: Mapped[str] = mapped_column(String(255), nullable=False, index=True)
+    role: Mapped[str] = mapped_column(String(60), nullable=False, index=True)
+    product_scope: Mapped[str | None] = mapped_column(String(100), nullable=True, index=True)
+    active: Mapped[bool] = mapped_column(Boolean, default=True, index=True)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class GovernanceDecision(Base):
+    __tablename__ = "governance_decisions"
+    __table_args__ = (
+        Index("ix_governance_decision_created", "created_at"),
+        Index("ix_governance_decision_principal", "principal_type", "principal_id", "created_at"),
+        Index("ix_governance_decision_resource", "resource_type", "resource_id", "created_at"),
+        Index("ix_governance_decision_outcome", "decision", "created_at"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    request_id: Mapped[str | None] = mapped_column(String(128), nullable=True, index=True)
+    principal_type: Mapped[str] = mapped_column(String(60), nullable=False)
+    principal_id: Mapped[str] = mapped_column(String(255), nullable=False)
+    product: Mapped[str | None] = mapped_column(String(100), nullable=True, index=True)
+    resource_type: Mapped[str] = mapped_column(String(120), nullable=False, index=True)
+    resource_id: Mapped[str | None] = mapped_column(String(255), nullable=True, index=True)
+    action: Mapped[str] = mapped_column(String(80), nullable=False, index=True)
+    requested_visibility: Mapped[str] = mapped_column(String(30), default="internal")
+    decision: Mapped[str] = mapped_column(String(20), nullable=False, index=True)
+    matched_policy_id: Mapped[str | None] = mapped_column(String(36), nullable=True, index=True)
+    reason: Mapped[str] = mapped_column(String(500), nullable=False)
+    enforcement_mode: Mapped[str] = mapped_column(String(20), default="audit")
+    context_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class GovernanceAuditEvent(Base):
+    __tablename__ = "governance_audit_events"
+    __table_args__ = (
+        Index("ix_governance_audit_created", "created_at"),
+        Index("ix_governance_audit_actor", "actor_type", "actor_id", "created_at"),
+        Index("ix_governance_audit_resource", "resource_type", "resource_id", "created_at"),
+    )
+    sequence: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    event_id: Mapped[str] = mapped_column(String(36), nullable=False, unique=True, default=lambda: str(uuid.uuid4()))
+    event_type: Mapped[str] = mapped_column(String(100), nullable=False, index=True)
+    actor_type: Mapped[str] = mapped_column(String(60), nullable=False)
+    actor_id: Mapped[str] = mapped_column(String(255), nullable=False)
+    action: Mapped[str] = mapped_column(String(80), nullable=False)
+    resource_type: Mapped[str] = mapped_column(String(120), nullable=False)
+    resource_id: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    decision_id: Mapped[str | None] = mapped_column(String(36), nullable=True, index=True)
+    details_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    details_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    previous_event_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    event_hash: Mapped[str] = mapped_column(String(64), nullable=False, unique=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class GovernanceRetentionPolicy(Base):
+    __tablename__ = "governance_retention_policies"
+    __table_args__ = (Index("ix_governance_retention_resource", "resource_type", "enabled"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    resource_type: Mapped[str] = mapped_column(String(120), nullable=False, index=True)
+    retention_hours: Mapped[int] = mapped_column(Integer, nullable=False)
+    disposition: Mapped[str] = mapped_column(String(30), default="compact")
+    enabled: Mapped[bool] = mapped_column(Boolean, default=True)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)

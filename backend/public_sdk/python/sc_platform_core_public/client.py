@@ -307,8 +307,15 @@ def _cross_product_exchange_readiness(self):
 PublicApiClient.cross_product_exchange_readiness = _cross_product_exchange_readiness
 
 
-# v2.15.0 Distributed Processing, Storage & Scale public readiness helper
+# v2.16.0 Distributed Processing, Storage & Scale public readiness helper
 def _scale_readiness(self):
     return self.request("GET", "/scale/readiness")
 
 PublicApiClient.scale_readiness = _scale_readiness
+
+
+# v2.16.0 Governance, Access & Audit public readiness helper
+def _governance_readiness(self):
+    return self.request("GET", "/governance/readiness")
+
+PublicApiClient.governance_readiness = _governance_readiness
