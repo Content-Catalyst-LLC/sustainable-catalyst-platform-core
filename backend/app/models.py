@@ -1754,3 +1754,70 @@ class ScientificDomainBinding(Base):
     public: Mapped[bool] = mapped_column(Boolean, default=True, index=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+# v2.14.0 — Cross-Product Evidence Exchange
+class CrossProductExchangePackage(Base):
+    __tablename__ = "cross_product_exchange_packages"
+    __table_args__ = (
+        UniqueConstraint("origin_product", "target_product", "idempotency_key", name="uq_cross_product_exchange_idempotency"),
+        Index("ix_cross_product_exchange_route", "origin_product", "target_product", "created_at"),
+        Index("ix_cross_product_exchange_visibility_state", "visibility", "state"),
+    )
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    origin_product: Mapped[str] = mapped_column(String(80), nullable=False, index=True)
+    target_product: Mapped[str] = mapped_column(String(80), nullable=False, index=True)
+    idempotency_key: Mapped[str] = mapped_column(String(128), nullable=False)
+    title: Mapped[str] = mapped_column(String(400), nullable=False)
+    purpose: Mapped[str | None] = mapped_column(Text, nullable=True)
+    visibility: Mapped[str] = mapped_column(String(30), default="internal", index=True)
+    state: Mapped[str] = mapped_column(String(40), default="ready", index=True)
+    delivery_mode: Mapped[str] = mapped_column(String(30), default="pull")
+    governance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    package_hash: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class CrossProductExchangeItem(Base):
+    __tablename__ = "cross_product_exchange_items"
+    __table_args__ = (
+        UniqueConstraint("package_id", "ordinal", name="uq_cross_product_exchange_package_ordinal"),
+        Index("ix_cross_product_exchange_item_subject", "subject_type", "subject_id"),
+        Index("ix_cross_product_exchange_item_package", "package_id", "ordinal"),
+    )
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    package_id: Mapped[str] = mapped_column(ForeignKey("cross_product_exchange_packages.id", ondelete="CASCADE"), nullable=False, index=True)
+    ordinal: Mapped[int] = mapped_column(Integer, nullable=False)
+    artifact_type: Mapped[str] = mapped_column(String(100), nullable=False, index=True)
+    subject_type: Mapped[str] = mapped_column(String(100), nullable=False, index=True)
+    subject_id: Mapped[str] = mapped_column(String(255), nullable=False, index=True)
+    canonical_uri: Mapped[str] = mapped_column(String(1800), nullable=False)
+    snapshot_mode: Mapped[str] = mapped_column(String(40), default="reference")
+    snapshot_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    evidence_role: Mapped[str] = mapped_column(String(100), default="inherited")
+    truth_precedence: Mapped[str] = mapped_column(String(80), default="inherit-from-subject")
+    transformation_state: Mapped[str] = mapped_column(String(80), default="unaltered-reference")
+    item_hash: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class CrossProductExchangeReceipt(Base):
+    __tablename__ = "cross_product_exchange_receipts"
+    __table_args__ = (
+        Index("ix_cross_product_exchange_receipt_package_time", "package_id", "created_at"),
+        Index("ix_cross_product_exchange_receipt_target_state", "target_product", "state"),
+    )
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    package_id: Mapped[str] = mapped_column(ForeignKey("cross_product_exchange_packages.id", ondelete="CASCADE"), nullable=False, index=True)
+    target_product: Mapped[str] = mapped_column(String(80), nullable=False, index=True)
+    state: Mapped[str] = mapped_column(String(40), nullable=False, index=True)
+    derived_object_id: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    note: Mapped[str | None] = mapped_column(Text, nullable=True)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)

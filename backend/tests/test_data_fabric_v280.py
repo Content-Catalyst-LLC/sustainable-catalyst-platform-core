@@ -28,7 +28,7 @@ def _public_key(client, write_headers):
 def test_v280_migration_health_meta_and_empty_stats(client):
     assert any(version == '0011' for version, _ in MIGRATIONS)
     health = client.get('/health').json()
-    assert health['version'] == '2.13.0'
+    assert health['version'] == '2.14.0'
     assert health['geospatial_time_series_scientific_data_fabric'] is True
     assert health['stac_catalog'] is True
     meta = client.get('/v1/meta').json()

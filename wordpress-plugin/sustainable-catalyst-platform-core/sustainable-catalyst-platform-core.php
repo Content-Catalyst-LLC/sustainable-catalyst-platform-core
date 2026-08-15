@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Sustainable Catalyst Platform Core
  * Description: WordPress connector for Sustainable Catalyst Platform Core registry, graph, evidence, developer, gateway, free live-data, international-law, scientific-data, official-statistics, geospatial, time-series, STAC, map-layer, streaming, alerts, source-reliability, and operational-facility, humanitarian-access, essential-services, and country-evidence federation and reconciliation, and Earth/Ocean/Space scientific-service routing services.
- * Version: 2.13.0
+ * Version: 2.14.0
  * Author: Content Catalyst LLC
  * License: MIT
  */
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('SCPC_VERSION', '2.13.0');
+define('SCPC_VERSION', '2.14.0');
 define('SCPC_OPTION_BACKEND_URL', 'scpc_backend_url');
 define('SCPC_OPTION_READ_KEY', 'scpc_read_key');
 
@@ -893,3 +893,19 @@ function scpc_reliability_status_shortcode() {
     return ob_get_clean();
 }
 add_shortcode('sc_platform_core_reliability_status', 'scpc_reliability_status_shortcode');
+
+
+function scpc_exchange_status_shortcode() {
+    $base = rtrim(get_option('scpc_api_base', ''), '/');
+    if (!$base) {
+        return '<div class="scpc-status scpc-status-unconfigured"><strong>Cross-Product Evidence Exchange</strong><br>Core endpoint not configured.</div>';
+    }
+    $response = wp_remote_get($base . '/v1/exchange/readiness', array('timeout' => 8));
+    if (is_wp_error($response)) {
+        return '<div class="scpc-status scpc-status-degraded"><strong>Cross-Product Evidence Exchange</strong><br>Readiness unavailable.</div>';
+    }
+    $body = json_decode(wp_remote_retrieve_body($response), true);
+    $status = isset($body['status']) ? esc_html($body['status']) : 'unknown';
+    return '<div class="scpc-status"><strong>Cross-Product Evidence Exchange</strong><br>' . $status . ' · reference-first · non-destructive</div>';
+}
+add_shortcode('sc_platform_core_exchange_status', 'scpc_exchange_status_shortcode');

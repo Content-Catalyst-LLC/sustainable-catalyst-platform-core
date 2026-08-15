@@ -1,3 +1,11 @@
+## 2.14.0 — 2026-08-15
+
+- Added Cross-Product Evidence Exchange and migration `0017`.
+- Added reference-first, non-destructive exchange packages and receipt history across Sustainable Catalyst products.
+- Added idempotency, bounded snapshots, canonical Core URIs and inherited Truth-precedence semantics.
+- Prevented public escalation of non-public source records and rejected credential-like exchange metadata.
+- Added private exchange stream events, public-safe readiness metadata, SDK helpers, WordPress status and deployment validation.
+
 ## 2.13.0 — 2026-08-15
 
 - Added Earth, Ocean, Space & Scientific Service Fabric.

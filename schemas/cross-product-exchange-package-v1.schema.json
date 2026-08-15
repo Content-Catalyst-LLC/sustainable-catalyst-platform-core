@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/cross-product-exchange-package-v1.schema.json",
+  "title": "Sustainable Catalyst Cross-Product Exchange Package",
+  "type": "object",
+  "required": ["origin_product", "target_product", "title", "items"],
+  "properties": {
+    "origin_product": {"type": "string", "minLength": 1},
+    "target_product": {"type": "string", "minLength": 1},
+    "title": {"type": "string", "minLength": 1, "maxLength": 400},
+    "purpose": {"type": ["string", "null"]},
+    "visibility": {"enum": ["public", "internal", "private"]},
+    "idempotency_key": {"type": ["string", "null"], "maxLength": 128},
+    "items": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "items": {
+        "type": "object",
+        "required": ["subject_type", "subject_id"],
+        "properties": {
+          "artifact_type": {"type": "string"},
+          "subject_type": {"type": "string"},
+          "subject_id": {"type": "string", "minLength": 1},
+          "snapshot_mode": {"enum": ["reference", "reference+snapshot"]},
+          "evidence_role": {"type": "string"},
+          "provenance": {"type": "object"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "provenance": {"type": "object"}
+  },
+  "additionalProperties": false
+}

@@ -1,3 +1,20 @@
+# Sustainable Catalyst Platform Core v2.14.0
+
+Core v2.14.0 adds **Cross-Product Evidence Exchange**: a governed, reference-first handoff contract for moving evidence and analytical references between Sustainable Catalyst products without rewriting canonical records or promoting derived artifacts into new Truth sources.
+
+Key v2.14.0 additions:
+- persisted exchange packages, canonical subject references, bounded snapshots and receipt history;
+- supported product identities for Site Intelligence, Workspace, Lab, Knowledge Library, Decision Studio, Research Librarian, Workbench, Advisory, Catalyst Data, Finance and Narrative Risk;
+- idempotent package creation and pull/acknowledgement delivery semantics;
+- privacy guardrails preventing non-public subjects from being placed in public packages;
+- credential-like snapshot/provenance keys rejected before persistence;
+- `truth_precedence = inherit-from-subject` and no automatic authority promotion;
+- source records retained after acceptance or derivation;
+- private stream events for package creation and receipts;
+- additive migration `0017`, public readiness metadata, SDK readiness helpers and WordPress status.
+
+---
+
 # Sustainable Catalyst Platform Core v2.13.0
 
 Core v2.13.0 adds **Earth, Ocean, Space & Scientific Service Fabric** on top of the scientific connector pack and geospatial/time-series/STAC asset fabric. Scientific records, time series and map layers can now be routed into first-class Earth, Ocean and Space discovery domains while retaining their original source and provenance.

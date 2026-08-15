@@ -1,20 +1,22 @@
-Sustainable Catalyst Platform Core v2.13.0
-Earth, Ocean, Space & Scientific Service Fabric
+Platform Core v2.14.0 validation record
+Date: 2026-08-15
 
-Validation summary
-- Current test collection: 179 tests
-- New v2.13.0 scientific-service-fabric tests: 13 / 13 PASS
-- Directly impacted inherited regression checks: 21 / 21 PASS
-- Parent v2.12.0 inherited deterministic baseline: 166 / 166 PASS
-- Migration chain: 0001 through 0016 PASS; pending migrations: 0
-- Governed live-data sources: 40
-- Governed live-data connectors: 39
-- Python compilation: PASS
-- PHP syntax: PASS
-- JavaScript syntax: PASS
-- Bash syntax: PASS
-- JSON parse validation: PASS
-- Static secret scan: 0 findings
+Collection: 189 tests (179 inherited + 10 new exchange tests).
+New v2.14.0 exchange tests: 10/10 passed in isolated deterministic runs.
+Health/readiness: 2/2 passed.
+Public API v2.3 compatibility: 9/9 passed in split deterministic runs.
+Operational facility inherited file: first 6 cases passed before the container TestClient wrapper timed out; no assertion failure was emitted.
+Cross-product exchange clean validator: PASS.
+Migration 0017 clean-chain validator: PASS.
 
-Execution note
-The container test harness stalls after repeated FastAPI TestClient/database teardown cycles when many isolated cases are placed in one process. The release installer therefore retains the established file-by-file deterministic execution strategy. No failing assertion was observed in the new suite or the directly impacted inherited regression set.
+The release installer runs the complete backend test collection file-by-file on the deployment machine to avoid the container TestClient teardown limitation observed in v2.13.0/v2.14.0.
+
+Platform Core v2.14.0 R1 promotion repair validation
+Date: 2026-08-15
+
+Original v2.14.0 macOS run completed the complete file-by-file deterministic test line: 189/189 passed before the stale inherited validator gate terminated promotion.
+R1 changes validation/promotion lineage only; no runtime/API/schema/migration changes.
+Fresh R1 database migration chain 0001-0017: PASS; pending migrations: 0.
+Repaired downstream validator chain: PASS (streaming/reliability, facilities, humanitarian, country evidence, scientific fabric, cross-product exchange).
+Connector worker --once smoke: PASS (queue-empty).
+R1 promotion repair contract: PASS.

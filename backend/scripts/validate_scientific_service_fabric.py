@@ -15,7 +15,7 @@ def sample(**overrides):
 
 def main():
     settings=Settings.from_env(); db=Database(settings.database_url); run_migrations(db); status=migration_status(db)
-    assert settings.version=='2.13.0'; assert '0016' in status['applied']; assert not status['pending']
+    version=tuple(int(part) for part in settings.version.split('.')[:3]); assert version >= (2,13,0); assert '0016' in status['applied']; assert not status['pending']
     assert list(DOMAINS)==['earth','ocean','space']
     earth=classify_record(sample())
     ocean=classify_record(sample(id='ocean',connector_id='noaa.ncei-data',source_id='noaa-ncei',discipline='oceanography',title='Sea surface temperature',keywords_json=['ocean']))
@@ -24,5 +24,5 @@ def main():
     assert ocean and ocean[0]['domain']=='ocean'
     assert space and space[0]['domain']=='space'
     print({'version':settings.version,'migration_0016_applied':True,'pending_migrations':status['pending'],'domains':list(DOMAINS),'routing_only':True,'truth_precedence':'none','external_provider_health_release_blocking':False})
-    print('PASS - Core v2.13.0 Earth Ocean Space scientific service fabric validation')
+    print(f'PASS - Core {settings.version} Earth Ocean Space scientific service fabric validation')
 if __name__=='__main__': main()

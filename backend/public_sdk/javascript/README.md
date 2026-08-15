@@ -1,4 +1,4 @@
-# Sustainable Catalyst Public API JavaScript Client v2.13.0
+# Sustainable Catalyst Public API JavaScript Client v2.14.0
 
 ```javascript
 import { PublicApiClient } from "./index.mjs";
@@ -79,3 +79,8 @@ Use `countryEvidenceFederation(countryCode)` and `countryEvidenceReconcile(count
 
 ## Earth, Ocean, Space scientific fabric v2.13.0
 Discover routed scientific domains and retrieve domain-specific records, assets, time series, and map layers. Domain routing is navigation metadata only and has no factual Truth precedence.
+
+
+## Cross-product evidence exchange v2.14.0
+
+The public SDK exposes exchange readiness/capability metadata only. Exchange package contents remain an authenticated internal Core surface.

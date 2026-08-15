@@ -290,4 +290,8 @@ export class PublicApiClient {
     return this.request(`/scientific-fabric/domains/${encodeURIComponent(domain)}/map-layers?${query}`);
   }
 
+  crossProductExchangeReadiness() {
+    return this.request(`/exchange/readiness`);
+  }
+
 }

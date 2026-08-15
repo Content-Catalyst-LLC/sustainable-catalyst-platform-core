@@ -26,6 +26,7 @@ from .routers import (
     facilities,
     humanitarian,
     country_evidence,
+    cross_product_exchange,
     foundations,
     imports,
     international_law,
@@ -59,7 +60,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             "workflows, tamper-evident audit infrastructure, a unified public API, "
             "developer applications, scoped credentials, usage controls, webhooks, "
             "SDK assets, a public Trust Center, evaluation runs, incidents, "
-            "limitations, attestations, signature dossiers, end-to-end workflows, a unified service gateway, and a governed free live-data connector gateway, an international-law and United Nations record layer, a scientific data connector and discovery layer, an economics and official-statistics record layer, a geospatial, time-series, STAC, map-layer, and scientific-asset fabric, a streaming, alerts, connector-worker, replay, stale-source, and provider-failover reliability plane, and a provenance-preserving operational facility and status-observation registry, and a humanitarian access and essential-services evidence fabric, plus a country evidence federation and reconciliation plane, and an Earth, Ocean, Space, and Scientific Service Fabric for Sustainable Catalyst."
+            "limitations, attestations, signature dossiers, end-to-end workflows, a unified service gateway, and a governed free live-data connector gateway, an international-law and United Nations record layer, a scientific data connector and discovery layer, an economics and official-statistics record layer, a geospatial, time-series, STAC, map-layer, and scientific-asset fabric, a streaming, alerts, connector-worker, replay, stale-source, and provider-failover reliability plane, and a provenance-preserving operational facility and status-observation registry, and a humanitarian access and essential-services evidence fabric, plus a country evidence federation and reconciliation plane, and an Earth, Ocean, Space, and Scientific Service Fabric, plus a governed Cross-Product Evidence Exchange for Sustainable Catalyst."
         ),
         contact={
             "name": "Sustainable Catalyst",
@@ -135,6 +136,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(humanitarian.public_router)
     app.include_router(country_evidence.router)
     app.include_router(country_evidence.public_router)
+    app.include_router(cross_product_exchange.router)
+    app.include_router(cross_product_exchange.public_router)
     app.include_router(international_law.router)
     app.include_router(international_law.public_router)
     app.include_router(scientific_data.router)

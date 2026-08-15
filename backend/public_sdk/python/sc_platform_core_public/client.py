@@ -298,3 +298,10 @@ PublicApiClient.scientific_domain_records = _scientific_domain_records
 PublicApiClient.scientific_domain_assets = _scientific_domain_assets
 PublicApiClient.scientific_domain_time_series = _scientific_domain_time_series
 PublicApiClient.scientific_domain_map_layers = _scientific_domain_map_layers
+
+
+# v2.14.0 Cross-Product Evidence Exchange public readiness helper
+def _cross_product_exchange_readiness(self):
+    return self.request("GET", "/exchange/readiness")
+
+PublicApiClient.cross_product_exchange_readiness = _cross_product_exchange_readiness

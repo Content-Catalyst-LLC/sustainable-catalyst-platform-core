@@ -27,8 +27,13 @@ def main() -> int:
         "external_provider_health_release_blocking": False,
     }
     print(json.dumps(payload, indent=2))
-    if settings.version != "2.13.0" or not payload["migration_0012_applied"] or status["pending"]:
+    def version_tuple(value: str) -> tuple[int, int, int]:
+        parts = value.split(".")
+        return tuple(int(part) for part in parts[:3])
+
+    if version_tuple(settings.version) < (2, 9, 0) or not payload["migration_0012_applied"] or status["pending"]:
         return 2
+    print(f"PASS - Core {settings.version} streaming alerts and source reliability validation")
     return 0
 
 
