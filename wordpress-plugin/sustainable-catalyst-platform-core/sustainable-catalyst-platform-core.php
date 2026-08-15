@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name: Sustainable Catalyst Platform Core
- * Description: WordPress connector for Sustainable Catalyst Platform Core registry, graph, evidence, developer, gateway, free live-data, international-law, scientific-data, official-statistics, geospatial, time-series, STAC, map-layer, streaming, alerts, source-reliability, and operational-facility, humanitarian-access, essential-services, and country-evidence federation and reconciliation, and Earth/Ocean/Space scientific-service routing, cross-product exchange, distributed scale-control services, and governance/access/audit, production-certification/recovery, and observability/SLO production-operations services, plus incident-response, change-control, rollback-coordination, continuity, backup-verification, disaster-recovery, and multi-region resilience/failover-coordination services.
- * Version: 2.21.0
+ * Description: WordPress connector for Sustainable Catalyst Platform Core registry, graph, evidence, developer, gateway, free live-data, international-law, scientific-data, official-statistics, geospatial, time-series, STAC, map-layer, streaming, alerts, source-reliability, and operational-facility, humanitarian-access, essential-services, and country-evidence federation and reconciliation, and Earth/Ocean/Space scientific-service routing, cross-product exchange, distributed scale-control services, and governance/access/audit, production-certification/recovery, and observability/SLO production-operations services, plus incident-response, change-control, rollback-coordination, continuity, backup-verification, disaster-recovery, and multi-region resilience/failover-coordination, and data-lifecycle/archival-integrity/preservation services.
+ * Version: 2.22.0
  * Author: Content Catalyst LLC
  * License: MIT
  */
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('SCPC_VERSION', '2.21.0');
+define('SCPC_VERSION', '2.22.0');
 define('SCPC_OPTION_BACKEND_URL', 'scpc_backend_url');
 define('SCPC_OPTION_READ_KEY', 'scpc_read_key');
 
@@ -97,6 +97,9 @@ function scpc_render_settings_page() {
         <code>[sc_platform_core_scale_status]</code><br />
         <code>[sc_platform_core_governance_status]</code><br />
         <code>[sc_platform_core_operations_status]</code><br />
+        <code>[sc_platform_core_continuity_status]</code><br />
+        <code>[sc_platform_core_resilience_status]</code><br />
+        <code>[sc_platform_core_lifecycle_status]</code><br />
         <code>[sc_platform_core_entity id="sc:product:workbench"]</code><br />
         <code>[sc_platform_core_relationships id="sc:product:research-librarian"]</code><br />
         <code>[sc_knowledge_explorer]</code><br />
@@ -998,3 +1001,13 @@ function scpc_resilience_status_shortcode() {
     return '<div class="scpc-status"><strong>Core Multi-Region Resilience</strong><br />' . $state . ' · ' . $groups . ' failover groups · ' . $blocked . ' blocked<br /><span class="scpc-meta">Automatic failover is disabled; write failover requires replication safety.</span></div>';
 }
 add_shortcode('sc_platform_core_resilience_status', 'scpc_resilience_status_shortcode');
+
+function scpc_lifecycle_status_shortcode() {
+    $status = scpc_api_get('/v1/lifecycle/readiness');
+    if (is_wp_error($status)) return '<div class="scpc-status scpc-status--error">Core preservation status unavailable.</div>';
+    $state = esc_html($status['state'] ?? 'unknown');
+    $archives = intval($status['archives'] ?? 0);
+    $holds = intval($status['active_holds'] ?? 0);
+    return '<div class="scpc-status"><strong>Core Data Lifecycle &amp; Preservation</strong><br />' . $state . ' · ' . $archives . ' archives · ' . $holds . ' active holds<br /><span class="scpc-meta">Hard delete is disabled; lifecycle actions preserve provenance and tombstone lineage.</span></div>';
+}
+add_shortcode('sc_platform_core_lifecycle_status', 'scpc_lifecycle_status_shortcode');

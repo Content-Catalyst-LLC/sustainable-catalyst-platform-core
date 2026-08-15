@@ -20,7 +20,7 @@ def _int(name: str, default: int) -> int:
 @dataclass(frozen=True)
 class Settings:
     app_name: str = "Sustainable Catalyst Platform Core"
-    version: str = "2.21.0"
+    version: str = "2.22.0"
     environment: str = "development"
     database_url: str = "sqlite:///./platform_core.db"
     write_api_key: str = ""
@@ -53,7 +53,7 @@ class Settings:
     live_data_enabled: bool = True
     live_data_ingest_enabled: bool = True
     live_data_strict_free_sources: bool = True
-    live_data_user_agent: str = "SustainableCatalystPlatformCore/2.21.0 (+https://sustainablecatalyst.com/contact/)"
+    live_data_user_agent: str = "SustainableCatalystPlatformCore/2.22.0 (+https://sustainablecatalyst.com/contact/)"
     live_data_timeout_seconds: int = 20
     live_data_max_response_bytes: int = 12582912
     live_data_raw_payload_max_bytes: int = 1048576
@@ -130,6 +130,12 @@ class Settings:
     multi_region_default_max_replication_lag_seconds: int = 300
     multi_region_degraded_read_only_enabled: bool = True
     certification_require_multi_region_ready: bool = False
+    data_lifecycle_preservation_enabled: bool = True
+    data_lifecycle_public_status_enabled: bool = True
+    data_lifecycle_default_min_retention_days: int = 365
+    data_lifecycle_default_archive_after_days: int = 90
+    data_lifecycle_hard_delete_enabled: bool = False
+    certification_require_preservation_ready: bool = False
 
     @classmethod
     def from_env(cls) -> "Settings":
@@ -207,7 +213,7 @@ class Settings:
             live_data_strict_free_sources=_bool("SC_CORE_LIVE_DATA_STRICT_FREE_SOURCES", True),
             live_data_user_agent=os.getenv(
                 "SC_CORE_LIVE_DATA_USER_AGENT",
-                "SustainableCatalystPlatformCore/2.21.0 (+https://sustainablecatalyst.com/contact/)",
+                "SustainableCatalystPlatformCore/2.22.0 (+https://sustainablecatalyst.com/contact/)",
             ).strip(),
             live_data_timeout_seconds=max(
                 1, min(_int("SC_CORE_LIVE_DATA_TIMEOUT_SECONDS", 20), 120)
@@ -296,4 +302,10 @@ class Settings:
             multi_region_default_max_replication_lag_seconds=max(0, min(_int("SC_CORE_MULTI_REGION_DEFAULT_MAX_REPLICATION_LAG_SECONDS", 300), 86400)),
             multi_region_degraded_read_only_enabled=_bool("SC_CORE_MULTI_REGION_DEGRADED_READ_ONLY_ENABLED", True),
             certification_require_multi_region_ready=_bool("SC_CORE_CERTIFICATION_REQUIRE_MULTI_REGION_READY", False),
+            data_lifecycle_preservation_enabled=_bool("SC_CORE_DATA_LIFECYCLE_PRESERVATION_ENABLED", True),
+            data_lifecycle_public_status_enabled=_bool("SC_CORE_DATA_LIFECYCLE_PUBLIC_STATUS_ENABLED", True),
+            data_lifecycle_default_min_retention_days=max(1, min(_int("SC_CORE_DATA_LIFECYCLE_DEFAULT_MIN_RETENTION_DAYS", 365), 365000)),
+            data_lifecycle_default_archive_after_days=max(0, min(_int("SC_CORE_DATA_LIFECYCLE_DEFAULT_ARCHIVE_AFTER_DAYS", 90), 365000)),
+            data_lifecycle_hard_delete_enabled=False,
+            certification_require_preservation_ready=_bool("SC_CORE_CERTIFICATION_REQUIRE_PRESERVATION_READY", False),
         )

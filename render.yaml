@@ -74,7 +74,7 @@ services:
       - key: SC_CORE_LIVE_DATA_STRICT_FREE_SOURCES
         value: "true"
       - key: SC_CORE_LIVE_DATA_USER_AGENT
-        value: SustainableCatalystPlatformCore/2.21.0 (+https://sustainablecatalyst.com/contact/)
+        value: SustainableCatalystPlatformCore/2.22.0 (+https://sustainablecatalyst.com/contact/)
       - key: SC_CORE_LIVE_DATA_TIMEOUT_SECONDS
         value: "20"
       - key: SC_CORE_LIVE_DATA_MAX_RESPONSE_BYTES
@@ -211,6 +211,17 @@ services:
         value: "8760"
       - key: SC_CORE_CHANGE_HIGH_RISK_APPROVAL_REQUIRED
         value: "true"
+
+      - key: SC_CORE_DATA_LIFECYCLE_PRESERVATION_ENABLED
+        value: "true"
+      - key: SC_CORE_DATA_LIFECYCLE_PUBLIC_STATUS_ENABLED
+        value: "true"
+      - key: SC_CORE_DATA_LIFECYCLE_DEFAULT_MIN_RETENTION_DAYS
+        value: "365"
+      - key: SC_CORE_DATA_LIFECYCLE_DEFAULT_ARCHIVE_AFTER_DAYS
+        value: "90"
+      - key: SC_CORE_CERTIFICATION_REQUIRE_PRESERVATION_READY
+        value: "false"
 
 databases:
   - name: sustainable-catalyst-platform-core-db

@@ -323,5 +323,8 @@ export class PublicApiClient {
   resilienceStatus() {
     return this.request(`/resilience/status`);
   }
+  lifecycleStatus() {
+    return this.request(`/lifecycle/status`);
+  }
 
 }

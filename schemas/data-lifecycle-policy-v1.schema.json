@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Data Lifecycle Policy v1",
+  "type": "object",
+  "required": [
+    "policy_key",
+    "subject_type",
+    "retention_class"
+  ],
+  "properties": {
+    "policy_key": {
+      "type": "string"
+    },
+    "subject_type": {
+      "type": "string"
+    },
+    "retention_class": {
+      "enum": [
+        "transient",
+        "operational",
+        "institutional",
+        "permanent"
+      ]
+    },
+    "minimum_retention_days": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "archive_after_days": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "tombstone_after_days": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1
+    },
+    "preserve_provenance": {
+      "const": true
+    },
+    "hard_delete_allowed": {
+      "const": false
+    }
+  }
+}

@@ -150,3 +150,9 @@ Completed: backup artifact registry, checksum verification/attestation, disaster
 
 ## v2.21.0 — Multi-Region Resilience & Failover Coordination
 Completed: provider-neutral region/service health, replication-aware failover groups, read-only degraded-mode coordination, explicit operator decision lineage, public-safe resilience status, and optional certification gating.
+
+
+## v2.22.0 — Data Lifecycle, Archival Integrity & Preservation
+Status: implemented.
+
+Next planned: v2.23.0 — Federated Core & Trusted Node Exchange.

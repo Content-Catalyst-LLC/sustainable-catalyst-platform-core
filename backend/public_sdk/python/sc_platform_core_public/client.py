@@ -349,3 +349,7 @@ PublicApiClient.continuity_status = _continuity_status
 def _resilience_status(self):
     return self.request("GET", "/resilience/status")
 PublicApiClient.resilience_status = _resilience_status
+
+def _lifecycle_status(self):
+    return self.request("GET", "/lifecycle/status")
+PublicApiClient.lifecycle_status = _lifecycle_status

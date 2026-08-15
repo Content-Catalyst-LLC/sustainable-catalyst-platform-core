@@ -88,6 +88,7 @@ def health(request: Request):
         "incident_response_change_control_rollback": request.app.state.settings.incident_change_control_enabled,
         "continuity_backup_verification_disaster_recovery": request.app.state.settings.continuity_disaster_recovery_enabled,
         "multi_region_resilience_failover_coordination": request.app.state.settings.multi_region_resilience_enabled,
+        "data_lifecycle_archival_integrity_preservation": request.app.state.settings.data_lifecycle_preservation_enabled,
     }
 
 
@@ -164,6 +165,7 @@ async def ready(request: Request, db: Session = Depends(get_session)):
         "incident_response_change_control_rollback": "ready" if settings.incident_change_control_enabled else "disabled",
         "continuity_backup_verification_disaster_recovery": "ready" if settings.continuity_disaster_recovery_enabled else "disabled",
         "multi_region_resilience_failover_coordination": "ready" if settings.multi_region_resilience_enabled else "disabled",
+        "data_lifecycle_archival_integrity_preservation": "ready" if settings.data_lifecycle_preservation_enabled else "disabled",
         "external_provider_health_release_blocking": False,
         "services": [
             {
@@ -253,6 +255,10 @@ def meta(request: Request):
             "production_certification_migration_recovery",
             "continuity_backup_verification_disaster_recovery",
             "multi_region_resilience_failover_coordination",
+            "data_lifecycle_archival_integrity_preservation",
+            "preservation_manifest_integrity",
+            "policy_and_legal_holds",
+            "non_destructive_tombstone_lineage",
             "replication_aware_failover_assessment",
             "operator_coordinated_failover",
             "read_only_degraded_mode",

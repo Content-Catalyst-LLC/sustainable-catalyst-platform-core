@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Preservation Archive v1",
+  "type": "object",
+  "required": [
+    "archive_key",
+    "subject_type",
+    "subject_id",
+    "content_sha256",
+    "manifest_sha256"
+  ],
+  "properties": {
+    "archive_key": {
+      "type": "string"
+    },
+    "subject_type": {
+      "type": "string"
+    },
+    "subject_id": {
+      "type": "string"
+    },
+    "content_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "manifest_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "provenance_preserved": {
+      "const": true
+    },
+    "verification_state": {
+      "enum": [
+        "verified",
+        "mismatch"
+      ]
+    }
+  }
+}

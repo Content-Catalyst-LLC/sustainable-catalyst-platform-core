@@ -18,7 +18,7 @@ def seed(db,s,source_health='unavailable',target_replication='current',target_la
 def test_readiness_and_migration_0024():
     fd,p=tempfile.mkstemp(suffix='.db'); os.close(fd)
     try:
-        app=create_app(Settings(database_url='sqlite:///'+p,observability_request_metrics_enabled=False)); c=TestClient(app); b=c.get('/v1/resilience/readiness').json(); assert b['release']=='2.21.0' and b['migration_0024_applied'] and b['automatic_failover_enabled'] is False and b['infrastructure_actuation_by_core'] is False
+        app=create_app(Settings(database_url='sqlite:///'+p,observability_request_metrics_enabled=False)); c=TestClient(app); b=c.get('/v1/resilience/readiness').json(); assert b['release']=='2.22.0' and b['migration_0024_applied'] and b['automatic_failover_enabled'] is False and b['infrastructure_actuation_by_core'] is False
     finally: os.unlink(p)
 
 def test_region_status_upsert_and_secret_scrub():
@@ -99,7 +99,7 @@ def test_provider_specific_actuation_is_never_enabled():
         g=seed(db,s); st=resilience.readiness(db,s); assert st['provider_specific_failover_required'] is False and st['automatic_failover_enabled'] is False and st['infrastructure_actuation_by_core'] is False
     finally: os.unlink(p)
 
-def test_migration_rehearsal_from_0023_applies_only_0024():
+def test_migration_rehearsal_from_0023_applies_current_head():
     fd,p=tempfile.mkstemp(suffix='.db'); os.close(fd); d=Database('sqlite:///'+p)
     try:
       Base.metadata.create_all(d.engine)
@@ -107,5 +107,5 @@ def test_migration_rehearsal_from_0023_applies_only_0024():
         for version,description in MIGRATIONS:
           if version<='0023': db.add(SchemaMigration(version=version,description=description))
         db.commit()
-      assert run_migrations(d)==['0024'] and migration_status(d)['pending']==[]
+      expected=[version for version,_ in MIGRATIONS if version>'0023']; assert run_migrations(d)==expected and migration_status(d)['pending']==[]
     finally: os.unlink(p)

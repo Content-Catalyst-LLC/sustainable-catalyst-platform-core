@@ -2297,3 +2297,84 @@ class FailoverAssessmentRecord(Base):
     evidence_json: Mapped[dict] = mapped_column(JSON, default=dict)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, index=True)
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+# v2.22.0 — Data Lifecycle, Archival Integrity & Preservation
+class DataLifecyclePolicyRecord(Base):
+    __tablename__ = "data_lifecycle_policy_records"
+    __table_args__ = (
+        UniqueConstraint("policy_key", name="uq_data_lifecycle_policy_key"),
+        Index("ix_data_lifecycle_policy_subject", "subject_type", "enabled"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    policy_key: Mapped[str] = mapped_column(String(255), nullable=False)
+    subject_type: Mapped[str] = mapped_column(String(120), nullable=False, default="evidence-record", index=True)
+    retention_class: Mapped[str] = mapped_column(String(40), nullable=False, default="institutional", index=True)
+    minimum_retention_days: Mapped[int] = mapped_column(Integer, nullable=False, default=365)
+    archive_after_days: Mapped[int] = mapped_column(Integer, nullable=False, default=90)
+    tombstone_after_days: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    preserve_provenance: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    hold_overrides_lifecycle: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    hard_delete_allowed: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    enabled: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True, index=True)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+class PreservationArchiveRecord(Base):
+    __tablename__ = "preservation_archive_records"
+    __table_args__ = (
+        UniqueConstraint("archive_key", name="uq_preservation_archive_key"),
+        Index("ix_preservation_archive_subject", "subject_type", "subject_id", "archived_at"),
+        Index("ix_preservation_archive_state", "state", "verified_at"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    archive_key: Mapped[str] = mapped_column(String(255), nullable=False)
+    subject_type: Mapped[str] = mapped_column(String(120), nullable=False, index=True)
+    subject_id: Mapped[str] = mapped_column(String(255), nullable=False, index=True)
+    state: Mapped[str] = mapped_column(String(40), nullable=False, default="archived", index=True)
+    storage_kind: Mapped[str] = mapped_column(String(40), nullable=False, default="core-manifest")
+    storage_uri: Mapped[str | None] = mapped_column(String(2000), nullable=True)
+    snapshot_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    content_sha256: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
+    manifest_sha256: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
+    verification_state: Mapped[str] = mapped_column(String(40), nullable=False, default="verified", index=True)
+    provenance_preserved: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    archived_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, index=True)
+    verified_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    restored_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class LifecycleHoldRecord(Base):
+    __tablename__ = "lifecycle_hold_records"
+    __table_args__ = (
+        UniqueConstraint("hold_key", name="uq_lifecycle_hold_key"),
+        Index("ix_lifecycle_hold_subject_state", "subject_type", "subject_id", "state"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    hold_key: Mapped[str] = mapped_column(String(255), nullable=False)
+    subject_type: Mapped[str] = mapped_column(String(120), nullable=False, index=True)
+    subject_id: Mapped[str] = mapped_column(String(255), nullable=False, index=True)
+    hold_type: Mapped[str] = mapped_column(String(40), nullable=False, default="policy", index=True)
+    state: Mapped[str] = mapped_column(String(30), nullable=False, default="active", index=True)
+    reason: Mapped[str] = mapped_column(Text, nullable=False, default="")
+    actor: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    placed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    released_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+class LifecycleActionRecord(Base):
+    __tablename__ = "lifecycle_action_records"
+    __table_args__ = (Index("ix_lifecycle_action_subject_time", "subject_type", "subject_id", "created_at"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    subject_type: Mapped[str] = mapped_column(String(120), nullable=False, index=True)
+    subject_id: Mapped[str] = mapped_column(String(255), nullable=False, index=True)
+    action_type: Mapped[str] = mapped_column(String(60), nullable=False, index=True)
+    state: Mapped[str] = mapped_column(String(40), nullable=False, default="recorded", index=True)
+    archive_id: Mapped[str | None] = mapped_column(ForeignKey("preservation_archive_records.id", ondelete="SET NULL"), nullable=True, index=True)
+    actor: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    automatic_execution: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    source_record_deleted: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    provenance_preserved: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    evidence_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, index=True)

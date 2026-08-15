@@ -34,6 +34,7 @@ MIGRATIONS = [
     ("0022", "Operational incidents, append-only incident-event integrity chain, governed change controls, and operator-confirmed rollback coordination."),
     ("0023", "Continuity, backup-artifact verification, disaster-recovery objectives, restore rehearsals, RPO/RTO evidence, and certification integration."),
     ("0024", "Multi-region service health, failover groups, replication-aware failover assessments, read-only degraded mode, and operator-coordinated recovery routing."),
+    ("0025", "Data lifecycle policies, preservation archives, integrity manifests, policy/legal holds, tombstone lineage, and non-destructive archive restoration records."),
 ]
 
 def _seed_predicates(database: Database) -> int:
