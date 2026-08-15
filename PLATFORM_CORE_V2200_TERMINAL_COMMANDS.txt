@@ -1,0 +1,4 @@
+cd ~/Downloads
+chmod +x deploy_and_validate_platform_core_v2_20_0_macos.sh
+./deploy_and_validate_platform_core_v2_20_0_macos.sh \
+  sustainable-catalyst-platform-core-v2.20.0-release-bundle.zip

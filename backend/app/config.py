@@ -20,7 +20,7 @@ def _int(name: str, default: int) -> int:
 @dataclass(frozen=True)
 class Settings:
     app_name: str = "Sustainable Catalyst Platform Core"
-    version: str = "2.19.0"
+    version: str = "2.20.0"
     environment: str = "development"
     database_url: str = "sqlite:///./platform_core.db"
     write_api_key: str = ""
@@ -53,7 +53,7 @@ class Settings:
     live_data_enabled: bool = True
     live_data_ingest_enabled: bool = True
     live_data_strict_free_sources: bool = True
-    live_data_user_agent: str = "SustainableCatalystPlatformCore/2.19.0 (+https://sustainablecatalyst.com/contact/)"
+    live_data_user_agent: str = "SustainableCatalystPlatformCore/2.20.0 (+https://sustainablecatalyst.com/contact/)"
     live_data_timeout_seconds: int = 20
     live_data_max_response_bytes: int = 12582912
     live_data_raw_payload_max_bytes: int = 1048576
@@ -115,6 +115,16 @@ class Settings:
     incident_public_status_enabled: bool = True
     incident_retention_hours: int = 8760
     change_high_risk_approval_required: bool = True
+    continuity_disaster_recovery_enabled: bool = True
+    continuity_public_status_enabled: bool = True
+    backup_filesystem_verification_enabled: bool = True
+    backup_filesystem_root: str = ""
+    dr_default_rpo_minutes: int = 1440
+    dr_default_rto_minutes: int = 240
+    dr_max_backup_age_minutes: int = 1440
+    dr_restore_rehearsal_max_age_hours: int = 720
+    certification_require_recent_verified_backup: bool = False
+    certification_require_recent_restore_rehearsal: bool = False
 
     @classmethod
     def from_env(cls) -> "Settings":
@@ -192,7 +202,7 @@ class Settings:
             live_data_strict_free_sources=_bool("SC_CORE_LIVE_DATA_STRICT_FREE_SOURCES", True),
             live_data_user_agent=os.getenv(
                 "SC_CORE_LIVE_DATA_USER_AGENT",
-                "SustainableCatalystPlatformCore/2.19.0 (+https://sustainablecatalyst.com/contact/)",
+                "SustainableCatalystPlatformCore/2.20.0 (+https://sustainablecatalyst.com/contact/)",
             ).strip(),
             live_data_timeout_seconds=max(
                 1, min(_int("SC_CORE_LIVE_DATA_TIMEOUT_SECONDS", 20), 120)
@@ -266,4 +276,14 @@ class Settings:
             incident_public_status_enabled=_bool("SC_CORE_INCIDENT_PUBLIC_STATUS_ENABLED", True),
             incident_retention_hours=max(168, min(_int("SC_CORE_INCIDENT_RETENTION_HOURS", 8760), 876000)),
             change_high_risk_approval_required=_bool("SC_CORE_CHANGE_HIGH_RISK_APPROVAL_REQUIRED", True),
+            continuity_disaster_recovery_enabled=_bool("SC_CORE_CONTINUITY_DISASTER_RECOVERY_ENABLED", True),
+            continuity_public_status_enabled=_bool("SC_CORE_CONTINUITY_PUBLIC_STATUS_ENABLED", True),
+            backup_filesystem_verification_enabled=_bool("SC_CORE_BACKUP_FILESYSTEM_VERIFICATION_ENABLED", True),
+            backup_filesystem_root=os.getenv("SC_CORE_BACKUP_FILESYSTEM_ROOT", "").strip(),
+            dr_default_rpo_minutes=max(1, min(_int("SC_CORE_DR_DEFAULT_RPO_MINUTES", 1440), 525600)),
+            dr_default_rto_minutes=max(1, min(_int("SC_CORE_DR_DEFAULT_RTO_MINUTES", 240), 10080)),
+            dr_max_backup_age_minutes=max(1, min(_int("SC_CORE_DR_MAX_BACKUP_AGE_MINUTES", 1440), 525600)),
+            dr_restore_rehearsal_max_age_hours=max(1, min(_int("SC_CORE_DR_RESTORE_REHEARSAL_MAX_AGE_HOURS", 720), 87600)),
+            certification_require_recent_verified_backup=_bool("SC_CORE_CERTIFICATION_REQUIRE_RECENT_VERIFIED_BACKUP", False),
+            certification_require_recent_restore_rehearsal=_bool("SC_CORE_CERTIFICATION_REQUIRE_RECENT_RESTORE_REHEARSAL", False),
         )

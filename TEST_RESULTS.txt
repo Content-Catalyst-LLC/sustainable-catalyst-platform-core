@@ -1,38 +1,34 @@
-Sustainable Catalyst Platform Core v2.19.0 — Validation Record
+Sustainable Catalyst Platform Core v2.20.0 — Validation Record
 
-Release: v2.19.0 — Incident Response, Change Control & Rollback Coordination
-Backend test collection: 241 tests
-Inherited from v2.18.0: 229
-New v2.19.0 tests: 12
+Backend test collection: 253 tests (241 inherited + 12 new v2.20.0 continuity/DR tests).
 
 Verified in this build environment:
-- v2.19.0 incident/change/rollback suite: 12/12 PASS
-- health/readiness regression: 2/2 PASS
+- v2.20.0 continuity/backup/DR suite: 12/12 PASS
+- production certification regression: 8/8 PASS
+- observability/SLO regression: 10/10 PASS
+- incident/change/rollback regression: 12/12 PASS
 - production integration regression: 15/15 PASS
-- production certification regression: 8/8 PASS (separate-process verification used where needed)
-- observability/SLO regression: 10/10 PASS in isolated deterministic runs
-- unified public API / SDK regression: 9/9 PASS
-- fresh migration chain 0001–0022: PASS; pending=[]
+- unified public API/SDK regression: 9/9 PASS
+- health/readiness regression: 2/2 PASS
+- fresh migrations 0001-0023: PASS; pending migrations: 0
 - streaming/reliability validator: PASS
 - operational facilities validator: PASS
 - humanitarian access validator: PASS
 - country evidence validator: PASS
-- Earth/Ocean/Space scientific fabric validator: PASS
+- Earth/Ocean/Space scientific service fabric validator: PASS
 - cross-product exchange validator: PASS
 - distributed scale validator: PASS
 - governance validator: PASS
 - production certification validator: PASS
-- observability/SLO validator: PASS
+- observability validator: PASS
 - incident/change/rollback validator: PASS
+- continuity/backup/DR validator: PASS
 - connector worker --once: queue-empty / PASS
-- governed live-data sources: 40
-- connector definitions: 39
 - Python compilation: PASS
 - PHP syntax: PASS
 - JavaScript syntax: PASS
 - Bash syntax: PASS
-- JSON/GeoJSON parsing: 70 files PASS
-- secret scan: 0 findings
+- JSON parsing: 72 files PASS
+- static secret scan: 0 findings
 
-Container note:
-Long-lived FastAPI TestClient execution can stall during teardown when many isolated database tests run in one process. The release installer therefore preserves the established file-by-file 241-test promotion gate before Git commit/push. No failed assertion is hidden by this note; the specifically impacted production/certification/observability tests above were run in bounded or isolated processes.
+Container note: the full 253-test suite is not claimed as a single-process 253/253 result because long-lived FastAPI TestClient teardown can stall in this environment. The macOS installer runs every backend test file in a fresh pytest process before Git promotion.

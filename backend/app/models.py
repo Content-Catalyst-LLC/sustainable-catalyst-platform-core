@@ -2169,3 +2169,67 @@ class RollbackCoordinationRecord(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, index=True)
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
 
+
+
+# v2.20.0 — Continuity, Backup Verification & Disaster Recovery
+class BackupArtifactRecord(Base):
+    __tablename__ = "backup_artifact_records"
+    __table_args__ = (
+        UniqueConstraint("backup_key", name="uq_backup_artifact_key"),
+        Index("ix_backup_environment_completed", "environment", "backup_completed_at"),
+        Index("ix_backup_verification_state", "verification_state", "verified_at"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    backup_key: Mapped[str] = mapped_column(String(255), nullable=False)
+    environment: Mapped[str] = mapped_column(String(40), nullable=False, default="production", index=True)
+    database_engine: Mapped[str] = mapped_column(String(40), nullable=False, default="postgresql", index=True)
+    storage_kind: Mapped[str] = mapped_column(String(40), nullable=False, default="operator-managed", index=True)
+    storage_uri: Mapped[str] = mapped_column(String(2000), nullable=False)
+    checksum_sha256: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    size_bytes: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    verification_state: Mapped[str] = mapped_column(String(40), nullable=False, default="pending", index=True)
+    verification_details_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    backup_started_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    backup_completed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, default=utcnow, index=True)
+    verified_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True, index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+class DisasterRecoveryObjective(Base):
+    __tablename__ = "disaster_recovery_objectives"
+    __table_args__ = (UniqueConstraint("environment", name="uq_dr_objective_environment"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    environment: Mapped[str] = mapped_column(String(40), nullable=False, default="production", index=True)
+    rpo_minutes: Mapped[int] = mapped_column(Integer, nullable=False, default=1440)
+    rto_minutes: Mapped[int] = mapped_column(Integer, nullable=False, default=240)
+    max_backup_age_minutes: Mapped[int] = mapped_column(Integer, nullable=False, default=1440)
+    restore_rehearsal_max_age_hours: Mapped[int] = mapped_column(Integer, nullable=False, default=720)
+    require_verified_backup: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    require_restore_rehearsal: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+class RestoreRehearsalRecord(Base):
+    __tablename__ = "restore_rehearsal_records"
+    __table_args__ = (
+        Index("ix_restore_rehearsal_environment_completed", "environment", "completed_at"),
+        Index("ix_restore_rehearsal_backup_state", "backup_id", "state"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    backup_id: Mapped[str] = mapped_column(ForeignKey("backup_artifact_records.id", ondelete="CASCADE"), nullable=False, index=True)
+    environment: Mapped[str] = mapped_column(String(40), nullable=False, default="production", index=True)
+    state: Mapped[str] = mapped_column(String(40), nullable=False, default="planned", index=True)
+    execution_mode: Mapped[str] = mapped_column(String(60), nullable=False, default="external-operator")
+    operator_actor: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    schema_head: Mapped[str | None] = mapped_column(String(20), nullable=True)
+    duration_ms: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    integrity_checks_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    evidence_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    isolated_target: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    source_database_mutated: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    automatic_restore: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    started_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True, index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)

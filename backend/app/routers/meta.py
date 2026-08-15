@@ -86,6 +86,7 @@ def health(request: Request):
         "production_certification_migration_recovery": request.app.state.settings.production_certification_enabled,
         "observability_slo_production_operations": request.app.state.settings.observability_control_plane_enabled,
         "incident_response_change_control_rollback": request.app.state.settings.incident_change_control_enabled,
+        "continuity_backup_verification_disaster_recovery": request.app.state.settings.continuity_disaster_recovery_enabled,
     }
 
 
@@ -160,6 +161,7 @@ async def ready(request: Request, db: Session = Depends(get_session)):
         "production_certification_migration_recovery": "ready" if settings.production_certification_enabled else "disabled",
         "observability_slo_production_operations": "ready" if settings.observability_control_plane_enabled else "disabled",
         "incident_response_change_control_rollback": "ready" if settings.incident_change_control_enabled else "disabled",
+        "continuity_backup_verification_disaster_recovery": "ready" if settings.continuity_disaster_recovery_enabled else "disabled",
         "external_provider_health_release_blocking": False,
         "services": [
             {
@@ -247,6 +249,7 @@ def meta(request: Request):
             "distributed_processing_storage_scale",
             "governance_access_audit_control_plane",
             "production_certification_migration_recovery",
+            "continuity_backup_verification_disaster_recovery",
             "incident_response_change_control_rollback",
             "operator_confirmed_rollback",
             "incident_event_integrity_chain",

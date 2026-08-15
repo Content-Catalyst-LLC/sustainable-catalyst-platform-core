@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Sustainable Catalyst Backup Artifact",
+  "type": "object",
+  "required": [
+    "backup_key",
+    "database_engine",
+    "storage_kind",
+    "storage_uri"
+  ],
+  "properties": {
+    "backup_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "environment": {
+      "type": "string"
+    },
+    "database_engine": {
+      "enum": [
+        "sqlite",
+        "postgresql",
+        "mysql",
+        "other"
+      ]
+    },
+    "storage_kind": {
+      "enum": [
+        "filesystem",
+        "operator-managed",
+        "database-native",
+        "snapshot"
+      ]
+    },
+    "storage_uri": {
+      "type": "string",
+      "minLength": 1
+    },
+    "checksum_sha256": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[A-Fa-f0-9]{64}$"
+    },
+    "metadata": {
+      "type": "object"
+    }
+  }
+}

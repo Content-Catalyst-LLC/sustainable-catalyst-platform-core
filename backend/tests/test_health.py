@@ -1,7 +1,7 @@
 def test_health_and_ready(client):
     health = client.get("/health")
     assert health.status_code == 200
-    assert health.json()["version"] == "2.19.0"
+    assert health.json()["version"] == "2.20.0"
 
     ready = client.get("/ready")
     assert ready.status_code == 200

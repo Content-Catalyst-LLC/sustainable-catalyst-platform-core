@@ -82,7 +82,7 @@ def test_decision_is_persisted_and_audit_is_append_only_api(tmp_path):
   assert session.get(GovernanceDecision,d['decision_id']) is not None; assert verify_audit_chain(session)['events_checked']==1
 
 def test_governance_readiness_endpoint(client):
- r=client.get('/v1/governance/readiness'); assert r.status_code==200; body=r.json(); assert body['release']=='2.19.0'; assert body['migration_0019_applied'] is True; assert body['audit_chain']=='sha256-linked'
+ r=client.get('/v1/governance/readiness'); assert r.status_code==200; body=r.json(); assert body['release']=='2.20.0'; assert body['migration_0019_applied'] is True; assert body['audit_chain']=='sha256-linked'
 
 def test_governance_api_policy_decision_and_audit_verify(client,write_headers):
  p=client.post('/v1/governance/policies',headers=write_headers,json={'name':'api-allow','effect':'allow','principal_type':'service','principal_id':'site-intelligence','product_scope':'site-intelligence','resource_type':'evidence','action':'read','visibility_ceiling':'internal','priority':5}); assert p.status_code==200,p.text

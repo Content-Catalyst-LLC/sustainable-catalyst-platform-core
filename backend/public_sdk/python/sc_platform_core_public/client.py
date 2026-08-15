@@ -337,3 +337,9 @@ PublicApiClient.observability_status = _observability_status
 def _operations_status(self):
     return self.request("GET", "/operations/status")
 PublicApiClient.operations_status = _operations_status
+
+
+# v2.20.0 Continuity & Disaster Recovery public status helper
+def _continuity_status(self):
+    return self.request("GET", "/continuity/status")
+PublicApiClient.continuity_status = _continuity_status

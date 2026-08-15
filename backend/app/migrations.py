@@ -32,6 +32,7 @@ MIGRATIONS = [
     ("0020", "Production certification runs, migration-assurance snapshots, recovery checkpoints, integrity verification, and release-recovery readiness records."),
     ("0021", "First-party observability metrics, service-level objectives, deployment markers, retention, and public-safe production operations status."),
     ("0022", "Operational incidents, append-only incident-event integrity chain, governed change controls, and operator-confirmed rollback coordination."),
+    ("0023", "Continuity, backup-artifact verification, disaster-recovery objectives, restore rehearsals, RPO/RTO evidence, and certification integration."),
 ]
 
 def _seed_predicates(database: Database) -> int:

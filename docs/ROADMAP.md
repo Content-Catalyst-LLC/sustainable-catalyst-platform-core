@@ -142,3 +142,7 @@ Completed: first-party request telemetry, aggregate service windows, persisted S
 
 ## v2.19.0 — Incident Response, Change Control & Rollback Coordination
 Completed: governed operational incidents, hash-linked event history, risk-aware change controls, operator-confirmed rollback coordination, and aggregate public operations status.
+
+
+## v2.20.0 — Continuity, Backup Verification & Disaster Recovery
+Completed: backup artifact registry, checksum verification/attestation, disaster-recovery objectives, isolated SQLite restore rehearsals, externally evidenced production restore drills, RPO/RTO evaluation, public-safe continuity status, and optional certification gates.

@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Sustainable Catalyst Restore Rehearsal",
+  "type": "object",
+  "required": [
+    "backup_id",
+    "state",
+    "execution_mode"
+  ],
+  "properties": {
+    "backup_id": {
+      "type": "string"
+    },
+    "state": {
+      "enum": [
+        "planned",
+        "passed",
+        "failed"
+      ]
+    },
+    "execution_mode": {
+      "enum": [
+        "core-isolated-sqlite",
+        "external-operator"
+      ]
+    },
+    "isolated_target": {
+      "const": true
+    },
+    "source_database_mutated": {
+      "const": false
+    },
+    "automatic_restore": {
+      "const": false
+    }
+  }
+}

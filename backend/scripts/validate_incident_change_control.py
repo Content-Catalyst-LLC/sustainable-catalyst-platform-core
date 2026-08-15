@@ -15,7 +15,7 @@ def main():
             assert change.approval_required
             assert operations.verify_event_chain(session,inc.id)['valid']
             ready=operations.readiness(session,settings)
-        assert settings.version=='2.19.0' and '0022' in status['applied'] and not status['pending'] and ready['automatic_rollback_enabled'] is False and ready['causal_attribution_from_correlation'] is False
+        assert tuple(map(int,settings.version.split('.')[:2])) >= (2,19) and '0022' in status['applied'] and not status['pending'] and ready['automatic_rollback_enabled'] is False and ready['causal_attribution_from_correlation'] is False
         print({'version':settings.version,'migration_0022_applied':True,'pending_migrations':status['pending'],'automatic_rollback_enabled':False,'rollback_execution_mode':'operator-confirmed','causal_attribution_from_correlation':False})
-        print('PASS - Core v2.19.0 incident response change control and rollback coordination validation')
+        print('PASS - Core incident response change control and rollback coordination validation')
 if __name__=='__main__': main()

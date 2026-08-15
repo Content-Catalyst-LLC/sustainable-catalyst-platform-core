@@ -316,4 +316,8 @@ export class PublicApiClient {
     return this.request(`/operations/status`);
   }
 
+  continuityStatus() {
+    return this.request(`/continuity/status`);
+  }
+
 }
