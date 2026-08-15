@@ -70,7 +70,7 @@ Completed:
 - Preserves all v2.0.0–v2.8.0 routes, migrations, source registries, connector packs, and data-fabric contracts
 
 ## v2.9.0 — Streaming, Alerts, and Source Reliability
-Planned:
+Completed:
 
 - Distributed connector workers
 - Server-Sent Events

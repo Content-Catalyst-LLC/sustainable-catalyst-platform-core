@@ -1480,3 +1480,110 @@ class StacItem(Base):
     public: Mapped[bool] = mapped_column(Boolean, default=True, index=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+# v2.9.0 — Streaming, Alerts, and Source Reliability
+class ConnectorWorkItem(Base):
+    __tablename__ = "connector_work_items"
+    __table_args__ = (
+        Index("ix_connector_work_status_available", "status", "available_at"),
+        Index("ix_connector_work_connector_created", "connector_id", "created_at"),
+        Index("ix_connector_work_lease", "lease_expires_at"),
+    )
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    connector_id: Mapped[str] = mapped_column(ForeignKey("live_data_connectors.id", ondelete="RESTRICT"), nullable=False, index=True)
+    parameters_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    requested_by: Mapped[str] = mapped_column(String(300), default="platform-core")
+    priority: Mapped[int] = mapped_column(Integer, default=100, index=True)
+    status: Mapped[str] = mapped_column(String(40), default="pending", index=True)
+    attempt_count: Mapped[int] = mapped_column(Integer, default=0)
+    max_attempts: Mapped[int] = mapped_column(Integer, default=3)
+    available_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, index=True)
+    lease_owner: Mapped[str | None] = mapped_column(String(200), nullable=True)
+    lease_expires_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True, index=True)
+    last_error: Mapped[str | None] = mapped_column(Text, nullable=True)
+    ingestion_run_id: Mapped[str | None] = mapped_column(ForeignKey("live_data_ingestion_runs.id", ondelete="SET NULL"), nullable=True)
+    execution_connector_id: Mapped[str | None] = mapped_column(String(180), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+    completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+
+class DeadLetterRecord(Base):
+    __tablename__ = "dead_letter_records"
+    __table_args__ = (
+        Index("ix_dead_letter_connector_created", "connector_id", "created_at"),
+        Index("ix_dead_letter_status_created", "status", "created_at"),
+    )
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    work_item_id: Mapped[str | None] = mapped_column(String(36), nullable=True, index=True)
+    connector_id: Mapped[str] = mapped_column(ForeignKey("live_data_connectors.id", ondelete="RESTRICT"), nullable=False, index=True)
+    parameters_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    error_message: Mapped[str] = mapped_column(Text, nullable=False)
+    attempt_count: Mapped[int] = mapped_column(Integer, default=0)
+    status: Mapped[str] = mapped_column(String(30), default="open", index=True)
+    replay_count: Mapped[int] = mapped_column(Integer, default=0)
+    last_replayed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    resolved_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+
+class StreamEvent(Base):
+    __tablename__ = "stream_events"
+    __table_args__ = (
+        Index("ix_stream_event_type_created", "event_type", "created_at"),
+        Index("ix_stream_event_public_id", "public", "id"),
+    )
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    event_type: Mapped[str] = mapped_column(String(120), nullable=False, index=True)
+    subject_type: Mapped[str] = mapped_column(String(120), nullable=False, index=True)
+    subject_id: Mapped[str | None] = mapped_column(String(255), nullable=True, index=True)
+    payload_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    public: Mapped[bool] = mapped_column(Boolean, default=True, index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, index=True)
+
+
+class AlertRule(Base):
+    __tablename__ = "alert_rules"
+    __table_args__ = (
+        Index("ix_alert_rule_enabled_domain", "enabled", "domain"),
+        Index("ix_alert_rule_metric", "metric"),
+    )
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    name: Mapped[str] = mapped_column(String(300), nullable=False)
+    domain: Mapped[str | None] = mapped_column(String(100), nullable=True, index=True)
+    metric: Mapped[str | None] = mapped_column(String(200), nullable=True, index=True)
+    connector_id: Mapped[str | None] = mapped_column(String(180), nullable=True, index=True)
+    source_id: Mapped[str | None] = mapped_column(String(150), nullable=True, index=True)
+    operator: Mapped[str] = mapped_column(String(20), default="exists")
+    threshold_number: Mapped[float | None] = mapped_column(Float, nullable=True)
+    geography_json: Mapped[dict | None] = mapped_column(JSON, nullable=True)
+    severity: Mapped[str] = mapped_column(String(30), default="info")
+    enabled: Mapped[bool] = mapped_column(Boolean, default=True, index=True)
+    public: Mapped[bool] = mapped_column(Boolean, default=False, index=True)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class GeographicSubscription(Base):
+    __tablename__ = "geographic_subscriptions"
+    __table_args__ = (
+        Index("ix_geo_subscription_active", "active"),
+        Index("ix_geo_subscription_public", "public"),
+    )
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    name: Mapped[str] = mapped_column(String(300), nullable=False)
+    geometry_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    domains_json: Mapped[list] = mapped_column(JSON, default=list)
+    connector_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    event_types_json: Mapped[list] = mapped_column(JSON, default=list)
+    active: Mapped[bool] = mapped_column(Boolean, default=True, index=True)
+    public: Mapped[bool] = mapped_column(Boolean, default=False, index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)

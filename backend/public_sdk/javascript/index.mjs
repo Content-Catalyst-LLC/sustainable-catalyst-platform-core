@@ -222,4 +222,9 @@ export class PublicApiClient {
     return this.requestRaw(`/stac/search?${query}`);
   }
 
+  reliabilityStreamUrl(params = {}) {
+    const query = new URLSearchParams({ after_id: 0, once: false, ...params });
+    return `${this.baseUrl}/api/v1/reliability/stream?${query}`;
+  }
+
 }

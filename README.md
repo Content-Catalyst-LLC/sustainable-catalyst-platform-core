@@ -1,31 +1,50 @@
-# Sustainable Catalyst Platform Core v2.8.1
+# Sustainable Catalyst Platform Core v2.9.0
 
-Core v2.8.1 adds **Production Integration & Readiness Repair** on top of the v2.8.0 geospatial, time-series, and scientific data fabric.
+Core v2.9.0 adds **Streaming, Alerts, and Source Reliability** on top of the v2.8.1 production-integration readiness line. It turns the live-data gateway into a persistent operational fabric without making transient third-party provider health a release blocker.
 
-The release separates **liveness** from **deployment readiness**. `/health` answers whether Core is alive; `/ready` now verifies first-party service requirements and production configuration before declaring the release ready. A service explicitly marked `REQUIRED` cannot be unconfigured, disabled, unavailable, circuit-open, or version-incompatible without appearing as a readiness blocker.
+Key v2.9.0 additions:
 
-Key v2.8.1 additions:
+- Migration `0012` for persistent connector work items, dead-letter records, stream events, alert rules, and geographic subscriptions.
+- Database-backed connector queue with worker leases, retries, maximum-attempt policy, and distributed worker IDs.
+- Standalone connector-worker process for horizontally scaled deployments.
+- Server-Sent Events under `/v1/reliability/stream` and scoped public `/api/v1/reliability/stream`.
+- Threshold and existence alert rules with optional point-in-bounding-box geographic filters.
+- Geographic subscriptions that preserve requested domains, connectors, event types, and geometry.
+- Stale-source detection based on each connector's declared freshness window and last successful ingestion.
+- Immutable dead-letter history plus replay into a new queued work item.
+- Explicit provider-failover groups and priorities. Automatic worker failover requires an explicit `failover_parameters_compatible=true` contract; Core never assumes unrelated sources are interchangeable.
+- Successful ingestion events and alert-trigger events are persisted to the streaming log. Reliability-event emission cannot roll back a successful provider ingestion.
+- v2.8.1 liveness/readiness semantics remain intact; external provider health is visible but remains non-blocking for the Core release gate.
 
-- Public-safe `/integration/readiness` service status with no upstream URLs or service tokens.
-- Required/optional service semantics for Site Intelligence, Workbench, Decision Studio, Research Librarian, Catalyst Finance, and Narrative Risk.
-- Distinct `unconfigured`, `disabled`, `operational`, `degraded`, `unavailable`, `circuit_open`, `configuration_error`, and `version_unreported`, and `version_mismatch` service states.
-- Canonical public Core URL and required CORS-origin production checks.
-- Optional service-token requirements and safe token-configuration reporting.
-- Upstream product-version reporting and expected-version-prefix checks.
-- Render/deployment template that treats Site Intelligence as the first required production integration.
-- WordPress `[sc_platform_core_integration_readiness]` status surface.
-- v2.8.0 data fabric, connector packs, entity/evidence/provenance contracts, SDKs, and APIs remain backward compatible.
-
-## Production readiness contract
+## Reliability routes
 
 ```text
-GET /health                 # liveness; does not claim downstream readiness
-GET /ready                  # deployment/release readiness
-GET /integration/readiness  # public-safe first-party integration state
-GET /v1/gateway/health      # authenticated operator diagnostics
+GET  /v1/reliability/readiness
+POST /v1/reliability/queue/{connector_id}
+GET  /v1/reliability/queue
+POST /v1/reliability/worker/run-once
+GET  /v1/reliability/stale-sources
+GET  /v1/reliability/failover/{connector_id}
+GET  /v1/reliability/dead-letters
+POST /v1/reliability/dead-letters/{id}/replay
+POST /v1/reliability/alerts/rules
+GET  /v1/reliability/alerts/rules
+POST /v1/reliability/subscriptions/geographic
+GET  /v1/reliability/subscriptions/geographic
+GET  /v1/reliability/stream
+GET  /api/v1/reliability/stream
 ```
 
-For production deployments, configure `SC_CORE_PUBLIC_BASE_URL` and `SC_CORE_SITE_INTELLIGENCE_URL`. The v2.8.1 Render blueprint marks both as deployment-supplied values and requires Site Intelligence readiness without making transient third-party providers part of the release gate.
+Run a worker with:
+
+```bash
+cd backend
+python scripts/run_connector_worker.py
+```
+
+Use `--once` for a single deterministic work cycle. Multiple workers may share the same Core database; leases prevent an actively claimed item from being treated as ordinary pending work.
+
+Provider failover is deliberately conservative. A connector may declare `failover_group`, `failover_priority`, and `failover_parameters_compatible`; automatic execution against a backup occurs only when parameter compatibility has been explicitly asserted.
 
 ---
 
@@ -89,6 +108,7 @@ v2.7.2  Scientific Data Connector Pack
 v2.7.3  Economics and Official Statistics Connector Pack
 v2.8.0  Geospatial, Time-Series, and Scientific Data Fabric
 v2.8.1  Production Integration & Readiness Repair
+v2.9.0  Streaming, Alerts, and Source Reliability
 ```
 
 See `docs/GEOSPATIAL_TIME_SERIES_SCIENTIFIC_FABRIC_V280.md`, `RELEASE_NOTES_V280.md`, and `deployment/platform-core-v280.env.example`.

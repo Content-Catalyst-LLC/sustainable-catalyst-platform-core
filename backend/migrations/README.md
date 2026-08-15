@@ -65,3 +65,16 @@ Creates:
 - `stac_items`
 
 PostgreSQL deployments attempt to enable PostGIS, add a GIST expression index over GeoJSON, and add a BRIN index over time-series timestamps. Portable GeoJSON and monthly partition keys remain active when PostGIS extension privileges are unavailable.
+
+
+## 0012 — Streaming, Alerts, and Source Reliability
+
+Creates:
+
+- `connector_work_items`
+- `dead_letter_records`
+- `stream_events`
+- `alert_rules`
+- `geographic_subscriptions`
+
+The migration is additive. Connector work is leased and retryable; dead-letter records preserve failed work history; replay creates a new work item rather than rewriting the original failure. Provider failover remains opt-in and does not infer equivalence between unrelated sources.

@@ -1,5 +1,19 @@
 # Changelog
 
+## 2.9.0 — 2026-08-14
+
+- Added migration `0012` and the persistent streaming/reliability control plane.
+- Added database-backed connector work queue, worker leases, retry/dead-letter policy, and standalone distributed worker process.
+- Added Server-Sent Events for internal and scoped public consumers.
+- Added threshold/existence alert rules and geographic bounding-box matching.
+- Added persistent geographic subscriptions.
+- Added stale-source detection using connector freshness windows.
+- Added immutable dead-letter records and historical replay into new work items.
+- Added explicit provider failover groups and priorities; automatic failover requires an explicit parameter-compatibility declaration.
+- Added streaming events for successful connector ingestion and triggered alerts without allowing reliability-event failures to roll back source ingestion.
+- Added v2.9.0 Python/JavaScript SDK packages, WordPress reliability status, deployment controls, schemas, and regression tests.
+- Preserved v2.8.1 production readiness and kept transient external-provider health non-blocking for release promotion.
+
 ## 2.8.1 — 2026-08-14
 
 - Separated `/health` liveness from `/ready` production/deployment readiness.

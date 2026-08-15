@@ -475,6 +475,43 @@
           }
         }
       ]
+    },
+    {
+      "name": "Reliability stream snapshot",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{public_api_key}}",
+            "type": "text"
+          },
+          {
+            "key": "Accept",
+            "value": "text/event-stream",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/v1/reliability/stream?once=true",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "reliability",
+            "stream"
+          ],
+          "query": [
+            {
+              "key": "once",
+              "value": "true"
+            }
+          ]
+        },
+        "description": "Core v2.9.0 scoped public SSE snapshot. Only events explicitly marked public are emitted."
+      }
     }
   ]
 }

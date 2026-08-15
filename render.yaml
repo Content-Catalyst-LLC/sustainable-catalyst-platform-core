@@ -74,13 +74,27 @@ services:
       - key: SC_CORE_LIVE_DATA_STRICT_FREE_SOURCES
         value: "true"
       - key: SC_CORE_LIVE_DATA_USER_AGENT
-        value: SustainableCatalystPlatformCore/2.8.1 (+https://sustainablecatalyst.com/contact/)
+        value: SustainableCatalystPlatformCore/2.9.0 (+https://sustainablecatalyst.com/contact/)
       - key: SC_CORE_LIVE_DATA_TIMEOUT_SECONDS
         value: "20"
       - key: SC_CORE_LIVE_DATA_MAX_RESPONSE_BYTES
         value: "12582912"
       - key: SC_CORE_LIVE_DATA_RAW_PAYLOAD_MAX_BYTES
         value: "1048576"
+      - key: SC_CORE_STREAMING_ENABLED
+        value: "true"
+      - key: SC_CORE_STREAMING_POLL_SECONDS
+        value: "2"
+      - key: SC_CORE_STREAMING_RETENTION_HOURS
+        value: "168"
+      - key: SC_CORE_RELIABILITY_WORKER_ENABLED
+        value: "true"
+      - key: SC_CORE_RELIABILITY_WORKER_LEASE_SECONDS
+        value: "60"
+      - key: SC_CORE_RELIABILITY_WORKER_MAX_ATTEMPTS
+        value: "3"
+      - key: SC_CORE_PROVIDER_FAILOVER_ENABLED
+        value: "true"
       - key: SC_CORE_RELIEFWEB_APPNAME
         value: ""
       - key: SC_CORE_HDX_HAPI_APP_IDENTIFIER
@@ -121,7 +135,7 @@ databases:
     databaseName: sustainable_catalyst_platform_core
     user: sustainable_catalyst_platform_core
 
-# Platform Core v2.8.1
+# Platform Core v2.9.0
 # Add these secret values in Render rather than committing them:
 # SC_CORE_WORKFLOW_ENGINE_ENABLED=true
 # SC_CORE_DOSSIER_CENTER_ENABLED=true

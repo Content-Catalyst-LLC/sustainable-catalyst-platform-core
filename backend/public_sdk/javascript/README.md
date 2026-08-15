@@ -1,4 +1,4 @@
-# Sustainable Catalyst Public API JavaScript Client v2.8.1
+# Sustainable Catalyst Public API JavaScript Client v2.9.0
 
 ```javascript
 import { PublicApiClient } from "./index.mjs";
@@ -57,3 +57,8 @@ const assets = await client.scientificAssets({ format: "fits" });
 const layers = await client.mapLayers({ layer_type: "cog" });
 const stac = await client.stacSearch({ collections: "mast:JWST" });
 ```
+
+
+## Streaming v2.9.0
+
+The public client exposes a reliability stream URL helper for the Server-Sent Events endpoint. SSE consumers must send the normal scoped Bearer credential. Public streams contain only events explicitly marked public.

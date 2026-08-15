@@ -33,6 +33,7 @@ from .routers import (
     predicates,
     public_api,
     relationships,
+    reliability,
     trust_admin,
     trust_center,
     trust_public,
@@ -54,7 +55,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             "workflows, tamper-evident audit infrastructure, a unified public API, "
             "developer applications, scoped credentials, usage controls, webhooks, "
             "SDK assets, a public Trust Center, evaluation runs, incidents, "
-            "limitations, attestations, signature dossiers, end-to-end workflows, a unified service gateway, and a governed free live-data connector gateway, an international-law and United Nations record layer, a scientific data connector and discovery layer, an economics and official-statistics record layer, and a geospatial, time-series, STAC, map-layer, and scientific-asset fabric for Sustainable Catalyst."
+            "limitations, attestations, signature dossiers, end-to-end workflows, a unified service gateway, and a governed free live-data connector gateway, an international-law and United Nations record layer, a scientific data connector and discovery layer, an economics and official-statistics record layer, a geospatial, time-series, STAC, map-layer, and scientific-asset fabric, and a streaming, alerts, connector-worker, replay, stale-source, and provider-failover reliability plane for Sustainable Catalyst."
         ),
         contact={
             "name": "Sustainable Catalyst",
@@ -90,9 +91,11 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             "X-SC-API-Key",
             "X-SC-Public-Key",
             "X-Request-ID",
+            "Last-Event-ID",
         ],
         expose_headers=[
             "X-Request-ID",
+            "Last-Event-ID",
             "X-SC-API-Version",
             "X-RateLimit-Limit-Minute",
             "X-RateLimit-Remaining-Minute",
@@ -120,6 +123,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(gateway.router)
     app.include_router(live_data.router)
     app.include_router(live_data.public_router)
+    app.include_router(reliability.router)
+    app.include_router(reliability.public_router)
     app.include_router(international_law.router)
     app.include_router(international_law.public_router)
     app.include_router(scientific_data.router)

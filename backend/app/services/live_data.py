@@ -13,6 +13,7 @@ from sqlalchemy.orm import Session
 
 from ..connectors import ADAPTERS, NormalizedObservation
 from .data_fabric import materialize_observation, materialize_scientific_record
+from .reliability import emit_event, evaluate_alerts
 from ..models import (
     LiveDataConnector,
     LiveDataIngestionRun,
@@ -285,6 +286,7 @@ class LiveDataRuntime:
             fabric_stac_collections_created = 0
             fabric_stac_items_created = 0
             fabric_map_layers_created = 0
+            changed_observations = []
             for item in normalized:
                 try:
                     item.observed_at = ensure_utc(item.observed_at)
@@ -332,6 +334,7 @@ class LiveDataRuntime:
                         db.add(observation_record)
                         updated += 1
                     db.flush()
+                    changed_observations.append(observation_record)
                     if self.settings.data_fabric_enabled and self.settings.data_fabric_auto_materialize:
                         fabric_counts = materialize_observation(db, observation_record)
                         fabric_series_created += fabric_counts["series_created"]
@@ -531,6 +534,27 @@ class LiveDataRuntime:
             db.add_all([run, connector])
             db.commit()
             db.refresh(run)
+            try:
+                emit_event(
+                    db,
+                    "connector.ingestion.completed",
+                    "live_data_connector",
+                    connector.id,
+                    {
+                        "run_id": run.id,
+                        "status": run.status,
+                        "records_received": run.records_received,
+                        "records_created": run.records_created,
+                        "records_updated": run.records_updated,
+                        "records_rejected": run.records_rejected,
+                    },
+                    public=bool(connector.public and source.public),
+                )
+                for observation in changed_observations:
+                    evaluate_alerts(db, observation)
+            except Exception:
+                # Reliability-event emission must never roll back a successful source ingestion.
+                pass
             return run
         except LiveDataRuntimeError as exc:
             self._record_failure(db, connector, run, exc.detail)

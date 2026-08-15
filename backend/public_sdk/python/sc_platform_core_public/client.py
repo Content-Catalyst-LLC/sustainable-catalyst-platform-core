@@ -217,3 +217,14 @@ def _stac_search(self, **params):
 PublicApiClient.stac_catalog = _stac_catalog
 PublicApiClient.stac_collections = _stac_collections
 PublicApiClient.stac_search = _stac_search
+
+
+# v2.9.0 streaming endpoint helper. SSE clients should send the normal Bearer credential.
+def _reliability_stream_url(self, *, after_id: int = 0, event_type: str | None = None, once: bool = False):
+    from urllib.parse import urlencode
+    params = {"after_id": after_id, "once": str(once).lower()}
+    if event_type:
+        params["event_type"] = event_type
+    return f"{self.base_url}/api/v1/reliability/stream?{urlencode(params)}"
+
+PublicApiClient.reliability_stream_url = _reliability_stream_url

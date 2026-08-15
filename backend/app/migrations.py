@@ -21,6 +21,7 @@ MIGRATIONS = [
     ("0009", "Scientific data connector pack, normalized scientific dataset records, astronomy and laboratory discovery, and public science APIs."),
     ("0010", "Economics and official-statistics connector pack, normalized economic records, revisions, releases, and public economics APIs."),
     ("0011", "Geospatial, time-series, STAC, map-layer, and scientific-asset data fabric with portable GeoJSON storage and PostgreSQL spatial indexes."),
+    ("0012", "Streaming event log, persistent connector work queue, alert rules, geographic subscriptions, dead-letter records, replay, stale-source detection, and provider failover control plane."),
 ]
 
 def _seed_predicates(database: Database) -> int:

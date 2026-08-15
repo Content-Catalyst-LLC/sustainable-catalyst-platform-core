@@ -1,38 +1,32 @@
-SUSTAINABLE CATALYST PLATFORM CORE v2.8.1
-PRODUCTION INTEGRATION & READINESS REPAIR
-Validation date: 2026-08-14
+Sustainable Catalyst Platform Core v2.9.0 — Validation Results
+Date: 2026-08-14
 
-RESULT: PASS
+Deterministic pytest lineage: 133 / 133 PASS
+- Inherited v2.8.1 and earlier regression tests: 114 / 114 PASS
+- v2.9.0 streaming/alerts/reliability tests: 19 / 19 PASS
 
-Regression groups
-- Inherited v2.8.0 platform/data-fabric suite: 99 passed
-- v2.8.1 production integration and readiness: 15 passed
-- Total: 114 passed
+Validated v2.9.0 behaviors:
+- migration 0012 applied; no pending migrations
+- persistent connector queue and leases
+- credential-like queue parameters stripped before persistence
+- retry and dead-letter transition
+- append-only replay into a new work item
+- stale-source detection
+- explicit provider failover groups
+- automatic failover only with explicit parameter compatibility
+- numeric and text-valued alert rules
+- geographic bbox alert filtering
+- geographic subscriptions
+- SSE snapshot and Last-Event-ID resume
+- public/private event persistence boundary
+- standalone worker queue-empty smoke
+- external provider health non-blocking for release readiness
 
-Production integration
-- /health remains liveness-only
-- /ready blocks required unconfigured/disabled/unavailable integrations
-- Optional integrations remain non-blocking
-- Missing required service token: blocked before network call
-- Expected upstream version mismatch: blocked
-- Expected upstream version unreported: blocked
-- Canonical Core URL requirement: verified
-- Required Sustainable Catalyst CORS origin: verified
-- Public-safe integration status redacts URLs and tokens
-
-Database
-- Migrations 0001 through 0011 apply on a fresh database
-- No pending migrations
-- 40 governed free-source records
-- 39 connector definitions
-
-Release checks
-- Python compilation: PASS
-- PHP syntax: PASS
-- JavaScript syntax: PASS
-- Bash syntax: PASS
-- JSON parsing: PASS
-- Render YAML parsing: PASS
-- Public SDK ZIP integrity: PASS
-- Production configuration validator: PASS
-- Push-safe secret scan: PASS (0 findings)
+Static validation:
+- Python compilation PASS
+- JSON parsing PASS
+- PHP syntax PASS
+- JavaScript syntax PASS
+- Bash syntax PASS
+- render.yaml parse PASS
+- push-safe secret scan: 0 findings

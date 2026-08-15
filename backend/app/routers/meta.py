@@ -134,6 +134,10 @@ async def ready(request: Request, db: Session = Depends(get_session)):
             "ready" if settings.data_fabric_enabled else "disabled"
         ),
         "stac_catalog": "ready" if settings.data_fabric_enabled else "disabled",
+        "streaming_alerts_source_reliability": "ready" if settings.streaming_enabled else "disabled",
+        "connector_worker": "ready" if settings.reliability_worker_enabled else "disabled",
+        "provider_failover": "ready" if settings.provider_failover_enabled else "disabled",
+        "external_provider_health_release_blocking": False,
         "services": [
             {
                 "service_id": item["service_id"],

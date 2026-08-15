@@ -1,0 +1,18 @@
+Sustainable Catalyst Platform Core v2.9.0 — Streaming, Alerts, and Source Reliability
+
+Install / validate from a release bundle:
+
+cd ~/Downloads
+chmod +x deploy_and_validate_platform_core_v2_9_0_macos.sh
+./deploy_and_validate_platform_core_v2_9_0_macos.sh sustainable-catalyst-platform-core-v2.9.0-release-bundle.zip
+
+Bundle-only integrity validation:
+
+SC_CORE_BUNDLE_ONLY=1 ./deploy_and_validate_platform_core_v2_9_0_macos.sh sustainable-catalyst-platform-core-v2.9.0-release-bundle.zip
+
+Local worker smoke:
+
+cd backend
+python scripts/run_connector_worker.py --once
+
+Core does not infer provider equivalence. Automatic worker failover requires an explicit failover group and failover_parameters_compatible=true.

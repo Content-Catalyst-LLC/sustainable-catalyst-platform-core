@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name: Sustainable Catalyst Platform Core
- * Description: WordPress connector for Sustainable Catalyst Platform Core registry, graph, evidence, developer, gateway, free live-data, international-law, scientific-data, official-statistics, geospatial, time-series, STAC, and map-layer services.
- * Version: 2.8.1
+ * Description: WordPress connector for Sustainable Catalyst Platform Core registry, graph, evidence, developer, gateway, free live-data, international-law, scientific-data, official-statistics, geospatial, time-series, STAC, map-layer, streaming, alerts, and source-reliability services.
+ * Version: 2.9.0
  * Author: Content Catalyst LLC
  * License: MIT
  */
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('SCPC_VERSION', '2.8.1');
+define('SCPC_VERSION', '2.9.0');
 define('SCPC_OPTION_BACKEND_URL', 'scpc_backend_url');
 define('SCPC_OPTION_READ_KEY', 'scpc_read_key');
 
@@ -89,6 +89,7 @@ function scpc_render_settings_page() {
         <code>[sc_platform_core_science_status]</code><br />
         <code>[sc_platform_core_economics_status]</code><br />
         <code>[sc_platform_core_data_fabric_status]</code><br />
+        <code>[sc_platform_core_reliability_status]</code><br />
         <code>[sc_platform_core_entity id="sc:product:workbench"]</code><br />
         <code>[sc_platform_core_relationships id="sc:product:research-librarian"]</code><br />
         <code>[sc_knowledge_explorer]</code><br />
@@ -765,3 +766,35 @@ function scpc_data_fabric_status_shortcode() {
     return ob_get_clean();
 }
 add_shortcode('sc_platform_core_data_fabric_status', 'scpc_data_fabric_status_shortcode');
+
+
+function scpc_reliability_status_shortcode() {
+    $status = scpc_api_get('/v1/reliability/readiness');
+    if (is_wp_error($status)) {
+        return '<div class="scpc-card scpc-error"><strong>Reliability plane unavailable</strong><p>' .
+            esc_html($status->get_error_message()) .
+            '</p></div>';
+    }
+
+    ob_start();
+    ?>
+    <section class="scpc-card">
+        <p class="scpc-kicker">Streaming and source reliability</p>
+        <h3>Connector Reliability Control Plane</h3>
+        <p>
+            <strong>Release:</strong> <?php echo esc_html($status['release'] ?? SCPC_VERSION); ?> ·
+            <strong>Streaming:</strong> <?php echo !empty($status['streaming_enabled']) ? 'Enabled' : 'Disabled'; ?> ·
+            <strong>Worker:</strong> <?php echo !empty($status['worker_enabled']) ? 'Enabled' : 'Disabled'; ?> ·
+            <strong>Failover:</strong> <?php echo !empty($status['provider_failover_enabled']) ? 'Enabled' : 'Disabled'; ?>
+        </p>
+        <p>
+            <strong>Pending work:</strong> <?php echo esc_html(number_format_i18n(intval($status['pending_work_items'] ?? 0))); ?> ·
+            <strong>Open dead letters:</strong> <?php echo esc_html(number_format_i18n(intval($status['open_dead_letters'] ?? 0))); ?> ·
+            <strong>Stale connectors:</strong> <?php echo esc_html(number_format_i18n(intval($status['stale_connectors'] ?? 0))); ?>
+        </p>
+        <p class="scpc-meta">External provider health is observable but does not independently block Core release readiness.</p>
+    </section>
+    <?php
+    return ob_get_clean();
+}
+add_shortcode('sc_platform_core_reliability_status', 'scpc_reliability_status_shortcode');
