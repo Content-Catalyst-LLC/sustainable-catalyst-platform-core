@@ -1,0 +1,22 @@
+Platform Core v2.24.0 R1 — Secret-Scan Example Credential & Promotion Repair
+Validation record
+
+Canonical v2.24.0 promotion run immediately before the secret-scan stop:
+- 304/304 backend tests passed across 34 modules.
+- migrations 0001-0027 applied with zero pending.
+- deterministic validators passed through capacity forecasting/resource governance.
+- failure occurred only after those gates, during the final push-safe secret scan.
+
+R1-specific validation:
+- canonical v2.24.0 release contract: PASS
+- R1 promotion repair contract: PASS
+- repository-wide value-aware secret scan: PASS
+- R1 regression tests: 5/5 PASS
+- documented federation placeholder: ALLOWED
+- synthetic live federation secret: REJECTED
+- placeholder-prefix plus extra material: REJECTED
+- synthetic OpenAI-style token: REJECTED
+- runtime/schema/SDK/WordPress trees compared with canonical v2.24.0: UNCHANGED
+
+R1 adds one backend test module, so the repaired promotion path executes 309 total backend tests across 35 modules.
+Runtime version remains 2.24.0. Migration head remains 0027.

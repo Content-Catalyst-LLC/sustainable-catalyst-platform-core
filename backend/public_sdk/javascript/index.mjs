@@ -331,4 +331,8 @@ export class PublicApiClient {
     return this.request(`/federation/status`);
   }
 
+  capacityStatus() {
+    return this.request(`/capacity/status`);
+  }
+
 }

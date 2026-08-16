@@ -1,28 +1,40 @@
-# Sustainable Catalyst Platform Core v2.23.1
+# Sustainable Catalyst Platform Core v2.24.0
 
-Core v2.23.1 is a **Capability Metadata, Documentation & Release-Lineage Repair** on top of v2.23.0 Federated Core & Trusted Node Exchange. It does not add a migration or change evidence, federation, governance, preservation, or storage semantics.
+Core v2.24.0 adds **Capacity Forecasting & Resource Governance** on top of the v2.23.1 capability-truth baseline and v2.23.0 Federated Core. It gives the shared infrastructure plane a provider-neutral way to inventory bounded resources, record demand/utilization observations, forecast saturation risk, define product/resource budgets, and emit non-actuating governance decisions.
 
-Key v2.23.1 repairs:
-- aligns the runtime, WordPress plugin, public SDK packages, Render user agent, README, roadmap, changelog, and release tooling on `2.23.1`;
-- promotes `distributed_connector_workers` and `server_sent_live_data_events` from deferred to implemented metadata because both were delivered and regression-tested in v2.9.0;
-- adds a capability-lineage regression gate requiring implemented and deferred capability sets to remain unique and disjoint;
-- adds static proof checks for the leased connector worker and SSE routes so those capabilities cannot silently regress back into metadata drift;
-- preserves migration head `0026`; no `0027` migration is introduced;
-- preserves v2.23.0 federation boundaries: reference-first exchange, runtime-only trust secrets, no automatic truth promotion, no ownership transfer, and no remote governance replication.
+Key v2.24.0 additions:
+- additive migration `0027` with resource profiles, observations, budgets, forecast records, and governance decisions;
+- generic resource profiles for queues, storage, request throughput, connector work, compute, or product-specific resources;
+- bounded linear forecasts with explicit observation count, horizon, slope, predicted utilization, hours-to-capacity, fit confidence, and insufficient-data state;
+- runtime observation materialization for existing Core active jobs, queued partitions, and connector backlog;
+- warning and critical utilization thresholds;
+- per-product and per-resource budgets with advisory or soft-limit policy modes;
+- persisted capacity-risk decisions that never automatically reject work;
+- public-safe aggregate capacity status without exposing raw limits, predicted values, budgets, or private decisions;
+- optional production-certification capacity readiness gate;
+- observation retention controls and forecast evidence metadata;
+- public Python/JavaScript SDK status helpers and a WordPress capacity status shortcode.
+
+Explicit boundaries:
+- no automatic infrastructure purchase;
+- no automatic scaling;
+- no deployment mutation;
+- no hard admission control;
+- no autonomous resource reallocation;
+- forecasts remain advisory evidence, not guaranteed future truth.
 
 Current release line:
 
 ```text
-v2.19.0 Incident Response, Change Control & Rollback Coordination
-v2.20.0 Continuity, Backup & Disaster Recovery
-v2.21.0 Multi-Region Resilience & Failover Coordination
 v2.22.0 Data Lifecycle, Archival Integrity & Preservation
 v2.22.0 R1 Resilience Migration Lineage & Promotion Repair
 v2.23.0 Federated Core & Trusted Node Exchange
 v2.23.1 Capability Metadata, Documentation & Release-Lineage Repair
+v2.24.0 Capacity Forecasting & Resource Governance
+v2.24.0 R1 Secret-Scan Example Credential & Promotion Repair
 ```
 
-Next planned: **v2.24.0 — Capacity Forecasting & Resource Governance**.
+Next planned: **v2.25.0 — Identity, Credential & Cryptographic Key Lifecycle**.
 
 ---
 

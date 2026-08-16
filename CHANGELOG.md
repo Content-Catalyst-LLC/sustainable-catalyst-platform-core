@@ -1,5 +1,22 @@
 # Changelog
 
+## 2.24.0 R1 — Secret-Scan Example Credential & Promotion Repair
+- Repaired the push-safe secret scan false positive on the documented federation placeholder `replace-with-long-random-secret`.
+- Replaced brittle inline grep filtering with a deterministic value-aware repository scanner.
+- Kept `.env.example` files in scan scope; exact documented placeholders are allowed while live-looking credentials remain blocking.
+- Added R1 regression tests, contract validation, repair/resume tooling, and promotion audit documentation.
+- Preserved runtime `2.24.0` and migration head `0027`; no capacity-governance or federation behavior changed.
+
+## 2.24.0 — Capacity Forecasting & Resource Governance
+- Added migration `0027` and five durable capacity-governance object classes.
+- Added generic resource profiles and bounded utilization/demand observations.
+- Added bounded-linear forecasts with explicit confidence, horizon, predicted utilization, insufficient-data state, and hours-to-capacity.
+- Added runtime observation materialization for active jobs, queued partitions, and connector work backlog.
+- Added per-product/resource budgets and advisory soft-limit governance decisions.
+- Added public-safe aggregate capacity status and SDK/WordPress surfaces.
+- Added optional production-certification capacity readiness gating.
+- Explicitly disabled automatic scaling, infrastructure purchase, deployment mutation, and hard admission control.
+
 ## 2.23.1 — 2026-08-15
 
 - Repaired current release/version metadata across Core runtime, WordPress, public SDKs, deployment user agent, README, roadmap, and release tooling.

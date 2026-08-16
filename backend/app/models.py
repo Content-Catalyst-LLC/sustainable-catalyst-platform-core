@@ -2469,3 +2469,107 @@ class FederationRemoteReference(Base):
     automatic_ownership_transfer: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     local_subject_overwritten: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, index=True)
+
+# v2.24.0 — Capacity Forecasting & Resource Governance
+class CapacityResourceProfile(Base):
+    __tablename__ = "capacity_resource_profiles"
+    __table_args__ = (
+        UniqueConstraint("resource_type", "resource_key", "product_scope", name="uq_capacity_resource_scope"),
+        Index("ix_capacity_profile_scope_state", "product_scope", "enabled", "resource_type"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    resource_type: Mapped[str] = mapped_column(String(80), nullable=False, index=True)
+    resource_key: Mapped[str] = mapped_column(String(255), nullable=False, index=True)
+    product_scope: Mapped[str | None] = mapped_column(String(100), nullable=True, index=True)
+    unit: Mapped[str] = mapped_column(String(80), nullable=False, default="count")
+    capacity_limit: Mapped[float] = mapped_column(Float, nullable=False)
+    warning_utilization: Mapped[float] = mapped_column(Float, nullable=False, default=0.80)
+    critical_utilization: Mapped[float] = mapped_column(Float, nullable=False, default=0.95)
+    forecast_horizon_hours: Mapped[int] = mapped_column(Integer, nullable=False, default=24)
+    enabled: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True, index=True)
+    public_summary: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class CapacityObservation(Base):
+    __tablename__ = "capacity_observations"
+    __table_args__ = (
+        Index("ix_capacity_observation_profile_time", "profile_id", "observed_at"),
+        Index("ix_capacity_observation_source_time", "source", "observed_at"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    profile_id: Mapped[str] = mapped_column(ForeignKey("capacity_resource_profiles.id", ondelete="CASCADE"), nullable=False, index=True)
+    used_value: Mapped[float] = mapped_column(Float, nullable=False)
+    demand_value: Mapped[float | None] = mapped_column(Float, nullable=True)
+    source: Mapped[str] = mapped_column(String(120), nullable=False, default="operator", index=True)
+    observed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, index=True)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class CapacityBudget(Base):
+    __tablename__ = "capacity_budgets"
+    __table_args__ = (
+        UniqueConstraint("budget_key", name="uq_capacity_budget_key"),
+        Index("ix_capacity_budget_scope_resource", "product_scope", "resource_type", "enabled"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    budget_key: Mapped[str] = mapped_column(String(255), nullable=False)
+    name: Mapped[str] = mapped_column(String(300), nullable=False)
+    product_scope: Mapped[str | None] = mapped_column(String(100), nullable=True, index=True)
+    resource_type: Mapped[str] = mapped_column(String(80), nullable=False, index=True)
+    resource_key: Mapped[str | None] = mapped_column(String(255), nullable=True, index=True)
+    unit: Mapped[str] = mapped_column(String(80), nullable=False, default="count")
+    budget_limit: Mapped[float] = mapped_column(Float, nullable=False)
+    warning_fraction: Mapped[float] = mapped_column(Float, nullable=False, default=0.80)
+    enforcement_mode: Mapped[str] = mapped_column(String(40), nullable=False, default="advisory", index=True)
+    enabled: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True, index=True)
+    public_summary: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class CapacityForecastRecord(Base):
+    __tablename__ = "capacity_forecast_records"
+    __table_args__ = (
+        Index("ix_capacity_forecast_profile_time", "profile_id", "generated_at"),
+        Index("ix_capacity_forecast_state_time", "state", "generated_at"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    profile_id: Mapped[str] = mapped_column(ForeignKey("capacity_resource_profiles.id", ondelete="CASCADE"), nullable=False, index=True)
+    method: Mapped[str] = mapped_column(String(60), nullable=False, default="bounded-linear")
+    window_hours: Mapped[int] = mapped_column(Integer, nullable=False)
+    horizon_hours: Mapped[int] = mapped_column(Integer, nullable=False)
+    observed_points: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    current_value: Mapped[float | None] = mapped_column(Float, nullable=True)
+    slope_per_hour: Mapped[float | None] = mapped_column(Float, nullable=True)
+    predicted_value: Mapped[float | None] = mapped_column(Float, nullable=True)
+    predicted_utilization: Mapped[float | None] = mapped_column(Float, nullable=True)
+    confidence: Mapped[float] = mapped_column(Float, nullable=False, default=0.0)
+    state: Mapped[str] = mapped_column(String(40), nullable=False, default="insufficient-data", index=True)
+    hours_to_capacity: Mapped[float | None] = mapped_column(Float, nullable=True)
+    evidence_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    generated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, index=True)
+
+
+class CapacityGovernanceDecision(Base):
+    __tablename__ = "capacity_governance_decisions"
+    __table_args__ = (
+        Index("ix_capacity_decision_profile_time", "profile_id", "created_at"),
+        Index("ix_capacity_decision_action_time", "action", "created_at"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    profile_id: Mapped[str | None] = mapped_column(ForeignKey("capacity_resource_profiles.id", ondelete="SET NULL"), nullable=True, index=True)
+    budget_id: Mapped[str | None] = mapped_column(ForeignKey("capacity_budgets.id", ondelete="SET NULL"), nullable=True, index=True)
+    product_scope: Mapped[str | None] = mapped_column(String(100), nullable=True, index=True)
+    action: Mapped[str] = mapped_column(String(40), nullable=False, default="allow", index=True)
+    reason: Mapped[str] = mapped_column(String(500), nullable=False, default="within-governed-capacity")
+    current_value: Mapped[float | None] = mapped_column(Float, nullable=True)
+    forecast_value: Mapped[float | None] = mapped_column(Float, nullable=True)
+    limit_value: Mapped[float | None] = mapped_column(Float, nullable=True)
+    automatic_actuation: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    evidence_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, index=True)

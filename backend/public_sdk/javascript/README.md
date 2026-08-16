@@ -1,4 +1,4 @@
-# Sustainable Catalyst Public API JavaScript Client v2.23.1
+# Sustainable Catalyst Public API JavaScript Client v2.24.0
 
 ```javascript
 import { PublicApiClient } from "./index.mjs";
@@ -103,3 +103,6 @@ Public-safe aggregate production status is available through the observability s
 
 ## Federated Core v2.23.0
 Use `federation_status()` / `federationStatus()` for aggregate public-safe trusted-node exchange readiness. Node identities, trust details, manifests, signatures, and remote-reference contents are not exposed through this helper.
+
+## v2.24.0
+Adds `capacityStatus()` for aggregate Capacity Forecasting & Resource Governance status.

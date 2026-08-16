@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name: Sustainable Catalyst Platform Core
- * Description: WordPress connector for Sustainable Catalyst Platform Core registry, graph, evidence, developer, gateway, free live-data, international-law, scientific-data, official-statistics, geospatial, time-series, STAC, map-layer, streaming, alerts, source-reliability, and operational-facility, humanitarian-access, essential-services, and country-evidence federation and reconciliation, and Earth/Ocean/Space scientific-service routing, cross-product exchange, distributed scale-control services, and governance/access/audit, production-certification/recovery, and observability/SLO production-operations services, plus incident-response, change-control, rollback-coordination, continuity, backup-verification, disaster-recovery, and multi-region resilience/failover-coordination, and data-lifecycle/archival-integrity/preservation services, plus Federated Core trusted-node exchange services.
- * Version: 2.23.1
+ * Description: WordPress connector for Sustainable Catalyst Platform Core registry, graph, evidence, developer, gateway, free live-data, international-law, scientific-data, official-statistics, geospatial, time-series, STAC, map-layer, streaming, alerts, source-reliability, and operational-facility, humanitarian-access, essential-services, and country-evidence federation and reconciliation, and Earth/Ocean/Space scientific-service routing, cross-product exchange, distributed scale-control services, and governance/access/audit, production-certification/recovery, and observability/SLO production-operations services, plus incident-response, change-control, rollback-coordination, continuity, backup-verification, disaster-recovery, and multi-region resilience/failover-coordination, and data-lifecycle/archival-integrity/preservation services, plus Federated Core trusted-node exchange services and capacity forecasting/resource-governance services.
+ * Version: 2.24.0
  * Author: Content Catalyst LLC
  * License: MIT
  */
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('SCPC_VERSION', '2.23.1');
+define('SCPC_VERSION', '2.24.0');
 define('SCPC_OPTION_BACKEND_URL', 'scpc_backend_url');
 define('SCPC_OPTION_READ_KEY', 'scpc_read_key');
 
@@ -101,6 +101,7 @@ function scpc_render_settings_page() {
         <code>[sc_platform_core_resilience_status]</code><br />
         <code>[sc_platform_core_lifecycle_status]</code><br />
         <code>[sc_platform_core_federation_status]</code><br />
+        <code>[sc_platform_core_capacity_status]</code><br />
         <code>[sc_platform_core_entity id="sc:product:workbench"]</code><br />
         <code>[sc_platform_core_relationships id="sc:product:research-librarian"]</code><br />
         <code>[sc_knowledge_explorer]</code><br />
@@ -1023,3 +1024,16 @@ function scpc_federation_status_shortcode() {
     return '<div class="scpc-status"><strong>Federated Core &amp; Trusted Node Exchange</strong><br />' . $state . ' · ' . $nodes . ' trusted nodes · ' . $refs . ' remote references<br /><span class="scpc-meta">Reference-first, authenticated, pull-based exchange. Automatic truth promotion and ownership transfer are disabled.</span></div>';
 }
 add_shortcode('sc_platform_core_federation_status', 'scpc_federation_status_shortcode');
+
+
+function scpc_capacity_status_shortcode() {
+    $status = scpc_api_get('/v1/capacity/readiness');
+    if (is_wp_error($status)) return '<div class="scpc-status scpc-status--error">Core capacity status unavailable.</div>';
+    $state = esc_html($status['state'] ?? 'unknown');
+    $profiles = intval($status['resource_profiles'] ?? 0);
+    $covered = intval($status['forecast_covered_profiles'] ?? 0);
+    $critical = intval($status['critical_profiles'] ?? 0);
+    $warning = intval($status['warning_profiles'] ?? 0);
+    return '<div class="scpc-status"><strong>Capacity Forecasting &amp; Resource Governance</strong><br />' . $state . ' · ' . $covered . '/' . $profiles . ' forecast-covered · ' . $critical . ' critical · ' . $warning . ' warning<br /><span class="scpc-meta">Forecasts and soft limits are advisory. Automatic scaling, purchasing, deployment mutation, and hard admission control are disabled.</span></div>';
+}
+add_shortcode('sc_platform_core_capacity_status', 'scpc_capacity_status_shortcode');

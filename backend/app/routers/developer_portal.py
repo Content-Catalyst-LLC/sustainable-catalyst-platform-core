@@ -111,6 +111,7 @@ footer{padding:28px 24px;border-top:1px solid var(--line);color:var(--muted)}
 <tr><td>Signature dossiers</td><td><code>GET /api/v1/dossiers</code><br><code>GET /api/v1/dossiers/{dossier_id}</code><br><code>GET /api/v1/dossiers/{dossier_id}/verify</code></td><td><code>dossier:read</code></td></tr><tr><td>Service gateway</td><td><code>GET /api/v1/gateway/health</code><br><code>GET /api/v1/site-intelligence/{path}</code><br><code>GET /api/v1/workbench/{path}</code></td><td><code>gateway:read</code></td></tr>
 <tr><td>Operational facilities</td><td><code>GET /api/v1/facilities</code><br><code>GET /api/v1/facilities/{facility_id}</code></td><td><code>data:read</code></td></tr>
 <tr><td>Humanitarian conditions</td><td><code>GET /api/v1/humanitarian/conditions</code><br><code>GET /api/v1/humanitarian/country/{ISO3}/summary</code></td><td><code>data:read</code></td></tr>
+<tr><td>Capacity governance</td><td><code>GET /api/v1/capacity/status</code></td><td><code>data:read</code></td></tr>
 <tr><td>Developer account</td><td><code>GET /api/v1/developer/me</code><br><code>GET /api/v1/developer/usage</code></td><td><code>developer:read</code></td></tr>
 <tr><td>Webhooks</td><td><code>GET/POST /api/v1/developer/webhooks</code></td><td><code>webhooks:manage</code></td></tr>
 </tbody>
@@ -370,7 +371,7 @@ def postman_collection(request: Request):
 @router.get("/developers/sdk/python.zip")
 def python_sdk(request: Request):
     _require_portal(request)
-    path = SDK_ROOT / "downloads" / "sc-platform-core-public-python-v2.23.1.zip"
+    path = SDK_ROOT / "downloads" / "sc-platform-core-public-python-v2.24.0.zip"
     if not path.exists():
         raise HTTPException(status_code=404, detail="Python SDK is unavailable.")
     return FileResponse(
@@ -386,7 +387,7 @@ def javascript_sdk(request: Request):
     path = (
         SDK_ROOT
         / "downloads"
-        / "sc-platform-core-public-javascript-v2.23.1.zip"
+        / "sc-platform-core-public-javascript-v2.24.0.zip"
     )
     if not path.exists():
         raise HTTPException(status_code=404, detail="JavaScript SDK is unavailable.")

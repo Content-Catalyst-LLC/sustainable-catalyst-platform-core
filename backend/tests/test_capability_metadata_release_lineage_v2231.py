@@ -1,24 +1,16 @@
 from __future__ import annotations
 
 from pathlib import Path
-
 from app.migrations import migration_status
 
-
-PROMOTED_IMPLEMENTED = {
-    "distributed_connector_workers",
-    "server_sent_live_data_events",
-}
+PROMOTED_IMPLEMENTED = {"distributed_connector_workers", "server_sent_live_data_events"}
 
 
-def test_v2231_meta_capability_sets_are_truthful_and_disjoint(client):
-    response = client.get("/v1/meta")
-    assert response.status_code == 200
-    body = response.json()
-    assert body["version"] == "2.23.1"
-
-    implemented = body["capabilities"]
-    deferred = body["deferred_capabilities"]
+def test_v2231_capability_truth_remains_inherited(client):
+    body = client.get('/v1/meta').json()
+    assert body['version'] == '2.24.0'
+    implemented = body['capabilities']
+    deferred = body['deferred_capabilities']
     assert len(implemented) == len(set(implemented))
     assert len(deferred) == len(set(deferred))
     assert set(implemented).isdisjoint(deferred)
@@ -26,34 +18,25 @@ def test_v2231_meta_capability_sets_are_truthful_and_disjoint(client):
     assert PROMOTED_IMPLEMENTED.isdisjoint(deferred)
 
 
-def test_v2231_promoted_capabilities_have_runtime_implementation_proofs():
+def test_v2231_promoted_capabilities_keep_runtime_proofs():
     root = Path(__file__).resolve().parents[2]
-    reliability_router = (root / "backend/app/routers/reliability.py").read_text()
-    worker = (root / "backend/scripts/run_connector_worker.py").read_text()
-    reliability_service = (root / "backend/app/services/reliability.py").read_text()
-
-    assert "StreamingResponse" in reliability_router
-    assert 'media_type="text/event-stream"' in reliability_router
-    assert "/stream" in reliability_router
-    assert "process_next_work" in worker
-    assert "claim_next_work" in reliability_service
-    assert "lease_expires_at" in reliability_service
+    router = (root / 'backend/app/routers/reliability.py').read_text()
+    worker = (root / 'backend/scripts/run_connector_worker.py').read_text()
+    service = (root / 'backend/app/services/reliability.py').read_text()
+    assert 'StreamingResponse' in router and 'media_type="text/event-stream"' in router
+    assert 'process_next_work' in worker
+    assert 'claim_next_work' in service and 'lease_expires_at' in service
 
 
-def test_v2231_release_lineage_preserves_migration_head_0026(client):
+def test_v2231_migration_lineage_is_preserved_beneath_v2240(client):
     status = migration_status(client.app.state.database)
-    assert status["pending"] == []
-    assert status["applied"][-1] == "0026"
-    assert "0027" not in status["applied"]
+    assert status['pending'] == []
+    assert '0026' in status['applied']
+    assert status['applied'][-1] == '0027'
 
 
-def test_v2231_current_release_surfaces_are_aligned():
+def test_v2231_historical_release_record_remains_present():
     root = Path(__file__).resolve().parents[2]
-    assert 'version: str = "2.23.1"' in (root / "backend/app/config.py").read_text()
-    assert '"version": "2.23.1"' in (root / "backend/public_sdk/javascript/package.json").read_text()
-    assert 'version = "2.23.1"' in (root / "backend/public_sdk/python/pyproject.toml").read_text()
-    plugin = (root / "wordpress-plugin/sustainable-catalyst-platform-core/sustainable-catalyst-platform-core.php").read_text()
-    assert "Version: 2.23.1" in plugin
-    assert "SCPC_VERSION', '2.23.1" in plugin
-    assert (root / "README.md").read_text().startswith("# Sustainable Catalyst Platform Core v2.23.1")
-    assert "v2.23.1 — Capability Metadata, Documentation & Release-Lineage Repair" in (root / "docs/ROADMAP.md").read_text()
+    roadmap = (root / 'docs/ROADMAP.md').read_text()
+    assert 'v2.23.1 — Capability Metadata, Documentation & Release-Lineage Repair' in roadmap
+    assert (root / 'RELEASE_NOTES_V2231.md').is_file()

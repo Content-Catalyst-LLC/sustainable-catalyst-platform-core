@@ -74,7 +74,7 @@ services:
       - key: SC_CORE_LIVE_DATA_STRICT_FREE_SOURCES
         value: "true"
       - key: SC_CORE_LIVE_DATA_USER_AGENT
-        value: SustainableCatalystPlatformCore/2.23.1 (+https://sustainablecatalyst.com/contact/)
+        value: SustainableCatalystPlatformCore/2.24.0 (+https://sustainablecatalyst.com/contact/)
       - key: SC_CORE_LIVE_DATA_TIMEOUT_SECONDS
         value: "20"
       - key: SC_CORE_LIVE_DATA_MAX_RESPONSE_BYTES
@@ -233,6 +233,24 @@ services:
       - key: SC_CORE_FEDERATION_MAX_MANIFEST_ITEMS
         value: "500"
       - key: SC_CORE_CERTIFICATION_REQUIRE_FEDERATION_READY
+        value: "false"
+      - key: SC_CORE_CAPACITY_RESOURCE_GOVERNANCE_ENABLED
+        value: "true"
+      - key: SC_CORE_CAPACITY_PUBLIC_STATUS_ENABLED
+        value: "true"
+      - key: SC_CORE_CAPACITY_DEFAULT_WARNING_UTILIZATION_PERCENT
+        value: "80"
+      - key: SC_CORE_CAPACITY_DEFAULT_CRITICAL_UTILIZATION_PERCENT
+        value: "95"
+      - key: SC_CORE_CAPACITY_DEFAULT_FORECAST_HORIZON_HOURS
+        value: "24"
+      - key: SC_CORE_CAPACITY_FORECAST_WINDOW_HOURS
+        value: "168"
+      - key: SC_CORE_CAPACITY_MIN_FORECAST_POINTS
+        value: "3"
+      - key: SC_CORE_CAPACITY_OBSERVATION_RETENTION_HOURS
+        value: "2160"
+      - key: SC_CORE_CERTIFICATION_REQUIRE_CAPACITY_READY
         value: "false"
 
 databases:

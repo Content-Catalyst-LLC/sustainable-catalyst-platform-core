@@ -359,3 +359,10 @@ PublicApiClient.lifecycle_status = _lifecycle_status
 def _federation_status(self):
     return self.request("GET", "/federation/status")
 PublicApiClient.federation_status = _federation_status
+
+
+# v2.24.0 Capacity Forecasting & Resource Governance public status helper
+def _capacity_status(self):
+    return self.request("GET", "/capacity/status")
+
+PublicApiClient.capacity_status = _capacity_status

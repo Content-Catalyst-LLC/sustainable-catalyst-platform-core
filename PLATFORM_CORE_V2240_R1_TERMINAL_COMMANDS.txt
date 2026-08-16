@@ -1,0 +1,4 @@
+cd ~/Downloads
+chmod +x repair_and_resume_platform_core_v2_24_0_r1_macos.sh
+./repair_and_resume_platform_core_v2_24_0_r1_macos.sh \
+  sustainable-catalyst-platform-core-v2.24.0-release-bundle-REPAIRED-R1.zip

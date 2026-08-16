@@ -36,6 +36,7 @@ MIGRATIONS = [
     ("0024", "Multi-region service health, failover groups, replication-aware failover assessments, read-only degraded mode, and operator-coordinated recovery routing."),
     ("0025", "Data lifecycle policies, preservation archives, integrity manifests, policy/legal holds, tombstone lineage, and non-destructive archive restoration records."),
     ("0026", "Federated Core trusted-node registry, trust relationships, authenticated exchange manifests, and reference-first remote evidence intake records."),
+    ("0027", "Capacity resource profiles, observations, bounded forecast records, resource budgets, and non-actuating governance decisions."),
 ]
 
 def _seed_predicates(database: Database) -> int:

@@ -161,4 +161,11 @@ Status: implemented.
 ## v2.23.1 — Capability Metadata, Documentation & Release-Lineage Repair
 Status: implemented. No migration. Repairs runtime/documentation/version truth and promotes the v2.9.0 connector-worker and SSE capabilities out of the deferred set. Adds capability-lineage regression gates while preserving migration head `0026` and all v2.23.0 federation semantics.
 
-Next planned: v2.24.0 — Capacity Forecasting & Resource Governance.
+## v2.24.0 — Capacity Forecasting & Resource Governance
+Status: implemented. Adds resource profiles, utilization/demand observations, bounded linear forecasts with confidence and saturation risk, per-product/resource budgets, advisory soft-limit governance, runtime scale/connector observations, aggregate public-safe status, optional certification gating, and migration `0027`. Automatic scaling, purchasing, deployment mutation, and hard admission control remain disabled.
+
+Next planned: v2.25.0 — Identity, Credential & Cryptographic Key Lifecycle.
+
+
+## v2.24.0 R1 — Secret-Scan Example Credential & Promotion Repair
+Completed: promotion tooling repair only; runtime remains v2.24.0 and migration head remains `0027`.

@@ -15,7 +15,7 @@ def db_and_settings(**kwargs):
 def test_readiness_and_migration_0025():
     fd,p=tempfile.mkstemp(suffix='.db'); os.close(fd)
     try:
-      c=TestClient(create_app(Settings(database_url='sqlite:///'+p,observability_request_metrics_enabled=False))); b=c.get('/v1/lifecycle/readiness').json(); assert b['release']=='2.23.1' and b['migration_0025_applied'] and b['hard_delete_enabled'] is False
+      c=TestClient(create_app(Settings(database_url='sqlite:///'+p,observability_request_metrics_enabled=False))); b=c.get('/v1/lifecycle/readiness').json(); assert b['release']=='2.24.0' and b['migration_0025_applied'] and b['hard_delete_enabled'] is False
     finally: os.unlink(p)
 
 def test_policy_defaults_to_provenance_preserving_no_hard_delete():

@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Capacity Resource Profile v1",
+  "type": "object",
+  "required": ["resource_type", "resource_key", "unit", "capacity_limit"],
+  "properties": {
+    "resource_type": {"type": "string", "minLength": 1},
+    "resource_key": {"type": "string", "minLength": 1},
+    "product_scope": {"type": ["string", "null"]},
+    "unit": {"type": "string", "minLength": 1},
+    "capacity_limit": {"type": "number", "exclusiveMinimum": 0},
+    "warning_utilization": {"type": "number", "exclusiveMinimum": 0, "exclusiveMaximum": 1},
+    "critical_utilization": {"type": "number", "exclusiveMinimum": 0, "maximum": 1},
+    "forecast_horizon_hours": {"type": "integer", "minimum": 1},
+    "enabled": {"type": "boolean"},
+    "public_summary": {"type": "boolean"},
+    "metadata": {"type": "object"}
+  }
+}

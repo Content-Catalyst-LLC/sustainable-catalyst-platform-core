@@ -1,40 +1,50 @@
-Platform Core v2.23.1 validation record
-Date: 2026-08-15
-Release: Capability Metadata, Documentation & Release-Lineage Repair
+Platform Core v2.24.0 validation record
+Date: 2026-08-16
+Release: Capacity Forecasting & Resource Governance
 
-PASS - pytest collection: 293 tests across 33 backend test modules
-PASS - all 293 collected tests passed using bounded module-by-module execution
-PASS - v2.23.1 capability metadata/release-lineage tests: 4/4
-PASS - repaired legacy v2.7.0 SSE metadata assertion now matches implemented capability truth
-PASS - migration application: 0001 through 0026 applied; zero pending; no 0027 migration
-PASS - v2.23.1 release contract validator
-PASS - streaming alerts/source reliability validator
+PASS - pytest collection: 304 tests across 34 backend test modules
+PASS - all 304 collected tests passed using bounded module-by-module execution
+PASS - v2.24.0 capacity forecasting/resource governance tests: 11/11
+PASS - inherited v2.23.1 capability-truth tests: 4/4
+PASS - migration application: 0001 through 0027 applied; zero pending
+PASS - v2.24.0 release contract validator
+PASS - capacity forecasting/resource governance validator
+PASS - Federated Core trusted-node exchange validator
+PASS - data lifecycle/preservation validator
+PASS - governance/access/audit validator
+PASS - production certification/migration assurance validator
+PASS - distributed processing/storage/scale validator
+PASS - observability/SLO validator
+PASS - incident/change-control/rollback validator
+PASS - continuity/backup/disaster-recovery validator
+PASS - multi-region resilience/failover validator
 PASS - operational facility registry validator
 PASS - humanitarian access/essential services validator
 PASS - country evidence federation/reconciliation validator
 PASS - Earth/Ocean/Space scientific service fabric validator
 PASS - cross-product evidence exchange validator
-PASS - distributed processing/storage/scale validator
-PASS - governance/access/audit validator
-PASS - production certification/migration assurance validator
-PASS - observability/SLO validator
-PASS - incident/change-control/rollback validator
-PASS - continuity/backup/disaster-recovery validator
-PASS - multi-region resilience/failover validator
-PASS - data lifecycle/preservation validator
-PASS - Federated Core trusted-node exchange validator
+PASS - streaming alerts/source reliability validator
+PASS - production integration structural validator
 PASS - connector worker smoke: queue-empty
 
-Capability truth repaired:
-- distributed_connector_workers: implemented
-- server_sent_live_data_events: implemented
+v2.24.0 capability contract:
+- resource profiles: implemented
+- utilization/demand observations: implemented
+- bounded-linear capacity forecasts: implemented
+- forecast confidence and insufficient-data states: implemented
+- product/resource budgets: implemented
+- advisory soft-limit governance: implemented
+- runtime scale/connector observations: implemented
+- public-safe aggregate capacity status: implemented
+- optional production-certification capacity gate: implemented
 
 Preserved boundaries:
-- migration head 0026
-- no schema change
-- no federation semantic expansion
-- reference-first federation remains enabled
-- trust secrets remain runtime-only
-- automatic truth promotion remains disabled
-- automatic ownership transfer remains disabled
-- remote governance replication remains disabled
+- migration head 0027
+- automatic scaling disabled
+- automatic infrastructure purchase disabled
+- automatic deployment mutation disabled
+- hard admission control disabled
+- autonomous resource reallocation disabled
+- forecasts are advisory evidence, not guaranteed future truth
+- federation semantics unchanged from v2.23.0
+- v2.23.1 capability-truth repair remains enforced
