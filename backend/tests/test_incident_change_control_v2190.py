@@ -13,7 +13,7 @@ def app_client(td, **kwargs):
 
 def test_readiness_and_migration_0022():
     with TemporaryDirectory() as td:
-        app,c=app_client(td); b=c.get('/v1/operations/readiness').json(); assert b['release']=='2.23.0' and b['migration_0022_applied'] and b['automatic_rollback_enabled'] is False
+        app,c=app_client(td); b=c.get('/v1/operations/readiness').json(); assert b['release']=='2.23.1' and b['migration_0022_applied'] and b['automatic_rollback_enabled'] is False
 
 def test_incident_idempotency_and_non_public_visibility():
     with TemporaryDirectory() as td:
@@ -48,7 +48,7 @@ def test_high_risk_change_requires_approval_before_start():
     with TemporaryDirectory() as td:
         app,c=app_client(td)
         with app.state.database.session_factory() as db:
-            row=operations.create_change(db,app.state.settings,change_key='high-1',risk='high',release='2.23.0'); assert row.approval_required
+            row=operations.create_change(db,app.state.settings,change_key='high-1',risk='high',release='2.23.1'); assert row.approval_required
             try: operations.start_change(db,row,actor='ops')
             except ValueError: pass
             else: raise AssertionError('unapproved high-risk change started')
@@ -64,7 +64,7 @@ def test_rollback_recommendation_is_correlation_only_and_operator_confirmed():
     with TemporaryDirectory() as td:
         app,c=app_client(td)
         with app.state.database.session_factory() as db:
-            inc=operations.create_incident(db,title='outage',severity='sev1'); dep=observability.create_deployment_marker(db,release='2.23.0',environment='production',state='deployed'); rb=operations.assess_rollback(db,incident=inc,deployment_marker_id=dep.id,slo_evaluations=[{'name':'availability','state':'breached'}]); assert rb.recommendation=='recommended' and rb.automatic_execution is False and rb.causal_attribution is False
+            inc=operations.create_incident(db,title='outage',severity='sev1'); dep=observability.create_deployment_marker(db,release='2.23.1',environment='production',state='deployed'); rb=operations.assess_rollback(db,incident=inc,deployment_marker_id=dep.id,slo_evaluations=[{'name':'availability','state':'breached'}]); assert rb.recommendation=='recommended' and rb.automatic_execution is False and rb.causal_attribution is False
             try: operations.decide_rollback(db,rb,state='executed',actor='ops')
             except ValueError: pass
             else: raise AssertionError('rollback executed without acknowledgement')
@@ -74,7 +74,7 @@ def test_no_breach_does_not_auto_recommend_rollback():
     with TemporaryDirectory() as td:
         app,c=app_client(td)
         with app.state.database.session_factory() as db:
-            inc=operations.create_incident(db,title='issue',severity='sev2'); dep=observability.create_deployment_marker(db,release='2.23.0',environment='production',state='deployed'); rb=operations.assess_rollback(db,incident=inc,deployment_marker_id=dep.id,slo_evaluations=[{'state':'met'}]); assert rb.recommendation=='review'
+            inc=operations.create_incident(db,title='issue',severity='sev2'); dep=observability.create_deployment_marker(db,release='2.23.1',environment='production',state='deployed'); rb=operations.assess_rollback(db,incident=inc,deployment_marker_id=dep.id,slo_evaluations=[{'state':'met'}]); assert rb.recommendation=='review'
 
 def test_secret_fields_are_redacted_from_incident_and_change_metadata():
     with TemporaryDirectory() as td:

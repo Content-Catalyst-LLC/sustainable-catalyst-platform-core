@@ -234,13 +234,14 @@ def test_registry_stats_include_live_data_counts(client):
 
 def test_health_advertises_live_data_gateway(client):
     health = client.get("/health").json()
-    assert health["version"] == "2.23.0"
+    assert health["version"] == "2.23.1"
     assert health["live_data_gateway"] is True
     assert health["strict_free_sources"] is True
 
     meta = client.get("/v1/meta").json()
     assert "free_live_data_gateway" in meta["capabilities"]
-    assert "server_sent_live_data_events" in meta["deferred_capabilities"]
+    assert "server_sent_live_data_events" in meta["capabilities"]
+    assert "server_sent_live_data_events" not in meta["deferred_capabilities"]
 
 
 def _create_public_key(client, write_headers, scopes):

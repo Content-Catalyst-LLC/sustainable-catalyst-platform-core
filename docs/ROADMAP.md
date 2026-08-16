@@ -158,4 +158,7 @@ Status: implemented.
 ## v2.23.0 — Federated Core & Trusted Node Exchange
 Status: implemented.
 
+## v2.23.1 — Capability Metadata, Documentation & Release-Lineage Repair
+Status: implemented. No migration. Repairs runtime/documentation/version truth and promotes the v2.9.0 connector-worker and SSE capabilities out of the deferred set. Adds capability-lineage regression gates while preserving migration head `0026` and all v2.23.0 federation semantics.
+
 Next planned: v2.24.0 — Capacity Forecasting & Resource Governance.

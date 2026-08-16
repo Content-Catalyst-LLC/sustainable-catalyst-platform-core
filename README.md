@@ -1,17 +1,28 @@
-# Sustainable Catalyst Platform Core v2.19.0
+# Sustainable Catalyst Platform Core v2.23.1
 
-Core v2.19.0 adds **Incident Response, Change Control & Rollback Coordination** above the v2.18.0 observability/SLO layer. It turns production signals into governed operational records without allowing telemetry correlation to become causal attribution or an automatic deployment mutation.
+Core v2.23.1 is a **Capability Metadata, Documentation & Release-Lineage Repair** on top of v2.23.0 Federated Core & Trusted Node Exchange. It does not add a migration or change evidence, federation, governance, preservation, or storage semantics.
 
-Key v2.19.0 additions:
-- governed operational incident records with internal/private/restricted visibility only;
-- append-only SHA-256-linked incident event history and tamper verification;
-- idempotent incident creation and explicit state-transition rules;
-- risk-aware change controls with approval required for high/critical risk by default;
-- rollback assessment that can reference deployment markers and SLO evaluations;
-- operator acknowledgement required before a rollback can be recorded as executed;
-- hard-disabled automatic rollback and causal attribution from correlation;
-- aggregate-only public operational status;
-- additive migration `0022`.
+Key v2.23.1 repairs:
+- aligns the runtime, WordPress plugin, public SDK packages, Render user agent, README, roadmap, changelog, and release tooling on `2.23.1`;
+- promotes `distributed_connector_workers` and `server_sent_live_data_events` from deferred to implemented metadata because both were delivered and regression-tested in v2.9.0;
+- adds a capability-lineage regression gate requiring implemented and deferred capability sets to remain unique and disjoint;
+- adds static proof checks for the leased connector worker and SSE routes so those capabilities cannot silently regress back into metadata drift;
+- preserves migration head `0026`; no `0027` migration is introduced;
+- preserves v2.23.0 federation boundaries: reference-first exchange, runtime-only trust secrets, no automatic truth promotion, no ownership transfer, and no remote governance replication.
+
+Current release line:
+
+```text
+v2.19.0 Incident Response, Change Control & Rollback Coordination
+v2.20.0 Continuity, Backup & Disaster Recovery
+v2.21.0 Multi-Region Resilience & Failover Coordination
+v2.22.0 Data Lifecycle, Archival Integrity & Preservation
+v2.22.0 R1 Resilience Migration Lineage & Promotion Repair
+v2.23.0 Federated Core & Trusted Node Exchange
+v2.23.1 Capability Metadata, Documentation & Release-Lineage Repair
+```
+
+Next planned: **v2.24.0 — Capacity Forecasting & Resource Governance**.
 
 ---
 

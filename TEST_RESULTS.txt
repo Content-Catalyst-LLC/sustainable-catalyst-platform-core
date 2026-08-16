@@ -1,35 +1,40 @@
-Platform Core v2.23.0 validation record
+Platform Core v2.23.1 validation record
+Date: 2026-08-15
+Release: Capability Metadata, Documentation & Release-Lineage Repair
 
-Backend collection: 289 tests (277 inherited + 12 new federation tests).
-New federation suite: 12/12 passed in isolated deterministic runs.
-Health/readiness: 2/2 passed.
-Production integration: 15/15 passed.
-Production certification: 8/8 passed.
-Unified Public API / SDK: 9/9 passed in isolated deterministic runs.
-Inherited resilience migration rehearsal (0023 -> current head): passed.
-Inherited lifecycle migration rehearsal (0024 -> current head): passed.
-Fresh migration: 0001-0026 passed with zero pending migrations.
-Streaming/reliability validator: passed.
-Operational facilities validator: passed.
-Humanitarian validator: passed.
-Country evidence validator: passed.
-Earth/Ocean/Space scientific service validator: passed.
-Cross-product exchange validator: passed.
-Distributed scale validator: passed.
-Governance validator: passed.
-Production certification validator: passed.
-Observability validator: passed.
-Incident/change validator: passed.
-Continuity/disaster-recovery validator: passed.
-Multi-region resilience validator: passed.
-Data lifecycle/preservation validator: passed.
-Federated Core trusted-node exchange validator: passed.
-Connector worker smoke: queue-empty.
-Python compilation: passed.
-PHP syntax: passed.
-JavaScript syntax: passed.
-Bash syntax: passed.
-JSON/GeoJSON parsing: 78 files passed.
-Push-safe secret scan: 0 findings.
+PASS - pytest collection: 293 tests across 33 backend test modules
+PASS - all 293 collected tests passed using bounded module-by-module execution
+PASS - v2.23.1 capability metadata/release-lineage tests: 4/4
+PASS - repaired legacy v2.7.0 SSE metadata assertion now matches implemented capability truth
+PASS - migration application: 0001 through 0026 applied; zero pending; no 0027 migration
+PASS - v2.23.1 release contract validator
+PASS - streaming alerts/source reliability validator
+PASS - operational facility registry validator
+PASS - humanitarian access/essential services validator
+PASS - country evidence federation/reconciliation validator
+PASS - Earth/Ocean/Space scientific service fabric validator
+PASS - cross-product evidence exchange validator
+PASS - distributed processing/storage/scale validator
+PASS - governance/access/audit validator
+PASS - production certification/migration assurance validator
+PASS - observability/SLO validator
+PASS - incident/change-control/rollback validator
+PASS - continuity/backup/disaster-recovery validator
+PASS - multi-region resilience/failover validator
+PASS - data lifecycle/preservation validator
+PASS - Federated Core trusted-node exchange validator
+PASS - connector worker smoke: queue-empty
 
-Long-lived FastAPI TestClient teardown can stall in this build container when many files execute in a single process. The macOS installer retains the authoritative file-by-file 289-test gate before Git commit/push; this record does not claim an unobserved synthetic 289/289 container run.
+Capability truth repaired:
+- distributed_connector_workers: implemented
+- server_sent_live_data_events: implemented
+
+Preserved boundaries:
+- migration head 0026
+- no schema change
+- no federation semantic expansion
+- reference-first federation remains enabled
+- trust secrets remain runtime-only
+- automatic truth promotion remains disabled
+- automatic ownership transfer remains disabled
+- remote governance replication remains disabled

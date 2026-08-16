@@ -70,7 +70,7 @@ def test_certification_can_require_first_party_gateway_readiness():
 def test_public_readiness_does_not_expose_records():
  fd,p=tempfile.mkstemp(suffix='.db'); os.close(fd)
  try:
-  app=create_app(Settings(database_url='sqlite:///'+p)); c=TestClient(app); r=c.get('/api/v1/certification/readiness'); assert r.status_code in (200,401,403); internal=c.get('/v1/certification/readiness'); assert internal.status_code==200; body=internal.json(); assert body['release']=='2.23.0'; assert body['migration_assurance']['schema_head']=='0026'; assert body['database_backup_embedded'] is False
+  app=create_app(Settings(database_url='sqlite:///'+p)); c=TestClient(app); r=c.get('/api/v1/certification/readiness'); assert r.status_code in (200,401,403); internal=c.get('/v1/certification/readiness'); assert internal.status_code==200; body=internal.json(); assert body['release']=='2.23.1'; assert body['migration_assurance']['schema_head']=='0026'; assert body['database_backup_embedded'] is False
  finally: os.unlink(p)
 
 def test_internal_api_creates_and_verifies_checkpoint():

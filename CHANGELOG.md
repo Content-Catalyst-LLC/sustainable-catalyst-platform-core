@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.23.1 — 2026-08-15
+
+- Repaired current release/version metadata across Core runtime, WordPress, public SDKs, deployment user agent, README, roadmap, and release tooling.
+- Promoted `distributed_connector_workers` and `server_sent_live_data_events` from deferred to implemented metadata, matching v2.9.0 runtime and regression coverage.
+- Added capability-lineage tests and release validation requiring implemented/deferred capability sets to be unique and disjoint.
+- Added static implementation proof checks for connector worker leasing and SSE endpoints.
+- Preserved migration head `0026`; no schema migration or federation semantic change.
+
 ## 2.19.0
 - Incident Response, Change Control & Rollback Coordination.
 - Adds migration 0022, hash-linked incident events, high-risk approval gates, operator-confirmed rollback assessment, and aggregate public operational status.

@@ -1,9 +1,9 @@
 from datetime import datetime, timedelta, timezone
 
 def test_scale_release_and_migration(client):
-    assert client.get('/health').json()['version']=='2.23.0'
+    assert client.get('/health').json()['version']=='2.23.1'
     body=client.get('/v1/scale/readiness').json()
-    assert body['release']=='2.23.0' and body['migration_0018_applied'] is True
+    assert body['release']=='2.23.1' and body['migration_0018_applied'] is True
     assert body['partition_leases'] is True and body['evidence_semantics_unchanged'] is True
 
 def test_partitioned_job_idempotency_and_completion(client,write_headers):
