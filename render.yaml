@@ -74,7 +74,7 @@ services:
       - key: SC_CORE_LIVE_DATA_STRICT_FREE_SOURCES
         value: "true"
       - key: SC_CORE_LIVE_DATA_USER_AGENT
-        value: SustainableCatalystPlatformCore/2.25.0 (+https://sustainablecatalyst.com/contact/)
+        value: SustainableCatalystPlatformCore/2.26.0 (+https://sustainablecatalyst.com/contact/)
       - key: SC_CORE_LIVE_DATA_TIMEOUT_SECONDS
         value: "20"
       - key: SC_CORE_LIVE_DATA_MAX_RESPONSE_BYTES
@@ -265,6 +265,27 @@ services:
       - key: SC_CORE_CREDENTIAL_USE_EVENT_RETENTION_HOURS
         value: "2160"
       - key: SC_CORE_CERTIFICATION_REQUIRE_CREDENTIAL_LIFECYCLE_READY
+        value: "false"
+
+      - key: SC_CORE_WORKLOAD_GOVERNANCE_ENABLED
+        value: "true"
+      - key: SC_CORE_WORKLOAD_GOVERNANCE_PUBLIC_STATUS_ENABLED
+        value: "true"
+      - key: SC_CORE_ADMISSION_HARD_ENFORCEMENT_ENABLED
+        value: "true"
+      - key: SC_CORE_ADMISSION_CAPACITY_AWARENESS_ENABLED
+        value: "true"
+      - key: SC_CORE_ADMISSION_SLO_AWARENESS_ENABLED
+        value: "true"
+      - key: SC_CORE_ADMISSION_DEFAULT_LEASE_SECONDS
+        value: "300"
+      - key: SC_CORE_QUOTA_DEFAULT_WINDOW_SECONDS
+        value: "60"
+      - key: SC_CORE_QUOTA_USAGE_RETENTION_HOURS
+        value: "2160"
+      - key: SC_CORE_ADMISSION_DECISION_RETENTION_HOURS
+        value: "2160"
+      - key: SC_CORE_CERTIFICATION_REQUIRE_WORKLOAD_GOVERNANCE_READY
         value: "false"
 
 databases:

@@ -1,8 +1,20 @@
-# Sustainable Catalyst Platform Core v2.25.0
+# Sustainable Catalyst Platform Core v2.26.0
+Core v2.26.0 adds **Distributed Quotas, Admission Control & Workload Governance** on top of the v2.25.0 credential/key lifecycle line. It provides portable database-shared quota state, workload priority classes, burst budgets, idempotent admission decisions, expiring concurrency leases, SLO/capacity-aware throttling, and auditable hard rejection without introducing an external quota dependency.
 
-Core v2.25.0 adds **Identity, Credential & Cryptographic Key Lifecycle** on top of the v2.24.0 Capacity Forecasting & Resource Governance line. It gives Core a governed, secret-free registry for credential ownership, key identifiers and versions, expiry, overlap-aware rotation, revocation/compromise response, and credential-use audit evidence.
+Key v2.26.0 additions:
+- additive migration `0029`;
+- database-shared distributed quota policies and usage buckets;
+- per-subject and workload-class quota matching with burst budgets;
+- workload priority, queue-weight, concurrency, and request-unit governance;
+- idempotent allow/throttle/reject decisions with retry-after guidance;
+- SLO-aware and capacity-aware admission controls;
+- aggregate public-safe workload governance status and optional certification gate;
+- automatic scaling, infrastructure purchasing, and deployment mutation remain disabled.
 
-Key v2.25.0 additions:
+
+Core v2.26.0 adds **Identity, Credential & Cryptographic Key Lifecycle** on top of the v2.24.0 Capacity Forecasting & Resource Governance line. It gives Core a governed, secret-free registry for credential ownership, key identifiers and versions, expiry, overlap-aware rotation, revocation/compromise response, and credential-use audit evidence.
+
+Key v2.26.0 additions:
 - additive migration `0028` with credential registry, key-version, rotation, lifecycle-event, and credential-use tables;
 - provider-neutral secret references (`env:`, `vault:`, `kms:`, `secret-manager:`, `external:`) instead of stored secret values;
 - service-to-service consumer/operation policy metadata;
@@ -27,7 +39,7 @@ Current release line:
 v2.23.1 Capability Metadata, Documentation & Release-Lineage Repair
 v2.24.0 Capacity Forecasting & Resource Governance
 v2.24.0 R1 Secret-Scan Example Credential & Promotion Repair
-v2.25.0 Identity, Credential & Cryptographic Key Lifecycle
+v2.26.0 Identity, Credential & Cryptographic Key Lifecycle
 ```
 
 Next planned: **v2.26.0 — Distributed Quotas, Admission Control & Workload Governance**.
@@ -70,7 +82,7 @@ v2.24.0 Capacity Forecasting & Resource Governance
 v2.24.0 R1 Secret-Scan Example Credential & Promotion Repair
 ```
 
-Next planned: **v2.25.0 — Identity, Credential & Cryptographic Key Lifecycle**.
+Next planned: **v2.26.0 — Identity, Credential & Cryptographic Key Lifecycle**.
 
 ---
 

@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.25.0 — 2026-08-16
+## 2.26.0 — 2026-08-16
 - Added migration `0028` and five secret-free credential/key lifecycle record families.
 - Added provider-neutral secret references and service-consumer/operation policy metadata.
 - Added key versioning, SHA-256 fingerprints, expiry, retirement, revocation and compromise states.

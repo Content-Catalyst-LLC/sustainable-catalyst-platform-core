@@ -373,3 +373,9 @@ def _credential_lifecycle_status(self):
     return self.request("GET", "/credentials/status")
 
 PublicApiClient.credential_lifecycle_status = _credential_lifecycle_status
+
+
+def _workload_governance_status(self):
+    return self.request("GET", "/workload-governance/status")
+
+PublicApiClient.workload_governance_status = _workload_governance_status

@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Sustainable Catalyst Platform Core
  * Description: WordPress connector for Sustainable Catalyst Platform Core registry, graph, evidence, developer, gateway, free live-data, international-law, scientific-data, official-statistics, geospatial, time-series, STAC, map-layer, streaming, alerts, source-reliability, and operational-facility, humanitarian-access, essential-services, and country-evidence federation and reconciliation, and Earth/Ocean/Space scientific-service routing, cross-product exchange, distributed scale-control services, and governance/access/audit, production-certification/recovery, and observability/SLO production-operations services, plus incident-response, change-control, rollback-coordination, continuity, backup-verification, disaster-recovery, and multi-region resilience/failover-coordination, and data-lifecycle/archival-integrity/preservation services, plus Federated Core trusted-node exchange services and capacity forecasting/resource-governance services, plus identity/credential/cryptographic-key lifecycle governance.
- * Version: 2.25.0
+ * Version: 2.26.0
  * Author: Content Catalyst LLC
  * License: MIT
  */
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('SCPC_VERSION', '2.25.0');
+define('SCPC_VERSION', '2.26.0');
 define('SCPC_OPTION_BACKEND_URL', 'scpc_backend_url');
 define('SCPC_OPTION_READ_KEY', 'scpc_read_key');
 
@@ -103,6 +103,7 @@ function scpc_render_settings_page() {
         <code>[sc_platform_core_federation_status]</code><br />
         <code>[sc_platform_core_capacity_status]</code><br />
         <code>[sc_platform_core_credential_lifecycle_status]</code><br />
+        <code>[sc_platform_core_workload_governance_status]</code><br />
         <code>[sc_platform_core_entity id="sc:product:workbench"]</code><br />
         <code>[sc_platform_core_relationships id="sc:product:research-librarian"]</code><br />
         <code>[sc_knowledge_explorer]</code><br />
@@ -1051,3 +1052,15 @@ function scpc_credential_lifecycle_status_shortcode() {
     return '<div class="scpc-status"><strong>Credential &amp; Cryptographic Key Lifecycle</strong><br />' . $state . ' · ' . $tracked . ' tracked · ' . $expiring . ' expiring soon · ' . $overdue . ' overdue rotations · ' . $compromised . ' compromised<br /><span class="scpc-meta">Core stores lifecycle metadata and secret references only. Secret values and private-key material are not persisted; rotation remains operator-triggered.</span></div>';
 }
 add_shortcode('sc_platform_core_credential_lifecycle_status', 'scpc_credential_lifecycle_status_shortcode');
+
+
+function scpc_workload_governance_status_shortcode() {
+    $status = scpc_api_get('/v1/workload-governance/readiness');
+    if (is_wp_error($status)) return '<div class="scpc-status scpc-status--error">Core workload governance status unavailable.</div>';
+    $configured = !empty($status['configured']) ? 'configured' : 'unconfigured';
+    $classes = intval($status['workload_classes'] ?? 0);
+    $policies = intval($status['quota_policies'] ?? 0);
+    $active = intval($status['active_leases'] ?? 0);
+    return '<div class="scpc-status"><strong>Distributed Quotas &amp; Workload Governance</strong><br />' . esc_html($configured) . ' · ' . $classes . ' workload classes · ' . $policies . ' quota policies · ' . $active . ' active leases<br /><span class="scpc-meta">Database-shared quota state with auditable allow, throttle, and reject decisions. Automatic scaling and infrastructure purchasing remain outside Core.</span></div>';
+}
+add_shortcode('sc_platform_core_workload_governance_status', 'scpc_workload_governance_status_shortcode');

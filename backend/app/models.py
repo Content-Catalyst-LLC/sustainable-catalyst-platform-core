@@ -2681,3 +2681,115 @@ class CredentialUseEvent(Base):
     success: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
     context_json: Mapped[dict] = mapped_column(JSON, default=dict)
     occurred_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, index=True)
+
+
+# v2.26.0 — Distributed Quotas, Admission Control & Workload Governance
+class WorkloadClassRecord(Base):
+    __tablename__ = "workload_class_records"
+    __table_args__ = (
+        UniqueConstraint("class_key", name="uq_workload_class_key"),
+        Index("ix_workload_class_priority_enabled", "priority", "enabled"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    class_key: Mapped[str] = mapped_column(String(120), nullable=False, index=True)
+    name: Mapped[str] = mapped_column(String(255), nullable=False)
+    priority: Mapped[int] = mapped_column(Integer, nullable=False, default=100, index=True)
+    queue_weight: Mapped[float] = mapped_column(Float, nullable=False, default=1.0)
+    max_concurrent_leases: Mapped[int] = mapped_column(Integer, nullable=False, default=64)
+    max_request_units: Mapped[float] = mapped_column(Float, nullable=False, default=1000.0)
+    allow_when_slo_breached: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    allow_when_capacity_critical: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    enabled: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True, index=True)
+    public_summary: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class DistributedQuotaPolicy(Base):
+    __tablename__ = "distributed_quota_policies"
+    __table_args__ = (
+        UniqueConstraint("policy_key", name="uq_distributed_quota_policy_key"),
+        Index("ix_quota_policy_subject_resource", "subject_scope", "subject_key", "resource_type", "enabled"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    policy_key: Mapped[str] = mapped_column(String(255), nullable=False, index=True)
+    name: Mapped[str] = mapped_column(String(300), nullable=False)
+    subject_scope: Mapped[str] = mapped_column(String(80), nullable=False, default="product", index=True)
+    subject_key: Mapped[str] = mapped_column(String(255), nullable=False, default="*", index=True)
+    resource_type: Mapped[str] = mapped_column(String(120), nullable=False, default="requests", index=True)
+    workload_class_key: Mapped[str | None] = mapped_column(String(120), nullable=True, index=True)
+    window_seconds: Mapped[int] = mapped_column(Integer, nullable=False, default=60)
+    limit_units: Mapped[float] = mapped_column(Float, nullable=False, default=1000.0)
+    burst_units: Mapped[float] = mapped_column(Float, nullable=False, default=0.0)
+    enforcement_mode: Mapped[str] = mapped_column(String(40), nullable=False, default="enforce", index=True)
+    enabled: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True, index=True)
+    public_summary: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class DistributedQuotaUsageBucket(Base):
+    __tablename__ = "distributed_quota_usage_buckets"
+    __table_args__ = (
+        UniqueConstraint("policy_id", "bucket_start", name="uq_quota_usage_policy_bucket"),
+        Index("ix_quota_usage_policy_time", "policy_id", "bucket_start"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    policy_id: Mapped[str] = mapped_column(ForeignKey("distributed_quota_policies.id", ondelete="CASCADE"), nullable=False, index=True)
+    bucket_start: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, index=True)
+    used_units: Mapped[float] = mapped_column(Float, nullable=False, default=0.0)
+    admitted_requests: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    rejected_requests: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    throttled_requests: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class WorkloadAdmissionDecision(Base):
+    __tablename__ = "workload_admission_decisions"
+    __table_args__ = (
+        UniqueConstraint("request_key", name="uq_workload_admission_request_key"),
+        Index("ix_admission_decision_subject_time", "subject_scope", "subject_key", "created_at"),
+        Index("ix_admission_decision_state_time", "decision", "created_at"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    request_key: Mapped[str] = mapped_column(String(255), nullable=False, index=True)
+    subject_scope: Mapped[str] = mapped_column(String(80), nullable=False, index=True)
+    subject_key: Mapped[str] = mapped_column(String(255), nullable=False, index=True)
+    resource_type: Mapped[str] = mapped_column(String(120), nullable=False, index=True)
+    workload_class_key: Mapped[str] = mapped_column(String(120), nullable=False, index=True)
+    requested_units: Mapped[float] = mapped_column(Float, nullable=False)
+    decision: Mapped[str] = mapped_column(String(40), nullable=False, index=True)
+    reason: Mapped[str] = mapped_column(String(500), nullable=False)
+    policy_id: Mapped[str | None] = mapped_column(ForeignKey("distributed_quota_policies.id", ondelete="SET NULL"), nullable=True, index=True)
+    quota_limit: Mapped[float | None] = mapped_column(Float, nullable=True)
+    quota_used_before: Mapped[float | None] = mapped_column(Float, nullable=True)
+    quota_remaining_after: Mapped[float | None] = mapped_column(Float, nullable=True)
+    retry_after_seconds: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    capacity_state: Mapped[str] = mapped_column(String(60), nullable=False, default="unknown")
+    slo_state: Mapped[str] = mapped_column(String(60), nullable=False, default="unknown")
+    hard_enforcement: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    evidence_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, index=True)
+
+
+class WorkloadAdmissionLease(Base):
+    __tablename__ = "workload_admission_leases"
+    __table_args__ = (
+        UniqueConstraint("lease_key", name="uq_workload_admission_lease_key"),
+        Index("ix_admission_lease_class_state_expiry", "workload_class_key", "state", "expires_at"),
+        Index("ix_admission_lease_subject_state", "subject_scope", "subject_key", "state"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    lease_key: Mapped[str] = mapped_column(String(255), nullable=False, index=True)
+    decision_id: Mapped[str] = mapped_column(ForeignKey("workload_admission_decisions.id", ondelete="CASCADE"), nullable=False, index=True)
+    subject_scope: Mapped[str] = mapped_column(String(80), nullable=False, index=True)
+    subject_key: Mapped[str] = mapped_column(String(255), nullable=False, index=True)
+    workload_class_key: Mapped[str] = mapped_column(String(120), nullable=False, index=True)
+    units: Mapped[float] = mapped_column(Float, nullable=False, default=1.0)
+    state: Mapped[str] = mapped_column(String(40), nullable=False, default="active", index=True)
+    acquired_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, index=True)
+    released_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)

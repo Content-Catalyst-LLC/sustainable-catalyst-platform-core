@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Sustainable Catalyst Distributed Quota Policy v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "policy_key",
+    "subject_scope",
+    "subject_key",
+    "resource_type",
+    "window_seconds",
+    "limit_units",
+    "burst_units",
+    "enforcement_mode"
+  ],
+  "properties": {
+    "policy_key": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 255
+    },
+    "subject_scope": {
+      "enum": [
+        "product",
+        "tenant",
+        "application",
+        "service",
+        "developer"
+      ]
+    },
+    "subject_key": {
+      "type": "string"
+    },
+    "resource_type": {
+      "type": "string"
+    },
+    "workload_class_key": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "window_seconds": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 86400
+    },
+    "limit_units": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "burst_units": {
+      "type": "number",
+      "minimum": 0
+    },
+    "enforcement_mode": {
+      "enum": [
+        "enforce",
+        "observe"
+      ]
+    },
+    "enabled": {
+      "type": "boolean"
+    }
+  }
+}

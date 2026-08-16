@@ -36,9 +36,9 @@ def create_version(client, headers, credential_id, key_id, **overrides):
 
 
 def test_v2250_release_migration_and_non_actuation(client):
-    assert client.get("/health").json()["version"] == "2.25.0"
+    assert client.get("/health").json()["version"] == "2.26.0"
     body = client.get("/v1/credentials/readiness").json()
-    assert body["release"] == "2.25.0"
+    assert body["release"] == "2.26.0"
     assert body["migration_0028_applied"] is True
     assert body["pending_migrations"] == []
     assert body["secret_values_persisted"] is False

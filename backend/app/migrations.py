@@ -38,6 +38,7 @@ MIGRATIONS = [
     ("0026", "Federated Core trusted-node registry, trust relationships, authenticated exchange manifests, and reference-first remote evidence intake records."),
     ("0027", "Capacity resource profiles, observations, bounded forecast records, resource budgets, and non-actuating governance decisions."),
     ("0028", "Credential registry metadata, cryptographic key versions, overlap-aware rotation records, lifecycle events, and secret-free credential-use audit records."),
+    ("0029", "Database-shared distributed quota policies and usage buckets, workload classes, auditable admission decisions, and expiring concurrency leases."),
 ]
 
 def _seed_predicates(database: Database) -> int:

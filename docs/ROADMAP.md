@@ -167,7 +167,10 @@ Status: implemented. Adds resource profiles, utilization/demand observations, bo
 ## v2.25.0 — Identity, Credential & Cryptographic Key Lifecycle
 Status: implemented. Adds secret-free credential registry metadata, versioned key identifiers/fingerprints, expiry, overlap-aware operator rotation, revocation/compromise handling, service-consumer policy metadata, credential-use audit events, public-safe health, optional certification gating, and migration `0028`. Secret/private-key values remain outside Core persistence and rotation is never autonomous.
 
-Next planned: v2.26.0 — Distributed Quotas, Admission Control & Workload Governance.
+## v2.26.0 — Distributed Quotas, Admission Control & Workload Governance
+Status: implemented. Adds database-shared quota policies and usage buckets, burst budgets, workload priority classes, per-class concurrency leases, idempotent admission decisions, retry guidance, SLO/capacity-aware throttling, hard rejection, public-safe aggregate status, optional certification gating, and migration `0029`. Automatic scaling, infrastructure purchasing, and deployment mutation remain disabled.
+
+Next planned: v2.27.0 — Scientific Object Storage & Processing Adapter Fabric.
 
 
 ## v2.24.0 R1 — Secret-Scan Example Credential & Promotion Repair

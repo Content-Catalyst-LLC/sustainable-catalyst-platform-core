@@ -339,4 +339,9 @@ export class PublicApiClient {
     return this.request(`/credentials/status`);
   }
 
+
+  workloadGovernanceStatus() {
+    return this.request(`/workload-governance/status`);
+  }
+
 }

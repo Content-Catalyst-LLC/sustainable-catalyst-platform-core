@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Sustainable Catalyst Workload Admission Decision v1",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "request_key",
+    "subject_scope",
+    "subject_key",
+    "resource_type",
+    "workload_class_key",
+    "requested_units",
+    "decision",
+    "reason",
+    "hard_enforcement"
+  ],
+  "properties": {
+    "request_key": {
+      "type": "string"
+    },
+    "subject_scope": {
+      "type": "string"
+    },
+    "subject_key": {
+      "type": "string"
+    },
+    "resource_type": {
+      "type": "string"
+    },
+    "workload_class_key": {
+      "type": "string"
+    },
+    "requested_units": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "decision": {
+      "enum": [
+        "allow",
+        "throttle",
+        "reject"
+      ]
+    },
+    "reason": {
+      "type": "string"
+    },
+    "retry_after_seconds": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1
+    },
+    "hard_enforcement": {
+      "type": "boolean"
+    },
+    "capacity_state": {
+      "type": "string"
+    },
+    "slo_state": {
+      "type": "string"
+    }
+  }
+}

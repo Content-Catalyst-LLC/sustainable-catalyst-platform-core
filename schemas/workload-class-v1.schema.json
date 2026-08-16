@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Sustainable Catalyst Workload Class v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "class_key",
+    "name",
+    "priority",
+    "queue_weight",
+    "max_concurrent_leases",
+    "max_request_units"
+  ],
+  "properties": {
+    "class_key": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 120
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 255
+    },
+    "priority": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 1000
+    },
+    "queue_weight": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "max_concurrent_leases": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "max_request_units": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "allow_when_slo_breached": {
+      "type": "boolean"
+    },
+    "allow_when_capacity_critical": {
+      "type": "boolean"
+    },
+    "enabled": {
+      "type": "boolean"
+    }
+  }
+}

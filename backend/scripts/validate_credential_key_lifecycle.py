@@ -14,7 +14,7 @@ def main() -> None:
     database = Database(settings.database_url)
     run_migrations(database)
     status = migration_status(database)
-    assert settings.version == "2.25.0", settings.version
+    assert settings.version == "2.26.0", settings.version
     assert "0028" in status["applied"] and not status["pending"], status
 
     with database.session_factory() as db:
@@ -61,7 +61,7 @@ def main() -> None:
         "secret_values_persisted": False,
         "automatic_key_rotation": False,
     })
-    print("PASS - Core 2.25.0 identity credential and cryptographic key lifecycle validation")
+    print("PASS - Core 2.26.0 identity credential and cryptographic key lifecycle validation")
 
 
 if __name__ == "__main__":

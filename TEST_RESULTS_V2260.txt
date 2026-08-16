@@ -1,0 +1,53 @@
+Platform Core v2.26.0 — Validation Record
+Date: 2026-08-16
+
+Backend regression inventory:
+- 336 tests collected across 37 test modules.
+- 336/336 accounted for and passing.
+- streaming_alerts_reliability_v290 was intentionally executed in two bounded groups: 10/10 and 9/9.
+- all other modules returned explicit completed pass results.
+
+New v2.26.0 suite:
+- distributed_quota_admission_workload_governance_v2260: 14/14 PASS.
+
+Highest-risk inherited suites:
+- identity_credential_key_lifecycle_v2250: 13/13 PASS
+- capacity_forecasting_resource_governance_v2240: 11/11 PASS
+- federated_core_trusted_node_exchange_v2230: 12/12 PASS
+- production_certification_v2170: 8/8 PASS
+- capability_metadata_release_lineage_v2231: 4/4 PASS
+- secret_scan_promotion_repair_v2240_r1: 5/5 PASS
+
+Migration:
+- expected/applied: 0001 through 0029
+- pending: none
+
+Operational validators:
+PASS - streaming/reliability
+PASS - operational facilities
+PASS - humanitarian access
+PASS - country evidence reconciliation
+PASS - Earth/ocean/space scientific service fabric
+PASS - cross-product exchange
+PASS - distributed processing/scale
+PASS - governance/audit
+PASS - production certification
+PASS - observability/SLO
+PASS - incident/change/rollback
+PASS - continuity/disaster recovery
+PASS - multi-region resilience
+PASS - lifecycle/preservation
+PASS - federated trusted-node exchange
+PASS - capacity forecasting/resource governance
+PASS - credential/key lifecycle
+PASS - distributed quota/admission/workload governance
+PASS - connector worker smoke (queue-empty)
+
+v2.26.0 workload-governance boundary:
+- distributed quota backend: database-shared
+- hard admission control: enabled
+- SLO aware: enabled
+- capacity aware: enabled
+- automatic scaling: disabled
+- automatic infrastructure purchasing: disabled
+- automatic deployment mutation: disabled

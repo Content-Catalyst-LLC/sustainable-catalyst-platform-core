@@ -20,7 +20,7 @@ def _int(name: str, default: int) -> int:
 @dataclass(frozen=True)
 class Settings:
     app_name: str = "Sustainable Catalyst Platform Core"
-    version: str = "2.25.0"
+    version: str = "2.26.0"
     environment: str = "development"
     database_url: str = "sqlite:///./platform_core.db"
     write_api_key: str = ""
@@ -53,7 +53,7 @@ class Settings:
     live_data_enabled: bool = True
     live_data_ingest_enabled: bool = True
     live_data_strict_free_sources: bool = True
-    live_data_user_agent: str = "SustainableCatalystPlatformCore/2.25.0 (+https://sustainablecatalyst.com/contact/)"
+    live_data_user_agent: str = "SustainableCatalystPlatformCore/2.26.0 (+https://sustainablecatalyst.com/contact/)"
     live_data_timeout_seconds: int = 20
     live_data_max_response_bytes: int = 12582912
     live_data_raw_payload_max_bytes: int = 1048576
@@ -160,6 +160,16 @@ class Settings:
     credential_expiry_warning_days: int = 14
     credential_use_event_retention_hours: int = 2160
     certification_require_credential_lifecycle_ready: bool = False
+    workload_governance_enabled: bool = True
+    workload_governance_public_status_enabled: bool = True
+    admission_hard_enforcement_enabled: bool = True
+    admission_capacity_awareness_enabled: bool = True
+    admission_slo_awareness_enabled: bool = True
+    admission_default_lease_seconds: int = 300
+    quota_default_window_seconds: int = 60
+    quota_usage_retention_hours: int = 2160
+    admission_decision_retention_hours: int = 2160
+    certification_require_workload_governance_ready: bool = False
 
     @classmethod
     def from_env(cls) -> "Settings":
@@ -237,7 +247,7 @@ class Settings:
             live_data_strict_free_sources=_bool("SC_CORE_LIVE_DATA_STRICT_FREE_SOURCES", True),
             live_data_user_agent=os.getenv(
                 "SC_CORE_LIVE_DATA_USER_AGENT",
-                "SustainableCatalystPlatformCore/2.25.0 (+https://sustainablecatalyst.com/contact/)",
+                "SustainableCatalystPlatformCore/2.26.0 (+https://sustainablecatalyst.com/contact/)",
             ).strip(),
             live_data_timeout_seconds=max(
                 1, min(_int("SC_CORE_LIVE_DATA_TIMEOUT_SECONDS", 20), 120)
@@ -356,4 +366,14 @@ class Settings:
             credential_expiry_warning_days=max(1, min(_int("SC_CORE_CREDENTIAL_EXPIRY_WARNING_DAYS", 14), 3650)),
             credential_use_event_retention_hours=max(24, min(_int("SC_CORE_CREDENTIAL_USE_EVENT_RETENTION_HOURS", 2160), 87600)),
             certification_require_credential_lifecycle_ready=_bool("SC_CORE_CERTIFICATION_REQUIRE_CREDENTIAL_LIFECYCLE_READY", False),
+            workload_governance_enabled=_bool("SC_CORE_WORKLOAD_GOVERNANCE_ENABLED", True),
+            workload_governance_public_status_enabled=_bool("SC_CORE_WORKLOAD_GOVERNANCE_PUBLIC_STATUS_ENABLED", True),
+            admission_hard_enforcement_enabled=_bool("SC_CORE_ADMISSION_HARD_ENFORCEMENT_ENABLED", True),
+            admission_capacity_awareness_enabled=_bool("SC_CORE_ADMISSION_CAPACITY_AWARENESS_ENABLED", True),
+            admission_slo_awareness_enabled=_bool("SC_CORE_ADMISSION_SLO_AWARENESS_ENABLED", True),
+            admission_default_lease_seconds=max(1, min(_int("SC_CORE_ADMISSION_DEFAULT_LEASE_SECONDS", 300), 86400)),
+            quota_default_window_seconds=max(1, min(_int("SC_CORE_QUOTA_DEFAULT_WINDOW_SECONDS", 60), 86400)),
+            quota_usage_retention_hours=max(24, min(_int("SC_CORE_QUOTA_USAGE_RETENTION_HOURS", 2160), 87600)),
+            admission_decision_retention_hours=max(24, min(_int("SC_CORE_ADMISSION_DECISION_RETENTION_HOURS", 2160), 87600)),
+            certification_require_workload_governance_ready=_bool("SC_CORE_CERTIFICATION_REQUIRE_WORKLOAD_GOVERNANCE_READY", False),
         )
