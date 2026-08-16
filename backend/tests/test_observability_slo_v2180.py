@@ -15,10 +15,10 @@ def app_client(tmp, **kw):
 def test_health_and_readiness_expose_observability():
     with TemporaryDirectory() as td:
         app,c=app_client(td)
-        assert c.get('/health').json()['version']=='2.22.0'
+        assert c.get('/health').json()['version']=='2.23.0'
         assert c.get('/health').json()['observability_slo_production_operations'] is True
         r=c.get('/v1/observability/readiness'); assert r.status_code==200
-        b=r.json(); assert b['release']=='2.22.0' and b['migration_0021_applied'] is True and b['external_monitoring_provider_required'] is False
+        b=r.json(); assert b['release']=='2.23.0' and b['migration_0021_applied'] is True and b['external_monitoring_provider_required'] is False
 
 def test_request_metrics_are_recorded_without_query_strings():
     with TemporaryDirectory() as td:
@@ -63,15 +63,15 @@ def test_deployment_markers_preserve_release_history():
     with TemporaryDirectory() as td:
         app,c=app_client(td, observability_request_metrics_enabled=False)
         with app.state.database.session_factory() as db:
-            observability.create_deployment_marker(db,release='2.22.0',environment='test',state='started',commit_sha='abc')
-            observability.create_deployment_marker(db,release='2.22.0',environment='test',state='deployed',commit_sha='def')
+            observability.create_deployment_marker(db,release='2.23.0',environment='test',state='started',commit_sha='abc')
+            observability.create_deployment_marker(db,release='2.23.0',environment='test',state='deployed',commit_sha='def')
             rows=observability.list_deployments(db); assert len(rows)==2 and rows[0].state=='deployed' and rows[1].state=='started'
 
 def test_invalid_deployment_state_is_rejected():
     with TemporaryDirectory() as td:
         app,c=app_client(td, observability_request_metrics_enabled=False)
         with app.state.database.session_factory() as db:
-            try: observability.create_deployment_marker(db,release='2.22.0',environment='test',state='magic')
+            try: observability.create_deployment_marker(db,release='2.23.0',environment='test',state='magic')
             except ValueError: pass
             else: raise AssertionError('invalid state accepted')
 

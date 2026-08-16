@@ -1,29 +1,35 @@
-Platform Core v2.22.0 R1 — Resilience Migration Lineage & Promotion Repair
+Platform Core v2.23.0 validation record
 
-Runtime/schema boundary: unchanged from v2.22.0; migration head remains 0025.
-Backend collection remains 277 tests.
-Original macOS v2.22.0 promotion evidence:
-- v2.22.0 release contract: PASS
-- clean extraction manifest: 491 files PASS
-- v2.22.0 lifecycle/preservation suite: 12/12 PASS before promotion stopped
-- inherited v2.21 multi-region suite: 11/12 PASS; only stale migration rehearsal failed
-R1 repaired exact v2.21 migration rehearsal: PASS in isolated deterministic run.
-R1 forward-compatible v2.22 migration rehearsal: PASS in isolated deterministic run.
-R1 promotion-repair contract: PASS.
-Fresh migration chain 0001-0025: PASS; pending migrations: 0.
-Streaming/reliability validator: PASS.
-Operational facilities validator: PASS.
-Humanitarian validator: PASS.
-Country evidence validator: PASS.
-Earth/Ocean/Space validator: PASS.
-Cross-product exchange validator: PASS.
-Distributed scale validator: PASS.
-Governance validator: PASS.
-Production certification validator: PASS.
-Observability validator: PASS.
-Incident/change validator: PASS.
-Continuity/DR validator: PASS.
-Multi-region resilience validator: PASS.
-Data lifecycle/preservation validator: PASS.
-Connector worker --once: queue-empty.
-Full file-by-file 277-test gate remains enforced by the macOS installer before Git commit/push.
+Backend collection: 289 tests (277 inherited + 12 new federation tests).
+New federation suite: 12/12 passed in isolated deterministic runs.
+Health/readiness: 2/2 passed.
+Production integration: 15/15 passed.
+Production certification: 8/8 passed.
+Unified Public API / SDK: 9/9 passed in isolated deterministic runs.
+Inherited resilience migration rehearsal (0023 -> current head): passed.
+Inherited lifecycle migration rehearsal (0024 -> current head): passed.
+Fresh migration: 0001-0026 passed with zero pending migrations.
+Streaming/reliability validator: passed.
+Operational facilities validator: passed.
+Humanitarian validator: passed.
+Country evidence validator: passed.
+Earth/Ocean/Space scientific service validator: passed.
+Cross-product exchange validator: passed.
+Distributed scale validator: passed.
+Governance validator: passed.
+Production certification validator: passed.
+Observability validator: passed.
+Incident/change validator: passed.
+Continuity/disaster-recovery validator: passed.
+Multi-region resilience validator: passed.
+Data lifecycle/preservation validator: passed.
+Federated Core trusted-node exchange validator: passed.
+Connector worker smoke: queue-empty.
+Python compilation: passed.
+PHP syntax: passed.
+JavaScript syntax: passed.
+Bash syntax: passed.
+JSON/GeoJSON parsing: 78 files passed.
+Push-safe secret scan: 0 findings.
+
+Long-lived FastAPI TestClient teardown can stall in this build container when many files execute in a single process. The macOS installer retains the authoritative file-by-file 289-test gate before Git commit/push; this record does not claim an unobserved synthetic 289/289 container run.

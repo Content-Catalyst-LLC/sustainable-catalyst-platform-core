@@ -327,4 +327,8 @@ export class PublicApiClient {
     return this.request(`/lifecycle/status`);
   }
 
+  federationStatus() {
+    return this.request(`/federation/status`);
+  }
+
 }

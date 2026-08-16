@@ -89,6 +89,7 @@ def health(request: Request):
         "continuity_backup_verification_disaster_recovery": request.app.state.settings.continuity_disaster_recovery_enabled,
         "multi_region_resilience_failover_coordination": request.app.state.settings.multi_region_resilience_enabled,
         "data_lifecycle_archival_integrity_preservation": request.app.state.settings.data_lifecycle_preservation_enabled,
+        "federated_core_trusted_node_exchange": request.app.state.settings.federation_trusted_node_exchange_enabled,
     }
 
 
@@ -166,6 +167,7 @@ async def ready(request: Request, db: Session = Depends(get_session)):
         "continuity_backup_verification_disaster_recovery": "ready" if settings.continuity_disaster_recovery_enabled else "disabled",
         "multi_region_resilience_failover_coordination": "ready" if settings.multi_region_resilience_enabled else "disabled",
         "data_lifecycle_archival_integrity_preservation": "ready" if settings.data_lifecycle_preservation_enabled else "disabled",
+        "federated_core_trusted_node_exchange": "ready" if settings.federation_trusted_node_exchange_enabled else "disabled",
         "external_provider_health_release_blocking": False,
         "services": [
             {
@@ -256,6 +258,7 @@ def meta(request: Request):
             "continuity_backup_verification_disaster_recovery",
             "multi_region_resilience_failover_coordination",
             "data_lifecycle_archival_integrity_preservation",
+            "federated_core_trusted_node_exchange",
             "preservation_manifest_integrity",
             "policy_and_legal_holds",
             "non_destructive_tombstone_lineage",

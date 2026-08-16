@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Federation Node v1",
+  "type": "object",
+  "required": ["node_key", "name"],
+  "properties": {
+    "node_key": {"type": "string", "minLength": 1},
+    "name": {"type": "string", "minLength": 1},
+    "environment": {"type": "string"},
+    "base_url": {"type": ["string", "null"]},
+    "trust_state": {"enum": ["pending", "trusted", "suspended", "revoked"]},
+    "signing_key_id": {"type": ["string", "null"]},
+    "signing_key_fingerprint": {"type": ["string", "null"]},
+    "capabilities": {"type": "array"}
+  }
+}

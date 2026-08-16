@@ -155,4 +155,7 @@ Completed: provider-neutral region/service health, replication-aware failover gr
 ## v2.22.0 — Data Lifecycle, Archival Integrity & Preservation
 Status: implemented.
 
-Next planned: v2.23.0 — Federated Core & Trusted Node Exchange.
+## v2.23.0 — Federated Core & Trusted Node Exchange
+Status: implemented.
+
+Next planned: v2.24.0 — Capacity Forecasting & Resource Governance.

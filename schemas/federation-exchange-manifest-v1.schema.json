@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Federation Exchange Manifest v1",
+  "type": "object",
+  "required": ["schema", "origin_node", "target_node", "reference_first", "automatic_truth_promotion", "automatic_ownership_transfer", "items"],
+  "properties": {
+    "schema": {"const": "sc-core-federation-manifest-v1"},
+    "origin_node": {"type": "string"},
+    "target_node": {"type": "string"},
+    "exchange_mode": {"const": "pull"},
+    "reference_first": {"const": true},
+    "automatic_truth_promotion": {"const": false},
+    "automatic_ownership_transfer": {"const": false},
+    "automatic_delivery": {"const": false},
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["subject_type", "subject_id", "canonical_uri", "content_sha256", "visibility"],
+        "properties": {
+          "subject_type": {"type": "string"},
+          "subject_id": {"type": "string"},
+          "canonical_uri": {"type": "string"},
+          "content_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "visibility": {"enum": ["public", "internal", "private", "restricted"]},
+          "provenance": {"type": "object"}
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

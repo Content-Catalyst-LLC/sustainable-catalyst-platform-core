@@ -20,7 +20,7 @@ def _int(name: str, default: int) -> int:
 @dataclass(frozen=True)
 class Settings:
     app_name: str = "Sustainable Catalyst Platform Core"
-    version: str = "2.22.0"
+    version: str = "2.23.0"
     environment: str = "development"
     database_url: str = "sqlite:///./platform_core.db"
     write_api_key: str = ""
@@ -53,7 +53,7 @@ class Settings:
     live_data_enabled: bool = True
     live_data_ingest_enabled: bool = True
     live_data_strict_free_sources: bool = True
-    live_data_user_agent: str = "SustainableCatalystPlatformCore/2.22.0 (+https://sustainablecatalyst.com/contact/)"
+    live_data_user_agent: str = "SustainableCatalystPlatformCore/2.23.0 (+https://sustainablecatalyst.com/contact/)"
     live_data_timeout_seconds: int = 20
     live_data_max_response_bytes: int = 12582912
     live_data_raw_payload_max_bytes: int = 1048576
@@ -136,6 +136,14 @@ class Settings:
     data_lifecycle_default_archive_after_days: int = 90
     data_lifecycle_hard_delete_enabled: bool = False
     certification_require_preservation_ready: bool = False
+    federation_trusted_node_exchange_enabled: bool = True
+    federation_public_status_enabled: bool = True
+    federation_local_node_id: str = "core-local"
+    federation_manifest_signature_required: bool = True
+    federation_trust_secrets_json: str = "{}"
+    federation_max_manifest_items: int = 500
+    federation_snapshots_enabled: bool = False
+    certification_require_federation_ready: bool = False
 
     @classmethod
     def from_env(cls) -> "Settings":
@@ -213,7 +221,7 @@ class Settings:
             live_data_strict_free_sources=_bool("SC_CORE_LIVE_DATA_STRICT_FREE_SOURCES", True),
             live_data_user_agent=os.getenv(
                 "SC_CORE_LIVE_DATA_USER_AGENT",
-                "SustainableCatalystPlatformCore/2.22.0 (+https://sustainablecatalyst.com/contact/)",
+                "SustainableCatalystPlatformCore/2.23.0 (+https://sustainablecatalyst.com/contact/)",
             ).strip(),
             live_data_timeout_seconds=max(
                 1, min(_int("SC_CORE_LIVE_DATA_TIMEOUT_SECONDS", 20), 120)
@@ -308,4 +316,12 @@ class Settings:
             data_lifecycle_default_archive_after_days=max(0, min(_int("SC_CORE_DATA_LIFECYCLE_DEFAULT_ARCHIVE_AFTER_DAYS", 90), 365000)),
             data_lifecycle_hard_delete_enabled=False,
             certification_require_preservation_ready=_bool("SC_CORE_CERTIFICATION_REQUIRE_PRESERVATION_READY", False),
+            federation_trusted_node_exchange_enabled=_bool("SC_CORE_FEDERATION_TRUSTED_NODE_EXCHANGE_ENABLED", True),
+            federation_public_status_enabled=_bool("SC_CORE_FEDERATION_PUBLIC_STATUS_ENABLED", True),
+            federation_local_node_id=os.getenv("SC_CORE_FEDERATION_LOCAL_NODE_ID", "core-local").strip() or "core-local",
+            federation_manifest_signature_required=_bool("SC_CORE_FEDERATION_MANIFEST_SIGNATURE_REQUIRED", True),
+            federation_trust_secrets_json=os.getenv("SC_CORE_FEDERATION_TRUST_SECRETS_JSON", "{}").strip() or "{}",
+            federation_max_manifest_items=max(1, min(_int("SC_CORE_FEDERATION_MAX_MANIFEST_ITEMS", 500), 5000)),
+            federation_snapshots_enabled=False,
+            certification_require_federation_ready=_bool("SC_CORE_CERTIFICATION_REQUIRE_FEDERATION_READY", False),
         )

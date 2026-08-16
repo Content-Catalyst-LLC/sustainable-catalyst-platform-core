@@ -18,7 +18,7 @@ def seed(db,s,source_health='unavailable',target_replication='current',target_la
 def test_readiness_and_migration_0024():
     fd,p=tempfile.mkstemp(suffix='.db'); os.close(fd)
     try:
-        app=create_app(Settings(database_url='sqlite:///'+p,observability_request_metrics_enabled=False)); c=TestClient(app); b=c.get('/v1/resilience/readiness').json(); assert b['release']=='2.22.0' and b['migration_0024_applied'] and b['automatic_failover_enabled'] is False and b['infrastructure_actuation_by_core'] is False
+        app=create_app(Settings(database_url='sqlite:///'+p,observability_request_metrics_enabled=False)); c=TestClient(app); b=c.get('/v1/resilience/readiness').json(); assert b['release']=='2.23.0' and b['migration_0024_applied'] and b['automatic_failover_enabled'] is False and b['infrastructure_actuation_by_core'] is False
     finally: os.unlink(p)
 
 def test_region_status_upsert_and_secret_scrub():

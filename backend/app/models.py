@@ -2378,3 +2378,94 @@ class LifecycleActionRecord(Base):
     provenance_preserved: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
     evidence_json: Mapped[dict] = mapped_column(JSON, default=dict)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, index=True)
+
+# v2.23.0 — Federated Core & Trusted Node Exchange
+class FederationNodeRecord(Base):
+    __tablename__ = "federation_node_records"
+    __table_args__ = (
+        UniqueConstraint("node_key", name="uq_federation_node_key"),
+        Index("ix_federation_node_trust_state", "trust_state", "state"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    node_key: Mapped[str] = mapped_column(String(255), nullable=False)
+    name: Mapped[str] = mapped_column(String(300), nullable=False)
+    environment: Mapped[str] = mapped_column(String(40), nullable=False, default="production", index=True)
+    base_url: Mapped[str | None] = mapped_column(String(2000), nullable=True)
+    state: Mapped[str] = mapped_column(String(40), nullable=False, default="active", index=True)
+    trust_state: Mapped[str] = mapped_column(String(40), nullable=False, default="pending", index=True)
+    exchange_mode: Mapped[str] = mapped_column(String(30), nullable=False, default="pull")
+    signing_key_id: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    signing_key_fingerprint: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    capabilities_json: Mapped[list] = mapped_column(JSON, default=list)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    last_seen_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+class FederationTrustRelationship(Base):
+    __tablename__ = "federation_trust_relationships"
+    __table_args__ = (
+        UniqueConstraint("relationship_key", name="uq_federation_trust_relationship_key"),
+        UniqueConstraint("remote_node_id", name="uq_federation_trust_remote_node"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    relationship_key: Mapped[str] = mapped_column(String(255), nullable=False)
+    remote_node_id: Mapped[str] = mapped_column(ForeignKey("federation_node_records.id", ondelete="CASCADE"), nullable=False, index=True)
+    state: Mapped[str] = mapped_column(String(40), nullable=False, default="active", index=True)
+    trust_level: Mapped[str] = mapped_column(String(40), nullable=False, default="trusted", index=True)
+    allowed_subject_types_json: Mapped[list] = mapped_column(JSON, default=list)
+    allow_snapshots: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    allow_private_records: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    signature_required: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    automatic_truth_promotion: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    automatic_ownership_transfer: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+class FederationExchangeManifest(Base):
+    __tablename__ = "federation_exchange_manifests"
+    __table_args__ = (
+        UniqueConstraint("manifest_key", name="uq_federation_manifest_key"),
+        Index("ix_federation_manifest_direction_state", "direction", "state", "created_at"),
+        Index("ix_federation_manifest_nodes", "origin_node_key", "target_node_key", "created_at"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    manifest_key: Mapped[str] = mapped_column(String(255), nullable=False)
+    direction: Mapped[str] = mapped_column(String(20), nullable=False, default="outbound", index=True)
+    origin_node_key: Mapped[str] = mapped_column(String(255), nullable=False, index=True)
+    target_node_key: Mapped[str] = mapped_column(String(255), nullable=False, index=True)
+    state: Mapped[str] = mapped_column(String(40), nullable=False, default="created", index=True)
+    item_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    manifest_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    manifest_sha256: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
+    signature_algorithm: Mapped[str] = mapped_column(String(40), nullable=False, default="hmac-sha256")
+    signature_key_id: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    signature_value: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    verification_state: Mapped[str] = mapped_column(String(40), nullable=False, default="unverified", index=True)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, index=True)
+    verified_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    accepted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+class FederationRemoteReference(Base):
+    __tablename__ = "federation_remote_references"
+    __table_args__ = (
+        UniqueConstraint("origin_node_key", "subject_type", "subject_id", "content_sha256", name="uq_federation_remote_reference"),
+        Index("ix_federation_reference_subject", "subject_type", "subject_id", "created_at"),
+        Index("ix_federation_reference_origin", "origin_node_key", "state", "created_at"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    manifest_id: Mapped[str] = mapped_column(ForeignKey("federation_exchange_manifests.id", ondelete="CASCADE"), nullable=False, index=True)
+    origin_node_key: Mapped[str] = mapped_column(String(255), nullable=False, index=True)
+    subject_type: Mapped[str] = mapped_column(String(120), nullable=False, index=True)
+    subject_id: Mapped[str] = mapped_column(String(255), nullable=False, index=True)
+    canonical_uri: Mapped[str] = mapped_column(String(2000), nullable=False)
+    content_sha256: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal", index=True)
+    state: Mapped[str] = mapped_column(String(40), nullable=False, default="reference-only", index=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    automatic_truth_promotion: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    automatic_ownership_transfer: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    local_subject_overwritten: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, index=True)

@@ -353,3 +353,9 @@ PublicApiClient.resilience_status = _resilience_status
 def _lifecycle_status(self):
     return self.request("GET", "/lifecycle/status")
 PublicApiClient.lifecycle_status = _lifecycle_status
+
+
+# v2.23.0 Federated Core public status helper
+def _federation_status(self):
+    return self.request("GET", "/federation/status")
+PublicApiClient.federation_status = _federation_status
