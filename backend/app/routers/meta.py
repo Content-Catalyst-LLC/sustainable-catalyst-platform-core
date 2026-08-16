@@ -91,6 +91,7 @@ def health(request: Request):
         "data_lifecycle_archival_integrity_preservation": request.app.state.settings.data_lifecycle_preservation_enabled,
         "federated_core_trusted_node_exchange": request.app.state.settings.federation_trusted_node_exchange_enabled,
         "capacity_forecasting_resource_governance": request.app.state.settings.capacity_resource_governance_enabled,
+        "identity_credential_key_lifecycle": request.app.state.settings.credential_key_lifecycle_enabled,
     }
 
 
@@ -170,6 +171,7 @@ async def ready(request: Request, db: Session = Depends(get_session)):
         "data_lifecycle_archival_integrity_preservation": "ready" if settings.data_lifecycle_preservation_enabled else "disabled",
         "federated_core_trusted_node_exchange": "ready" if settings.federation_trusted_node_exchange_enabled else "disabled",
         "capacity_forecasting_resource_governance": "ready" if settings.capacity_resource_governance_enabled else "disabled",
+        "identity_credential_key_lifecycle": "ready" if settings.credential_key_lifecycle_enabled else "disabled",
         "external_provider_health_release_blocking": False,
         "services": [
             {
@@ -272,6 +274,16 @@ def meta(request: Request):
             "advisory_soft_limit_governance",
             "public_safe_capacity_status",
             "capacity_certification_gate",
+            "identity_credential_key_lifecycle",
+            "secret_free_credential_registry",
+            "cryptographic_key_version_metadata",
+            "credential_expiry_and_revocation",
+            "overlap_aware_key_rotation",
+            "service_credential_policy_metadata",
+            "federation_webhook_dossier_key_lifecycle",
+            "credential_use_audit_events",
+            "public_safe_credential_health",
+            "credential_lifecycle_certification_gate",
             "preservation_manifest_integrity",
             "policy_and_legal_holds",
             "non_destructive_tombstone_lineage",

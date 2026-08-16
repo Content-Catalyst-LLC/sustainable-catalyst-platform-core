@@ -12,7 +12,7 @@ def main():
     database = Database(settings.database_url)
     run_migrations(database)
     status = migration_status(database)
-    assert settings.version == "2.24.0"
+    assert settings.version == "2.25.0"
     assert "0027" in status["applied"] and not status["pending"]
     with database.session_factory() as db:
         profile = capacity.upsert_profile(
@@ -44,7 +44,7 @@ def main():
             "decision": decision.action,
             "automatic_actuation": False,
         })
-    print("PASS - Core 2.24.0 capacity forecasting and resource governance validation")
+    print("PASS - Core 2.25.0 capacity forecasting and resource governance validation")
 
 
 if __name__ == "__main__":

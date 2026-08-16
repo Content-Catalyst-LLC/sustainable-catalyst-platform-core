@@ -8,7 +8,7 @@ PROMOTED_IMPLEMENTED = {"distributed_connector_workers", "server_sent_live_data_
 
 def test_v2231_capability_truth_remains_inherited(client):
     body = client.get('/v1/meta').json()
-    assert body['version'] == '2.24.0'
+    assert body['version'] == '2.25.0'
     implemented = body['capabilities']
     deferred = body['deferred_capabilities']
     assert len(implemented) == len(set(implemented))
@@ -32,7 +32,7 @@ def test_v2231_migration_lineage_is_preserved_beneath_v2240(client):
     status = migration_status(client.app.state.database)
     assert status['pending'] == []
     assert '0026' in status['applied']
-    assert status['applied'][-1] == '0027'
+    assert status['applied'][-1] == '0028'
 
 
 def test_v2231_historical_release_record_remains_present():

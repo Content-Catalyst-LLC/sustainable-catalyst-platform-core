@@ -335,4 +335,8 @@ export class PublicApiClient {
     return this.request(`/capacity/status`);
   }
 
+  credentialLifecycleStatus() {
+    return this.request(`/credentials/status`);
+  }
+
 }

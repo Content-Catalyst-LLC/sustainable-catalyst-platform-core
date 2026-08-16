@@ -20,7 +20,7 @@ def _int(name: str, default: int) -> int:
 @dataclass(frozen=True)
 class Settings:
     app_name: str = "Sustainable Catalyst Platform Core"
-    version: str = "2.24.0"
+    version: str = "2.25.0"
     environment: str = "development"
     database_url: str = "sqlite:///./platform_core.db"
     write_api_key: str = ""
@@ -53,7 +53,7 @@ class Settings:
     live_data_enabled: bool = True
     live_data_ingest_enabled: bool = True
     live_data_strict_free_sources: bool = True
-    live_data_user_agent: str = "SustainableCatalystPlatformCore/2.24.0 (+https://sustainablecatalyst.com/contact/)"
+    live_data_user_agent: str = "SustainableCatalystPlatformCore/2.25.0 (+https://sustainablecatalyst.com/contact/)"
     live_data_timeout_seconds: int = 20
     live_data_max_response_bytes: int = 12582912
     live_data_raw_payload_max_bytes: int = 1048576
@@ -153,6 +153,13 @@ class Settings:
     capacity_min_forecast_points: int = 3
     capacity_observation_retention_hours: int = 2160
     certification_require_capacity_ready: bool = False
+    credential_key_lifecycle_enabled: bool = True
+    credential_public_status_enabled: bool = True
+    credential_default_rotation_days: int = 90
+    credential_default_overlap_minutes: int = 60
+    credential_expiry_warning_days: int = 14
+    credential_use_event_retention_hours: int = 2160
+    certification_require_credential_lifecycle_ready: bool = False
 
     @classmethod
     def from_env(cls) -> "Settings":
@@ -230,7 +237,7 @@ class Settings:
             live_data_strict_free_sources=_bool("SC_CORE_LIVE_DATA_STRICT_FREE_SOURCES", True),
             live_data_user_agent=os.getenv(
                 "SC_CORE_LIVE_DATA_USER_AGENT",
-                "SustainableCatalystPlatformCore/2.24.0 (+https://sustainablecatalyst.com/contact/)",
+                "SustainableCatalystPlatformCore/2.25.0 (+https://sustainablecatalyst.com/contact/)",
             ).strip(),
             live_data_timeout_seconds=max(
                 1, min(_int("SC_CORE_LIVE_DATA_TIMEOUT_SECONDS", 20), 120)
@@ -342,4 +349,11 @@ class Settings:
             capacity_min_forecast_points=max(2, min(_int("SC_CORE_CAPACITY_MIN_FORECAST_POINTS", 3), 1000)),
             capacity_observation_retention_hours=max(24, min(_int("SC_CORE_CAPACITY_OBSERVATION_RETENTION_HOURS", 2160), 87600)),
             certification_require_capacity_ready=_bool("SC_CORE_CERTIFICATION_REQUIRE_CAPACITY_READY", False),
+            credential_key_lifecycle_enabled=_bool("SC_CORE_CREDENTIAL_KEY_LIFECYCLE_ENABLED", True),
+            credential_public_status_enabled=_bool("SC_CORE_CREDENTIAL_PUBLIC_STATUS_ENABLED", True),
+            credential_default_rotation_days=max(1, min(_int("SC_CORE_CREDENTIAL_DEFAULT_ROTATION_DAYS", 90), 3650)),
+            credential_default_overlap_minutes=max(0, min(_int("SC_CORE_CREDENTIAL_DEFAULT_OVERLAP_MINUTES", 60), 10080)),
+            credential_expiry_warning_days=max(1, min(_int("SC_CORE_CREDENTIAL_EXPIRY_WARNING_DAYS", 14), 3650)),
+            credential_use_event_retention_hours=max(24, min(_int("SC_CORE_CREDENTIAL_USE_EVENT_RETENTION_HOURS", 2160), 87600)),
+            certification_require_credential_lifecycle_ready=_bool("SC_CORE_CERTIFICATION_REQUIRE_CREDENTIAL_LIFECYCLE_READY", False),
         )

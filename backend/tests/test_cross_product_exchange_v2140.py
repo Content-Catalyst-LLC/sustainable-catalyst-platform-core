@@ -27,9 +27,9 @@ def make_package(client, headers, facility_id, **overrides):
 
 
 def test_release_readiness_and_migration(client):
-    assert client.get('/health').json()['version'] == '2.24.0'
+    assert client.get('/health').json()['version'] == '2.25.0'
     ready = client.get('/v1/exchange/readiness').json()
-    assert ready['release'] == '2.24.0'
+    assert ready['release'] == '2.25.0'
     assert ready['migration_0017_applied'] is True
     assert ready['reference_first'] is True
     assert ready['non_destructive'] is True

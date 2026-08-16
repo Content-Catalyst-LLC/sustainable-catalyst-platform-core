@@ -23,9 +23,9 @@ def create_profile(client, headers, **overrides):
 
 
 def test_v2240_release_and_migration_0027(client):
-    assert client.get("/health").json()["version"] == "2.24.0"
+    assert client.get("/health").json()["version"] == "2.25.0"
     body = client.get("/v1/capacity/readiness").json()
-    assert body["release"] == "2.24.0"
+    assert body["release"] == "2.25.0"
     assert body["migration_0027_applied"] is True
     assert body["pending_migrations"] == []
     assert body["automatic_scaling"] is False

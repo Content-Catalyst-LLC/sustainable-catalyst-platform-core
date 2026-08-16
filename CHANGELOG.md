@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.25.0 — 2026-08-16
+- Added migration `0028` and five secret-free credential/key lifecycle record families.
+- Added provider-neutral secret references and service-consumer/operation policy metadata.
+- Added key versioning, SHA-256 fingerprints, expiry, retirement, revocation and compromise states.
+- Added operator-triggered overlap-aware rotation and explicit completion lineage.
+- Added Core credential bootstrap metadata for write API, webhook signing, dossier signing and federation trust bindings.
+- Added credential-use audit events with credential-like context stripping before persistence.
+- Added public-safe aggregate credential health, SDK/WordPress status surfaces, and optional production-certification gating.
+- Explicitly disabled secret/private-key persistence, automatic secret generation/distribution, and automatic key rotation.
+
 ## 2.24.0 R1 — Secret-Scan Example Credential & Promotion Repair
 - Repaired the push-safe secret scan false positive on the documented federation placeholder `replace-with-long-random-secret`.
 - Replaced brittle inline grep filtering with a deterministic value-aware repository scanner.

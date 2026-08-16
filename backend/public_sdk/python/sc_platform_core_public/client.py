@@ -366,3 +366,10 @@ def _capacity_status(self):
     return self.request("GET", "/capacity/status")
 
 PublicApiClient.capacity_status = _capacity_status
+
+
+# v2.25.0 Identity, Credential & Cryptographic Key Lifecycle public status helper
+def _credential_lifecycle_status(self):
+    return self.request("GET", "/credentials/status")
+
+PublicApiClient.credential_lifecycle_status = _credential_lifecycle_status

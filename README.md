@@ -1,3 +1,39 @@
+# Sustainable Catalyst Platform Core v2.25.0
+
+Core v2.25.0 adds **Identity, Credential & Cryptographic Key Lifecycle** on top of the v2.24.0 Capacity Forecasting & Resource Governance line. It gives Core a governed, secret-free registry for credential ownership, key identifiers and versions, expiry, overlap-aware rotation, revocation/compromise response, and credential-use audit evidence.
+
+Key v2.25.0 additions:
+- additive migration `0028` with credential registry, key-version, rotation, lifecycle-event, and credential-use tables;
+- provider-neutral secret references (`env:`, `vault:`, `kms:`, `secret-manager:`, `external:`) instead of stored secret values;
+- service-to-service consumer/operation policy metadata;
+- versioned key identifiers, SHA-256 fingerprints, activation, expiry, retirement, revocation, and compromise state;
+- bounded overlap windows for operator-triggered rotation;
+- Core bootstrap metadata for write API, webhook signing, dossier signing, and federation trust secret bindings;
+- credential-use audit events with credential-like context fields stripped before persistence;
+- public-safe aggregate credential health with no references, key IDs, fingerprints, or secret material;
+- optional production-certification credential-lifecycle gate.
+
+Explicit boundaries:
+- no secret or private-key value persistence;
+- no automatic secret generation;
+- no automatic secret distribution;
+- no automatic key rotation or activation;
+- no external public-key signature verification yet (reserved for the later verifiable-trust release);
+- no claim of qualified or regulated electronic signatures.
+
+Current release line:
+
+```text
+v2.23.1 Capability Metadata, Documentation & Release-Lineage Repair
+v2.24.0 Capacity Forecasting & Resource Governance
+v2.24.0 R1 Secret-Scan Example Credential & Promotion Repair
+v2.25.0 Identity, Credential & Cryptographic Key Lifecycle
+```
+
+Next planned: **v2.26.0 — Distributed Quotas, Admission Control & Workload Governance**.
+
+---
+
 # Sustainable Catalyst Platform Core v2.24.0
 
 Core v2.24.0 adds **Capacity Forecasting & Resource Governance** on top of the v2.23.1 capability-truth baseline and v2.23.0 Federated Core. It gives the shared infrastructure plane a provider-neutral way to inventory bounded resources, record demand/utilization observations, forecast saturation risk, define product/resource budgets, and emit non-actuating governance decisions.

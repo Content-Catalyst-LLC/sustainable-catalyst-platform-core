@@ -1,0 +1,51 @@
+Platform Core v2.25.0 — Validation Record
+Date: 2026-08-16
+
+Release contract:
+PASS - v2.25.0 identity credential and cryptographic key lifecycle release contract
+PASS - push-safe secret scan; documented placeholders allowed, live-looking credentials rejected
+PASS - migration chain 0001-0028; pending migrations: none
+PASS - immutable manifest verification
+PASS - Python compile / PHP syntax / JavaScript syntax / shell syntax
+
+Test collection:
+322 tests collected across 36 test modules.
+
+v2.25.0-specific regression suite:
+PASS - 13/13 credential/key lifecycle tests accounted for and passing.
+
+High-risk inherited regression boundaries explicitly re-run:
+PASS - capability metadata/release lineage: 4/4
+PASS - capacity forecasting/resource governance: 11/11
+PASS - Federated Core trusted-node exchange: 12/12
+PASS - production certification: 8/8
+PASS - v2.24.0 R1 secret-scan promotion repair: 5/5
+PASS - governance/access/audit: 12/12
+PASS - health + unified public API: 11/11
+PASS - streaming/alerts/reliability: 19/19 accounted for in bounded groups
+Total explicitly re-run/accounted test assertions: 95
+
+Operational validators on fresh SQLite schema 0028:
+PASS - governance control plane
+PASS - production certification / migration assurance
+PASS - continuity / disaster recovery
+PASS - multi-region resilience
+PASS - data lifecycle / preservation
+PASS - Federated Core exchange
+PASS - capacity forecasting / resource governance
+PASS - identity / credential / cryptographic-key lifecycle
+PASS - streaming / source reliability
+PASS - connector worker smoke (queue-empty)
+
+Environment note:
+The container uses Python 3.13.5. A monolithic pytest invocation stalls during TestClient teardown after completed test modules in this environment, so validation was performed in file/bounded-group isolation. The macOS promotion tooling prefers Python 3.12 when installed and still runs every backend test module before push.
+
+Security invariants:
+secret_values_persisted=false
+automatic_secret_generation=false
+automatic_secret_distribution=false
+automatic_key_rotation=false
+public_secret_references_exposed=false
+public_key_ids_exposed=false
+public_fingerprints_exposed=false
+external_public_key_signature_verification=deferred

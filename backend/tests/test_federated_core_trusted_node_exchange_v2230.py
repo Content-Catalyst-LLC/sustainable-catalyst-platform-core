@@ -21,7 +21,7 @@ def item(**kw):
 def test_readiness_and_migration_0026():
     fd,p=tempfile.mkstemp(suffix='.db'); os.close(fd)
     try:
-        c=TestClient(create_app(settings_for(p))); b=c.get('/v1/federation/readiness').json(); assert b['release']=='2.24.0' and b['migration_0026_applied'] and b['reference_first'] and b['trust_secrets_persisted'] is False and b['automatic_truth_promotion'] is False
+        c=TestClient(create_app(settings_for(p))); b=c.get('/v1/federation/readiness').json(); assert b['release']=='2.25.0' and b['migration_0026_applied'] and b['reference_first'] and b['trust_secrets_persisted'] is False and b['automatic_truth_promotion'] is False
     finally: os.unlink(p)
 
 def test_node_registration_scrubs_secret_like_metadata():

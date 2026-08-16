@@ -1,4 +1,4 @@
-# Sustainable Catalyst Public API JavaScript Client v2.24.0
+# Sustainable Catalyst Public API JavaScript Client v2.25.0
 
 ```javascript
 import { PublicApiClient } from "./index.mjs";
@@ -106,3 +106,7 @@ Use `federation_status()` / `federationStatus()` for aggregate public-safe trust
 
 ## v2.24.0
 Adds `capacityStatus()` for aggregate Capacity Forecasting & Resource Governance status.
+
+## v2.25.0
+
+Adds `credentialLifecycleStatus()` for public-safe aggregate credential/key lifecycle health. Secret references, key identifiers, fingerprints, and secret/private-key material are not returned by the public status contract.

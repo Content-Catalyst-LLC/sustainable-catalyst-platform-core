@@ -74,7 +74,7 @@ services:
       - key: SC_CORE_LIVE_DATA_STRICT_FREE_SOURCES
         value: "true"
       - key: SC_CORE_LIVE_DATA_USER_AGENT
-        value: SustainableCatalystPlatformCore/2.24.0 (+https://sustainablecatalyst.com/contact/)
+        value: SustainableCatalystPlatformCore/2.25.0 (+https://sustainablecatalyst.com/contact/)
       - key: SC_CORE_LIVE_DATA_TIMEOUT_SECONDS
         value: "20"
       - key: SC_CORE_LIVE_DATA_MAX_RESPONSE_BYTES
@@ -251,6 +251,20 @@ services:
       - key: SC_CORE_CAPACITY_OBSERVATION_RETENTION_HOURS
         value: "2160"
       - key: SC_CORE_CERTIFICATION_REQUIRE_CAPACITY_READY
+        value: "false"
+      - key: SC_CORE_CREDENTIAL_KEY_LIFECYCLE_ENABLED
+        value: "true"
+      - key: SC_CORE_CREDENTIAL_PUBLIC_STATUS_ENABLED
+        value: "true"
+      - key: SC_CORE_CREDENTIAL_DEFAULT_ROTATION_DAYS
+        value: "90"
+      - key: SC_CORE_CREDENTIAL_DEFAULT_OVERLAP_MINUTES
+        value: "60"
+      - key: SC_CORE_CREDENTIAL_EXPIRY_WARNING_DAYS
+        value: "14"
+      - key: SC_CORE_CREDENTIAL_USE_EVENT_RETENTION_HOURS
+        value: "2160"
+      - key: SC_CORE_CERTIFICATION_REQUIRE_CREDENTIAL_LIFECYCLE_READY
         value: "false"
 
 databases:

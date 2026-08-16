@@ -17,7 +17,7 @@ def make_backup(root):
 
 def test_migration_and_readiness_surface():
     with tempfile.TemporaryDirectory() as td:
-        p=os.path.join(td,'core.db'); app=create_app(settings_for('sqlite:///'+p,td)); c=TestClient(app); b=c.get('/v1/continuity/readiness').json(); assert b['release']=='2.24.0' and b['migration_0023_applied'] is True and b['database_backup_embedded'] is False and b['automatic_database_restore_enabled'] is False
+        p=os.path.join(td,'core.db'); app=create_app(settings_for('sqlite:///'+p,td)); c=TestClient(app); b=c.get('/v1/continuity/readiness').json(); assert b['release']=='2.25.0' and b['migration_0023_applied'] is True and b['database_backup_embedded'] is False and b['automatic_database_restore_enabled'] is False
 
 def test_backup_registration_idempotent_and_secret_scrubbed():
     with tempfile.TemporaryDirectory() as td:

@@ -164,7 +164,10 @@ Status: implemented. No migration. Repairs runtime/documentation/version truth a
 ## v2.24.0 — Capacity Forecasting & Resource Governance
 Status: implemented. Adds resource profiles, utilization/demand observations, bounded linear forecasts with confidence and saturation risk, per-product/resource budgets, advisory soft-limit governance, runtime scale/connector observations, aggregate public-safe status, optional certification gating, and migration `0027`. Automatic scaling, purchasing, deployment mutation, and hard admission control remain disabled.
 
-Next planned: v2.25.0 — Identity, Credential & Cryptographic Key Lifecycle.
+## v2.25.0 — Identity, Credential & Cryptographic Key Lifecycle
+Status: implemented. Adds secret-free credential registry metadata, versioned key identifiers/fingerprints, expiry, overlap-aware operator rotation, revocation/compromise handling, service-consumer policy metadata, credential-use audit events, public-safe health, optional certification gating, and migration `0028`. Secret/private-key values remain outside Core persistence and rotation is never autonomous.
+
+Next planned: v2.26.0 — Distributed Quotas, Admission Control & Workload Governance.
 
 
 ## v2.24.0 R1 — Secret-Scan Example Credential & Promotion Repair

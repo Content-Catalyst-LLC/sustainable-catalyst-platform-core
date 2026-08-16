@@ -160,7 +160,7 @@ def test_public_integration_readiness_is_safe_and_distinguishes_states(tmp_path,
         response = client.get("/integration/readiness")
         assert response.status_code == 200
         body = response.json()
-        assert body["core_version"] == "2.24.0"
+        assert body["core_version"] == "2.25.0"
         service = next(x for x in body["services"] if x["service_id"] == "site-intelligence")
         assert service["status"] == "unconfigured"
         assert "base_url" not in service

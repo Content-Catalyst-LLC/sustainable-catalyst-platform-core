@@ -2573,3 +2573,111 @@ class CapacityGovernanceDecision(Base):
     automatic_actuation: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     evidence_json: Mapped[dict] = mapped_column(JSON, default=dict)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, index=True)
+
+# v2.25.0 — Identity, Credential & Cryptographic Key Lifecycle
+class CredentialRegistryRecord(Base):
+    __tablename__ = "credential_registry_records"
+    __table_args__ = (
+        UniqueConstraint("credential_key", name="uq_credential_registry_key"),
+        Index("ix_credential_registry_owner_status", "owner_scope", "status", "enabled"),
+        Index("ix_credential_registry_type_status", "credential_type", "status", "enabled"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    credential_key: Mapped[str] = mapped_column(String(255), nullable=False, index=True)
+    name: Mapped[str] = mapped_column(String(300), nullable=False)
+    credential_type: Mapped[str] = mapped_column(String(80), nullable=False, index=True)
+    purpose: Mapped[str] = mapped_column(String(300), nullable=False)
+    owner_scope: Mapped[str] = mapped_column(String(120), nullable=False, default="platform-core", index=True)
+    provider: Mapped[str] = mapped_column(String(120), nullable=False, default="environment")
+    secret_reference: Mapped[str] = mapped_column(String(1000), nullable=False)
+    allowed_consumers_json: Mapped[list] = mapped_column(JSON, default=list)
+    allowed_operations_json: Mapped[list] = mapped_column(JSON, default=list)
+    rotation_interval_days: Mapped[int] = mapped_column(Integer, nullable=False, default=90)
+    overlap_minutes: Mapped[int] = mapped_column(Integer, nullable=False, default=60)
+    status: Mapped[str] = mapped_column(String(40), nullable=False, default="active", index=True)
+    enabled: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True, index=True)
+    public_summary: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class CredentialKeyVersion(Base):
+    __tablename__ = "credential_key_versions"
+    __table_args__ = (
+        UniqueConstraint("credential_id", "version", name="uq_credential_key_version"),
+        UniqueConstraint("key_id", name="uq_credential_key_id"),
+        Index("ix_credential_key_version_state", "credential_id", "state", "issued_at"),
+        Index("ix_credential_key_expiry", "state", "expires_at"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    credential_id: Mapped[str] = mapped_column(ForeignKey("credential_registry_records.id", ondelete="CASCADE"), nullable=False, index=True)
+    version: Mapped[int] = mapped_column(Integer, nullable=False)
+    key_id: Mapped[str] = mapped_column(String(255), nullable=False, index=True)
+    algorithm: Mapped[str] = mapped_column(String(80), nullable=False, default="opaque")
+    fingerprint_sha256: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    state: Mapped[str] = mapped_column(String(40), nullable=False, default="staged", index=True)
+    issued_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, index=True)
+    activates_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    expires_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True, index=True)
+    retire_after: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    revoked_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    revocation_reason: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    compromise_reported_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    secret_value_persisted: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class CredentialRotationRecord(Base):
+    __tablename__ = "credential_rotation_records"
+    __table_args__ = (
+        Index("ix_credential_rotation_state", "credential_id", "state", "requested_at"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    credential_id: Mapped[str] = mapped_column(ForeignKey("credential_registry_records.id", ondelete="CASCADE"), nullable=False, index=True)
+    from_key_version_id: Mapped[str | None] = mapped_column(ForeignKey("credential_key_versions.id", ondelete="SET NULL"), nullable=True)
+    to_key_version_id: Mapped[str] = mapped_column(ForeignKey("credential_key_versions.id", ondelete="RESTRICT"), nullable=False)
+    state: Mapped[str] = mapped_column(String(40), nullable=False, default="planned", index=True)
+    reason: Mapped[str] = mapped_column(String(500), nullable=False, default="scheduled-rotation")
+    requested_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    requested_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, index=True)
+    overlap_starts_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    overlap_ends_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    automatic_secret_generation: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    automatic_secret_distribution: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    automatic_activation: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+
+
+class CredentialLifecycleEvent(Base):
+    __tablename__ = "credential_lifecycle_events"
+    __table_args__ = (
+        Index("ix_credential_lifecycle_event", "credential_id", "event_type", "created_at"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    credential_id: Mapped[str] = mapped_column(ForeignKey("credential_registry_records.id", ondelete="CASCADE"), nullable=False, index=True)
+    key_version_id: Mapped[str | None] = mapped_column(ForeignKey("credential_key_versions.id", ondelete="SET NULL"), nullable=True, index=True)
+    event_type: Mapped[str] = mapped_column(String(80), nullable=False, index=True)
+    actor: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    detail: Mapped[str] = mapped_column(String(1000), nullable=False, default="")
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, index=True)
+
+
+class CredentialUseEvent(Base):
+    __tablename__ = "credential_use_events"
+    __table_args__ = (
+        Index("ix_credential_use_event", "credential_id", "occurred_at"),
+        Index("ix_credential_use_service", "service_id", "occurred_at"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    credential_id: Mapped[str] = mapped_column(ForeignKey("credential_registry_records.id", ondelete="CASCADE"), nullable=False, index=True)
+    key_version_id: Mapped[str | None] = mapped_column(ForeignKey("credential_key_versions.id", ondelete="SET NULL"), nullable=True, index=True)
+    service_id: Mapped[str] = mapped_column(String(255), nullable=False, index=True)
+    operation: Mapped[str] = mapped_column(String(120), nullable=False)
+    success: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    context_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    occurred_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, index=True)
