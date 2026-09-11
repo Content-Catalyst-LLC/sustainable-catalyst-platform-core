@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ScientificProcessingAdapter",
+  "type": "object",
+  "required": [
+    "adapter_key",
+    "name",
+    "execution_mode",
+    "runtime",
+    "supported_input_formats",
+    "supported_output_formats",
+    "operations",
+    "enabled",
+    "executable"
+  ],
+  "properties": {
+    "adapter_key": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "execution_mode": {
+      "type": "string"
+    },
+    "runtime": {
+      "type": "string"
+    },
+    "supported_input_formats": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "supported_output_formats": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "operations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "enabled": {
+      "type": "boolean"
+    },
+    "executable": {
+      "type": "boolean"
+    },
+    "metadata": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": true
+}

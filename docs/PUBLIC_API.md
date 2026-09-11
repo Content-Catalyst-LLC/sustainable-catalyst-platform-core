@@ -165,3 +165,16 @@ GET /api/v1/stac/search
 ```
 
 STAC and GeoJSON routes return their standard raw documents rather than the Sustainable Catalyst envelope.
+
+## Scientific object metadata v2.27.0
+
+Credentials with `data:read` may access public-safe scientific-object metadata:
+
+```text
+GET /api/v1/scientific-objects/readiness
+GET /api/v1/scientific-objects
+GET /api/v1/scientific-objects/adapters
+GET /api/v1/scientific-objects/{object_id}
+```
+
+These routes expose metadata only for public objects and public adapter summaries. Raw stored bytes, processing execution, provider credentials, internal processing runs, and signed/token-bearing provider URLs are not exposed through the public API. Public metadata exposure can be disabled with `SC_CORE_SCIENTIFIC_OBJECT_PUBLIC_METADATA_ENABLED=false`.

@@ -2793,3 +2793,108 @@ class WorkloadAdmissionLease(Base):
     expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, index=True)
     released_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+
+
+# v2.27.0 — Scientific Object Storage & Processing Adapter Fabric
+class ScientificStorageBackend(Base):
+    __tablename__ = "scientific_storage_backends"
+    __table_args__ = (
+        UniqueConstraint("backend_key", name="uq_scientific_storage_backend_key"),
+        Index("ix_scientific_storage_backend_type_enabled", "backend_type", "enabled"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    backend_key: Mapped[str] = mapped_column(String(120), nullable=False, index=True)
+    name: Mapped[str] = mapped_column(String(255), nullable=False)
+    backend_type: Mapped[str] = mapped_column(String(80), nullable=False, index=True)
+    uri_scheme: Mapped[str] = mapped_column(String(40), nullable=False)
+    readable: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    writable: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    enabled: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True, index=True)
+    public_summary: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    capabilities_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class ScientificStoredObject(Base):
+    __tablename__ = "scientific_stored_objects"
+    __table_args__ = (
+        Index("ix_scientific_object_asset", "scientific_asset_id"),
+        Index("ix_scientific_object_backend_state", "backend_key", "lifecycle_state"),
+        Index("ix_scientific_object_hash", "content_hash"),
+        Index("ix_scientific_object_public_created", "public", "created_at"),
+        Index("ix_scientific_object_parent", "parent_object_id"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    scientific_asset_id: Mapped[str | None] = mapped_column(ForeignKey("scientific_data_assets.id", ondelete="SET NULL"), nullable=True, index=True)
+    parent_object_id: Mapped[str | None] = mapped_column(ForeignKey("scientific_stored_objects.id", ondelete="SET NULL"), nullable=True, index=True)
+    backend_key: Mapped[str] = mapped_column(String(120), nullable=False, index=True)
+    object_key: Mapped[str] = mapped_column(String(700), nullable=False, index=True)
+    canonical_uri: Mapped[str] = mapped_column(String(3000), nullable=False)
+    title: Mapped[str] = mapped_column(String(1000), nullable=False)
+    format: Mapped[str] = mapped_column(String(100), nullable=False, index=True)
+    media_type: Mapped[str | None] = mapped_column(String(300), nullable=True)
+    size_bytes: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    content_hash: Mapped[str | None] = mapped_column(String(128), nullable=True, index=True)
+    checksum_algorithm: Mapped[str | None] = mapped_column(String(40), nullable=True)
+    integrity_status: Mapped[str] = mapped_column(String(60), nullable=False, default="unverified", index=True)
+    lifecycle_state: Mapped[str] = mapped_column(String(60), nullable=False, default="active", index=True)
+    retention_class: Mapped[str] = mapped_column(String(80), nullable=False, default="standard", index=True)
+    derived: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False, index=True)
+    public: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False, index=True)
+    license_name: Mapped[str | None] = mapped_column(String(300), nullable=True)
+    attribution: Mapped[str | None] = mapped_column(Text, nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class ScientificProcessingAdapter(Base):
+    __tablename__ = "scientific_processing_adapters"
+    __table_args__ = (
+        UniqueConstraint("adapter_key", name="uq_scientific_processing_adapter_key"),
+        Index("ix_scientific_processing_adapter_enabled", "enabled", "execution_mode"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    adapter_key: Mapped[str] = mapped_column(String(160), nullable=False, index=True)
+    name: Mapped[str] = mapped_column(String(300), nullable=False)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    execution_mode: Mapped[str] = mapped_column(String(80), nullable=False, default="external-contract", index=True)
+    runtime: Mapped[str] = mapped_column(String(80), nullable=False, default="python")
+    supported_input_formats_json: Mapped[list] = mapped_column(JSON, default=list)
+    supported_output_formats_json: Mapped[list] = mapped_column(JSON, default=list)
+    operations_json: Mapped[list] = mapped_column(JSON, default=list)
+    configuration_schema_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    enabled: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False, index=True)
+    executable: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    public_summary: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class ScientificProcessingRun(Base):
+    __tablename__ = "scientific_processing_runs"
+    __table_args__ = (
+        UniqueConstraint("adapter_id", "input_object_id", "operation", "idempotency_key", name="uq_scientific_processing_run_idempotency"),
+        Index("ix_scientific_processing_run_state", "state", "created_at"),
+        Index("ix_scientific_processing_run_input", "input_object_id", "created_at"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    adapter_id: Mapped[str] = mapped_column(ForeignKey("scientific_processing_adapters.id", ondelete="RESTRICT"), nullable=False, index=True)
+    input_object_id: Mapped[str] = mapped_column(ForeignKey("scientific_stored_objects.id", ondelete="RESTRICT"), nullable=False, index=True)
+    output_object_id: Mapped[str | None] = mapped_column(ForeignKey("scientific_stored_objects.id", ondelete="SET NULL"), nullable=True, index=True)
+    operation: Mapped[str] = mapped_column(String(120), nullable=False, index=True)
+    idempotency_key: Mapped[str] = mapped_column(String(255), nullable=False)
+    state: Mapped[str] = mapped_column(String(60), nullable=False, default="queued", index=True)
+    parameters_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    error_message: Mapped[str | None] = mapped_column(Text, nullable=True)
+    requested_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    started_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)

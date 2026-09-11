@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ScientificStoredObject",
+  "type": "object",
+  "required": [
+    "id",
+    "backend_key",
+    "object_key",
+    "canonical_uri",
+    "title",
+    "format",
+    "integrity_status",
+    "lifecycle_state",
+    "derived",
+    "public"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "scientific_asset_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "parent_object_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "backend_key": {
+      "type": "string"
+    },
+    "object_key": {
+      "type": "string"
+    },
+    "canonical_uri": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "format": {
+      "type": "string"
+    },
+    "media_type": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "size_bytes": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "content_hash": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "checksum_algorithm": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "integrity_status": {
+      "type": "string"
+    },
+    "lifecycle_state": {
+      "type": "string"
+    },
+    "retention_class": {
+      "type": "string"
+    },
+    "derived": {
+      "type": "boolean"
+    },
+    "public": {
+      "type": "boolean"
+    },
+    "provenance": {
+      "type": "object"
+    },
+    "metadata": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": true
+}

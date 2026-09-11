@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ScientificStorageBackend",
+  "type": "object",
+  "required": [
+    "backend_key",
+    "name",
+    "backend_type",
+    "uri_scheme",
+    "readable",
+    "writable",
+    "enabled"
+  ],
+  "properties": {
+    "backend_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "name": {
+      "type": "string"
+    },
+    "backend_type": {
+      "type": "string"
+    },
+    "uri_scheme": {
+      "type": "string"
+    },
+    "readable": {
+      "type": "boolean"
+    },
+    "writable": {
+      "type": "boolean"
+    },
+    "enabled": {
+      "type": "boolean"
+    },
+    "capabilities": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": true
+}

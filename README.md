@@ -1,4 +1,38 @@
-# Sustainable Catalyst Platform Core v2.26.0
+# Sustainable Catalyst Platform Core v2.27.0
+Core v2.27.0 adds **Scientific Object Storage & Processing Adapter Fabric** on top of the v2.26.0 distributed workload-governance line. It gives the existing scientific-asset registry a governed storage identity, bounded local ingestion, stable credential-free provider references, integrity verification, derived-object lineage, and explicit processing-adapter contracts.
+
+Key v2.27.0 additions:
+- additive migration `0030`;
+- local scientific-object storage with generated object keys and SHA-256 verification;
+- external provider-managed references using stable `https`, `s3`, `gs`, and `az` URIs;
+- scientific stored-object metadata linked optionally to existing `ScientificDataAsset` records;
+- parent/derived lineage for processed scientific objects;
+- processing-adapter registry with executable-vs-contract-only truth;
+- deterministic built-in object-manifest processor;
+- xarray, GDAL, and Astropy contracts registered but disabled until real workers are configured;
+- internal content access plus public metadata-only APIs;
+- optional production-certification readiness gate.
+
+Explicit boundaries:
+- no arbitrary code execution;
+- no automatic external-object download or mirroring;
+- no credential or signed-URL persistence;
+- no claim of native NetCDF/Zarr/FITS/GRIB/COG parsing in Core;
+- no automatic storage provisioning, scaling, deletion, or replication.
+
+Current release line:
+
+```text
+v2.24.0 Capacity Forecasting & Resource Governance
+v2.25.0 Identity, Credential & Cryptographic Key Lifecycle
+v2.26.0 Distributed Quotas, Admission Control & Workload Governance
+v2.27.0 Scientific Object Storage & Processing Adapter Fabric
+```
+
+Next planned: **v2.28.0 — Research Object & Model Foundation**.
+
+---
+
 Core v2.26.0 adds **Distributed Quotas, Admission Control & Workload Governance** on top of the v2.25.0 credential/key lifecycle line. It provides portable database-shared quota state, workload priority classes, burst budgets, idempotent admission decisions, expiring concurrency leases, SLO/capacity-aware throttling, and auditable hard rejection without introducing an external quota dependency.
 
 Key v2.26.0 additions:

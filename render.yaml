@@ -74,7 +74,7 @@ services:
       - key: SC_CORE_LIVE_DATA_STRICT_FREE_SOURCES
         value: "true"
       - key: SC_CORE_LIVE_DATA_USER_AGENT
-        value: SustainableCatalystPlatformCore/2.26.0 (+https://sustainablecatalyst.com/contact/)
+        value: SustainableCatalystPlatformCore/2.27.0 (+https://sustainablecatalyst.com/contact/)
       - key: SC_CORE_LIVE_DATA_TIMEOUT_SECONDS
         value: "20"
       - key: SC_CORE_LIVE_DATA_MAX_RESPONSE_BYTES
@@ -288,6 +288,19 @@ services:
       - key: SC_CORE_CERTIFICATION_REQUIRE_WORKLOAD_GOVERNANCE_READY
         value: "false"
 
+      - key: SC_CORE_SCIENTIFIC_OBJECT_STORAGE_ENABLED
+        value: "true"
+      - key: SC_CORE_SCIENTIFIC_OBJECT_STORAGE_ROOT
+        value: "./var/scientific-objects"
+      - key: SC_CORE_SCIENTIFIC_OBJECT_MAX_UPLOAD_BYTES
+        value: "67108864"
+      - key: SC_CORE_SCIENTIFIC_PROCESSING_ENABLED
+        value: "true"
+      - key: SC_CORE_SCIENTIFIC_OBJECT_PUBLIC_METADATA_ENABLED
+        value: "true"
+      - key: SC_CORE_CERTIFICATION_REQUIRE_SCIENTIFIC_OBJECT_STORAGE_READY
+        value: "false"
+
 databases:
   - name: sustainable-catalyst-platform-core-db
     databaseName: sustainable_catalyst_platform_core
@@ -306,3 +319,4 @@ databases:
 # SC_CORE_FRED_API_KEY=<free-registered-key>
 
 # v2.17.0
+

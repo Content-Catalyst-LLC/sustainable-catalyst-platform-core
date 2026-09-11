@@ -379,3 +379,23 @@ def _workload_governance_status(self):
     return self.request("GET", "/workload-governance/status")
 
 PublicApiClient.workload_governance_status = _workload_governance_status
+
+
+# v2.27.0 scientific object storage and processing adapter metadata methods.
+def _scientific_object_storage_readiness(self):
+    return self.request("GET", "/scientific-objects/readiness")
+
+def _scientific_stored_objects(self, **params):
+    clean={k:v for k,v in params.items() if v is not None}
+    return self.request("GET", "/scientific-objects", params=clean)
+
+def _scientific_stored_object(self, object_id: str):
+    return self.request("GET", f"/scientific-objects/{object_id}")
+
+def _scientific_processing_adapters(self):
+    return self.request("GET", "/scientific-objects/adapters")
+
+PublicApiClient.scientific_object_storage_readiness = _scientific_object_storage_readiness
+PublicApiClient.scientific_stored_objects = _scientific_stored_objects
+PublicApiClient.scientific_stored_object = _scientific_stored_object
+PublicApiClient.scientific_processing_adapters = _scientific_processing_adapters

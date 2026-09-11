@@ -344,4 +344,22 @@ export class PublicApiClient {
     return this.request(`/workload-governance/status`);
   }
 
+  scientificObjectStorageReadiness() {
+    return this.request("/scientific-objects/readiness");
+  }
+
+  scientificStoredObjects(params = {}) {
+    const clean = Object.fromEntries(Object.entries(params).filter(([, value]) => value !== null && value !== undefined));
+    const query = new URLSearchParams(clean);
+    return this.request(`/scientific-objects?${query}`);
+  }
+
+  scientificStoredObject(objectId) {
+    return this.request(`/scientific-objects/${encodeURIComponent(objectId)}`);
+  }
+
+  scientificProcessingAdapters() {
+    return this.request("/scientific-objects/adapters");
+  }
+
 }

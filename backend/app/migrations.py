@@ -2,7 +2,11 @@ from __future__ import annotations
 import os
 from sqlalchemy import select, text
 from .database import Base, Database
-from .models import ApiPlan, EvaluationDefinition, LiveDataConnector, LiveDataSource, PredicateDefinition, SchemaMigration, WorkflowDefinition, ServiceLevelObjective
+from .models import (
+    ApiPlan, EvaluationDefinition, LiveDataConnector, LiveDataSource, PredicateDefinition,
+    SchemaMigration, WorkflowDefinition, ServiceLevelObjective,
+    ScientificStorageBackend, ScientificProcessingAdapter,
+)
 from .predicate_catalog import DEFAULT_PREDICATES
 from .api_plan_catalog import DEFAULT_API_PLANS
 from .evaluation_catalog import DEFAULT_EVALUATION_DEFINITIONS
@@ -39,7 +43,117 @@ MIGRATIONS = [
     ("0027", "Capacity resource profiles, observations, bounded forecast records, resource budgets, and non-actuating governance decisions."),
     ("0028", "Credential registry metadata, cryptographic key versions, overlap-aware rotation records, lifecycle events, and secret-free credential-use audit records."),
     ("0029", "Database-shared distributed quota policies and usage buckets, workload classes, auditable admission decisions, and expiring concurrency leases."),
+    ("0030", "Scientific object storage backends, governed stored-object registry, processing adapter contracts, derived-object lineage, and auditable processing runs."),
 ]
+
+
+DEFAULT_SCIENTIFIC_STORAGE_BACKENDS = [
+    {
+        "backend_key": "local-filesystem",
+        "name": "Local scientific object store",
+        "backend_type": "filesystem",
+        "uri_scheme": "file",
+        "readable": True,
+        "writable": True,
+        "enabled": True,
+        "public_summary": True,
+        "capabilities_json": {"content_addressed": True, "atomic_write": True, "development_default": True},
+        "metadata_json": {"seed": "platform-core-v2.27.0", "secret_values_stored": False},
+    },
+    {
+        "backend_key": "external-reference",
+        "name": "External scientific object reference",
+        "backend_type": "reference",
+        "uri_scheme": "provider-neutral",
+        "readable": True,
+        "writable": False,
+        "enabled": True,
+        "public_summary": True,
+        "capabilities_json": {"schemes": ["https", "s3", "gs", "az"], "fetch_by_core": False},
+        "metadata_json": {"seed": "platform-core-v2.27.0", "credential_bearing_urls_allowed": False},
+    },
+]
+
+DEFAULT_SCIENTIFIC_PROCESSING_ADAPTERS = [
+    {
+        "adapter_key": "builtin.object-manifest",
+        "name": "Scientific object manifest",
+        "description": "Built-in deterministic adapter that emits a provenance-preserving JSON manifest for a stored scientific object.",
+        "execution_mode": "in-process",
+        "runtime": "python",
+        "supported_input_formats_json": ["*"],
+        "supported_output_formats_json": ["json"],
+        "operations_json": ["manifest"],
+        "configuration_schema_json": {},
+        "enabled": True,
+        "executable": True,
+        "public_summary": True,
+        "metadata_json": {"seed": "platform-core-v2.27.0", "arbitrary_code_execution": False},
+    },
+    {
+        "adapter_key": "external.xarray",
+        "name": "xarray processing contract",
+        "description": "Provider-neutral contract for future xarray-backed NetCDF, Zarr, and GRIB processing workers.",
+        "execution_mode": "external-contract",
+        "runtime": "python",
+        "supported_input_formats_json": ["netcdf", "zarr", "grib2"],
+        "supported_output_formats_json": ["netcdf", "zarr", "json"],
+        "operations_json": ["inspect", "subset", "aggregate", "rechunk"],
+        "configuration_schema_json": {"worker_service": {"type": "string", "secret": False}},
+        "enabled": False,
+        "executable": False,
+        "public_summary": True,
+        "metadata_json": {"seed": "platform-core-v2.27.0", "status": "contract-only"},
+    },
+    {
+        "adapter_key": "external.gdal",
+        "name": "GDAL processing contract",
+        "description": "Provider-neutral contract for future raster/vector translation, reprojection, tiling, and overview workers.",
+        "execution_mode": "external-contract",
+        "runtime": "native",
+        "supported_input_formats_json": ["cog", "geoparquet", "geojson", "grib2"],
+        "supported_output_formats_json": ["cog", "geoparquet", "geojson", "pmtiles"],
+        "operations_json": ["inspect", "translate", "reproject", "overview", "tile"],
+        "configuration_schema_json": {"worker_service": {"type": "string", "secret": False}},
+        "enabled": False,
+        "executable": False,
+        "public_summary": True,
+        "metadata_json": {"seed": "platform-core-v2.27.0", "status": "contract-only"},
+    },
+    {
+        "adapter_key": "external.astropy",
+        "name": "Astropy processing contract",
+        "description": "Provider-neutral contract for future FITS and VOTable inspection and extraction workers.",
+        "execution_mode": "external-contract",
+        "runtime": "python",
+        "supported_input_formats_json": ["fits", "votable"],
+        "supported_output_formats_json": ["fits", "votable", "json"],
+        "operations_json": ["inspect", "table-extract", "header-extract"],
+        "configuration_schema_json": {"worker_service": {"type": "string", "secret": False}},
+        "enabled": False,
+        "executable": False,
+        "public_summary": True,
+        "metadata_json": {"seed": "platform-core-v2.27.0", "status": "contract-only"},
+    },
+]
+
+
+def _seed_scientific_object_fabric(database: Database) -> tuple[int, int]:
+    backends_created = 0
+    adapters_created = 0
+    with database.session_factory() as session:
+        for payload in DEFAULT_SCIENTIFIC_STORAGE_BACKENDS:
+            existing = session.scalar(select(ScientificStorageBackend).where(ScientificStorageBackend.backend_key == payload["backend_key"]))
+            if existing is None:
+                session.add(ScientificStorageBackend(**payload))
+                backends_created += 1
+        for payload in DEFAULT_SCIENTIFIC_PROCESSING_ADAPTERS:
+            existing = session.scalar(select(ScientificProcessingAdapter).where(ScientificProcessingAdapter.adapter_key == payload["adapter_key"]))
+            if existing is None:
+                session.add(ScientificProcessingAdapter(**payload))
+                adapters_created += 1
+        session.commit()
+    return backends_created, adapters_created
 
 def _seed_predicates(database: Database) -> int:
     created = 0
@@ -185,6 +299,7 @@ def run_migrations(database: Database) -> list[str]:
     _seed_live_data_registry(database)
     _configure_postgresql_fabric(database)
     _seed_observability_slos(database)
+    _seed_scientific_object_fabric(database)
     return applied
 
 def migration_status(database: Database) -> dict:
@@ -197,5 +312,7 @@ def migration_status(database: Database) -> dict:
         workflow_definitions = len(session.scalars(select(WorkflowDefinition.id)).all())
         live_data_sources = len(session.scalars(select(LiveDataSource.id)).all())
         live_data_connectors = len(session.scalars(select(LiveDataConnector.id)).all())
+        scientific_storage_backends = len(session.scalars(select(ScientificStorageBackend.id)).all())
+        scientific_processing_adapters = len(session.scalars(select(ScientificProcessingAdapter.id)).all())
     expected = {version for version, _ in MIGRATIONS}
-    return {"expected":sorted(expected),"applied":sorted(applied),"pending":sorted(expected-applied),"predicate_definitions":predicates,"api_plans":api_plans,"evaluation_definitions":evaluation_definitions,"workflow_definitions":workflow_definitions,"live_data_sources":live_data_sources,"live_data_connectors":live_data_connectors}
+    return {"expected":sorted(expected),"applied":sorted(applied),"pending":sorted(expected-applied),"predicate_definitions":predicates,"api_plans":api_plans,"evaluation_definitions":evaluation_definitions,"workflow_definitions":workflow_definitions,"live_data_sources":live_data_sources,"live_data_connectors":live_data_connectors,"scientific_storage_backends":scientific_storage_backends,"scientific_processing_adapters":scientific_processing_adapters}

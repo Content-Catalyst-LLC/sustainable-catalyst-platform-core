@@ -1,4 +1,4 @@
-# Sustainable Catalyst Public API JavaScript Client v2.25.0
+# Sustainable Catalyst Public API JavaScript Client v2.27.0
 
 ```javascript
 import { PublicApiClient } from "./index.mjs";
@@ -110,3 +110,8 @@ Adds `capacityStatus()` for aggregate Capacity Forecasting & Resource Governance
 ## v2.25.0
 
 Adds `credentialLifecycleStatus()` for public-safe aggregate credential/key lifecycle health. Secret references, key identifiers, fingerprints, and secret/private-key material are not returned by the public status contract.
+
+
+## v2.27.0 — Scientific object metadata
+
+Use `scientificObjectStorageReadiness()`, `scientificStoredObjects(...)`, `scientificStoredObject(id)`, and `scientificProcessingAdapters()` for public-safe storage and adapter metadata. Raw object bytes and execution remain internal.

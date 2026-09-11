@@ -20,7 +20,7 @@ def _int(name: str, default: int) -> int:
 @dataclass(frozen=True)
 class Settings:
     app_name: str = "Sustainable Catalyst Platform Core"
-    version: str = "2.26.0"
+    version: str = "2.27.0"
     environment: str = "development"
     database_url: str = "sqlite:///./platform_core.db"
     write_api_key: str = ""
@@ -53,7 +53,7 @@ class Settings:
     live_data_enabled: bool = True
     live_data_ingest_enabled: bool = True
     live_data_strict_free_sources: bool = True
-    live_data_user_agent: str = "SustainableCatalystPlatformCore/2.26.0 (+https://sustainablecatalyst.com/contact/)"
+    live_data_user_agent: str = "SustainableCatalystPlatformCore/2.27.0 (+https://sustainablecatalyst.com/contact/)"
     live_data_timeout_seconds: int = 20
     live_data_max_response_bytes: int = 12582912
     live_data_raw_payload_max_bytes: int = 1048576
@@ -170,6 +170,12 @@ class Settings:
     quota_usage_retention_hours: int = 2160
     admission_decision_retention_hours: int = 2160
     certification_require_workload_governance_ready: bool = False
+    scientific_object_storage_enabled: bool = True
+    scientific_object_storage_root: str = "./var/scientific-objects"
+    scientific_object_max_upload_bytes: int = 67108864
+    scientific_processing_enabled: bool = True
+    scientific_object_public_metadata_enabled: bool = True
+    certification_require_scientific_object_storage_ready: bool = False
 
     @classmethod
     def from_env(cls) -> "Settings":
@@ -247,7 +253,7 @@ class Settings:
             live_data_strict_free_sources=_bool("SC_CORE_LIVE_DATA_STRICT_FREE_SOURCES", True),
             live_data_user_agent=os.getenv(
                 "SC_CORE_LIVE_DATA_USER_AGENT",
-                "SustainableCatalystPlatformCore/2.26.0 (+https://sustainablecatalyst.com/contact/)",
+                "SustainableCatalystPlatformCore/2.27.0 (+https://sustainablecatalyst.com/contact/)",
             ).strip(),
             live_data_timeout_seconds=max(
                 1, min(_int("SC_CORE_LIVE_DATA_TIMEOUT_SECONDS", 20), 120)
@@ -376,4 +382,10 @@ class Settings:
             quota_usage_retention_hours=max(24, min(_int("SC_CORE_QUOTA_USAGE_RETENTION_HOURS", 2160), 87600)),
             admission_decision_retention_hours=max(24, min(_int("SC_CORE_ADMISSION_DECISION_RETENTION_HOURS", 2160), 87600)),
             certification_require_workload_governance_ready=_bool("SC_CORE_CERTIFICATION_REQUIRE_WORKLOAD_GOVERNANCE_READY", False),
+            scientific_object_storage_enabled=_bool("SC_CORE_SCIENTIFIC_OBJECT_STORAGE_ENABLED", True),
+            scientific_object_storage_root=os.getenv("SC_CORE_SCIENTIFIC_OBJECT_STORAGE_ROOT", "./var/scientific-objects").strip() or "./var/scientific-objects",
+            scientific_object_max_upload_bytes=max(1024, min(_int("SC_CORE_SCIENTIFIC_OBJECT_MAX_UPLOAD_BYTES", 67108864), 1073741824)),
+            scientific_processing_enabled=_bool("SC_CORE_SCIENTIFIC_PROCESSING_ENABLED", True),
+            scientific_object_public_metadata_enabled=_bool("SC_CORE_SCIENTIFIC_OBJECT_PUBLIC_METADATA_ENABLED", True),
+            certification_require_scientific_object_storage_ready=_bool("SC_CORE_CERTIFICATION_REQUIRE_SCIENTIFIC_OBJECT_STORAGE_READY", False),
         )

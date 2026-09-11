@@ -24,6 +24,7 @@ def client(tmp_path):
         cors_origins=("http://testserver",),
         max_graph_depth=3,
         page_size_max=200,
+        scientific_object_storage_root=str(tmp_path / "scientific-objects"),
     )
     app = create_app(settings)
     with TestClient(app) as test_client:

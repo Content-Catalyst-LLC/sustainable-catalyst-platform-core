@@ -1,4 +1,4 @@
-# Sustainable Catalyst Public API Python Client v2.25.0
+# Sustainable Catalyst Public API Python Client v2.27.0
 
 ```python
 from sc_platform_core_public import PublicApiClient
@@ -110,3 +110,8 @@ Adds `capacity_status()` for aggregate Capacity Forecasting & Resource Governanc
 ## v2.25.0
 
 Adds `credential_lifecycle_status()` for public-safe aggregate credential/key lifecycle health. Secret references, key identifiers, fingerprints, and secret/private-key material are not returned by the public status contract.
+
+
+## v2.27.0 — Scientific object metadata
+
+Use `scientific_object_storage_readiness()`, `scientific_stored_objects(...)`, `scientific_stored_object(id)`, and `scientific_processing_adapters()` for public-safe storage and adapter metadata. Raw object bytes and execution remain internal.

@@ -308,6 +308,10 @@ class RegistryStats(BaseModel):
     time_series_definitions: int
     time_series_points: int
     scientific_data_assets: int
+    scientific_storage_backends: int
+    scientific_stored_objects: int
+    scientific_processing_adapters: int
+    scientific_processing_runs: int
     map_layers: int
     stac_collections: int
     stac_items: int

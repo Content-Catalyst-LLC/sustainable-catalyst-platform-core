@@ -170,7 +170,10 @@ Status: implemented. Adds secret-free credential registry metadata, versioned ke
 ## v2.26.0 — Distributed Quotas, Admission Control & Workload Governance
 Status: implemented. Adds database-shared quota policies and usage buckets, burst budgets, workload priority classes, per-class concurrency leases, idempotent admission decisions, retry guidance, SLO/capacity-aware throttling, hard rejection, public-safe aggregate status, optional certification gating, and migration `0029`. Automatic scaling, infrastructure purchasing, and deployment mutation remain disabled.
 
-Next planned: v2.27.0 — Scientific Object Storage & Processing Adapter Fabric.
+## v2.27.0 — Scientific Object Storage & Processing Adapter Fabric
+Status: implemented. Adds migration `0030`, governed local scientific-object storage, credential-free provider-managed references, SHA-256 integrity metadata, parent/derived lineage, processing-adapter contracts, an executable deterministic object-manifest adapter, public-safe metadata APIs, SDK/WordPress surfaces, and an optional certification gate. xarray, GDAL, and Astropy remain contract-only until configured workers exist. Arbitrary code execution and automatic external-object fetching remain disabled.
+
+Next planned: v2.28.0 — Research Object & Model Foundation.
 
 
 ## v2.24.0 R1 — Secret-Scan Example Credential & Promotion Repair

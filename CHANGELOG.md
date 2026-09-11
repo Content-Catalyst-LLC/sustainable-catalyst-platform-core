@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.27.0 — 2026-09-10
+- Added migration `0030` and four scientific object/storage/processing record families.
+- Added bounded local scientific-object ingestion with generated object keys and SHA-256 integrity verification.
+- Added stable credential-free external references for `https`, `s3`, `gs`, and `az` objects without automatic fetch.
+- Added parent/derived scientific-object lineage and idempotent processing-run provenance.
+- Added executable `builtin.object-manifest` processing and contract-only xarray/GDAL/Astropy adapters.
+- Added internal content access, public metadata-only APIs, Python/JavaScript SDK helpers, WordPress status, deployment controls, tests, and optional certification gating.
+- Explicitly disabled arbitrary code execution, native-parser claims, credential-bearing references, automatic storage provisioning, and automatic replication.
+
+
 ## 2.26.0 — 2026-08-16
 - Added migration `0028` and five secret-free credential/key lifecycle record families.
 - Added provider-neutral secret references and service-consumer/operation policy metadata.

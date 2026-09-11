@@ -125,3 +125,25 @@ These methods use `data:read`. Raw provider payloads and internal connector conf
 ## Data fabric v2.8.0
 
 The public SDKs expose fabric capabilities, geospatial features, time-series definitions and points, scientific assets, map layers, and raw STAC catalog/search methods. All methods require `data:read`.
+
+## Scientific object metadata v2.27.0
+
+Python:
+
+```python
+print(client.scientific_object_storage_readiness())
+print(client.scientific_stored_objects(format="netcdf", limit=25))
+print(client.scientific_stored_object("OBJECT_ID"))
+print(client.scientific_processing_adapters())
+```
+
+JavaScript:
+
+```javascript
+console.log(await client.scientificObjectStorageReadiness());
+console.log(await client.scientificStoredObjects({ format: "netcdf", limit: 25 }));
+console.log(await client.scientificStoredObject("OBJECT_ID"));
+console.log(await client.scientificProcessingAdapters());
+```
+
+The public SDK exposes public-safe metadata only. Scientific object upload, byte retrieval, processing execution, and processing-run details remain authenticated internal Core operations.

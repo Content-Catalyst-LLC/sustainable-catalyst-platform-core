@@ -1,0 +1,23 @@
+PLATFORM CORE v2.27.0 — MAC TERMINAL COMMANDS
+
+1. Put these two files in ~/Downloads:
+   sustainable-catalyst-platform-core-v2.27.0-release-bundle.zip
+   deploy_and_validate_platform_core_v2_27_0_macos.sh
+
+2. Validate and push:
+
+cd ~/Downloads
+chmod +x deploy_and_validate_platform_core_v2_27_0_macos.sh
+./deploy_and_validate_platform_core_v2_27_0_macos.sh \
+  "$HOME/Downloads/sustainable-catalyst-platform-core-v2.27.0-release-bundle.zip"
+
+3. Bundle-only validation without cloning/pushing:
+
+SC_CORE_BUNDLE_ONLY=1 ./deploy_and_validate_platform_core_v2_27_0_macos.sh \
+  "$HOME/Downloads/sustainable-catalyst-platform-core-v2.27.0-release-bundle.zip"
+
+4. Existing checkout promotion with the repository ZIP:
+
+chmod +x PUSH_PLATFORM_CORE_V2270_FINAL.sh
+./PUSH_PLATFORM_CORE_V2270_FINAL.sh \
+  "$HOME/Downloads/sustainable-catalyst-platform-core-v2.27.0-repository.zip"

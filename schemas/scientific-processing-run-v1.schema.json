@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ScientificProcessingRun",
+  "type": "object",
+  "required": [
+    "id",
+    "adapter_id",
+    "input_object_id",
+    "operation",
+    "idempotency_key",
+    "state"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "adapter_id": {
+      "type": "string"
+    },
+    "input_object_id": {
+      "type": "string"
+    },
+    "output_object_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "operation": {
+      "type": "string"
+    },
+    "idempotency_key": {
+      "type": "string"
+    },
+    "state": {
+      "type": "string"
+    },
+    "parameters": {
+      "type": "object"
+    },
+    "provenance": {
+      "type": "object"
+    },
+    "error_message": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "requested_by": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": true
+}
