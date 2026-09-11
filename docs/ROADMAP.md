@@ -176,7 +176,10 @@ Status: implemented. Adds migration `0030`, governed local scientific-object sto
 ## v2.28.0 — Research Object & Model Foundation
 Status: implemented. Adds migration `0031` and graph-native research projects, models, immutable model versions, variables, parameters, scenarios, model-run orchestration records, and results. Research objects inherit the Universal Entity Registry, Knowledge Graph, Evidence Ledger, calculation-trace, and provenance foundations. Core records execution intent and lineage but does not execute models; Lab, Workbench, and explicit external runtimes remain the compute boundary.
 
-Next planned: v2.29.0 — Visual Reasoning Object Model.
+## v2.29.0 — Visual Reasoning Object Model
+Status: implemented. Adds migration `0032`, graph-native renderer-neutral visual reasoning objects, semantic elements and relations, reasoning layers, governed annotations, Core-entity/scientific-object source bindings, and immutable SHA-256 semantic snapshots. Core owns meaning and lineage, not layout, styling, renderer selection, or automatic causal/truth inference.
+
+Next planned: v2.30.0 — Visualization Specification & Renderer Registry.
 
 
 ## v2.24.0 R1 — Secret-Scan Example Credential & Promotion Repair

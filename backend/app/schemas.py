@@ -320,6 +320,12 @@ class RegistryStats(BaseModel):
     research_scenarios: int
     research_model_runs: int
     research_results: int
+    visual_reasoning_objects: int
+    visual_reasoning_elements: int
+    visual_reasoning_relations: int
+    visual_reasoning_layers: int
+    visual_reasoning_annotations: int
+    visual_reasoning_snapshots: int
     map_layers: int
     stac_collections: int
     stac_items: int

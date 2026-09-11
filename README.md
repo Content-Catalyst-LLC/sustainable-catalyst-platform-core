@@ -1,35 +1,36 @@
-# Sustainable Catalyst Platform Core v2.28.0
-Core v2.28.0 adds **Research Object & Model Foundation** on top of the v2.27.0 scientific-object storage and processing-adapter line. Research projects, models, immutable model versions, variables, parameters, scenarios, model runs, and results are now first-class, graph-native Core objects with explicit reproducibility and provenance boundaries.
+# Sustainable Catalyst Platform Core v2.29.0
+Core v2.29.0 adds **Visual Reasoning Object Model** on top of the v2.28.0 Research Object & Model Foundation. Visual explanations are now first-class, graph-native Core objects with governed semantic elements, relations, layers, annotations, source bindings, uncertainty metadata, and reproducible semantic snapshots.
 
-Key v2.28.0 additions:
-- additive migration `0031`;
-- eight typed research-object profiles anchored to the Universal Entity Registry;
-- graph-native lineage using existing `part_of`, `version_of`, `uses`, and `derived_from` predicates;
-- immutable model-version contracts with deterministic specification hashes;
-- variables with units, domains, roles, and uncertainty metadata;
-- parameters with defaults, bounds, priors, and sensitivity flags;
-- scenarios with parameter assignments, assumptions, and optional scenario lineage;
-- model-run orchestration records that can link existing provenance activities and calculation traces;
-- results that can link to v2.27 scientific stored objects without promoting derived outputs to authoritative evidence;
-- public-safe research metadata APIs, project bundles, Python/JavaScript SDK helpers, and a WordPress status surface.
+Key v2.29.0 additions:
+- additive migration `0032`;
+- `visual-reasoning-object` entities integrated with the Universal Entity Registry and Knowledge Graph;
+- renderer-neutral semantic elements and relations;
+- source bindings to existing Core entities and v2.27 scientific stored objects;
+- research-project and primary-subject bindings;
+- semantic layers and governed annotations/caveats;
+- immutable SHA-256 semantic snapshots for reproducibility;
+- public-safe visual reasoning metadata API;
+- Python/JavaScript SDK helpers and WordPress status surface.
 
 Explicit boundaries:
-- Platform Core does not execute models;
-- executable work remains in Lab, Workbench, or an explicitly external executor;
-- no automatic truth promotion from a model result to evidence or claim status;
-- no visual renderer is embedded in Core;
-- no AI-generated relationships are treated as verified without explicit governed creation.
+- Platform Core does not select or execute renderers;
+- Core does not calculate graph/layout positions or visual styling;
+- automatic causal inference and automatic truth promotion remain disabled;
+- v2.30.0 is reserved for Visualization Specification & Renderer Registry.
 
 Current release line:
 
 ```text
-v2.25.0 Identity, Credential & Cryptographic Key Lifecycle
 v2.26.0 Distributed Quotas, Admission Control & Workload Governance
 v2.27.0 Scientific Object Storage & Processing Adapter Fabric
 v2.28.0 Research Object & Model Foundation
+v2.29.0 Visual Reasoning Object Model
 ```
 
-Next planned: **v2.29.0 — Visual Reasoning Object Model**.
+Next planned: **v2.30.0 — Visualization Specification & Renderer Registry**.
+
+## v2.28.0 — Research Object & Model Foundation
+Core v2.28.0 added graph-native research projects, models, immutable model versions, variables, parameters, scenarios, model runs, and results while preserving Lab/Workbench as the execution boundary.
 
 ## v2.27.0 — Scientific Object Storage & Processing Adapter Fabric
 Core v2.27.0 added governed scientific-object storage, stable credential-free provider references, integrity verification, derived-object lineage, and processing-adapter contracts. xarray, GDAL, and Astropy remain contract-only until real workers are configured.

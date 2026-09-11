@@ -1,4 +1,4 @@
-# Sustainable Catalyst Public API JavaScript Client v2.28.0
+# Sustainable Catalyst Public API JavaScript Client v2.29.0
 
 ```javascript
 import { PublicApiClient } from "./index.mjs";
@@ -120,3 +120,8 @@ Use `scientificObjectStorageReadiness()`, `scientificStoredObjects(...)`, `scien
 ## v2.28.0 — Research objects
 
 The client exposes `researchObjectReadiness()`, `researchObjects()`, `researchObject()`, and `researchProjectBundle()` for public, graph-native research metadata. Model execution remains in Lab, Workbench, or an explicitly external executor.
+
+
+## v2.29.0 — Visual reasoning
+
+The public client exposes renderer-neutral visual reasoning readiness, public visual-object listing/detail, and semantic bundles. Core returns semantic elements, relations, layers, annotations, and snapshot metadata; it does not return a renderer choice or execute layout.

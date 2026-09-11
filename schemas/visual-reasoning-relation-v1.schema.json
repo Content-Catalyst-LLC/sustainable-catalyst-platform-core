@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": true,
+  "title": "Visual Reasoning Relation v1",
+  "required": [
+    "id",
+    "visual_entity_id",
+    "source_element_id",
+    "target_element_id",
+    "relation_kind",
+    "direction"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "visual_entity_id": {
+      "type": "string"
+    },
+    "source_element_id": {
+      "type": "string"
+    },
+    "target_element_id": {
+      "type": "string"
+    },
+    "relation_kind": {
+      "type": "string"
+    },
+    "direction": {
+      "type": "string"
+    },
+    "magnitude": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "confidence": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0,
+      "maximum": 1
+    },
+    "uncertainty": {
+      "type": "object"
+    },
+    "provenance": {
+      "type": "object"
+    },
+    "metadata": {
+      "type": "object"
+    }
+  }
+}

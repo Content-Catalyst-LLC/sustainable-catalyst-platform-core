@@ -380,4 +380,22 @@ export class PublicApiClient {
     return this.request(`/research-objects/projects/${encodeURIComponent(projectEntityId)}/bundle`);
   }
 
+  visualReasoningReadiness() {
+    return this.request("/visual-reasoning/readiness");
+  }
+
+  visualReasoningObjects(params = {}) {
+    const clean = Object.fromEntries(Object.entries(params).filter(([, value]) => value !== null && value !== undefined));
+    const query = new URLSearchParams(clean);
+    return this.request(`/visual-reasoning/objects?${query}`);
+  }
+
+  visualReasoningObject(entityId) {
+    return this.request(`/visual-reasoning/objects/${encodeURIComponent(entityId)}`);
+  }
+
+  visualReasoningBundle(entityId) {
+    return this.request(`/visual-reasoning/objects/${encodeURIComponent(entityId)}/bundle`);
+  }
+
 }

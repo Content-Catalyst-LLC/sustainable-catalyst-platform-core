@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": true,
+  "title": "Visual Reasoning Object v1",
+  "required": [
+    "id",
+    "visual_kind",
+    "reasoning_purpose",
+    "semantic_state",
+    "coordinate_space"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "project_entity_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "primary_subject_entity_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "visual_kind": {
+      "type": "string"
+    },
+    "reasoning_purpose": {
+      "type": "string"
+    },
+    "semantic_state": {
+      "type": "string"
+    },
+    "coordinate_space": {
+      "type": "string"
+    },
+    "lens": {
+      "type": "object"
+    },
+    "filters": {
+      "type": "object"
+    },
+    "assumptions": {
+      "type": "array"
+    },
+    "metadata": {
+      "type": "object"
+    }
+  }
+}

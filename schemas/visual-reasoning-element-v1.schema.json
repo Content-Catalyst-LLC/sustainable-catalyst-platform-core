@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": true,
+  "title": "Visual Reasoning Element v1",
+  "required": [
+    "id",
+    "visual_entity_id",
+    "element_key",
+    "element_kind",
+    "semantic_role",
+    "label"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "visual_entity_id": {
+      "type": "string"
+    },
+    "element_key": {
+      "type": "string"
+    },
+    "element_kind": {
+      "type": "string"
+    },
+    "semantic_role": {
+      "type": "string"
+    },
+    "label": {
+      "type": "string"
+    },
+    "source_entity_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "source_scientific_object_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "value": {},
+    "uncertainty": {
+      "type": "object"
+    },
+    "provenance": {
+      "type": "object"
+    },
+    "metadata": {
+      "type": "object"
+    }
+  }
+}

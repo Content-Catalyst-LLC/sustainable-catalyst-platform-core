@@ -1,3 +1,11 @@
+## 2.29.0 — 2026-09-11
+
+- Added migration `0032` and the Visual Reasoning Object Model.
+- Added graph-native visual objects with project/subject bindings, semantic elements, relations, layers, annotations, and immutable SHA-256 snapshots.
+- Added source bindings to Core entities and scientific stored objects.
+- Added renderer-neutral internal/public APIs, SDK helpers, WordPress status, schemas, release validation, and regression coverage.
+- Kept renderer selection, layout execution, visual styling, automatic causal inference, and automatic truth promotion outside Core.
+
 # Changelog
 
 ## 2.28.0 — 2026-09-11

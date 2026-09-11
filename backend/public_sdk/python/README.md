@@ -1,4 +1,4 @@
-# Sustainable Catalyst Public API Python Client v2.28.0
+# Sustainable Catalyst Public API Python Client v2.29.0
 
 ```python
 from sc_platform_core_public import PublicApiClient
@@ -120,3 +120,8 @@ Use `scientific_object_storage_readiness()`, `scientific_stored_objects(...)`, `
 ## v2.28.0 — Research objects
 
 The client exposes `research_object_readiness()`, `research_objects()`, `research_object()`, and `research_project_bundle()` for public, graph-native research metadata. Model execution remains outside Core.
+
+
+## v2.29.0 — Visual reasoning
+
+The public client exposes renderer-neutral visual reasoning readiness, public visual-object listing/detail, and semantic bundles. Core returns semantic elements, relations, layers, annotations, and snapshot metadata; it does not return a renderer choice or execute layout.

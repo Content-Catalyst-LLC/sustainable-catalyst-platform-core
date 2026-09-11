@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": true,
+  "title": "Visual Reasoning Annotation v1",
+  "required": [
+    "id",
+    "visual_entity_id",
+    "annotation_kind",
+    "text"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "visual_entity_id": {
+      "type": "string"
+    },
+    "element_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "relation_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "annotation_kind": {
+      "type": "string"
+    },
+    "text": {
+      "type": "string"
+    },
+    "evidence_entity_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "metadata": {
+      "type": "object"
+    }
+  }
+}

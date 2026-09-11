@@ -419,3 +419,23 @@ PublicApiClient.research_object_readiness = _research_object_readiness
 PublicApiClient.research_objects = _research_objects
 PublicApiClient.research_object = _research_object
 PublicApiClient.research_project_bundle = _research_project_bundle
+
+
+# v2.29.0 Visual Reasoning Object Model public metadata methods.
+def _visual_reasoning_readiness(self):
+    return self.request("GET", "/visual-reasoning/readiness")
+
+def _visual_reasoning_objects(self, **params):
+    clean={k:v for k,v in params.items() if v is not None}
+    return self.request("GET", "/visual-reasoning/objects", params=clean)
+
+def _visual_reasoning_object(self, entity_id: str):
+    return self.request("GET", f"/visual-reasoning/objects/{entity_id}")
+
+def _visual_reasoning_bundle(self, entity_id: str):
+    return self.request("GET", f"/visual-reasoning/objects/{entity_id}/bundle")
+
+PublicApiClient.visual_reasoning_readiness = _visual_reasoning_readiness
+PublicApiClient.visual_reasoning_objects = _visual_reasoning_objects
+PublicApiClient.visual_reasoning_object = _visual_reasoning_object
+PublicApiClient.visual_reasoning_bundle = _visual_reasoning_bundle

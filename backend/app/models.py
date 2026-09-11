@@ -3058,3 +3058,124 @@ class ResearchResultRecord(Base):
     metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+# v2.29.0 — Visual Reasoning Object Model
+
+class VisualReasoningObjectRecord(Base):
+    __tablename__ = "visual_reasoning_objects"
+    __table_args__ = (
+        Index("ix_visual_reasoning_project", "project_entity_id"),
+        Index("ix_visual_reasoning_subject", "primary_subject_entity_id"),
+        Index("ix_visual_reasoning_kind_state", "visual_kind", "semantic_state"),
+    )
+    entity_id: Mapped[str] = mapped_column(ForeignKey("entities.id", ondelete="CASCADE"), primary_key=True)
+    project_entity_id: Mapped[str | None] = mapped_column(ForeignKey("entities.id", ondelete="SET NULL"), nullable=True)
+    primary_subject_entity_id: Mapped[str | None] = mapped_column(ForeignKey("entities.id", ondelete="SET NULL"), nullable=True)
+    visual_kind: Mapped[str] = mapped_column(String(80), nullable=False, default="generic", index=True)
+    reasoning_purpose: Mapped[str] = mapped_column(String(80), nullable=False, default="explore")
+    semantic_state: Mapped[str] = mapped_column(String(50), nullable=False, default="draft", index=True)
+    coordinate_space: Mapped[str] = mapped_column(String(50), nullable=False, default="abstract")
+    lens_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    filters_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    assumptions_json: Mapped[list] = mapped_column(JSON, default=list)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class VisualReasoningElementRecord(Base):
+    __tablename__ = "visual_reasoning_elements"
+    __table_args__ = (
+        UniqueConstraint("visual_entity_id", "element_key", name="uq_visual_reasoning_element_key"),
+        Index("ix_visual_reasoning_element_visual", "visual_entity_id"),
+        Index("ix_visual_reasoning_element_source", "source_entity_id"),
+        Index("ix_visual_reasoning_element_role", "semantic_role"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    visual_entity_id: Mapped[str] = mapped_column(ForeignKey("entities.id", ondelete="CASCADE"), nullable=False)
+    element_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    element_kind: Mapped[str] = mapped_column(String(60), nullable=False, default="node")
+    semantic_role: Mapped[str] = mapped_column(String(80), nullable=False, default="context", index=True)
+    label: Mapped[str] = mapped_column(String(300), nullable=False)
+    source_entity_id: Mapped[str | None] = mapped_column(ForeignKey("entities.id", ondelete="SET NULL"), nullable=True)
+    source_scientific_object_id: Mapped[str | None] = mapped_column(ForeignKey("scientific_stored_objects.id", ondelete="SET NULL"), nullable=True)
+    value_json: Mapped[object] = mapped_column(JSON, nullable=True)
+    uncertainty_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class VisualReasoningRelationRecord(Base):
+    __tablename__ = "visual_reasoning_relations"
+    __table_args__ = (
+        UniqueConstraint("visual_entity_id", "source_element_id", "relation_kind", "target_element_id", name="uq_visual_reasoning_relation"),
+        Index("ix_visual_reasoning_relation_visual", "visual_entity_id"),
+        Index("ix_visual_reasoning_relation_kind", "relation_kind"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    visual_entity_id: Mapped[str] = mapped_column(ForeignKey("entities.id", ondelete="CASCADE"), nullable=False)
+    source_element_id: Mapped[str] = mapped_column(ForeignKey("visual_reasoning_elements.id", ondelete="CASCADE"), nullable=False)
+    target_element_id: Mapped[str] = mapped_column(ForeignKey("visual_reasoning_elements.id", ondelete="CASCADE"), nullable=False)
+    relation_kind: Mapped[str] = mapped_column(String(80), nullable=False, default="association", index=True)
+    direction: Mapped[str] = mapped_column(String(30), nullable=False, default="directed")
+    magnitude: Mapped[float | None] = mapped_column(Float, nullable=True)
+    confidence: Mapped[float | None] = mapped_column(Float, nullable=True)
+    uncertainty_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class VisualReasoningLayerRecord(Base):
+    __tablename__ = "visual_reasoning_layers"
+    __table_args__ = (
+        UniqueConstraint("visual_entity_id", "layer_key", name="uq_visual_reasoning_layer_key"),
+        Index("ix_visual_reasoning_layer_visual", "visual_entity_id"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    visual_entity_id: Mapped[str] = mapped_column(ForeignKey("entities.id", ondelete="CASCADE"), nullable=False)
+    layer_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    name: Mapped[str] = mapped_column(String(300), nullable=False)
+    layer_kind: Mapped[str] = mapped_column(String(80), nullable=False, default="context")
+    order_index: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    visible_by_default: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    filter_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class VisualReasoningAnnotationRecord(Base):
+    __tablename__ = "visual_reasoning_annotations"
+    __table_args__ = (
+        Index("ix_visual_reasoning_annotation_visual", "visual_entity_id"),
+        Index("ix_visual_reasoning_annotation_kind", "annotation_kind"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    visual_entity_id: Mapped[str] = mapped_column(ForeignKey("entities.id", ondelete="CASCADE"), nullable=False)
+    element_id: Mapped[str | None] = mapped_column(ForeignKey("visual_reasoning_elements.id", ondelete="CASCADE"), nullable=True)
+    relation_id: Mapped[str | None] = mapped_column(ForeignKey("visual_reasoning_relations.id", ondelete="CASCADE"), nullable=True)
+    annotation_kind: Mapped[str] = mapped_column(String(80), nullable=False, default="note")
+    text: Mapped[str] = mapped_column(Text, nullable=False)
+    evidence_entity_id: Mapped[str | None] = mapped_column(ForeignKey("entities.id", ondelete="SET NULL"), nullable=True)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class VisualReasoningSnapshotRecord(Base):
+    __tablename__ = "visual_reasoning_snapshots"
+    __table_args__ = (
+        UniqueConstraint("visual_entity_id", "snapshot_key", name="uq_visual_reasoning_snapshot_key"),
+        Index("ix_visual_reasoning_snapshot_visual", "visual_entity_id", "created_at"),
+        Index("ix_visual_reasoning_snapshot_hash", "state_hash"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    visual_entity_id: Mapped[str] = mapped_column(ForeignKey("entities.id", ondelete="CASCADE"), nullable=False)
+    snapshot_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    state_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    semantic_state_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)

@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": true,
+  "title": "Visual Reasoning Layer v1",
+  "required": [
+    "id",
+    "visual_entity_id",
+    "layer_key",
+    "name",
+    "layer_kind"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "visual_entity_id": {
+      "type": "string"
+    },
+    "layer_key": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "layer_kind": {
+      "type": "string"
+    },
+    "order_index": {
+      "type": "integer"
+    },
+    "visible_by_default": {
+      "type": "boolean"
+    },
+    "filter": {
+      "type": "object"
+    },
+    "metadata": {
+      "type": "object"
+    }
+  }
+}
