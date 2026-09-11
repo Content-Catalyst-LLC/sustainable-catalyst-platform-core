@@ -1,4 +1,4 @@
-# Sustainable Catalyst Public API JavaScript Client v2.27.0
+# Sustainable Catalyst Public API JavaScript Client v2.28.0
 
 ```javascript
 import { PublicApiClient } from "./index.mjs";
@@ -115,3 +115,8 @@ Adds `credentialLifecycleStatus()` for public-safe aggregate credential/key life
 ## v2.27.0 — Scientific object metadata
 
 Use `scientificObjectStorageReadiness()`, `scientificStoredObjects(...)`, `scientificStoredObject(id)`, and `scientificProcessingAdapters()` for public-safe storage and adapter metadata. Raw object bytes and execution remain internal.
+
+
+## v2.28.0 — Research objects
+
+The client exposes `researchObjectReadiness()`, `researchObjects()`, `researchObject()`, and `researchProjectBundle()` for public, graph-native research metadata. Model execution remains in Lab, Workbench, or an explicitly external executor.

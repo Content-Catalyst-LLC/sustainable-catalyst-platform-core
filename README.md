@@ -1,35 +1,38 @@
-# Sustainable Catalyst Platform Core v2.27.0
-Core v2.27.0 adds **Scientific Object Storage & Processing Adapter Fabric** on top of the v2.26.0 distributed workload-governance line. It gives the existing scientific-asset registry a governed storage identity, bounded local ingestion, stable credential-free provider references, integrity verification, derived-object lineage, and explicit processing-adapter contracts.
+# Sustainable Catalyst Platform Core v2.28.0
+Core v2.28.0 adds **Research Object & Model Foundation** on top of the v2.27.0 scientific-object storage and processing-adapter line. Research projects, models, immutable model versions, variables, parameters, scenarios, model runs, and results are now first-class, graph-native Core objects with explicit reproducibility and provenance boundaries.
 
-Key v2.27.0 additions:
-- additive migration `0030`;
-- local scientific-object storage with generated object keys and SHA-256 verification;
-- external provider-managed references using stable `https`, `s3`, `gs`, and `az` URIs;
-- scientific stored-object metadata linked optionally to existing `ScientificDataAsset` records;
-- parent/derived lineage for processed scientific objects;
-- processing-adapter registry with executable-vs-contract-only truth;
-- deterministic built-in object-manifest processor;
-- xarray, GDAL, and Astropy contracts registered but disabled until real workers are configured;
-- internal content access plus public metadata-only APIs;
-- optional production-certification readiness gate.
+Key v2.28.0 additions:
+- additive migration `0031`;
+- eight typed research-object profiles anchored to the Universal Entity Registry;
+- graph-native lineage using existing `part_of`, `version_of`, `uses`, and `derived_from` predicates;
+- immutable model-version contracts with deterministic specification hashes;
+- variables with units, domains, roles, and uncertainty metadata;
+- parameters with defaults, bounds, priors, and sensitivity flags;
+- scenarios with parameter assignments, assumptions, and optional scenario lineage;
+- model-run orchestration records that can link existing provenance activities and calculation traces;
+- results that can link to v2.27 scientific stored objects without promoting derived outputs to authoritative evidence;
+- public-safe research metadata APIs, project bundles, Python/JavaScript SDK helpers, and a WordPress status surface.
 
 Explicit boundaries:
-- no arbitrary code execution;
-- no automatic external-object download or mirroring;
-- no credential or signed-URL persistence;
-- no claim of native NetCDF/Zarr/FITS/GRIB/COG parsing in Core;
-- no automatic storage provisioning, scaling, deletion, or replication.
+- Platform Core does not execute models;
+- executable work remains in Lab, Workbench, or an explicitly external executor;
+- no automatic truth promotion from a model result to evidence or claim status;
+- no visual renderer is embedded in Core;
+- no AI-generated relationships are treated as verified without explicit governed creation.
 
 Current release line:
 
 ```text
-v2.24.0 Capacity Forecasting & Resource Governance
 v2.25.0 Identity, Credential & Cryptographic Key Lifecycle
 v2.26.0 Distributed Quotas, Admission Control & Workload Governance
 v2.27.0 Scientific Object Storage & Processing Adapter Fabric
+v2.28.0 Research Object & Model Foundation
 ```
 
-Next planned: **v2.28.0 — Research Object & Model Foundation**.
+Next planned: **v2.29.0 — Visual Reasoning Object Model**.
+
+## v2.27.0 — Scientific Object Storage & Processing Adapter Fabric
+Core v2.27.0 added governed scientific-object storage, stable credential-free provider references, integrity verification, derived-object lineage, and processing-adapter contracts. xarray, GDAL, and Astropy remain contract-only until real workers are configured.
 
 ---
 
@@ -46,9 +49,9 @@ Key v2.26.0 additions:
 - automatic scaling, infrastructure purchasing, and deployment mutation remain disabled.
 
 
-Core v2.26.0 adds **Identity, Credential & Cryptographic Key Lifecycle** on top of the v2.24.0 Capacity Forecasting & Resource Governance line. It gives Core a governed, secret-free registry for credential ownership, key identifiers and versions, expiry, overlap-aware rotation, revocation/compromise response, and credential-use audit evidence.
+Core v2.25.0 adds **Identity, Credential & Cryptographic Key Lifecycle** on top of the v2.24.0 Capacity Forecasting & Resource Governance line. It gives Core a governed, secret-free registry for credential ownership, key identifiers and versions, expiry, overlap-aware rotation, revocation/compromise response, and credential-use audit evidence.
 
-Key v2.26.0 additions:
+Key v2.25.0 additions:
 - additive migration `0028` with credential registry, key-version, rotation, lifecycle-event, and credential-use tables;
 - provider-neutral secret references (`env:`, `vault:`, `kms:`, `secret-manager:`, `external:`) instead of stored secret values;
 - service-to-service consumer/operation policy metadata;

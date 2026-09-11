@@ -6,6 +6,8 @@ from .models import (
     ApiPlan, EvaluationDefinition, LiveDataConnector, LiveDataSource, PredicateDefinition,
     SchemaMigration, WorkflowDefinition, ServiceLevelObjective,
     ScientificStorageBackend, ScientificProcessingAdapter,
+    ResearchProjectRecord, ResearchModelRecord, ResearchModelVersionRecord, ResearchVariableRecord,
+    ResearchParameterRecord, ResearchScenarioRecord, ResearchModelRunRecord, ResearchResultRecord,
 )
 from .predicate_catalog import DEFAULT_PREDICATES
 from .api_plan_catalog import DEFAULT_API_PLANS
@@ -44,6 +46,7 @@ MIGRATIONS = [
     ("0028", "Credential registry metadata, cryptographic key versions, overlap-aware rotation records, lifecycle events, and secret-free credential-use audit records."),
     ("0029", "Database-shared distributed quota policies and usage buckets, workload classes, auditable admission decisions, and expiring concurrency leases."),
     ("0030", "Scientific object storage backends, governed stored-object registry, processing adapter contracts, derived-object lineage, and auditable processing runs."),
+    ("0031", "Research projects, models, immutable model versions, variables, parameters, scenarios, model runs, results, and graph-native research semantics."),
 ]
 
 
@@ -314,5 +317,13 @@ def migration_status(database: Database) -> dict:
         live_data_connectors = len(session.scalars(select(LiveDataConnector.id)).all())
         scientific_storage_backends = len(session.scalars(select(ScientificStorageBackend.id)).all())
         scientific_processing_adapters = len(session.scalars(select(ScientificProcessingAdapter.id)).all())
+        research_projects = len(session.scalars(select(ResearchProjectRecord.entity_id)).all())
+        research_models = len(session.scalars(select(ResearchModelRecord.entity_id)).all())
+        research_model_versions = len(session.scalars(select(ResearchModelVersionRecord.entity_id)).all())
+        research_variables = len(session.scalars(select(ResearchVariableRecord.entity_id)).all())
+        research_parameters = len(session.scalars(select(ResearchParameterRecord.entity_id)).all())
+        research_scenarios = len(session.scalars(select(ResearchScenarioRecord.entity_id)).all())
+        research_model_runs = len(session.scalars(select(ResearchModelRunRecord.entity_id)).all())
+        research_results = len(session.scalars(select(ResearchResultRecord.entity_id)).all())
     expected = {version for version, _ in MIGRATIONS}
-    return {"expected":sorted(expected),"applied":sorted(applied),"pending":sorted(expected-applied),"predicate_definitions":predicates,"api_plans":api_plans,"evaluation_definitions":evaluation_definitions,"workflow_definitions":workflow_definitions,"live_data_sources":live_data_sources,"live_data_connectors":live_data_connectors,"scientific_storage_backends":scientific_storage_backends,"scientific_processing_adapters":scientific_processing_adapters}
+    return {"expected":sorted(expected),"applied":sorted(applied),"pending":sorted(expected-applied),"predicate_definitions":predicates,"api_plans":api_plans,"evaluation_definitions":evaluation_definitions,"workflow_definitions":workflow_definitions,"live_data_sources":live_data_sources,"live_data_connectors":live_data_connectors,"scientific_storage_backends":scientific_storage_backends,"scientific_processing_adapters":scientific_processing_adapters,"research_projects":research_projects,"research_models":research_models,"research_model_versions":research_model_versions,"research_variables":research_variables,"research_parameters":research_parameters,"research_scenarios":research_scenarios,"research_model_runs":research_model_runs,"research_results":research_results}

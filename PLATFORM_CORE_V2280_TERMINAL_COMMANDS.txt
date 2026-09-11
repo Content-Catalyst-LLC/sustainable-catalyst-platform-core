@@ -1,0 +1,22 @@
+# macOS — bundle verification
+cd ~/Downloads
+chmod +x deploy_and_validate_platform_core_v2_28_0_macos.sh
+SC_CORE_BUNDLE_ONLY=1 ./deploy_and_validate_platform_core_v2_28_0_macos.sh "$HOME/Downloads/sustainable-catalyst-platform-core-v2.28.0-release-bundle.zip"
+
+# macOS — full validation + GitHub push/tag
+cd ~/Downloads
+./deploy_and_validate_platform_core_v2_28_0_macos.sh "$HOME/Downloads/sustainable-catalyst-platform-core-v2.28.0-release-bundle.zip"
+
+# GitHub target
+git@github.com:Content-Catalyst-LLC/sustainable-catalyst-platform-core.git
+# tag: v2.28.0
+
+# VPS — after backup and inspection
+cd /opt/sustainable-catalyst/core
+git fetch origin --tags
+git pull --ff-only origin main
+docker compose -f compose.yml -f compose.vps.yml build core
+docker compose -f compose.yml -f compose.vps.yml run --rm --no-deps core python scripts/migrate.py
+docker compose -f compose.yml -f compose.vps.yml up -d --no-deps --force-recreate core
+curl -fsS http://127.0.0.1:8090/health | python3 -m json.tool
+curl -fsS http://127.0.0.1:8090/v1/research-objects/readiness | python3 -m json.tool

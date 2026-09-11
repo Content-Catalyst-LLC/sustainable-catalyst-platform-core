@@ -362,4 +362,22 @@ export class PublicApiClient {
     return this.request("/scientific-objects/adapters");
   }
 
+  researchObjectReadiness() {
+    return this.request("/research-objects/readiness");
+  }
+
+  researchObjects(params = {}) {
+    const clean = Object.fromEntries(Object.entries(params).filter(([, value]) => value !== null && value !== undefined));
+    const query = new URLSearchParams(clean);
+    return this.request(`/research-objects?${query}`);
+  }
+
+  researchObject(entityId) {
+    return this.request(`/research-objects/${encodeURIComponent(entityId)}`);
+  }
+
+  researchProjectBundle(projectEntityId) {
+    return this.request(`/research-objects/projects/${encodeURIComponent(projectEntityId)}/bundle`);
+  }
+
 }

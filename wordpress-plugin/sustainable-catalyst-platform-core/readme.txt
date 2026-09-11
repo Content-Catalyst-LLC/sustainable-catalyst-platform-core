@@ -4,7 +4,7 @@ Tags: knowledge graph, entity registry, provenance, live data, sustainable catal
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.0
-Stable tag: 2.27.0
+Stable tag: 2.28.0
 License: MIT
 
 WordPress status, live-data gateway, and entity lookup client for Sustainable Catalyst Platform Core.
@@ -119,7 +119,21 @@ Streaming, Alerts, and Source Reliability.
 * Adds governed data lifecycle, preservation archives, integrity verification, policy/legal holds, non-destructive tombstone lineage, and [sc_platform_core_lifecycle_status].
 
 
+
+== 2.28.0 ==
+* Adds Research Object & Model Foundation status and `[sc_platform_core_research_object_status]`.
+* Tracks graph-native projects, models, model versions, variables, parameters, scenarios, model runs, and results.
+* Core does not execute models; Lab, Workbench, and explicit external executors remain the compute boundary.
+
 == 2.27.0 ==
+* Adds Scientific Object Storage & Processing Adapter Fabric status via `[sc_platform_core_scientific_object_storage_status]`.
+* Reports stored objects, processing adapters, and local-store readiness without exposing object bytes publicly.
+
+== 2.26.0 ==
+* Adds distributed quotas, admission control, and workload-governance status.
+* Reports workload classes, quota policies, and active leases while keeping automatic scaling outside Core.
+
+== 2.25.0 ==
 * Adds secret-free credential registry and cryptographic-key lifecycle status.
 * Tracks versions, expiry, overlap-aware rotation, revocation, compromise state, and credential-use audit metadata.
 * Secret/private-key values remain outside WordPress and Core persistence.

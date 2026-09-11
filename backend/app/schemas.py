@@ -312,6 +312,14 @@ class RegistryStats(BaseModel):
     scientific_stored_objects: int
     scientific_processing_adapters: int
     scientific_processing_runs: int
+    research_projects: int
+    research_models: int
+    research_model_versions: int
+    research_variables: int
+    research_parameters: int
+    research_scenarios: int
+    research_model_runs: int
+    research_results: int
     map_layers: int
     stac_collections: int
     stac_items: int

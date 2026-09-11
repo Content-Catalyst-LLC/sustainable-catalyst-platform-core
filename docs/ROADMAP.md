@@ -173,7 +173,10 @@ Status: implemented. Adds database-shared quota policies and usage buckets, burs
 ## v2.27.0 — Scientific Object Storage & Processing Adapter Fabric
 Status: implemented. Adds migration `0030`, governed local scientific-object storage, credential-free provider-managed references, SHA-256 integrity metadata, parent/derived lineage, processing-adapter contracts, an executable deterministic object-manifest adapter, public-safe metadata APIs, SDK/WordPress surfaces, and an optional certification gate. xarray, GDAL, and Astropy remain contract-only until configured workers exist. Arbitrary code execution and automatic external-object fetching remain disabled.
 
-Next planned: v2.28.0 — Research Object & Model Foundation.
+## v2.28.0 — Research Object & Model Foundation
+Status: implemented. Adds migration `0031` and graph-native research projects, models, immutable model versions, variables, parameters, scenarios, model-run orchestration records, and results. Research objects inherit the Universal Entity Registry, Knowledge Graph, Evidence Ledger, calculation-trace, and provenance foundations. Core records execution intent and lineage but does not execute models; Lab, Workbench, and explicit external runtimes remain the compute boundary.
+
+Next planned: v2.29.0 — Visual Reasoning Object Model.
 
 
 ## v2.24.0 R1 — Secret-Scan Example Credential & Promotion Repair

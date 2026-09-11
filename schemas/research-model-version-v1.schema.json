@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "id",
+    "object_type",
+    "name",
+    "visibility",
+    "attributes"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "object_type": {
+      "const": "model-version"
+    },
+    "slug": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "status": {
+      "type": "string"
+    },
+    "visibility": {
+      "enum": [
+        "public",
+        "internal",
+        "private"
+      ]
+    },
+    "schema_version": {
+      "type": "string"
+    },
+    "metadata": {
+      "type": "object"
+    },
+    "attributes": {
+      "type": "object",
+      "properties": {
+        "model_entity_id": {
+          "type": "string"
+        },
+        "version_label": {
+          "type": "string"
+        },
+        "code_version": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "specification_hash": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "specification": {
+          "type": "object"
+        },
+        "immutable": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "model_entity_id",
+        "version_label"
+      ],
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true,
+  "title": "Sustainable Catalyst Research Model Version v1"
+}

@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "id",
+    "object_type",
+    "name",
+    "visibility",
+    "attributes"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "object_type": {
+      "const": "scenario"
+    },
+    "slug": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "status": {
+      "type": "string"
+    },
+    "visibility": {
+      "enum": [
+        "public",
+        "internal",
+        "private"
+      ]
+    },
+    "schema_version": {
+      "type": "string"
+    },
+    "metadata": {
+      "type": "object"
+    },
+    "attributes": {
+      "type": "object",
+      "properties": {
+        "project_entity_id": {
+          "type": "string"
+        },
+        "base_scenario_entity_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "scenario_state": {
+          "enum": [
+            "draft",
+            "ready",
+            "active",
+            "archived"
+          ]
+        },
+        "parameter_values": {
+          "type": "object"
+        },
+        "assumptions": {
+          "type": "array"
+        }
+      },
+      "required": [
+        "project_entity_id"
+      ],
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true,
+  "title": "Sustainable Catalyst Research Scenario v1"
+}

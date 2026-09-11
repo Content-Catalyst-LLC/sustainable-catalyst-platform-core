@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "id",
+    "object_type",
+    "name",
+    "visibility",
+    "attributes"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "object_type": {
+      "const": "research-project"
+    },
+    "slug": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "status": {
+      "type": "string"
+    },
+    "visibility": {
+      "enum": [
+        "public",
+        "internal",
+        "private"
+      ]
+    },
+    "schema_version": {
+      "type": "string"
+    },
+    "metadata": {
+      "type": "object"
+    },
+    "attributes": {
+      "type": "object",
+      "properties": {
+        "research_question": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "objective": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "methodology": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "owner_product": {
+          "type": "string"
+        },
+        "lifecycle_state": {
+          "type": "string"
+        },
+        "reproducibility_target": {
+          "type": "string"
+        }
+      },
+      "required": [],
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true,
+  "title": "Sustainable Catalyst Research Project v1"
+}

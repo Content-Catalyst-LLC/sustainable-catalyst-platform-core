@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.28.0 — 2026-09-11
+- Added migration `0031` and eight typed research-object families anchored to the Universal Entity Registry.
+- Added graph-native projects, models, immutable model versions, variables, parameters, scenarios, model runs, and results.
+- Added deterministic model-specification hashes, variable uncertainty metadata, parameter bounds/priors, and scenario parameter assignments.
+- Added model-run references to existing provenance activities and calculation traces and optional result linkage to v2.27 scientific stored objects.
+- Added internal and public-safe research-object APIs, project bundles, registry statistics, Python/JavaScript SDK methods, WordPress status, schemas, tests, and release validation.
+- Preserved the architecture boundary: Core does not execute models, render visualizations, or automatically promote model outputs to evidence/truth.
+
 ## 2.27.0 — 2026-09-10
 - Added migration `0030` and four scientific object/storage/processing record families.
 - Added bounded local scientific-object ingestion with generated object keys and SHA-256 integrity verification.

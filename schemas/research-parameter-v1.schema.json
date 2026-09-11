@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "id",
+    "object_type",
+    "name",
+    "visibility",
+    "attributes"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "object_type": {
+      "const": "parameter"
+    },
+    "slug": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "status": {
+      "type": "string"
+    },
+    "visibility": {
+      "enum": [
+        "public",
+        "internal",
+        "private"
+      ]
+    },
+    "schema_version": {
+      "type": "string"
+    },
+    "metadata": {
+      "type": "object"
+    },
+    "attributes": {
+      "type": "object",
+      "properties": {
+        "model_entity_id": {
+          "type": "string"
+        },
+        "variable_entity_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "name": {
+          "type": "string"
+        },
+        "data_type": {
+          "type": "string"
+        },
+        "unit": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "default_value": {
+          "description": "Arbitrary JSON value; may be a scalar, array, object, boolean, or null."
+        },
+        "bounds": {
+          "type": "object"
+        },
+        "prior": {
+          "type": "object"
+        },
+        "sensitivity_enabled": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "model_entity_id",
+        "name"
+      ],
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true,
+  "title": "Sustainable Catalyst Research Parameter v1"
+}

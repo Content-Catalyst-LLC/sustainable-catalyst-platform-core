@@ -2898,3 +2898,163 @@ class ScientificProcessingRun(Base):
     completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+# v2.28.0 — Research Object & Model Foundation
+
+class ResearchProjectRecord(Base):
+    __tablename__ = "research_projects"
+    __table_args__ = (
+        Index("ix_research_project_state", "lifecycle_state"),
+        Index("ix_research_project_owner", "owner_product"),
+    )
+    entity_id: Mapped[str] = mapped_column(ForeignKey("entities.id", ondelete="CASCADE"), primary_key=True)
+    research_question: Mapped[str | None] = mapped_column(Text, nullable=True)
+    objective: Mapped[str | None] = mapped_column(Text, nullable=True)
+    methodology: Mapped[str | None] = mapped_column(Text, nullable=True)
+    owner_product: Mapped[str] = mapped_column(String(80), default="workspace", index=True)
+    lifecycle_state: Mapped[str] = mapped_column(String(50), default="draft", index=True)
+    reproducibility_target: Mapped[str] = mapped_column(String(50), default="reproducible")
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class ResearchModelRecord(Base):
+    __tablename__ = "research_models"
+    __table_args__ = (
+        Index("ix_research_model_project", "project_entity_id"),
+        Index("ix_research_model_kind", "model_kind"),
+    )
+    entity_id: Mapped[str] = mapped_column(ForeignKey("entities.id", ondelete="CASCADE"), primary_key=True)
+    project_entity_id: Mapped[str | None] = mapped_column(ForeignKey("entities.id", ondelete="SET NULL"), nullable=True)
+    model_kind: Mapped[str] = mapped_column(String(80), default="conceptual", index=True)
+    execution_target: Mapped[str] = mapped_column(String(80), default="not-executable")
+    specification_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    assumptions_json: Mapped[list] = mapped_column(JSON, default=list)
+    equations_json: Mapped[list] = mapped_column(JSON, default=list)
+    reproducibility_status: Mapped[str] = mapped_column(String(50), default="declared")
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class ResearchModelVersionRecord(Base):
+    __tablename__ = "research_model_versions"
+    __table_args__ = (
+        UniqueConstraint("model_entity_id", "version_label", name="uq_research_model_version_label"),
+        Index("ix_research_model_version_model", "model_entity_id"),
+        Index("ix_research_model_version_hash", "specification_hash"),
+    )
+    entity_id: Mapped[str] = mapped_column(ForeignKey("entities.id", ondelete="CASCADE"), primary_key=True)
+    model_entity_id: Mapped[str] = mapped_column(ForeignKey("entities.id", ondelete="CASCADE"), nullable=False)
+    version_label: Mapped[str] = mapped_column(String(100), nullable=False)
+    code_version: Mapped[str | None] = mapped_column(String(200), nullable=True)
+    specification_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    specification_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    immutable: Mapped[bool] = mapped_column(Boolean, default=True)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ResearchVariableRecord(Base):
+    __tablename__ = "research_variables"
+    __table_args__ = (
+        UniqueConstraint("model_entity_id", "symbol", name="uq_research_variable_symbol"),
+        Index("ix_research_variable_model", "model_entity_id"),
+        Index("ix_research_variable_role", "role"),
+    )
+    entity_id: Mapped[str] = mapped_column(ForeignKey("entities.id", ondelete="CASCADE"), primary_key=True)
+    model_entity_id: Mapped[str] = mapped_column(ForeignKey("entities.id", ondelete="CASCADE"), nullable=False)
+    symbol: Mapped[str] = mapped_column(String(160), nullable=False)
+    role: Mapped[str] = mapped_column(String(50), default="input", index=True)
+    data_type: Mapped[str] = mapped_column(String(50), default="number")
+    unit: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    definition: Mapped[str | None] = mapped_column(Text, nullable=True)
+    domain_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    uncertainty_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class ResearchParameterRecord(Base):
+    __tablename__ = "research_parameters"
+    __table_args__ = (
+        UniqueConstraint("model_entity_id", "name", name="uq_research_parameter_name"),
+        Index("ix_research_parameter_model", "model_entity_id"),
+    )
+    entity_id: Mapped[str] = mapped_column(ForeignKey("entities.id", ondelete="CASCADE"), primary_key=True)
+    model_entity_id: Mapped[str] = mapped_column(ForeignKey("entities.id", ondelete="CASCADE"), nullable=False)
+    variable_entity_id: Mapped[str | None] = mapped_column(ForeignKey("entities.id", ondelete="SET NULL"), nullable=True)
+    name: Mapped[str] = mapped_column(String(160), nullable=False)
+    data_type: Mapped[str] = mapped_column(String(50), default="number")
+    unit: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    default_value_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    bounds_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    prior_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    sensitivity_enabled: Mapped[bool] = mapped_column(Boolean, default=True)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class ResearchScenarioRecord(Base):
+    __tablename__ = "research_scenarios"
+    __table_args__ = (
+        Index("ix_research_scenario_project", "project_entity_id"),
+        Index("ix_research_scenario_base", "base_scenario_entity_id"),
+        Index("ix_research_scenario_state", "scenario_state"),
+    )
+    entity_id: Mapped[str] = mapped_column(ForeignKey("entities.id", ondelete="CASCADE"), primary_key=True)
+    project_entity_id: Mapped[str] = mapped_column(ForeignKey("entities.id", ondelete="CASCADE"), nullable=False)
+    base_scenario_entity_id: Mapped[str | None] = mapped_column(ForeignKey("entities.id", ondelete="SET NULL"), nullable=True)
+    scenario_state: Mapped[str] = mapped_column(String(50), default="draft", index=True)
+    parameter_values_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    assumptions_json: Mapped[list] = mapped_column(JSON, default=list)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class ResearchModelRunRecord(Base):
+    __tablename__ = "research_model_runs"
+    __table_args__ = (
+        Index("ix_research_model_run_version", "model_version_entity_id"),
+        Index("ix_research_model_run_scenario", "scenario_entity_id"),
+        Index("ix_research_model_run_status", "run_status"),
+    )
+    entity_id: Mapped[str] = mapped_column(ForeignKey("entities.id", ondelete="CASCADE"), primary_key=True)
+    model_version_entity_id: Mapped[str] = mapped_column(ForeignKey("entities.id", ondelete="RESTRICT"), nullable=False)
+    scenario_entity_id: Mapped[str | None] = mapped_column(ForeignKey("entities.id", ondelete="SET NULL"), nullable=True)
+    executor_product: Mapped[str] = mapped_column(String(80), default="lab")
+    external_run_id: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    run_status: Mapped[str] = mapped_column(String(50), default="requested", index=True)
+    parameter_values_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    runtime_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_activity_id: Mapped[str | None] = mapped_column(ForeignKey("provenance_activities.id", ondelete="SET NULL"), nullable=True)
+    calculation_trace_id: Mapped[str | None] = mapped_column(ForeignKey("calculation_traces.id", ondelete="SET NULL"), nullable=True)
+    started_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class ResearchResultRecord(Base):
+    __tablename__ = "research_results"
+    __table_args__ = (
+        Index("ix_research_result_run", "model_run_entity_id"),
+        Index("ix_research_result_kind", "result_kind"),
+        Index("ix_research_result_quality", "quality_status"),
+    )
+    entity_id: Mapped[str] = mapped_column(ForeignKey("entities.id", ondelete="CASCADE"), primary_key=True)
+    model_run_entity_id: Mapped[str] = mapped_column(ForeignKey("entities.id", ondelete="CASCADE"), nullable=False)
+    result_kind: Mapped[str] = mapped_column(String(80), default="summary", index=True)
+    value_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    summary: Mapped[str | None] = mapped_column(Text, nullable=True)
+    scientific_object_id: Mapped[str | None] = mapped_column(ForeignKey("scientific_stored_objects.id", ondelete="SET NULL"), nullable=True)
+    quality_status: Mapped[str] = mapped_column(String(50), default="unreviewed", index=True)
+    uncertainty_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)

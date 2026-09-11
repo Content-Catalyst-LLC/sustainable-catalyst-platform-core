@@ -178,3 +178,16 @@ GET /api/v1/scientific-objects/{object_id}
 ```
 
 These routes expose metadata only for public objects and public adapter summaries. Raw stored bytes, processing execution, provider credentials, internal processing runs, and signed/token-bearing provider URLs are not exposed through the public API. Public metadata exposure can be disabled with `SC_CORE_SCIENTIFIC_OBJECT_PUBLIC_METADATA_ENABLED=false`.
+
+## Research object and model metadata v2.28.0
+
+Credentials with `data:read` may inspect public research-object metadata and project bundles:
+
+```text
+GET /api/v1/research-objects/readiness
+GET /api/v1/research-objects
+GET /api/v1/research-objects/projects/{project_entity_id}/bundle
+GET /api/v1/research-objects/{entity_id}
+```
+
+Supported first-class object types are research projects, models, immutable model versions, variables, parameters, scenarios, model runs, and results. Public responses expose metadata and graph/provenance references only. Core does not execute models, automatically promote results to evidence/truth, or expose private research objects. Public metadata can be disabled with `SC_CORE_RESEARCH_OBJECT_PUBLIC_METADATA_ENABLED=false`.

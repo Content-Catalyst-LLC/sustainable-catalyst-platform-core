@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "id",
+    "object_type",
+    "name",
+    "visibility",
+    "attributes"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "object_type": {
+      "const": "model"
+    },
+    "slug": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "status": {
+      "type": "string"
+    },
+    "visibility": {
+      "enum": [
+        "public",
+        "internal",
+        "private"
+      ]
+    },
+    "schema_version": {
+      "type": "string"
+    },
+    "metadata": {
+      "type": "object"
+    },
+    "attributes": {
+      "type": "object",
+      "properties": {
+        "project_entity_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "model_kind": {
+          "type": "string"
+        },
+        "execution_target": {
+          "enum": [
+            "not-executable",
+            "lab",
+            "workbench",
+            "external"
+          ]
+        },
+        "specification": {
+          "type": "object"
+        },
+        "assumptions": {
+          "type": "array"
+        },
+        "equations": {
+          "type": "array"
+        },
+        "reproducibility_status": {
+          "type": "string"
+        }
+      },
+      "required": [],
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true,
+  "title": "Sustainable Catalyst Research Model v1"
+}

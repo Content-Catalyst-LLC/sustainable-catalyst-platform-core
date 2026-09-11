@@ -1,4 +1,4 @@
-# Sustainable Catalyst Public API Python Client v2.27.0
+# Sustainable Catalyst Public API Python Client v2.28.0
 
 ```python
 from sc_platform_core_public import PublicApiClient
@@ -115,3 +115,8 @@ Adds `credential_lifecycle_status()` for public-safe aggregate credential/key li
 ## v2.27.0 — Scientific object metadata
 
 Use `scientific_object_storage_readiness()`, `scientific_stored_objects(...)`, `scientific_stored_object(id)`, and `scientific_processing_adapters()` for public-safe storage and adapter metadata. Raw object bytes and execution remain internal.
+
+
+## v2.28.0 — Research objects
+
+The client exposes `research_object_readiness()`, `research_objects()`, `research_object()`, and `research_project_bundle()` for public, graph-native research metadata. Model execution remains outside Core.

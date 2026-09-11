@@ -74,7 +74,7 @@ services:
       - key: SC_CORE_LIVE_DATA_STRICT_FREE_SOURCES
         value: "true"
       - key: SC_CORE_LIVE_DATA_USER_AGENT
-        value: SustainableCatalystPlatformCore/2.27.0 (+https://sustainablecatalyst.com/contact/)
+        value: SustainableCatalystPlatformCore/2.28.0 (+https://sustainablecatalyst.com/contact/)
       - key: SC_CORE_LIVE_DATA_TIMEOUT_SECONDS
         value: "20"
       - key: SC_CORE_LIVE_DATA_MAX_RESPONSE_BYTES
@@ -297,6 +297,10 @@ services:
       - key: SC_CORE_SCIENTIFIC_PROCESSING_ENABLED
         value: "true"
       - key: SC_CORE_SCIENTIFIC_OBJECT_PUBLIC_METADATA_ENABLED
+        value: "true"
+      - key: SC_CORE_RESEARCH_OBJECT_MODEL_ENABLED
+        value: "true"
+      - key: SC_CORE_RESEARCH_OBJECT_PUBLIC_METADATA_ENABLED
         value: "true"
       - key: SC_CORE_CERTIFICATION_REQUIRE_SCIENTIFIC_OBJECT_STORAGE_READY
         value: "false"

@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "id",
+    "object_type",
+    "name",
+    "visibility",
+    "attributes"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "object_type": {
+      "const": "result"
+    },
+    "slug": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "status": {
+      "type": "string"
+    },
+    "visibility": {
+      "enum": [
+        "public",
+        "internal",
+        "private"
+      ]
+    },
+    "schema_version": {
+      "type": "string"
+    },
+    "metadata": {
+      "type": "object"
+    },
+    "attributes": {
+      "type": "object",
+      "properties": {
+        "model_run_entity_id": {
+          "type": "string"
+        },
+        "result_kind": {
+          "type": "string"
+        },
+        "value": {
+          "description": "Arbitrary JSON value; may be a scalar, array, object, boolean, or null."
+        },
+        "summary": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "scientific_object_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "quality_status": {
+          "enum": [
+            "unreviewed",
+            "reviewed",
+            "validated",
+            "rejected"
+          ]
+        },
+        "uncertainty": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "model_run_entity_id"
+      ],
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true,
+  "title": "Sustainable Catalyst Research Result v1"
+}

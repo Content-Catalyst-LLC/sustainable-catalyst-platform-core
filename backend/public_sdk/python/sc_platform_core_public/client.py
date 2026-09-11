@@ -399,3 +399,23 @@ PublicApiClient.scientific_object_storage_readiness = _scientific_object_storage
 PublicApiClient.scientific_stored_objects = _scientific_stored_objects
 PublicApiClient.scientific_stored_object = _scientific_stored_object
 PublicApiClient.scientific_processing_adapters = _scientific_processing_adapters
+
+
+# v2.28.0 Research Object & Model Foundation public metadata methods.
+def _research_object_readiness(self):
+    return self.request("GET", "/research-objects/readiness")
+
+def _research_objects(self, **params):
+    clean={k:v for k,v in params.items() if v is not None}
+    return self.request("GET", "/research-objects", params=clean)
+
+def _research_object(self, entity_id: str):
+    return self.request("GET", f"/research-objects/{entity_id}")
+
+def _research_project_bundle(self, project_entity_id: str):
+    return self.request("GET", f"/research-objects/projects/{project_entity_id}/bundle")
+
+PublicApiClient.research_object_readiness = _research_object_readiness
+PublicApiClient.research_objects = _research_objects
+PublicApiClient.research_object = _research_object
+PublicApiClient.research_project_bundle = _research_project_bundle

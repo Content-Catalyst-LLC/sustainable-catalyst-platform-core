@@ -1,0 +1,108 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "id",
+    "object_type",
+    "name",
+    "visibility",
+    "attributes"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "object_type": {
+      "const": "model-run"
+    },
+    "slug": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "status": {
+      "type": "string"
+    },
+    "visibility": {
+      "enum": [
+        "public",
+        "internal",
+        "private"
+      ]
+    },
+    "schema_version": {
+      "type": "string"
+    },
+    "metadata": {
+      "type": "object"
+    },
+    "attributes": {
+      "type": "object",
+      "properties": {
+        "model_version_entity_id": {
+          "type": "string"
+        },
+        "scenario_entity_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "executor_product": {
+          "enum": [
+            "lab",
+            "workbench",
+            "external"
+          ]
+        },
+        "external_run_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "run_status": {
+          "enum": [
+            "requested",
+            "queued",
+            "running",
+            "completed",
+            "failed",
+            "cancelled"
+          ]
+        },
+        "parameter_values": {
+          "type": "object"
+        },
+        "runtime": {
+          "type": "object"
+        },
+        "provenance_activity_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "calculation_trace_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "model_version_entity_id"
+      ],
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true,
+  "title": "Sustainable Catalyst Research Model Run v1"
+}

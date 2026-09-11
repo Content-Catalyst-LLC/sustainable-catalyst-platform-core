@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "id",
+    "object_type",
+    "name",
+    "visibility",
+    "attributes"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "object_type": {
+      "const": "variable"
+    },
+    "slug": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "status": {
+      "type": "string"
+    },
+    "visibility": {
+      "enum": [
+        "public",
+        "internal",
+        "private"
+      ]
+    },
+    "schema_version": {
+      "type": "string"
+    },
+    "metadata": {
+      "type": "object"
+    },
+    "attributes": {
+      "type": "object",
+      "properties": {
+        "model_entity_id": {
+          "type": "string"
+        },
+        "symbol": {
+          "type": "string"
+        },
+        "role": {
+          "enum": [
+            "input",
+            "output",
+            "state",
+            "derived",
+            "latent",
+            "control"
+          ]
+        },
+        "data_type": {
+          "type": "string"
+        },
+        "unit": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "definition": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "domain": {
+          "type": "object"
+        },
+        "uncertainty": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "model_entity_id",
+        "symbol"
+      ],
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true,
+  "title": "Sustainable Catalyst Research Variable v1"
+}

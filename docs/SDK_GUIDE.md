@@ -147,3 +147,25 @@ console.log(await client.scientificProcessingAdapters());
 ```
 
 The public SDK exposes public-safe metadata only. Scientific object upload, byte retrieval, processing execution, and processing-run details remain authenticated internal Core operations.
+
+## Research object and model metadata v2.28.0
+
+Python:
+
+```python
+print(client.research_object_readiness())
+print(client.research_objects(object_type="model", limit=25))
+print(client.research_object("sc:model:..."))
+print(client.research_project_bundle("sc:research-project:..."))
+```
+
+JavaScript:
+
+```javascript
+console.log(await client.researchObjectReadiness());
+console.log(await client.researchObjects({ object_type: "model", limit: 25 }));
+console.log(await client.researchObject("sc:model:..."));
+console.log(await client.researchProjectBundle("sc:research-project:..."));
+```
+
+These methods use `data:read` and return public-safe research metadata. Lab, Workbench, or external execution services perform model execution; Platform Core records governed model/run/result structure and provenance references.
