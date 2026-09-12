@@ -326,6 +326,11 @@ class RegistryStats(BaseModel):
     visual_reasoning_layers: int
     visual_reasoning_annotations: int
     visual_reasoning_snapshots: int
+    visualization_specifications: int
+    renderer_definitions: int
+    renderer_versions: int
+    renderer_compatibility_rules: int
+    renderer_resolutions: int
     map_layers: int
     stac_collections: int
     stac_items: int

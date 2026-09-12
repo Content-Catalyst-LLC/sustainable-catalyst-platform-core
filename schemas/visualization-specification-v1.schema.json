@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/visualization-specification-v1.schema.json",
+  "title": "Visualization Specification v1",
+  "type": "object",
+  "required": [
+    "visual_entity_id",
+    "spec_key",
+    "revision",
+    "spec_version",
+    "spec_kind",
+    "renderer_policy"
+  ],
+  "properties": {
+    "visual_entity_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "spec_key": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 180
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "spec_version": {
+      "type": "string"
+    },
+    "spec_kind": {
+      "enum": [
+        "generic",
+        "chart",
+        "network",
+        "diagram",
+        "map",
+        "table",
+        "composite"
+      ]
+    },
+    "title": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "preferred_renderer_key": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "renderer_policy": {
+      "enum": [
+        "compatible",
+        "preferred-only",
+        "registry-priority"
+      ]
+    },
+    "encoding": {
+      "type": "object"
+    },
+    "interaction": {
+      "type": "object"
+    },
+    "accessibility": {
+      "type": "object"
+    },
+    "layout_constraints": {
+      "type": "object"
+    },
+    "export": {
+      "type": "object"
+    },
+    "metadata": {
+      "type": "object"
+    },
+    "state_hash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    }
+  },
+  "additionalProperties": true
+}

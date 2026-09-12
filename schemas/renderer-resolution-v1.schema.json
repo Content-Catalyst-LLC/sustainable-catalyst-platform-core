@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/renderer-resolution-v1.schema.json",
+  "title": "Renderer Resolution v1",
+  "type": "object",
+  "required": [
+    "specification_id",
+    "resolution_state",
+    "selection_mode",
+    "execution_performed"
+  ],
+  "properties": {
+    "specification_id": {
+      "type": "string"
+    },
+    "requested_renderer_key": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "resolved_renderer_key": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "resolved_renderer_version": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "resolution_state": {
+      "enum": [
+        "resolved",
+        "unresolved"
+      ]
+    },
+    "selection_mode": {
+      "type": "string"
+    },
+    "rationale": {
+      "type": "object"
+    },
+    "execution_performed": {
+      "const": false
+    },
+    "created_by": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": true
+}

@@ -439,3 +439,19 @@ PublicApiClient.visual_reasoning_readiness = _visual_reasoning_readiness
 PublicApiClient.visual_reasoning_objects = _visual_reasoning_objects
 PublicApiClient.visual_reasoning_object = _visual_reasoning_object
 PublicApiClient.visual_reasoning_bundle = _visual_reasoning_bundle
+
+
+# v2.30.0 Visualization Specification & Renderer Registry public metadata methods.
+def _visualization_readiness(self):
+    return self.request("GET", "/visualization/readiness")
+
+def _visualization_renderers(self):
+    return self.request("GET", "/visualization/renderers")
+
+def _visualization_specifications(self, **params):
+    clean={k:v for k,v in params.items() if v is not None}
+    return self.request("GET", "/visualization/specifications", params=clean)
+
+PublicApiClient.visualization_readiness = _visualization_readiness
+PublicApiClient.visualization_renderers = _visualization_renderers
+PublicApiClient.visualization_specifications = _visualization_specifications

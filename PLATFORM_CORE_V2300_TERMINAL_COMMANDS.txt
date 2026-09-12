@@ -1,0 +1,22 @@
+# macOS — bundle verification
+cd ~/Downloads
+chmod +x deploy_and_validate_platform_core_v2_30_0_macos.sh
+SC_CORE_BUNDLE_ONLY=1 ./deploy_and_validate_platform_core_v2_30_0_macos.sh "$HOME/Downloads/sustainable-catalyst-platform-core-v2.30.0-release-bundle.zip"
+
+# macOS — full validation + GitHub push/tag
+cd ~/Downloads
+./deploy_and_validate_platform_core_v2_30_0_macos.sh "$HOME/Downloads/sustainable-catalyst-platform-core-v2.30.0-release-bundle.zip"
+
+# GitHub target
+git@github.com:Content-Catalyst-LLC/sustainable-catalyst-platform-core.git
+# tag: v2.30.0
+
+# Contabo — run only after GitHub promotion
+ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes catalystadmin@94.72.113.77
+cd /opt/sustainable-catalyst/core
+# DEPLOY_PLATFORM_CORE_V2300_CONTABO.sh is included in the repository after GitHub promotion
+bash DEPLOY_PLATFORM_CORE_V2300_CONTABO.sh
+
+# Live verification
+curl -fsS http://127.0.0.1:8090/health | python3 -m json.tool
+curl -fsS http://127.0.0.1:8090/v1/visualization/readiness | python3 -m json.tool

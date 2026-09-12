@@ -1,3 +1,14 @@
+## 2.30.0 — 2026-09-11
+
+- Added migration `0033` and the Visualization Specification & Renderer Registry.
+- Added immutable revisioned visualization specifications with deterministic SHA-256 state hashes.
+- Added renderer-family contracts, contract-version metadata, and governed compatibility rules.
+- Added deterministic renderer resolution records with persisted rationale and `execution_performed=false`.
+- Seeded D3, Vega-Lite, Plotly, and MapLibre contract metadata without asserting installed renderer runtimes.
+- Added internal/public-safe APIs, SDK helpers, WordPress status, schemas, release validation, and regression coverage.
+- Retained the v2.29.0.1 WordPress backend-URL diagnostic repair.
+- Kept renderer execution, layout execution, render-output generation, and automatic truth promotion outside Core.
+
 ## 2.29.0 — 2026-09-11
 
 - Added migration `0032` and the Visual Reasoning Object Model.

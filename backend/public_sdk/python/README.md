@@ -1,4 +1,4 @@
-# Sustainable Catalyst Public API Python Client v2.29.0
+# Sustainable Catalyst Public API Python Client v2.30.0
 
 ```python
 from sc_platform_core_public import PublicApiClient
@@ -125,3 +125,8 @@ The client exposes `research_object_readiness()`, `research_objects()`, `researc
 ## v2.29.0 — Visual reasoning
 
 The public client exposes renderer-neutral visual reasoning readiness, public visual-object listing/detail, and semantic bundles. Core returns semantic elements, relations, layers, annotations, and snapshot metadata; it does not return a renderer choice or execute layout.
+
+
+## v2.30.0 — Visualization specification & renderer registry
+
+Use `visualization_readiness()`, `visualization_renderers()`, and `visualization_specifications()` to inspect public-safe renderer contracts and governed visualization specifications. Core resolves compatibility metadata only; it does not execute renderers or layouts.

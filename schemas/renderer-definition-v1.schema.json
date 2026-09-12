@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/renderer-definition-v1.schema.json",
+  "title": "Renderer Definition v1",
+  "type": "object",
+  "required": [
+    "renderer_key",
+    "name",
+    "renderer_family",
+    "runtime",
+    "execution_mode",
+    "enabled",
+    "executable_by_core"
+  ],
+  "properties": {
+    "renderer_key": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "renderer_family": {
+      "type": "string"
+    },
+    "runtime": {
+      "type": "string"
+    },
+    "execution_mode": {
+      "type": "string"
+    },
+    "enabled": {
+      "type": "boolean"
+    },
+    "executable_by_core": {
+      "const": false
+    },
+    "public_summary": {
+      "type": "boolean"
+    },
+    "supported_spec_versions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "capabilities": {
+      "type": "object"
+    },
+    "metadata": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": true
+}

@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name: Sustainable Catalyst Platform Core
- * Description: WordPress connector for Sustainable Catalyst Platform Core registry, graph, evidence, developer, gateway, free live-data, international-law, scientific-data, official-statistics, geospatial, time-series, STAC, map-layer, streaming, alerts, source-reliability, and operational-facility, humanitarian-access, essential-services, and country-evidence federation and reconciliation, and Earth/Ocean/Space scientific-service routing, cross-product exchange, distributed scale-control services, and governance/access/audit, production-certification/recovery, and observability/SLO production-operations services, plus incident-response, change-control, rollback-coordination, continuity, backup-verification, disaster-recovery, and multi-region resilience/failover-coordination, and data-lifecycle/archival-integrity/preservation services, plus Federated Core trusted-node exchange services and capacity forecasting/resource-governance services, plus identity/credential/cryptographic-key lifecycle governance, distributed workload governance, and scientific object storage/processing adapter services, research object/model services, and renderer-neutral visual reasoning object services.
- * Version: 2.29.0.1
+ * Description: WordPress connector for Sustainable Catalyst Platform Core registry, graph, evidence, developer, gateway, free live-data, international-law, scientific-data, official-statistics, geospatial, time-series, STAC, map-layer, streaming, alerts, source-reliability, and operational-facility, humanitarian-access, essential-services, and country-evidence federation and reconciliation, and Earth/Ocean/Space scientific-service routing, cross-product exchange, distributed scale-control services, and governance/access/audit, production-certification/recovery, and observability/SLO production-operations services, plus incident-response, change-control, rollback-coordination, continuity, backup-verification, disaster-recovery, and multi-region resilience/failover-coordination, and data-lifecycle/archival-integrity/preservation services, plus Federated Core trusted-node exchange services and capacity forecasting/resource-governance services, plus identity/credential/cryptographic-key lifecycle governance, distributed workload governance, and scientific object storage/processing adapter services, research object/model services, renderer-neutral visual reasoning object services, and visualization specification/renderer registry services.
+ * Version: 2.30.0
  * Author: Content Catalyst LLC
  * License: MIT
  */
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('SCPC_VERSION', '2.29.0.1');
+define('SCPC_VERSION', '2.30.0');
 define('SCPC_OPTION_BACKEND_URL', 'scpc_backend_url');
 define('SCPC_OPTION_READ_KEY', 'scpc_read_key');
 
@@ -61,7 +61,7 @@ function scpc_render_settings_page() {
                             type="url"
                             class="regular-text"
                             value="<?php echo esc_attr($backend); ?>"
-                            placeholder="https://your-platform-core.onrender.com"
+                            placeholder="https://core.sustainablecatalyst.com"
                         />
                     </td>
                 </tr>
@@ -107,6 +107,7 @@ function scpc_render_settings_page() {
         <code>[sc_platform_core_scientific_object_storage_status]</code><br />
         <code>[sc_platform_core_research_object_status]</code><br />
         <code>[sc_platform_core_visual_reasoning_status]</code><br />
+        <code>[sc_platform_core_visualization_registry_status]</code><br />
         <code>[sc_platform_core_entity id="sc:product:workbench"]</code><br />
         <code>[sc_platform_core_relationships id="sc:product:research-librarian"]</code><br />
         <code>[sc_knowledge_explorer]</code><br />
@@ -1103,19 +1104,19 @@ function scpc_visual_reasoning_status_shortcode() {
         $relations = intval($counts['relations'] ?? 0);
         $snapshots = intval($counts['snapshots'] ?? 0);
         $renderer = !empty($status['renderer_neutral']) ? 'renderer-neutral' : 'renderer-attached';
-        $release = isset($status['release']) ? sanitize_text_field((string) $status['release']) : '2.29.0';
+        $release = isset($status['release']) ? sanitize_text_field((string) $status['release']) : '2.30.0';
 
         return '<div class="scpc-status"><strong>Visual Reasoning Object Model</strong><br />' .
             $objects . ' visual objects · ' . $elements . ' elements · ' . $relations . ' relations · ' . $snapshots . ' snapshots<br />' .
-            '<span class="scpc-meta">Core ' . esc_html($release) . ' · ' . esc_html($renderer) . ' semantic model. Core governs meaning, source bindings, uncertainty, caveats, and reproducible snapshots; renderer selection and layout remain outside v2.29.0.</span></div>';
+            '<span class="scpc-meta">Core ' . esc_html($release) . ' · ' . esc_html($renderer) . ' semantic model. Core governs meaning, source bindings, uncertainty, caveats, and reproducible snapshots; v2.30 adds governed renderer contracts while renderer execution and layout execution remain external to Core.</span></div>';
     }
 
     // Some production reverse-proxy configurations expose /health while restricting
-    // newer internal /v1 capability routes. Health already carries the v2.29
+    // newer internal /v1 capability routes. Health carries the visual-reasoning
     // capability flag, so fail soft rather than reporting the feature offline.
     $health = scpc_api_get('/health');
     if (!is_wp_error($health) && !empty($health['visual_reasoning_object_model'])) {
-        $release = isset($health['version']) ? sanitize_text_field((string) $health['version']) : '2.29.0';
+        $release = isset($health['version']) ? sanitize_text_field((string) $health['version']) : '2.30.0';
         $detail = '';
         if (current_user_can('manage_options')) {
             $detail = '<br /><span class="scpc-meta">Detailed readiness route unavailable: ' .
@@ -1137,4 +1138,25 @@ function scpc_visual_reasoning_status_shortcode() {
     return '<div class="scpc-status scpc-status--error">' . $message . '</div>';
 }
 add_shortcode('sc_platform_core_visual_reasoning_status', 'scpc_visual_reasoning_status_shortcode');
+
+function scpc_visualization_registry_status_shortcode() {
+    $status = scpc_api_get('/v1/visualization/readiness');
+    if (is_wp_error($status)) {
+        $health = scpc_api_get('/health');
+        $message = esc_html($status->get_error_message());
+        if (is_wp_error($health)) {
+            $message .= ' Health check: ' . esc_html($health->get_error_message());
+        }
+        return '<div class="scpc-status scpc-status--error"><strong>Visualization Specification &amp; Renderer Registry status unavailable.</strong><br /><span class="scpc-meta">' . $message . '</span></div>';
+    }
+    $counts = isset($status['counts']) && is_array($status['counts']) ? $status['counts'] : [];
+    $specs = intval($counts['specifications'] ?? 0);
+    $renderers = intval($counts['renderers'] ?? 0);
+    $rules = intval($counts['compatibility_rules'] ?? 0);
+    $resolutions = intval($counts['resolutions'] ?? 0);
+    $release = sanitize_text_field($status['release'] ?? SCPC_VERSION);
+    return '<div class="scpc-status"><strong>Visualization Specification &amp; Renderer Registry</strong><br />' . $specs . ' specifications · ' . $renderers . ' renderer contracts · ' . $rules . ' compatibility rules · ' . $resolutions . ' resolutions<br /><span class="scpc-meta">Core ' . esc_html($release) . ' · governed specification and compatibility metadata. Renderer execution, layout execution, and render-output generation remain outside Core.</span></div>';
+}
+add_shortcode('sc_platform_core_visualization_registry_status', 'scpc_visualization_registry_status_shortcode');
+
 

@@ -179,7 +179,10 @@ Status: implemented. Adds migration `0031` and graph-native research projects, m
 ## v2.29.0 — Visual Reasoning Object Model
 Status: implemented. Adds migration `0032`, graph-native renderer-neutral visual reasoning objects, semantic elements and relations, reasoning layers, governed annotations, Core-entity/scientific-object source bindings, and immutable SHA-256 semantic snapshots. Core owns meaning and lineage, not layout, styling, renderer selection, or automatic causal/truth inference.
 
-Next planned: v2.30.0 — Visualization Specification & Renderer Registry.
+## v2.30.0 — Visualization Specification & Renderer Registry
+Status: implemented. Adds migration `0033`, immutable revisioned visualization specifications, renderer-family contract definitions, contract-version metadata, governed compatibility rules, deterministic compatibility resolution records, public-safe registry metadata, SDK/WordPress surfaces, and explicit non-execution boundaries. Core selects compatible renderer contracts as metadata only; rendering, layout computation, and output generation remain external.
+
+Next planned: v2.31.0 — System Maps.
 
 
 ## v2.24.0 R1 — Secret-Scan Example Credential & Promotion Repair

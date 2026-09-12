@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/renderer-version-v1.schema.json",
+  "title": "Renderer Version v1",
+  "type": "object",
+  "required": [
+    "renderer_key",
+    "version",
+    "status",
+    "contract_version"
+  ],
+  "properties": {
+    "renderer_key": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string"
+    },
+    "contract_version": {
+      "type": "string"
+    },
+    "capabilities": {
+      "type": "object"
+    },
+    "metadata": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": true
+}

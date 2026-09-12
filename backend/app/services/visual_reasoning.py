@@ -133,7 +133,7 @@ def readiness(db: Session) -> dict[str, Any]:
         "counts": counts,
         "graph_native": True,
         "renderer_neutral": True,
-        "renderer_registry_in_core": False,
+        "renderer_registry_in_core": True,
         "layout_engine_in_core": False,
         "semantic_snapshot_hashing": "sha256",
         "automatic_truth_promotion": False,
@@ -450,6 +450,7 @@ def bundle(db: Session, visual_entity_id: str, *, public_only: bool = False) -> 
             "renderer_neutral": True,
             "layout_engine_in_core": False,
             "style_specification_in_core": False,
-            "next_layer": "v2.30.0 Visualization Specification & Renderer Registry",
+            "visualization_specification_layer": "v2.30.0 Visualization Specification & Renderer Registry",
+            "renderer_execution_by_core": False,
         },
     }

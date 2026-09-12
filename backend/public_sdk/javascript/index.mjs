@@ -398,4 +398,18 @@ export class PublicApiClient {
     return this.request(`/visual-reasoning/objects/${encodeURIComponent(entityId)}/bundle`);
   }
 
+  visualizationReadiness() {
+    return this.request("/visualization/readiness");
+  }
+
+  visualizationRenderers() {
+    return this.request("/visualization/renderers");
+  }
+
+  visualizationSpecifications(params = {}) {
+    const clean = Object.fromEntries(Object.entries(params).filter(([, value]) => value !== null && value !== undefined));
+    const query = new URLSearchParams(clean);
+    return this.request(`/visualization/specifications?${query}`);
+  }
+
 }

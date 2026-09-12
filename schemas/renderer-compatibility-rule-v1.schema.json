@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/renderer-compatibility-rule-v1.schema.json",
+  "title": "Renderer Compatibility Rule v1",
+  "type": "object",
+  "required": [
+    "renderer_key",
+    "visual_kind",
+    "spec_kind",
+    "priority",
+    "enabled"
+  ],
+  "properties": {
+    "renderer_key": {
+      "type": "string"
+    },
+    "visual_kind": {
+      "type": "string"
+    },
+    "spec_kind": {
+      "type": "string"
+    },
+    "priority": {
+      "type": "integer"
+    },
+    "required_capabilities": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "constraints": {
+      "type": "object"
+    },
+    "enabled": {
+      "type": "boolean"
+    },
+    "metadata": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": true
+}

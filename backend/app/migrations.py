@@ -10,6 +10,8 @@ from .models import (
     ResearchParameterRecord, ResearchScenarioRecord, ResearchModelRunRecord, ResearchResultRecord,
     VisualReasoningObjectRecord, VisualReasoningElementRecord, VisualReasoningRelationRecord,
     VisualReasoningLayerRecord, VisualReasoningAnnotationRecord, VisualReasoningSnapshotRecord,
+    VisualizationSpecificationRecord, RendererDefinitionRecord, RendererVersionRecord,
+    RendererCompatibilityRuleRecord, RendererResolutionRecord,
 )
 from .predicate_catalog import DEFAULT_PREDICATES
 from .api_plan_catalog import DEFAULT_API_PLANS
@@ -50,6 +52,7 @@ MIGRATIONS = [
     ("0030", "Scientific object storage backends, governed stored-object registry, processing adapter contracts, derived-object lineage, and auditable processing runs."),
     ("0031", "Research projects, models, immutable model versions, variables, parameters, scenarios, model runs, results, and graph-native research semantics."),
     ("0032", "Renderer-neutral visual reasoning objects, semantic elements and relations, layers, annotations, source bindings, and immutable semantic snapshots."),
+    ("0033", "Immutable visualization specifications, renderer contract registry, renderer-version metadata, governed compatibility rules, and non-executing renderer resolution records."),
 ]
 
 
@@ -160,6 +163,83 @@ def _seed_scientific_object_fabric(database: Database) -> tuple[int, int]:
                 adapters_created += 1
         session.commit()
     return backends_created, adapters_created
+
+
+DEFAULT_RENDERER_DEFINITIONS = [
+    {
+        "renderer_key": "contract.d3",
+        "name": "D3 renderer contract",
+        "description": "Contract metadata for D3-capable external/browser runtimes. Core does not execute D3.",
+        "renderer_family": "d3", "runtime": "browser", "execution_mode": "external-runtime",
+        "enabled": True, "executable_by_core": False, "public_summary": True,
+        "supported_spec_versions_json": ["1.0"],
+        "capabilities_json": {"network": True, "diagram": True, "interaction": True, "map": False},
+        "metadata_json": {"seed": "platform-core-v2.30.0", "installed_runtime_asserted": False},
+    },
+    {
+        "renderer_key": "contract.vega-lite",
+        "name": "Vega-Lite renderer contract",
+        "description": "Contract metadata for Vega-Lite-capable external/browser runtimes. Core does not execute Vega-Lite.",
+        "renderer_family": "vega-lite", "runtime": "browser", "execution_mode": "external-runtime",
+        "enabled": True, "executable_by_core": False, "public_summary": True,
+        "supported_spec_versions_json": ["1.0"],
+        "capabilities_json": {"chart": True, "interaction": True, "network": False, "map": False},
+        "metadata_json": {"seed": "platform-core-v2.30.0", "installed_runtime_asserted": False},
+    },
+    {
+        "renderer_key": "contract.plotly",
+        "name": "Plotly renderer contract",
+        "description": "Contract metadata for Plotly-capable external runtimes. Core does not execute Plotly.",
+        "renderer_family": "plotly", "runtime": "external-runtime", "execution_mode": "external-runtime",
+        "enabled": True, "executable_by_core": False, "public_summary": True,
+        "supported_spec_versions_json": ["1.0"],
+        "capabilities_json": {"chart": True, "map": True, "interaction": True, "three_dimensional": True},
+        "metadata_json": {"seed": "platform-core-v2.30.0", "installed_runtime_asserted": False},
+    },
+    {
+        "renderer_key": "contract.maplibre",
+        "name": "MapLibre renderer contract",
+        "description": "Contract metadata for MapLibre-capable external/browser runtimes. Core does not execute MapLibre.",
+        "renderer_family": "maplibre", "runtime": "browser", "execution_mode": "external-runtime",
+        "enabled": True, "executable_by_core": False, "public_summary": True,
+        "supported_spec_versions_json": ["1.0"],
+        "capabilities_json": {"map": True, "interaction": True, "network": False, "chart": False},
+        "metadata_json": {"seed": "platform-core-v2.30.0", "installed_runtime_asserted": False},
+    },
+]
+
+DEFAULT_RENDERER_VERSIONS = [
+    {"renderer_key": key, "version": "contract-v1", "status": "active", "contract_version": "1.0",
+     "capabilities_json": {}, "metadata_json": {"seed": "platform-core-v2.30.0", "renderer_package_version_pinned": False}}
+    for key in ("contract.d3", "contract.vega-lite", "contract.plotly", "contract.maplibre")
+]
+
+DEFAULT_RENDERER_COMPATIBILITY_RULES = [
+    ("contract.d3", "system-map", "diagram", 300), ("contract.d3", "causal-map", "network", 320),
+    ("contract.d3", "evidence-map", "network", 310), ("contract.d3", "flow-map", "network", 300),
+    ("contract.d3", "model-map", "diagram", 300), ("contract.vega-lite", "generic", "chart", 280),
+    ("contract.vega-lite", "scenario-landscape", "chart", 300), ("contract.plotly", "scenario-landscape", "chart", 290),
+    ("contract.plotly", "spatial-temporal-map", "chart", 220), ("contract.maplibre", "spatial-temporal-map", "map", 340),
+    ("contract.maplibre", "flow-map", "map", 260), ("contract.d3", "*", "generic", 100),
+]
+
+def _seed_renderer_registry(database: Database) -> tuple[int, int, int]:
+    definitions_created = versions_created = rules_created = 0
+    with database.session_factory() as session:
+        for payload in DEFAULT_RENDERER_DEFINITIONS:
+            if session.get(RendererDefinitionRecord, payload["renderer_key"]) is None:
+                session.add(RendererDefinitionRecord(**payload)); definitions_created += 1
+        session.flush()
+        for payload in DEFAULT_RENDERER_VERSIONS:
+            existing = session.scalar(select(RendererVersionRecord).where(RendererVersionRecord.renderer_key == payload["renderer_key"], RendererVersionRecord.version == payload["version"]))
+            if existing is None:
+                session.add(RendererVersionRecord(**payload)); versions_created += 1
+        for renderer_key, visual_kind, spec_kind, priority in DEFAULT_RENDERER_COMPATIBILITY_RULES:
+            existing = session.scalar(select(RendererCompatibilityRuleRecord).where(RendererCompatibilityRuleRecord.renderer_key == renderer_key, RendererCompatibilityRuleRecord.visual_kind == visual_kind, RendererCompatibilityRuleRecord.spec_kind == spec_kind))
+            if existing is None:
+                session.add(RendererCompatibilityRuleRecord(renderer_key=renderer_key, visual_kind=visual_kind, spec_kind=spec_kind, priority=priority, required_capabilities_json=[], constraints_json={}, enabled=True, metadata_json={"seed":"platform-core-v2.30.0"})); rules_created += 1
+        session.commit()
+    return definitions_created, versions_created, rules_created
 
 def _seed_predicates(database: Database) -> int:
     created = 0
@@ -306,6 +386,7 @@ def run_migrations(database: Database) -> list[str]:
     _configure_postgresql_fabric(database)
     _seed_observability_slos(database)
     _seed_scientific_object_fabric(database)
+    _seed_renderer_registry(database)
     return applied
 
 def migration_status(database: Database) -> dict:
@@ -334,5 +415,10 @@ def migration_status(database: Database) -> dict:
         visual_reasoning_layers = len(session.scalars(select(VisualReasoningLayerRecord.id)).all())
         visual_reasoning_annotations = len(session.scalars(select(VisualReasoningAnnotationRecord.id)).all())
         visual_reasoning_snapshots = len(session.scalars(select(VisualReasoningSnapshotRecord.id)).all())
+        visualization_specifications = len(session.scalars(select(VisualizationSpecificationRecord.id)).all())
+        renderer_definitions = len(session.scalars(select(RendererDefinitionRecord.renderer_key)).all())
+        renderer_versions = len(session.scalars(select(RendererVersionRecord.id)).all())
+        renderer_compatibility_rules = len(session.scalars(select(RendererCompatibilityRuleRecord.id)).all())
+        renderer_resolutions = len(session.scalars(select(RendererResolutionRecord.id)).all())
     expected = {version for version, _ in MIGRATIONS}
-    return {"expected":sorted(expected),"applied":sorted(applied),"pending":sorted(expected-applied),"predicate_definitions":predicates,"api_plans":api_plans,"evaluation_definitions":evaluation_definitions,"workflow_definitions":workflow_definitions,"live_data_sources":live_data_sources,"live_data_connectors":live_data_connectors,"scientific_storage_backends":scientific_storage_backends,"scientific_processing_adapters":scientific_processing_adapters,"research_projects":research_projects,"research_models":research_models,"research_model_versions":research_model_versions,"research_variables":research_variables,"research_parameters":research_parameters,"research_scenarios":research_scenarios,"research_model_runs":research_model_runs,"research_results":research_results,"visual_reasoning_objects":visual_reasoning_objects,"visual_reasoning_elements":visual_reasoning_elements,"visual_reasoning_relations":visual_reasoning_relations,"visual_reasoning_layers":visual_reasoning_layers,"visual_reasoning_annotations":visual_reasoning_annotations,"visual_reasoning_snapshots":visual_reasoning_snapshots}
+    return {"expected":sorted(expected),"applied":sorted(applied),"pending":sorted(expected-applied),"predicate_definitions":predicates,"api_plans":api_plans,"evaluation_definitions":evaluation_definitions,"workflow_definitions":workflow_definitions,"live_data_sources":live_data_sources,"live_data_connectors":live_data_connectors,"scientific_storage_backends":scientific_storage_backends,"scientific_processing_adapters":scientific_processing_adapters,"research_projects":research_projects,"research_models":research_models,"research_model_versions":research_model_versions,"research_variables":research_variables,"research_parameters":research_parameters,"research_scenarios":research_scenarios,"research_model_runs":research_model_runs,"research_results":research_results,"visual_reasoning_objects":visual_reasoning_objects,"visual_reasoning_elements":visual_reasoning_elements,"visual_reasoning_relations":visual_reasoning_relations,"visual_reasoning_layers":visual_reasoning_layers,"visual_reasoning_annotations":visual_reasoning_annotations,"visual_reasoning_snapshots":visual_reasoning_snapshots,"visualization_specifications":visualization_specifications,"renderer_definitions":renderer_definitions,"renderer_versions":renderer_versions,"renderer_compatibility_rules":renderer_compatibility_rules,"renderer_resolutions":renderer_resolutions}

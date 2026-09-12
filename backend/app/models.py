@@ -3179,3 +3179,105 @@ class VisualReasoningSnapshotRecord(Base):
     provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
     created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+# v2.30.0 — Visualization Specification & Renderer Registry
+
+class VisualizationSpecificationRecord(Base):
+    __tablename__ = "visualization_specifications"
+    __table_args__ = (
+        UniqueConstraint("visual_entity_id", "spec_key", "revision", name="uq_visualization_spec_revision"),
+        Index("ix_visualization_spec_visual", "visual_entity_id"),
+        Index("ix_visualization_spec_kind", "spec_kind"),
+        Index("ix_visualization_spec_hash", "state_hash"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    visual_entity_id: Mapped[str] = mapped_column(ForeignKey("entities.id", ondelete="CASCADE"), nullable=False)
+    spec_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    revision: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
+    spec_version: Mapped[str] = mapped_column(String(30), nullable=False, default="1.0")
+    spec_kind: Mapped[str] = mapped_column(String(80), nullable=False, default="generic")
+    title: Mapped[str | None] = mapped_column(String(300), nullable=True)
+    preferred_renderer_key: Mapped[str | None] = mapped_column(String(180), nullable=True)
+    renderer_policy: Mapped[str] = mapped_column(String(50), nullable=False, default="compatible")
+    encoding_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    interaction_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    accessibility_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    layout_constraints_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    export_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    state_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class RendererDefinitionRecord(Base):
+    __tablename__ = "renderer_definitions"
+    renderer_key: Mapped[str] = mapped_column(String(180), primary_key=True)
+    name: Mapped[str] = mapped_column(String(300), nullable=False)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    renderer_family: Mapped[str] = mapped_column(String(100), nullable=False)
+    runtime: Mapped[str] = mapped_column(String(80), nullable=False, default="external-runtime")
+    execution_mode: Mapped[str] = mapped_column(String(80), nullable=False, default="contract-only")
+    enabled: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True, index=True)
+    executable_by_core: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    public_summary: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    supported_spec_versions_json: Mapped[list] = mapped_column(JSON, default=list)
+    capabilities_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class RendererVersionRecord(Base):
+    __tablename__ = "renderer_versions"
+    __table_args__ = (
+        UniqueConstraint("renderer_key", "version", name="uq_renderer_version"),
+        Index("ix_renderer_version_renderer", "renderer_key"),
+        Index("ix_renderer_version_status", "status"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    renderer_key: Mapped[str] = mapped_column(ForeignKey("renderer_definitions.renderer_key", ondelete="CASCADE"), nullable=False)
+    version: Mapped[str] = mapped_column(String(80), nullable=False)
+    status: Mapped[str] = mapped_column(String(50), nullable=False, default="active")
+    contract_version: Mapped[str] = mapped_column(String(30), nullable=False, default="1.0")
+    capabilities_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class RendererCompatibilityRuleRecord(Base):
+    __tablename__ = "renderer_compatibility_rules"
+    __table_args__ = (
+        UniqueConstraint("renderer_key", "visual_kind", "spec_kind", name="uq_renderer_compat_rule"),
+        Index("ix_renderer_compat_visual_kind", "visual_kind"),
+        Index("ix_renderer_compat_spec_kind", "spec_kind"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    renderer_key: Mapped[str] = mapped_column(ForeignKey("renderer_definitions.renderer_key", ondelete="CASCADE"), nullable=False)
+    visual_kind: Mapped[str] = mapped_column(String(80), nullable=False)
+    spec_kind: Mapped[str] = mapped_column(String(80), nullable=False)
+    priority: Mapped[int] = mapped_column(Integer, nullable=False, default=100)
+    required_capabilities_json: Mapped[list] = mapped_column(JSON, default=list)
+    constraints_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    enabled: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class RendererResolutionRecord(Base):
+    __tablename__ = "renderer_resolution_records"
+    __table_args__ = (
+        Index("ix_renderer_resolution_spec", "specification_id", "created_at"),
+        Index("ix_renderer_resolution_renderer", "resolved_renderer_key"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    specification_id: Mapped[str] = mapped_column(ForeignKey("visualization_specifications.id", ondelete="CASCADE"), nullable=False)
+    requested_renderer_key: Mapped[str | None] = mapped_column(String(180), nullable=True)
+    resolved_renderer_key: Mapped[str | None] = mapped_column(ForeignKey("renderer_definitions.renderer_key", ondelete="SET NULL"), nullable=True)
+    resolved_renderer_version: Mapped[str | None] = mapped_column(String(80), nullable=True)
+    resolution_state: Mapped[str] = mapped_column(String(50), nullable=False, default="resolved")
+    selection_mode: Mapped[str] = mapped_column(String(80), nullable=False, default="registry-priority")
+    rationale_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    execution_performed: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)

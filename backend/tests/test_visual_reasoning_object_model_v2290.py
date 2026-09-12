@@ -57,7 +57,7 @@ def _child(client, write_headers, visual_id, child, data):
 def test_v2290_migration_health_meta_and_readiness(client):
     assert any(version == '0032' for version, _ in MIGRATIONS)
     health = client.get('/health').json()
-    assert health['version'] == '2.29.0'
+    assert health['version'] == '2.30.0'
     assert health['visual_reasoning_object_model'] is True
     meta = client.get('/v1/meta').json()
     for capability in {
@@ -69,7 +69,7 @@ def test_v2290_migration_health_meta_and_readiness(client):
         'source_entity_and_scientific_object_bindings',
         'immutable_visual_semantic_snapshots',
         'visual_snapshot_sha256_integrity',
-        'renderer_registry_deferred_to_v230',
+        'visualization_specification_renderer_registry',
     }:
         assert capability in meta['capabilities']
     ready = client.get('/v1/visual-reasoning/readiness').json()
@@ -77,7 +77,7 @@ def test_v2290_migration_health_meta_and_readiness(client):
     assert ready['enabled'] is True
     assert ready['graph_native'] is True
     assert ready['renderer_neutral'] is True
-    assert ready['renderer_registry_in_core'] is False
+    assert ready['renderer_registry_in_core'] is True
     assert ready['layout_engine_in_core'] is False
     assert ready['automatic_truth_promotion'] is False
     assert 'system-map' in ready['visual_kinds']
@@ -139,7 +139,8 @@ def test_visual_reasoning_semantic_bundle_and_snapshot(client, write_headers):
     assert body['annotations'][0]['id'] == annotation['id']
     assert body['renderer_contract']['renderer_neutral'] is True
     assert body['renderer_contract']['layout_engine_in_core'] is False
-    assert body['renderer_contract']['next_layer'].startswith('v2.30.0')
+    assert body['renderer_contract']['visualization_specification_layer'].startswith('v2.30.0')
+    assert body['renderer_contract']['renderer_execution_by_core'] is False
 
     edges = client.get('/v1/relationships', params={'subject_id': visual['id']}).json()['items']
     assert any(edge['predicate'] == 'part_of' and edge['object_id'] == project['id'] for edge in edges)
