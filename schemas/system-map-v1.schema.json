@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "System Map",
+  "type": "object",
+  "required": [
+    "visual_entity_id",
+    "system_purpose",
+    "map_state"
+  ],
+  "properties": {
+    "visual_entity_id": {
+      "type": "string"
+    },
+    "system_purpose": {
+      "type": "string"
+    },
+    "perspective": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "map_state": {
+      "enum": [
+        "draft",
+        "review",
+        "published",
+        "archived"
+      ]
+    },
+    "boundary_statement": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "assumptions": {
+      "type": "array"
+    },
+    "metadata": {
+      "type": "object"
+    }
+  }
+}

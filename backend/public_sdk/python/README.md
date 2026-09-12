@@ -1,4 +1,4 @@
-# Sustainable Catalyst Public API Python Client v2.30.0
+# Sustainable Catalyst Public API Python Client v2.31.0
 
 ```python
 from sc_platform_core_public import PublicApiClient
@@ -130,3 +130,7 @@ The public client exposes renderer-neutral visual reasoning readiness, public vi
 ## v2.30.0 — Visualization specification & renderer registry
 
 Use `visualization_readiness()`, `visualization_renderers()`, and `visualization_specifications()` to inspect public-safe renderer contracts and governed visualization specifications. Core resolves compatibility metadata only; it does not execute renderers or layouts.
+
+
+## v2.31.0 — System Maps
+Adds `system_maps_readiness`, `system_maps`, `system_map`, and `system_map_bundle` public metadata helpers.

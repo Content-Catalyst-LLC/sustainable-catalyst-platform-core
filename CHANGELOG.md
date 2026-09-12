@@ -1,3 +1,7 @@
+## 2.31.0 — 2026-09-11
+- System Maps: explicit boundaries, domains, memberships, saved views, structural validation, and visualization-specification compilation.
+- Migration 0034.
+
 ## 2.30.0 — 2026-09-11
 
 - Added migration `0033` and the Visualization Specification & Renderer Registry.

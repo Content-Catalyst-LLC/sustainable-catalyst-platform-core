@@ -455,3 +455,23 @@ def _visualization_specifications(self, **params):
 PublicApiClient.visualization_readiness = _visualization_readiness
 PublicApiClient.visualization_renderers = _visualization_renderers
 PublicApiClient.visualization_specifications = _visualization_specifications
+
+
+# v2.31.0 System Maps public metadata methods.
+def _system_maps_readiness(self):
+    return self.request("GET", "/system-maps/readiness")
+
+def _system_maps(self, **params):
+    clean={k:v for k,v in params.items() if v is not None}
+    return self.request("GET", "/system-maps", params=clean)
+
+def _system_map(self, entity_id: str):
+    return self.request("GET", f"/system-maps/{entity_id}")
+
+def _system_map_bundle(self, entity_id: str):
+    return self.request("GET", f"/system-maps/{entity_id}/bundle")
+
+PublicApiClient.system_maps_readiness = _system_maps_readiness
+PublicApiClient.system_maps = _system_maps
+PublicApiClient.system_map = _system_map
+PublicApiClient.system_map_bundle = _system_map_bundle

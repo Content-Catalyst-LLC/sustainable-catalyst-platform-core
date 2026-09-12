@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "System Map View",
+  "type": "object",
+  "required": [
+    "view_key",
+    "name"
+  ],
+  "properties": {
+    "view_key": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "lens": {
+      "type": "object"
+    },
+    "filters": {
+      "type": "object"
+    },
+    "highlights": {
+      "type": "array"
+    },
+    "layout_intent": {
+      "type": "object"
+    },
+    "specification_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  }
+}

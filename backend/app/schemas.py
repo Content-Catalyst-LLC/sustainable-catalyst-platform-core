@@ -331,6 +331,11 @@ class RegistryStats(BaseModel):
     renderer_versions: int
     renderer_compatibility_rules: int
     renderer_resolutions: int
+    system_maps: int
+    system_map_boundaries: int
+    system_map_domains: int
+    system_map_memberships: int
+    system_map_views: int
     map_layers: int
     stac_collections: int
     stac_items: int

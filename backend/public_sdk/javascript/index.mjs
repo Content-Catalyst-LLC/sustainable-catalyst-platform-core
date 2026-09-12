@@ -412,4 +412,10 @@ export class PublicApiClient {
     return this.request(`/visualization/specifications?${query}`);
   }
 
+
+  systemMapsReadiness() { return this.request("/system-maps/readiness"); }
+  systemMaps(params = {}) { const clean = Object.fromEntries(Object.entries(params).filter(([, value]) => value !== null && value !== undefined)); const query = new URLSearchParams(clean); return this.request(`/system-maps?${query}`); }
+  systemMap(entityId) { return this.request(`/system-maps/${encodeURIComponent(entityId)}`); }
+  systemMapBundle(entityId) { return this.request(`/system-maps/${encodeURIComponent(entityId)}/bundle`); }
+
 }

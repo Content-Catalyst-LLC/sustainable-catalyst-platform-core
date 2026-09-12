@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "System Map Boundary",
+  "type": "object",
+  "required": [
+    "boundary_key",
+    "boundary_kind",
+    "name"
+  ],
+  "properties": {
+    "boundary_key": {
+      "type": "string"
+    },
+    "boundary_kind": {
+      "enum": [
+        "included",
+        "excluded",
+        "context",
+        "interface"
+      ]
+    },
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "criteria": {
+      "type": "object"
+    },
+    "metadata": {
+      "type": "object"
+    }
+  }
+}

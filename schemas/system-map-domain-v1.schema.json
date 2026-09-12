@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "System Map Domain",
+  "type": "object",
+  "required": [
+    "domain_key",
+    "name"
+  ],
+  "properties": {
+    "domain_key": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "parent_domain_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "order_index": {
+      "type": "integer"
+    },
+    "metadata": {
+      "type": "object"
+    }
+  }
+}

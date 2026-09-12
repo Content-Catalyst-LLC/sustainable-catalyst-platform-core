@@ -163,7 +163,7 @@ def public_readiness(
         "counts": data["counts"],
         "graph_native": True,
         "renderer_neutral": True,
-        "renderer_registry_in_core": False,
+        "renderer_registry_in_core": True,
         "layout_engine_in_core": False,
         "automatic_truth_promotion": False,
         "release": request.app.state.settings.version,

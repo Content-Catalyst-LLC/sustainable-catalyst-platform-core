@@ -1,4 +1,4 @@
-# Sustainable Catalyst Public API JavaScript Client v2.30.0
+# Sustainable Catalyst Public API JavaScript Client v2.31.0
 
 ```javascript
 import { PublicApiClient } from "./index.mjs";
@@ -130,3 +130,7 @@ The public client exposes renderer-neutral visual reasoning readiness, public vi
 ## v2.30.0 — Visualization specification & renderer registry
 
 Use `visualizationReadiness()`, `visualizationRenderers()`, and `visualizationSpecifications()` to inspect public-safe renderer contracts and governed visualization specifications. Core resolves compatibility metadata only; it does not execute renderers or layouts.
+
+
+## v2.31.0 — System Maps
+Adds `systemMapsReadiness`, `systemMaps`, `systemMap`, and `systemMapBundle`.

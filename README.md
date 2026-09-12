@@ -1,22 +1,22 @@
-# Sustainable Catalyst Platform Core v2.30.0
-Core v2.30.0 adds **Visualization Specification & Renderer Registry** on top of the v2.29.0 Visual Reasoning Object Model. Core can now govern immutable visualization specifications, renderer-family contracts, renderer-version metadata, compatibility rules, and deterministic renderer-resolution records without becoming a renderer itself.
+# Sustainable Catalyst Platform Core v2.31.0
 
-Key v2.30.0 additions:
-- additive migration `0033`;
-- immutable, revisioned visualization specifications with SHA-256 state hashes;
-- renderer contract registry with explicit runtime/execution boundaries;
-- renderer-version metadata that distinguishes contract versions from installed package versions;
-- governed compatibility rules between visual kinds, specification kinds, and renderer contracts;
-- deterministic compatibility resolution with persisted rationale;
-- public-safe visualization/renderer metadata API;
-- Python/JavaScript SDK helpers and WordPress registry status surface;
-- v2.29.0.1 WordPress backend-URL diagnostic repair retained.
+Core v2.31.0 adds **System Maps** on top of the v2.29 Visual Reasoning Object Model and v2.30 Visualization Specification & Renderer Registry. Core now governs explicit system boundaries, domains, element memberships, saved views, structural validation, and deterministic compilation to immutable visualization specifications.
+
+Key v2.31.0 additions:
+- additive migration `0034`;
+- first-class System Map records bound to `system-map` visual reasoning objects;
+- explicit included, excluded, contextual, and interface boundaries;
+- hierarchical domains and same-map element membership controls;
+- saved lenses, filters, highlights, and layout intent;
+- structural validation that reports warnings without inferring causality;
+- compilation to v2.30 diagram specifications and renderer-contract resolution;
+- public metadata, SDK helpers, and WordPress status.
 
 Explicit boundaries:
-- Platform Core does not execute D3, Vega-Lite, Plotly, MapLibre, or any renderer;
-- seeded renderer entries are contracts, not claims that those runtimes are installed;
-- Core does not calculate layout or generate visual output files;
-- renderer resolution is advisory metadata and never promotes a visualization to truth.
+- Platform Core does not calculate layout or renderer coordinates;
+- Core does not infer causal loops or causal direction from map structure;
+- Core does not execute renderers or generate visual output;
+- system-map structure never promotes itself to evidence or truth.
 
 Current release line:
 

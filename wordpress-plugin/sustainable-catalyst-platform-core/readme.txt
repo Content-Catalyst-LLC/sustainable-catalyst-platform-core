@@ -4,7 +4,7 @@ Tags: knowledge graph, entity registry, provenance, live data, sustainable catal
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.0
-Stable tag: 2.30.0
+Stable tag: 2.31.0
 License: MIT
 
 WordPress status, live-data gateway, and entity lookup client for Sustainable Catalyst Platform Core.
@@ -166,3 +166,9 @@ Streaming, Alerts, and Source Reliability.
 * Reports immutable visualization specifications, renderer contracts, compatibility rules, and resolution records.
 * Core performs compatibility resolution only; renderer execution, layout execution, and render-output generation remain external.
 * Retains the v2.29.0.1 backend-URL diagnostics for visual reasoning status.
+
+
+== 2.31.0 ==
+* Adds governed System Maps status via `[sc_platform_core_system_maps_status]`.
+* Adds explicit boundaries, domains, memberships, saved views, structural validation, and specification compilation.
+* Core does not perform layout or causal inference.

@@ -3281,3 +3281,90 @@ class RendererResolutionRecord(Base):
     execution_performed: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+# v2.31.0 — System Maps
+
+class SystemMapRecord(Base):
+    __tablename__ = "system_maps"
+    visual_entity_id: Mapped[str] = mapped_column(ForeignKey("visual_reasoning_objects.entity_id", ondelete="CASCADE"), primary_key=True)
+    system_purpose: Mapped[str] = mapped_column(String(120), nullable=False, default="explore")
+    perspective: Mapped[str | None] = mapped_column(String(300), nullable=True)
+    map_state: Mapped[str] = mapped_column(String(50), nullable=False, default="draft", index=True)
+    boundary_statement: Mapped[str | None] = mapped_column(Text, nullable=True)
+    assumptions_json: Mapped[list] = mapped_column(JSON, default=list)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class SystemMapBoundaryRecord(Base):
+    __tablename__ = "system_map_boundaries"
+    __table_args__ = (
+        UniqueConstraint("visual_entity_id", "boundary_key", name="uq_system_map_boundary_key"),
+        Index("ix_system_map_boundary_visual", "visual_entity_id"),
+        Index("ix_system_map_boundary_kind", "boundary_kind"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    visual_entity_id: Mapped[str] = mapped_column(ForeignKey("system_maps.visual_entity_id", ondelete="CASCADE"), nullable=False)
+    boundary_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    boundary_kind: Mapped[str] = mapped_column(String(50), nullable=False, default="included")
+    name: Mapped[str] = mapped_column(String(300), nullable=False)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    criteria_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class SystemMapDomainRecord(Base):
+    __tablename__ = "system_map_domains"
+    __table_args__ = (
+        UniqueConstraint("visual_entity_id", "domain_key", name="uq_system_map_domain_key"),
+        Index("ix_system_map_domain_visual", "visual_entity_id"),
+        Index("ix_system_map_domain_parent", "parent_domain_id"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    visual_entity_id: Mapped[str] = mapped_column(ForeignKey("system_maps.visual_entity_id", ondelete="CASCADE"), nullable=False)
+    domain_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    name: Mapped[str] = mapped_column(String(300), nullable=False)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    parent_domain_id: Mapped[str | None] = mapped_column(ForeignKey("system_map_domains.id", ondelete="SET NULL"), nullable=True)
+    order_index: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class SystemMapMembershipRecord(Base):
+    __tablename__ = "system_map_memberships"
+    __table_args__ = (
+        UniqueConstraint("domain_id", "element_id", name="uq_system_map_domain_element"),
+        Index("ix_system_map_membership_visual", "visual_entity_id"),
+        Index("ix_system_map_membership_element", "element_id"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    visual_entity_id: Mapped[str] = mapped_column(ForeignKey("system_maps.visual_entity_id", ondelete="CASCADE"), nullable=False)
+    domain_id: Mapped[str] = mapped_column(ForeignKey("system_map_domains.id", ondelete="CASCADE"), nullable=False)
+    element_id: Mapped[str] = mapped_column(ForeignKey("visual_reasoning_elements.id", ondelete="CASCADE"), nullable=False)
+    membership_role: Mapped[str] = mapped_column(String(80), nullable=False, default="member")
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class SystemMapViewRecord(Base):
+    __tablename__ = "system_map_views"
+    __table_args__ = (
+        UniqueConstraint("visual_entity_id", "view_key", name="uq_system_map_view_key"),
+        Index("ix_system_map_view_visual", "visual_entity_id"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    visual_entity_id: Mapped[str] = mapped_column(ForeignKey("system_maps.visual_entity_id", ondelete="CASCADE"), nullable=False)
+    view_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    name: Mapped[str] = mapped_column(String(300), nullable=False)
+    lens_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    filters_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    highlights_json: Mapped[list] = mapped_column(JSON, default=list)
+    layout_intent_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    specification_id: Mapped[str | None] = mapped_column(ForeignKey("visualization_specifications.id", ondelete="SET NULL"), nullable=True)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)

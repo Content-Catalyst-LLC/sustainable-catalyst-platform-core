@@ -182,7 +182,10 @@ Status: implemented. Adds migration `0032`, graph-native renderer-neutral visual
 ## v2.30.0 — Visualization Specification & Renderer Registry
 Status: implemented. Adds migration `0033`, immutable revisioned visualization specifications, renderer-family contract definitions, contract-version metadata, governed compatibility rules, deterministic compatibility resolution records, public-safe registry metadata, SDK/WordPress surfaces, and explicit non-execution boundaries. Core selects compatible renderer contracts as metadata only; rendering, layout computation, and output generation remain external.
 
-Next planned: v2.31.0 — System Maps.
+## v2.31.0 — System Maps
+Status: implemented. Adds migration `0034`, explicit boundaries, domains, same-map memberships, saved views, structural validation, and deterministic compilation to v2.30 visualization specifications while keeping layout and causal inference external.
+
+Next planned: **v2.32.0 — Flow Maps**.
 
 
 ## v2.24.0 R1 — Secret-Scan Example Credential & Promotion Repair

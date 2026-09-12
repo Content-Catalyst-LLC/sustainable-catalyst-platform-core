@@ -12,6 +12,7 @@ from .models import (
     VisualReasoningLayerRecord, VisualReasoningAnnotationRecord, VisualReasoningSnapshotRecord,
     VisualizationSpecificationRecord, RendererDefinitionRecord, RendererVersionRecord,
     RendererCompatibilityRuleRecord, RendererResolutionRecord,
+    SystemMapRecord, SystemMapBoundaryRecord, SystemMapDomainRecord, SystemMapMembershipRecord, SystemMapViewRecord,
 )
 from .predicate_catalog import DEFAULT_PREDICATES
 from .api_plan_catalog import DEFAULT_API_PLANS
@@ -53,6 +54,7 @@ MIGRATIONS = [
     ("0031", "Research projects, models, immutable model versions, variables, parameters, scenarios, model runs, results, and graph-native research semantics."),
     ("0032", "Renderer-neutral visual reasoning objects, semantic elements and relations, layers, annotations, source bindings, and immutable semantic snapshots."),
     ("0033", "Immutable visualization specifications, renderer contract registry, renderer-version metadata, governed compatibility rules, and non-executing renderer resolution records."),
+    ("0034", "Governed System Maps with explicit system boundaries, domains, element memberships, saved views, structural validation, and deterministic visualization-specification compilation."),
 ]
 
 
@@ -420,5 +422,10 @@ def migration_status(database: Database) -> dict:
         renderer_versions = len(session.scalars(select(RendererVersionRecord.id)).all())
         renderer_compatibility_rules = len(session.scalars(select(RendererCompatibilityRuleRecord.id)).all())
         renderer_resolutions = len(session.scalars(select(RendererResolutionRecord.id)).all())
+        system_maps = len(session.scalars(select(SystemMapRecord.visual_entity_id)).all())
+        system_map_boundaries = len(session.scalars(select(SystemMapBoundaryRecord.id)).all())
+        system_map_domains = len(session.scalars(select(SystemMapDomainRecord.id)).all())
+        system_map_memberships = len(session.scalars(select(SystemMapMembershipRecord.id)).all())
+        system_map_views = len(session.scalars(select(SystemMapViewRecord.id)).all())
     expected = {version for version, _ in MIGRATIONS}
-    return {"expected":sorted(expected),"applied":sorted(applied),"pending":sorted(expected-applied),"predicate_definitions":predicates,"api_plans":api_plans,"evaluation_definitions":evaluation_definitions,"workflow_definitions":workflow_definitions,"live_data_sources":live_data_sources,"live_data_connectors":live_data_connectors,"scientific_storage_backends":scientific_storage_backends,"scientific_processing_adapters":scientific_processing_adapters,"research_projects":research_projects,"research_models":research_models,"research_model_versions":research_model_versions,"research_variables":research_variables,"research_parameters":research_parameters,"research_scenarios":research_scenarios,"research_model_runs":research_model_runs,"research_results":research_results,"visual_reasoning_objects":visual_reasoning_objects,"visual_reasoning_elements":visual_reasoning_elements,"visual_reasoning_relations":visual_reasoning_relations,"visual_reasoning_layers":visual_reasoning_layers,"visual_reasoning_annotations":visual_reasoning_annotations,"visual_reasoning_snapshots":visual_reasoning_snapshots,"visualization_specifications":visualization_specifications,"renderer_definitions":renderer_definitions,"renderer_versions":renderer_versions,"renderer_compatibility_rules":renderer_compatibility_rules,"renderer_resolutions":renderer_resolutions}
+    return {"expected":sorted(expected),"applied":sorted(applied),"pending":sorted(expected-applied),"predicate_definitions":predicates,"api_plans":api_plans,"evaluation_definitions":evaluation_definitions,"workflow_definitions":workflow_definitions,"live_data_sources":live_data_sources,"live_data_connectors":live_data_connectors,"scientific_storage_backends":scientific_storage_backends,"scientific_processing_adapters":scientific_processing_adapters,"research_projects":research_projects,"research_models":research_models,"research_model_versions":research_model_versions,"research_variables":research_variables,"research_parameters":research_parameters,"research_scenarios":research_scenarios,"research_model_runs":research_model_runs,"research_results":research_results,"visual_reasoning_objects":visual_reasoning_objects,"visual_reasoning_elements":visual_reasoning_elements,"visual_reasoning_relations":visual_reasoning_relations,"visual_reasoning_layers":visual_reasoning_layers,"visual_reasoning_annotations":visual_reasoning_annotations,"visual_reasoning_snapshots":visual_reasoning_snapshots,"visualization_specifications":visualization_specifications,"renderer_definitions":renderer_definitions,"renderer_versions":renderer_versions,"renderer_compatibility_rules":renderer_compatibility_rules,"renderer_resolutions":renderer_resolutions,"system_maps":system_maps,"system_map_boundaries":system_map_boundaries,"system_map_domains":system_map_domains,"system_map_memberships":system_map_memberships,"system_map_views":system_map_views}
