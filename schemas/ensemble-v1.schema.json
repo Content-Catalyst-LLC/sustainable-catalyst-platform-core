@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "title": "Ensemble",
+  "required": [
+    "ensemble_key",
+    "project_entity_id",
+    "model_entity_id",
+    "model_version_entity_id"
+  ],
+  "properties": {
+    "ensemble_key": {
+      "type": "string"
+    },
+    "project_entity_id": {
+      "type": "string"
+    },
+    "model_entity_id": {
+      "type": "string"
+    },
+    "model_version_entity_id": {
+      "type": "string"
+    },
+    "compute_plan_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "combination_policy": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": true
+}

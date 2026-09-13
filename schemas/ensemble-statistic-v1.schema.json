@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "title": "Ensemble Statistic",
+  "required": [
+    "output_key",
+    "statistic_kind",
+    "statistic_value"
+  ],
+  "properties": {
+    "output_key": {
+      "type": "string"
+    },
+    "statistic_kind": {
+      "enum": [
+        "mean",
+        "median",
+        "minimum",
+        "maximum",
+        "stddev",
+        "variance",
+        "quantile",
+        "interval",
+        "probability",
+        "custom"
+      ]
+    },
+    "statistic_value": {
+      "type": "number"
+    },
+    "quantile": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0,
+      "maximum": 1
+    },
+    "lower_bound": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "upper_bound": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "provenance": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": true
+}

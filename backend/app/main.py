@@ -53,6 +53,7 @@ from .routers import (
     scenario_landscapes,
     model_canvas,
     scenario_compute,
+    uncertainty_reasoning,
     ledger,
     live_data,
     meta,
@@ -213,6 +214,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(model_canvas.public_router)
     app.include_router(scenario_compute.router)
     app.include_router(scenario_compute.public_router)
+    app.include_router(uncertainty_reasoning.router)
+    app.include_router(uncertainty_reasoning.public_router)
     app.include_router(economic_data.router)
     app.include_router(economic_data.public_router)
     app.include_router(data_fabric.router)

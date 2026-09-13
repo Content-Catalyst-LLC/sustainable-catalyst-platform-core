@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "title": "Ensemble Member",
+  "required": [
+    "member_key"
+  ],
+  "properties": {
+    "member_key": {
+      "type": "string"
+    },
+    "scenario_entity_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "compute_request_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "model_run_entity_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "member_state": {
+      "enum": [
+        "declared",
+        "requested",
+        "running",
+        "completed",
+        "failed",
+        "excluded"
+      ]
+    },
+    "weight": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "provenance": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": true
+}

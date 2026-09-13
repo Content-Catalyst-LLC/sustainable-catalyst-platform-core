@@ -3810,3 +3810,179 @@ class ScenarioComputeResultBindingRecord(Base):
     metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
 
+
+# v2.36.0 — Uncertainty, Sensitivity & Ensemble Reasoning
+
+class UncertaintyDefinitionRecord(Base):
+    __tablename__ = "uncertainty_definitions"
+    __table_args__ = (
+        UniqueConstraint("project_entity_id", "uncertainty_key", name="uq_uncertainty_definition_project_key"),
+        Index("ix_uncertainty_definition_project", "project_entity_id"),
+        Index("ix_uncertainty_definition_subject", "subject_entity_id"),
+        Index("ix_uncertainty_definition_kind", "uncertainty_kind"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    uncertainty_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    name: Mapped[str] = mapped_column(String(300), nullable=False)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="private", index=True)
+    project_entity_id: Mapped[str] = mapped_column(ForeignKey("entities.id", ondelete="CASCADE"), nullable=False)
+    subject_entity_id: Mapped[str] = mapped_column(ForeignKey("entities.id", ondelete="CASCADE"), nullable=False)
+    uncertainty_kind: Mapped[str] = mapped_column(String(50), nullable=False, default="epistemic", index=True)
+    distribution_family: Mapped[str] = mapped_column(String(80), nullable=False, default="interval")
+    parameters_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    lower_bound: Mapped[float | None] = mapped_column(Float, nullable=True)
+    upper_bound: Mapped[float | None] = mapped_column(Float, nullable=True)
+    unit: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    confidence_level: Mapped[float | None] = mapped_column(Float, nullable=True)
+    source_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    assumptions_json: Mapped[list] = mapped_column(JSON, default=list)
+    state: Mapped[str] = mapped_column(String(50), nullable=False, default="declared", index=True)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class SensitivityStudyRecord(Base):
+    __tablename__ = "sensitivity_studies"
+    __table_args__ = (
+        UniqueConstraint("project_entity_id", "study_key", name="uq_sensitivity_study_project_key"),
+        Index("ix_sensitivity_study_project", "project_entity_id"),
+        Index("ix_sensitivity_study_model", "model_entity_id"),
+        Index("ix_sensitivity_study_state", "study_state"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    study_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    name: Mapped[str] = mapped_column(String(300), nullable=False)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="private", index=True)
+    project_entity_id: Mapped[str] = mapped_column(ForeignKey("entities.id", ondelete="CASCADE"), nullable=False)
+    model_entity_id: Mapped[str] = mapped_column(ForeignKey("entities.id", ondelete="CASCADE"), nullable=False)
+    model_version_entity_id: Mapped[str] = mapped_column(ForeignKey("entities.id", ondelete="RESTRICT"), nullable=False)
+    compute_plan_id: Mapped[str | None] = mapped_column(ForeignKey("scenario_compute_plans.id", ondelete="SET NULL"), nullable=True)
+    method: Mapped[str] = mapped_column(String(80), nullable=False, default="local", index=True)
+    output_metric: Mapped[str | None] = mapped_column(String(180), nullable=True)
+    study_state: Mapped[str] = mapped_column(String(50), nullable=False, default="draft", index=True)
+    execution_product: Mapped[str] = mapped_column(String(80), nullable=False, default="lab")
+    configuration_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    assumptions_json: Mapped[list] = mapped_column(JSON, default=list)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class SensitivityFactorRecord(Base):
+    __tablename__ = "sensitivity_factors"
+    __table_args__ = (
+        UniqueConstraint("study_id", "factor_key", name="uq_sensitivity_factor_study_key"),
+        UniqueConstraint("study_id", "parameter_entity_id", name="uq_sensitivity_factor_study_parameter"),
+        Index("ix_sensitivity_factor_study", "study_id"),
+        Index("ix_sensitivity_factor_parameter", "parameter_entity_id"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    study_id: Mapped[str] = mapped_column(ForeignKey("sensitivity_studies.id", ondelete="CASCADE"), nullable=False)
+    factor_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    parameter_entity_id: Mapped[str] = mapped_column(ForeignKey("entities.id", ondelete="RESTRICT"), nullable=False)
+    lower_bound: Mapped[float | None] = mapped_column(Float, nullable=True)
+    upper_bound: Mapped[float | None] = mapped_column(Float, nullable=True)
+    unit: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    uncertainty_definition_id: Mapped[str | None] = mapped_column(ForeignKey("uncertainty_definitions.id", ondelete="SET NULL"), nullable=True)
+    order_index: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class SensitivityMeasureRecord(Base):
+    __tablename__ = "sensitivity_measures"
+    __table_args__ = (
+        UniqueConstraint("study_id", "factor_id", "output_key", "measure_kind", name="uq_sensitivity_measure_identity"),
+        Index("ix_sensitivity_measure_study", "study_id"),
+        Index("ix_sensitivity_measure_factor", "factor_id"),
+        Index("ix_sensitivity_measure_output", "output_key"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    study_id: Mapped[str] = mapped_column(ForeignKey("sensitivity_studies.id", ondelete="CASCADE"), nullable=False)
+    factor_id: Mapped[str] = mapped_column(ForeignKey("sensitivity_factors.id", ondelete="CASCADE"), nullable=False)
+    output_key: Mapped[str] = mapped_column(String(180), nullable=False, default="output")
+    result_entity_id: Mapped[str | None] = mapped_column(ForeignKey("entities.id", ondelete="SET NULL"), nullable=True)
+    measure_kind: Mapped[str] = mapped_column(String(80), nullable=False, default="effect")
+    measure_value: Mapped[float] = mapped_column(Float, nullable=False)
+    lower_bound: Mapped[float | None] = mapped_column(Float, nullable=True)
+    upper_bound: Mapped[float | None] = mapped_column(Float, nullable=True)
+    confidence_level: Mapped[float | None] = mapped_column(Float, nullable=True)
+    unit: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class EnsembleRecord(Base):
+    __tablename__ = "ensembles"
+    __table_args__ = (
+        UniqueConstraint("project_entity_id", "ensemble_key", name="uq_ensemble_project_key"),
+        Index("ix_ensemble_project", "project_entity_id"),
+        Index("ix_ensemble_model_version", "model_version_entity_id"),
+        Index("ix_ensemble_state", "ensemble_state"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    ensemble_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    name: Mapped[str] = mapped_column(String(300), nullable=False)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="private", index=True)
+    project_entity_id: Mapped[str] = mapped_column(ForeignKey("entities.id", ondelete="CASCADE"), nullable=False)
+    model_entity_id: Mapped[str] = mapped_column(ForeignKey("entities.id", ondelete="CASCADE"), nullable=False)
+    model_version_entity_id: Mapped[str] = mapped_column(ForeignKey("entities.id", ondelete="RESTRICT"), nullable=False)
+    compute_plan_id: Mapped[str | None] = mapped_column(ForeignKey("scenario_compute_plans.id", ondelete="SET NULL"), nullable=True)
+    ensemble_state: Mapped[str] = mapped_column(String(50), nullable=False, default="draft", index=True)
+    combination_policy_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    assumptions_json: Mapped[list] = mapped_column(JSON, default=list)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class EnsembleMemberRecord(Base):
+    __tablename__ = "ensemble_members"
+    __table_args__ = (
+        UniqueConstraint("ensemble_id", "member_key", name="uq_ensemble_member_key"),
+        Index("ix_ensemble_member_ensemble", "ensemble_id"),
+        Index("ix_ensemble_member_scenario", "scenario_entity_id"),
+        Index("ix_ensemble_member_run", "model_run_entity_id"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    ensemble_id: Mapped[str] = mapped_column(ForeignKey("ensembles.id", ondelete="CASCADE"), nullable=False)
+    member_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    scenario_entity_id: Mapped[str | None] = mapped_column(ForeignKey("entities.id", ondelete="SET NULL"), nullable=True)
+    compute_request_id: Mapped[str | None] = mapped_column(ForeignKey("scenario_compute_requests.id", ondelete="SET NULL"), nullable=True)
+    model_run_entity_id: Mapped[str | None] = mapped_column(ForeignKey("entities.id", ondelete="SET NULL"), nullable=True)
+    member_state: Mapped[str] = mapped_column(String(50), nullable=False, default="declared", index=True)
+    weight: Mapped[float | None] = mapped_column(Float, nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class EnsembleStatisticRecord(Base):
+    __tablename__ = "ensemble_statistics"
+    __table_args__ = (
+        UniqueConstraint("ensemble_id", "output_key", "statistic_kind", "quantile", name="uq_ensemble_statistic_identity"),
+        Index("ix_ensemble_statistic_ensemble", "ensemble_id"),
+        Index("ix_ensemble_statistic_output", "output_key"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    ensemble_id: Mapped[str] = mapped_column(ForeignKey("ensembles.id", ondelete="CASCADE"), nullable=False)
+    output_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    statistic_kind: Mapped[str] = mapped_column(String(80), nullable=False)
+    statistic_value: Mapped[float] = mapped_column(Float, nullable=False)
+    unit: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    quantile: Mapped[float | None] = mapped_column(Float, nullable=True)
+    lower_bound: Mapped[float | None] = mapped_column(Float, nullable=True)
+    upper_bound: Mapped[float | None] = mapped_column(Float, nullable=True)
+    confidence_level: Mapped[float | None] = mapped_column(Float, nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)

@@ -441,4 +441,11 @@ export class PublicApiClient {
   scenarioComputePlan(planId) { return this.request(`/scenario-compute/plans/${encodeURIComponent(planId)}`); }
   scenarioComputePlanBundle(planId) { return this.request(`/scenario-compute/plans/${encodeURIComponent(planId)}/bundle`); }
 
+  uncertaintyReasoningReadiness() { return this.request("/uncertainty-reasoning/readiness"); }
+  uncertaintyDefinitions(params = {}) { const clean = Object.fromEntries(Object.entries(params).filter(([, value]) => value !== null && value !== undefined)); const query = new URLSearchParams(clean); return this.request(`/uncertainty-reasoning/uncertainties?${query}`); }
+  sensitivityStudies(params = {}) { const clean = Object.fromEntries(Object.entries(params).filter(([, value]) => value !== null && value !== undefined)); const query = new URLSearchParams(clean); return this.request(`/uncertainty-reasoning/sensitivity-studies?${query}`); }
+  sensitivityStudySummary(studyId) { return this.request(`/uncertainty-reasoning/sensitivity-studies/${encodeURIComponent(studyId)}/summary`); }
+  ensembles(params = {}) { const clean = Object.fromEntries(Object.entries(params).filter(([, value]) => value !== null && value !== undefined)); const query = new URLSearchParams(clean); return this.request(`/uncertainty-reasoning/ensembles?${query}`); }
+  ensembleSummary(ensembleId) { return this.request(`/uncertainty-reasoning/ensembles/${encodeURIComponent(ensembleId)}/summary`); }
+
 }

@@ -1,4 +1,4 @@
-# Sustainable Catalyst Public API JavaScript Client v2.35.0
+# Sustainable Catalyst Public API JavaScript Client v2.36.0
 
 ```javascript
 import { PublicApiClient } from "./index.mjs";
@@ -147,3 +147,7 @@ Adds `scenarioLandscapesReadiness`, `scenarioLandscapes`, `scenarioLandscape`, `
 
 ## v2.35.0 — Scenario Compute Engine
 Adds public readiness/list/detail/bundle helpers for governed interactive model canvases. Model execution remains external to Core.
+
+
+## v2.36.0 — Uncertainty, Sensitivity & Ensemble Reasoning
+Adds public metadata helpers for governed uncertainty definitions, sensitivity-study summaries, and ensemble summaries. Sampling, model execution, sensitivity algorithms, and ensemble aggregation remain external to Platform Core.

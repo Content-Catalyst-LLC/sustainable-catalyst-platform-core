@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "title": "Sensitivity Measure",
+  "required": [
+    "factor_id",
+    "output_key",
+    "measure_kind",
+    "measure_value"
+  ],
+  "properties": {
+    "factor_id": {
+      "type": "string"
+    },
+    "output_key": {
+      "type": "string"
+    },
+    "measure_kind": {
+      "enum": [
+        "effect",
+        "elasticity",
+        "correlation",
+        "first-order",
+        "total-order",
+        "mu-star",
+        "sigma",
+        "delta",
+        "custom"
+      ]
+    },
+    "measure_value": {
+      "type": "number"
+    },
+    "lower_bound": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "upper_bound": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "provenance": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": true
+}

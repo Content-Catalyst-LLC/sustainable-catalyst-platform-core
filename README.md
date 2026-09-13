@@ -1,23 +1,24 @@
-# Sustainable Catalyst Platform Core v2.35.0
+# Sustainable Catalyst Platform Core v2.36.0
 
-Core v2.35.0 adds the **Scenario Compute Engine** as a governed orchestration plane over the v2.28 Research Object & Model Foundation, v2.33 Scenario Landscapes, and v2.34 Interactive Model Canvas. Core prepares deterministic scenario execution requests and records external execution lineage without becoming a numerical runtime.
+Core v2.36.0 adds **Uncertainty, Sensitivity & Ensemble Reasoning** on top of the v2.35 Scenario Compute Engine. Core now governs uncertainty declarations, sensitivity-study design and externally supplied measures, and ensemble membership/statistics without becoming a sampler, model runtime, or statistical execution engine.
 
-Key v2.35.0 additions:
-- additive migration `0038`;
-- reproducible scenario compute plans bound to projects, models, and immutable model versions;
-- scenario cases with validated parameter overrides and comparison roles;
-- deterministic SHA-256 case and request manifests;
-- idempotent execution-request preparation;
-- explicit Lab, Workbench, or external execution contracts and attempt ledgers;
-- canonical research `model-run` and `result` bindings;
-- public-safe compute-plan metadata, SDK helpers, and WordPress readiness status.
+Key v2.36.0 additions:
+- additive migration `0039`;
+- uncertainty definitions bound to research parameters, variables, scenarios, models, model versions, or results;
+- aleatory, epistemic, mixed, measurement, model, scenario, and unknown uncertainty semantics;
+- governed distribution metadata, bounds, confidence levels, source records, assumptions, and provenance;
+- sensitivity studies bound to immutable model versions and optional Scenario Compute plans;
+- governed parameter factors and externally supplied sensitivity measures;
+- descriptive rankings over supplied sensitivity measures, with algorithms remaining external;
+- ensembles with scenario/request/run membership, declared weights, provenance, and externally supplied statistics;
+- public-safe metadata APIs, SDK helpers, schemas, and WordPress status integration.
 
 Explicit boundaries:
-- Core orchestrates scenario compute but does not numerically execute models;
-- Core does not dispatch runner network calls itself;
-- Core does not execute arbitrary code;
-- Core does not optimize or rank scenarios automatically;
-- Core does not automatically promote results to evidence or truth.
+- Core does not sample probability distributions;
+- Core does not run Sobol, Morris, Monte Carlo, correlation, or other sensitivity algorithms;
+- Core does not normalize ensemble weights or calculate ensemble statistics;
+- Core does not numerically execute models;
+- Core does not automatically generate probabilities or promote outputs to truth.
 
 Current release line:
 
@@ -29,9 +30,10 @@ v2.32.0 Flow Maps
 v2.33.0 Scenario Landscapes
 v2.34.0 Interactive Model Canvas
 v2.35.0 Scenario Compute Engine
+v2.36.0 Uncertainty, Sensitivity & Ensemble Reasoning
 ```
 
-Next planned: **v2.36.0 — Uncertainty, Sensitivity & Ensemble Reasoning**.
+Next planned: **v2.37.0 — Causal Systems Explorer**.
 
 ---
 

@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "title": "Uncertainty Definition",
+  "required": [
+    "uncertainty_key",
+    "project_entity_id",
+    "subject_entity_id"
+  ],
+  "properties": {
+    "uncertainty_key": {
+      "type": "string"
+    },
+    "project_entity_id": {
+      "type": "string"
+    },
+    "subject_entity_id": {
+      "type": "string"
+    },
+    "uncertainty_kind": {
+      "enum": [
+        "aleatory",
+        "epistemic",
+        "mixed",
+        "measurement",
+        "model",
+        "scenario",
+        "unknown"
+      ]
+    },
+    "distribution_family": {
+      "enum": [
+        "deterministic",
+        "interval",
+        "uniform",
+        "normal",
+        "lognormal",
+        "triangular",
+        "beta",
+        "empirical",
+        "custom"
+      ]
+    },
+    "parameters": {
+      "type": "object"
+    },
+    "lower_bound": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "upper_bound": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "confidence_level": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "exclusiveMinimum": 0,
+      "maximum": 1
+    },
+    "source": {
+      "type": "object"
+    },
+    "provenance": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": true
+}

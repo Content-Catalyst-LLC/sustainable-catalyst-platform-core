@@ -204,7 +204,7 @@ Completed: model-bound canvas nodes, dependency edges, governed parameter/scenar
 Completed: governed scenario-compute plans and cases, parameter-bound validation, deterministic input manifests, idempotent execution requests, external Lab/Workbench execution-attempt lineage, and canonical model-run/result bindings. Core orchestrates execution but performs no numerical computation, runner network dispatch, arbitrary-code execution, automatic optimization, or truth promotion. Adds migration `0038`.
 
 ## v2.36.0 — Uncertainty, Sensitivity & Ensemble Reasoning
-Planned.
+Completed: governed uncertainty definitions, sensitivity-study factors and externally supplied measures, ensemble membership/provenance, externally supplied ensemble statistics, descriptive sensitivity ranking, public-safe metadata APIs, and explicit external-execution boundaries. Adds migration `0039`.
 
 ## v2.37.0 — Causal Systems Explorer
 Planned.
@@ -255,4 +255,4 @@ Planned.
 ## v2.51.0 — Reproducible Investigation Packages
 Planned.
 
-Next planned: **v2.36.0 — Uncertainty, Sensitivity & Ensemble Reasoning**.
+Next planned: **v2.37.0 — Causal Systems Explorer**.

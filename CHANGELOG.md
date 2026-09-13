@@ -1,3 +1,12 @@
+## 2.36.0 — 2026-09-13
+
+- Added governed Uncertainty, Sensitivity & Ensemble Reasoning and migration `0039`.
+- Added uncertainty definitions with uncertainty kind, distribution metadata, bounds, confidence, source, assumptions, and provenance.
+- Added sensitivity studies, model-bound parameter factors, externally supplied sensitivity measures, and descriptive rankings.
+- Added ensembles with scenario/request/run membership, declared weights, provenance, and externally supplied statistics.
+- Added public metadata APIs, Python/JavaScript SDK helpers, schemas, WordPress status, and release validation.
+- Explicitly kept sampling, sensitivity algorithms, ensemble aggregation, model execution, probability generation, and truth promotion outside Core.
+
 ## 2.35.0 — 2026-09-13
 
 - Added governed Scenario Compute Engine orchestration and migration `0038`.

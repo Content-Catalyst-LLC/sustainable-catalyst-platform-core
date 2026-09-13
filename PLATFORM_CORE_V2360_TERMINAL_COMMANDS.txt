@@ -1,0 +1,9 @@
+cd ~/Downloads
+chmod +x deploy_and_validate_platform_core_v2_36_0_macos.sh
+SC_CORE_BUNDLE_ONLY=1 ./deploy_and_validate_platform_core_v2_36_0_macos.sh "$HOME/Downloads/sustainable-catalyst-platform-core-v2.36.0-release-bundle.zip"
+./deploy_and_validate_platform_core_v2_36_0_macos.sh "$HOME/Downloads/sustainable-catalyst-platform-core-v2.36.0-release-bundle.zip"
+
+scp -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes DEPLOY_PLATFORM_CORE_V2360_CONTABO.sh catalystadmin@94.72.113.77:/tmp/
+ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes catalystadmin@94.72.113.77
+chmod +x /tmp/DEPLOY_PLATFORM_CORE_V2360_CONTABO.sh
+/tmp/DEPLOY_PLATFORM_CORE_V2360_CONTABO.sh
