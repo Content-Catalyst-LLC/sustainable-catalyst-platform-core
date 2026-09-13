@@ -1,4 +1,4 @@
-# Sustainable Catalyst Public API JavaScript Client v2.38.0
+# Sustainable Catalyst Public API JavaScript Client v2.39.0
 
 ```javascript
 import { PublicApiClient } from "./index.mjs";
@@ -162,3 +162,7 @@ Public readiness, graph discovery, and public causal-system bundle helpers.
 ## v2.38.0 — Causal Migration Metadata Repair
 
 Runtime/API surface unchanged from v2.37.0; release metadata and promotion/deployment integrity repaired.
+
+
+## v2.39.0 — Research Librarian Visual Explanation
+Adds public readiness, explanation listing, and public visual-explanation bundle helpers.

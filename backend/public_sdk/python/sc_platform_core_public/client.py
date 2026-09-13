@@ -623,3 +623,15 @@ def _spatial_temporal_bundle(self, scene_id: str):
 PublicApiClient.spatial_temporal_readiness = _spatial_temporal_readiness
 PublicApiClient.spatial_temporal_scenes = _spatial_temporal_scenes
 PublicApiClient.spatial_temporal_bundle = _spatial_temporal_bundle
+
+
+# v2.39.0 Research Librarian Visual Explanation public metadata helpers
+def _research_visual_explanations_readiness(self):
+    return self.request("GET", "/research-visual-explanations/readiness")
+def _research_visual_explanations(self, **params):
+    return self.request("GET", "/research-visual-explanations", params=params)
+def _research_visual_explanation_bundle(self, explanation_id: str):
+    return self.request("GET", f"/research-visual-explanations/{explanation_id}/bundle")
+PublicApiClient.research_visual_explanations_readiness = _research_visual_explanations_readiness
+PublicApiClient.research_visual_explanations = _research_visual_explanations
+PublicApiClient.research_visual_explanation_bundle = _research_visual_explanation_bundle

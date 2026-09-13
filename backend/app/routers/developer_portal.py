@@ -371,7 +371,7 @@ def postman_collection(request: Request):
 @router.get("/developers/sdk/python.zip")
 def python_sdk(request: Request):
     _require_portal(request)
-    path = SDK_ROOT / "downloads" / "sc-platform-core-public-python-v2.38.0.zip"
+    path = SDK_ROOT / "downloads" / f"sc-platform-core-public-python-v{request.app.state.settings.version}.zip"
     if not path.exists():
         raise HTTPException(status_code=404, detail="Python SDK is unavailable.")
     return FileResponse(
@@ -387,7 +387,7 @@ def javascript_sdk(request: Request):
     path = (
         SDK_ROOT
         / "downloads"
-        / "sc-platform-core-public-javascript-v2.38.0.zip"
+        / f"sc-platform-core-public-javascript-v{request.app.state.settings.version}.zip"
     )
     if not path.exists():
         raise HTTPException(status_code=404, detail="JavaScript SDK is unavailable.")

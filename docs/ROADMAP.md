@@ -215,10 +215,10 @@ Adds deterministic Monte Carlo/LHS sampling, Sobol/Morris design and post-proces
 Completed. Production migration metadata/tag identity repaired in v2.37.0.2.
 
 ## v2.38.0 — Spatial & Temporal Visual Reasoning
-Planned.
+Completed.
 
 ## v2.39.0 — Research Librarian Visual Explanation
-Planned.
+Completed.
 
 ## v2.40.0 — Cross-Product Visual Research Objects
 Planned.
@@ -260,6 +260,7 @@ Planned.
 ## v2.51.0 — Reproducible Investigation Packages
 Planned.
 
-Next planned: **v2.37.0 — Causal Systems Explorer**.
+Next planned: **v2.40.0 — Cross-Product Visual Research Objects**.
 
 - v2.38.0 Spatial & Temporal Visual Reasoning ✓
+- v2.39.0 Research Librarian Visual Explanation ✓

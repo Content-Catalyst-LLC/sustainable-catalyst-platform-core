@@ -129,7 +129,7 @@ _DEFAULTS: tuple[dict, ...] = (
         "service_id": "research-librarian",
         "name": "Research Librarian",
         "route_prefix": "research-librarian",
-        "capabilities": ("site-scoped-retrieval", "research-routes"),
+        "capabilities": ("site-scoped-retrieval", "research-routes", "visual-explanations", "citation-aware-explanations"),
     },
     {
         "service_id": "finance",

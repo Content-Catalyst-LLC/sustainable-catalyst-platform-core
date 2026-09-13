@@ -4324,3 +4324,138 @@ class SpatialTemporalViewRecord(Base):
     renderer_contract: Mapped[str] = mapped_column(String(120), nullable=False, default="contract.d3")
     metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+# v2.39.0 — Research Librarian Visual Explanation
+
+class ResearchVisualExplanationRecord(Base):
+    __tablename__ = "research_visual_explanations"
+    __table_args__ = (
+        UniqueConstraint("project_entity_id", "explanation_key", name="uq_research_visual_explanation_project_key"),
+        Index("ix_research_visual_explanation_project", "project_entity_id"),
+        Index("ix_research_visual_explanation_kind", "explanation_kind"),
+        Index("ix_research_visual_explanation_state", "explanation_state"),
+        Index("ix_research_visual_explanation_visibility", "visibility"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    explanation_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    name: Mapped[str] = mapped_column(String(300), nullable=False)
+    question: Mapped[str | None] = mapped_column(Text, nullable=True)
+    summary: Mapped[str | None] = mapped_column(Text, nullable=True)
+    explanation_kind: Mapped[str] = mapped_column(String(100), nullable=False, default="evidence-map")
+    explanation_state: Mapped[str] = mapped_column(String(50), nullable=False, default="draft", index=True)
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="private", index=True)
+    audience: Mapped[str] = mapped_column(String(100), nullable=False, default="general")
+    project_entity_id: Mapped[str] = mapped_column(ForeignKey("entities.id", ondelete="CASCADE"), nullable=False)
+    research_subject_entity_id: Mapped[str | None] = mapped_column(ForeignKey("entities.id", ondelete="SET NULL"), nullable=True)
+    visual_entity_id: Mapped[str | None] = mapped_column(ForeignKey("visual_reasoning_objects.entity_id", ondelete="SET NULL"), nullable=True)
+    source_scope_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+class ResearchExplanationNodeRecord(Base):
+    __tablename__ = "research_explanation_nodes"
+    __table_args__ = (
+        UniqueConstraint("explanation_id", "node_key", name="uq_research_explanation_node_key"),
+        Index("ix_research_explanation_node_explanation", "explanation_id"),
+        Index("ix_research_explanation_node_kind", "node_kind"),
+        Index("ix_research_explanation_node_entity", "bound_entity_id"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    explanation_id: Mapped[str] = mapped_column(ForeignKey("research_visual_explanations.id", ondelete="CASCADE"), nullable=False)
+    node_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    node_kind: Mapped[str] = mapped_column(String(80), nullable=False, default="concept")
+    label: Mapped[str] = mapped_column(String(300), nullable=False)
+    body: Mapped[str | None] = mapped_column(Text, nullable=True)
+    bound_entity_id: Mapped[str | None] = mapped_column(ForeignKey("entities.id", ondelete="SET NULL"), nullable=True)
+    visual_element_id: Mapped[str | None] = mapped_column(ForeignKey("visual_reasoning_elements.id", ondelete="SET NULL"), nullable=True)
+    confidence: Mapped[float | None] = mapped_column(Float, nullable=True)
+    sequence_position: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    citation_required: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    visual_role: Mapped[str] = mapped_column(String(80), nullable=False, default="content")
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchExplanationRelationRecord(Base):
+    __tablename__ = "research_explanation_relations"
+    __table_args__ = (
+        UniqueConstraint("explanation_id", "relation_key", name="uq_research_explanation_relation_key"),
+        Index("ix_research_explanation_relation_explanation", "explanation_id"),
+        Index("ix_research_explanation_relation_kind", "relation_kind"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    explanation_id: Mapped[str] = mapped_column(ForeignKey("research_visual_explanations.id", ondelete="CASCADE"), nullable=False)
+    relation_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    source_node_id: Mapped[str] = mapped_column(ForeignKey("research_explanation_nodes.id", ondelete="CASCADE"), nullable=False)
+    target_node_id: Mapped[str] = mapped_column(ForeignKey("research_explanation_nodes.id", ondelete="CASCADE"), nullable=False)
+    relation_kind: Mapped[str] = mapped_column(String(80), nullable=False, default="relates-to")
+    label: Mapped[str | None] = mapped_column(String(300), nullable=True)
+    strength: Mapped[float | None] = mapped_column(Float, nullable=True)
+    rationale: Mapped[str | None] = mapped_column(Text, nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchExplanationCitationRecord(Base):
+    __tablename__ = "research_explanation_citations"
+    __table_args__ = (
+        UniqueConstraint("explanation_id", "citation_key", name="uq_research_explanation_citation_key"),
+        Index("ix_research_explanation_citation_explanation", "explanation_id"),
+        Index("ix_research_explanation_citation_node", "node_id"),
+        Index("ix_research_explanation_citation_evidence", "evidence_id"),
+        Index("ix_research_explanation_citation_snapshot", "source_snapshot_id"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    explanation_id: Mapped[str] = mapped_column(ForeignKey("research_visual_explanations.id", ondelete="CASCADE"), nullable=False)
+    citation_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    node_id: Mapped[str | None] = mapped_column(ForeignKey("research_explanation_nodes.id", ondelete="CASCADE"), nullable=True)
+    evidence_id: Mapped[str | None] = mapped_column(ForeignKey("evidence_records.id", ondelete="SET NULL"), nullable=True)
+    source_snapshot_id: Mapped[str | None] = mapped_column(ForeignKey("source_snapshots.id", ondelete="SET NULL"), nullable=True)
+    source_entity_id: Mapped[str | None] = mapped_column(ForeignKey("entities.id", ondelete="SET NULL"), nullable=True)
+    external_uri: Mapped[str | None] = mapped_column(String(1500), nullable=True)
+    citation_label: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    locator_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    note: Mapped[str | None] = mapped_column(Text, nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchExplanationViewRecord(Base):
+    __tablename__ = "research_explanation_views"
+    __table_args__ = (
+        UniqueConstraint("explanation_id", "view_key", name="uq_research_explanation_view_key"),
+        Index("ix_research_explanation_view_explanation", "explanation_id"),
+        Index("ix_research_explanation_view_kind", "view_kind"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    explanation_id: Mapped[str] = mapped_column(ForeignKey("research_visual_explanations.id", ondelete="CASCADE"), nullable=False)
+    view_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    name: Mapped[str] = mapped_column(String(300), nullable=False)
+    view_kind: Mapped[str] = mapped_column(String(80), nullable=False, default="evidence-map")
+    renderer_contract: Mapped[str] = mapped_column(String(120), nullable=False, default="contract.d3")
+    focus_node_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    layer_config_json: Mapped[list] = mapped_column(JSON, default=list)
+    layout_hints_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    legend_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchExplanationSnapshotRecord(Base):
+    __tablename__ = "research_explanation_snapshots"
+    __table_args__ = (
+        UniqueConstraint("explanation_id", "revision", name="uq_research_explanation_snapshot_revision"),
+        Index("ix_research_explanation_snapshot_explanation", "explanation_id"),
+        Index("ix_research_explanation_snapshot_hash", "content_hash"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    explanation_id: Mapped[str] = mapped_column(ForeignKey("research_visual_explanations.id", ondelete="CASCADE"), nullable=False)
+    revision: Mapped[int] = mapped_column(Integer, nullable=False)
+    content_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    state_json: Mapped[dict] = mapped_column(JSON, nullable=False)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)

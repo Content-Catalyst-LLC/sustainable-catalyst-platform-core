@@ -57,6 +57,7 @@ from .routers import (
     uncertainty_compute,
     causal_systems,
     spatial_temporal,
+    research_visual_explanations,
     ledger,
     live_data,
     meta,
@@ -225,6 +226,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(causal_systems.public_router)
     app.include_router(spatial_temporal.router)
     app.include_router(spatial_temporal.public_router)
+    app.include_router(research_visual_explanations.router)
+    app.include_router(research_visual_explanations.public_router)
     app.include_router(economic_data.router)
     app.include_router(economic_data.public_router)
     app.include_router(data_fabric.router)

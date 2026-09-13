@@ -459,4 +459,8 @@ export class PublicApiClient {
   spatialTemporalScenes(params = {}) { const clean = Object.fromEntries(Object.entries(params).filter(([, value]) => value !== null && value !== undefined)); const query = new URLSearchParams(clean); return this.request(`/spatial-temporal/scenes?${query}`); }
   spatialTemporalBundle(sceneId) { return this.request(`/spatial-temporal/scenes/${encodeURIComponent(sceneId)}/bundle`); }
 
+  researchVisualExplanationsReadiness() { return this.request("/research-visual-explanations/readiness"); }
+  researchVisualExplanations(params = {}) { const clean = Object.fromEntries(Object.entries(params).filter(([, value]) => value !== null && value !== undefined)); const query = new URLSearchParams(clean); return this.request(`/research-visual-explanations?${query}`); }
+  researchVisualExplanationBundle(explanationId) { return this.request(`/research-visual-explanations/${encodeURIComponent(explanationId)}/bundle`); }
+
 }

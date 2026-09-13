@@ -1,3 +1,8 @@
+# Platform Core v2.39.0 — Research Librarian Visual Explanation
+
+- Governed citation-aware research visual explanation model, renderer-neutral specifications, immutable snapshots, and Research Librarian/specialist-runtime handoff contracts.
+- Additive migration 0043.
+
 ## v2.37.0.2 — Bundle Validator Bootstrap Repair
 
 - Makes bundle-only verification dependency-free by statically inspecting migration metadata instead of importing the SQLAlchemy runtime.

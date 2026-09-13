@@ -163,6 +163,7 @@ def health(request: Request):
         "uncertainty_compute_runtime_integration": request.app.state.settings.uncertainty_compute_runtime_enabled,
         "causal_systems_explorer": request.app.state.settings.causal_systems_explorer_enabled,
         "spatial_temporal_visual_reasoning": request.app.state.settings.spatial_temporal_visual_reasoning_enabled,
+        "research_librarian_visual_explanation": request.app.state.settings.research_librarian_visual_explanation_enabled,
     }
 
 
@@ -256,6 +257,7 @@ async def ready(request: Request, db: Session = Depends(get_session)):
         "uncertainty_compute_runtime_integration": "ready" if settings.uncertainty_compute_runtime_enabled else "disabled",
         "causal_systems_explorer": "ready" if settings.causal_systems_explorer_enabled else "disabled",
         "spatial_temporal_visual_reasoning": "ready" if settings.spatial_temporal_visual_reasoning_enabled else "disabled",
+        "research_librarian_visual_explanation": "ready" if settings.research_librarian_visual_explanation_enabled else "disabled",
         "external_provider_health_release_blocking": False,
         "services": [
             {
@@ -475,6 +477,10 @@ def meta(request: Request):
             "uncertainty_compute_runtime_integration",
             "causal_systems_explorer",
             "spatial_temporal_visual_reasoning",
+            "research_librarian_visual_explanation",
+            "citation_aware_visual_explanations",
+            "renderer_neutral_research_explanation_specs",
+            "research_librarian_visual_handoff_contracts",
             "deterministic_monte_carlo_sampling",
             "latin_hypercube_sampling",
             "sobol_design_and_index_analysis",
