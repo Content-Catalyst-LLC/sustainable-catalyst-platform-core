@@ -473,3 +473,9 @@ export class PublicApiClient {
 PublicApiClient.prototype.reproducibleVisualKnowledgeReadiness = function () { return this.request("/reproducible-visual-knowledge/readiness"); };
 PublicApiClient.prototype.reproducibleVisualKnowledgePackages = function (params = {}) { const query = new URLSearchParams(params); return this.request(`/reproducible-visual-knowledge?${query}`); };
 PublicApiClient.prototype.reproducibleVisualKnowledgeBundle = function (packageId) { return this.request(`/reproducible-visual-knowledge/${encodeURIComponent(packageId)}/bundle`); };
+
+
+// v2.42.0 Open Forensics — Forensic Object Model & Evidence Provenance.
+PublicApiClient.prototype.openForensicsReadiness = function () { return this.request("/open-forensics/readiness"); };
+PublicApiClient.prototype.openForensicsInvestigations = function (params = {}) { const query = new URLSearchParams(params); return this.request(`/open-forensics/investigations?${query}`); };
+PublicApiClient.prototype.openForensicsInvestigationBundle = function (investigationId) { return this.request(`/open-forensics/investigations/${encodeURIComponent(investigationId)}/bundle`); };

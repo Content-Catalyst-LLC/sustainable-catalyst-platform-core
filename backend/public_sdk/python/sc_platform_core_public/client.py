@@ -658,3 +658,18 @@ def _reproducible_visual_knowledge_bundle(self, package_id: str):
 PublicApiClient.reproducible_visual_knowledge_readiness = _reproducible_visual_knowledge_readiness
 PublicApiClient.reproducible_visual_knowledge_packages = _reproducible_visual_knowledge_packages
 PublicApiClient.reproducible_visual_knowledge_bundle = _reproducible_visual_knowledge_bundle
+
+
+# v2.42.0 Open Forensics — Forensic Object Model & Evidence Provenance.
+def _open_forensics_readiness(self):
+    return self.request("GET", "/open-forensics/readiness")
+
+def _open_forensics_investigations(self, **params):
+    return self.request("GET", "/open-forensics/investigations", params=params)
+
+def _open_forensics_investigation_bundle(self, investigation_id: str):
+    return self.request("GET", f"/open-forensics/investigations/{investigation_id}/bundle")
+
+PublicApiClient.open_forensics_readiness = _open_forensics_readiness
+PublicApiClient.open_forensics_investigations = _open_forensics_investigations
+PublicApiClient.open_forensics_investigation_bundle = _open_forensics_investigation_bundle

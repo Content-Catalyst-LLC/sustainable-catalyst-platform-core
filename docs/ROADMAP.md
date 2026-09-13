@@ -1,4 +1,18 @@
 # Platform Core Roadmap
+## v2.42.0 — Forensic Object Model & Evidence Provenance
+Current release. Begins Open Forensics with the governed forensic investigation/object/evidence/provenance foundation.
+
+## Open Forensics sequence
+- v2.43.0 — Evidence Integrity & Chain of Custody
+- v2.44.0 — Claims, Contradictions & Competing Hypotheses
+- v2.45.0 — Forensic Timeline & Event Reconstruction
+- v2.46.0 — Forensic Spatial/Temporal Evidence Integration
+- v2.47.0 — Media Artifact & Derivative Provenance
+- v2.48.0 — Quantitative Reconstruction & Reproduction Handoffs
+- v2.49.0 — Testimony, Statements & Documentary Evidence
+- v2.50.0 — Forensic Research Graph
+- v2.51.0 — Reproducible Investigation Packages
+
 ## v2.41.0 — Reproducible Visual Knowledge Layer
 Current release. Locks the visual/research stack into reproducible knowledge packages before Open Forensics.
 

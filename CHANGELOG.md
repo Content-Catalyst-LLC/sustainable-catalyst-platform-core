@@ -1,4 +1,10 @@
 # Changelog
+## v2.42.0 — Forensic Object Model & Evidence Provenance
+- Added migration `0046` and seven additive Open Forensics tables.
+- Added governed investigations, typed forensic objects, evidence items, source bindings, provenance activities, semantic relations, immutable snapshots, provenance graphs, and portable investigation packages.
+- Added direct bindings to Core Source Snapshots and Evidence Ledger records plus SHA-256 content-hash validation.
+- Explicitly excludes chain-of-custody claims, custody transfers/seals, authenticity determinations, attribution, causal/legal conclusions, and automatic truth promotion.
+
 ## v2.41.0 — Reproducible Visual Knowledge Layer
 - Added migration `0045` and six additive reproducibility tables.
 - Added versioned/hashed input manifests and runtime environment capture.

@@ -1,4 +1,8 @@
 # Sustainable Catalyst Platform Core
+## v2.42.0 — Forensic Object Model & Evidence Provenance
+
+Open Forensics begins with governed investigations, typed forensic objects, evidence items, explicit Source Snapshot/Evidence Ledger/external source bindings, provenance activities, semantic relations, hashes, immutable snapshots, and portable investigation packages. v2.42 deliberately does not claim chain of custody, authenticity, attribution, causation, guilt, or legal conclusions.
+
 ## v2.41.0 — Reproducible Visual Knowledge Layer
 
 Platform Core now governs reproducible visual knowledge packages above cross-product visual research objects, with explicit versioned inputs, environment manifests, external-only replay plans, verification evidence, immutable snapshots, deterministic SHA-256 manifests, and portable provenance-preserving packages. Specialist execution remains outside Core.

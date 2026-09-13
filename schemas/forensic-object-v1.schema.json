@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/forensic-object-v1.schema.json",
+  "title": "Open Forensics Object",
+  "type": "object",
+  "required": ["object_key", "object_kind", "label"],
+  "properties": {
+    "object_key": {"type": "string", "minLength": 1, "maxLength": 180},
+    "object_kind": {"enum": ["artifact", "document", "media", "dataset", "device", "location", "event", "statement", "observation", "record", "measurement", "digital-object", "other"]},
+    "label": {"type": "string", "minLength": 1, "maxLength": 300},
+    "bound_entity_id": {"type": ["string", "null"]},
+    "source_product": {"type": ["string", "null"]},
+    "source_ref": {"type": ["string", "null"]},
+    "observed_context": {"type": "object"},
+    "provenance": {"type": "object"}
+  },
+  "additionalProperties": true
+}

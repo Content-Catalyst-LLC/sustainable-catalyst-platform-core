@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/forensic-provenance-activity-v1.schema.json",
+  "title": "Open Forensics Provenance Activity",
+  "type": "object",
+  "required": ["activity_kind"],
+  "properties": {
+    "activity_kind": {"enum": ["observed", "acquired", "retrieved", "imported", "normalized", "extracted", "transformed", "derived", "annotated", "hash-recorded", "linked", "reviewed"]},
+    "actor_ref": {"type": ["string", "null"]},
+    "tool_ref": {"type": ["string", "null"]},
+    "occurred_at": {"type": ["string", "null"], "format": "date-time"},
+    "inputs": {"type": "array"},
+    "outputs": {"type": "array"},
+    "provenance": {"type": "object"}
+  },
+  "additionalProperties": true
+}

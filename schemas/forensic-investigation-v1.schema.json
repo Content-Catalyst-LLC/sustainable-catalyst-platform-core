@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/forensic-investigation-v1.schema.json",
+  "title": "Open Forensics Investigation",
+  "type": "object",
+  "required": ["investigation_key", "name", "project_entity_id"],
+  "properties": {
+    "investigation_key": {"type": "string", "minLength": 1, "maxLength": 180},
+    "name": {"type": "string", "minLength": 1, "maxLength": 300},
+    "project_entity_id": {"type": "string", "minLength": 1},
+    "research_question": {"type": ["string", "null"]},
+    "status": {"type": "string"},
+    "visibility": {"enum": ["private", "public"]},
+    "scope": {"type": "object"},
+    "provenance": {"type": "object"}
+  },
+  "additionalProperties": true
+}
