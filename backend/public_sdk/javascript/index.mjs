@@ -455,4 +455,8 @@ export class PublicApiClient {
   causalSystemsGraphs(params = {}) { const clean = Object.fromEntries(Object.entries(params).filter(([, value]) => value !== null && value !== undefined)); const query = new URLSearchParams(clean); return this.request(`/causal-systems/graphs?${query}`); }
   causalSystemsBundle(graphId) { return this.request(`/causal-systems/graphs/${encodeURIComponent(graphId)}/bundle`); }
 
+  spatialTemporalReadiness() { return this.request("/spatial-temporal/readiness"); }
+  spatialTemporalScenes(params = {}) { const clean = Object.fromEntries(Object.entries(params).filter(([, value]) => value !== null && value !== undefined)); const query = new URLSearchParams(clean); return this.request(`/spatial-temporal/scenes?${query}`); }
+  spatialTemporalBundle(sceneId) { return this.request(`/spatial-temporal/scenes/${encodeURIComponent(sceneId)}/bundle`); }
+
 }

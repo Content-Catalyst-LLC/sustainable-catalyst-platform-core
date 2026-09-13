@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "title": "Spatial Temporal Scene",
+  "required": [
+    "scene_key",
+    "name",
+    "project_entity_id"
+  ],
+  "properties": {
+    "scene_key": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "project_entity_id": {
+      "type": "string"
+    },
+    "spatial_reference": {
+      "type": "object"
+    },
+    "temporal_reference": {
+      "type": "object"
+    },
+    "spatial_extent": {
+      "type": "object"
+    },
+    "temporal_start": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "temporal_end": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "title": "Trajectory Point",
+  "required": [
+    "sequence_position",
+    "observed_at",
+    "geometry"
+  ],
+  "properties": {
+    "sequence_position": {
+      "type": "integer"
+    },
+    "observed_at": {
+      "type": "string"
+    },
+    "geometry": {
+      "type": "object"
+    }
+  }
+}

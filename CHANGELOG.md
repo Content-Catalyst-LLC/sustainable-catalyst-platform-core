@@ -409,3 +409,6 @@
 
 ## 2.15.0
 - Distributed processing, storage-object registry, backpressure, retention and scale diagnostics.
+
+## 2.38.0
+- Spatial & Temporal Visual Reasoning with governed scenes, features, events, trajectories, changes, views, public metadata, and runtime handoffs.

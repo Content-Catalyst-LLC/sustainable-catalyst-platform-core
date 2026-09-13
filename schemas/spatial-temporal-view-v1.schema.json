@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "title": "Spatial Temporal View",
+  "required": [
+    "view_key",
+    "name"
+  ],
+  "properties": {
+    "view_key": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "view_kind": {
+      "type": "string"
+    },
+    "spatial_window": {
+      "type": "object"
+    },
+    "layers": {
+      "type": "array"
+    }
+  }
+}

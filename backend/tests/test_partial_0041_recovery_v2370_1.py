@@ -24,7 +24,8 @@ def test_partial_0041_table_state_recovers_by_recording_short_metadata(tmp_path)
         assert session.get(SchemaMigration, "0041") is None
 
     newly_applied = run_migrations(db)
-    assert newly_applied == ["0041"]
+    assert "0041" in newly_applied
+    assert "0042" in newly_applied
     with db.session_factory() as session:
         row = session.get(SchemaMigration, "0041")
         assert row is not None
@@ -32,5 +33,5 @@ def test_partial_0041_table_state_recovers_by_recording_short_metadata(tmp_path)
 
     status = migration_status(db)
     assert status["pending"] == []
-    assert status["applied"][-1] == "0041"
+    assert status["applied"][-1] == "0042"
     assert CAUSAL_TABLES <= set(inspect(db.engine).get_table_names())

@@ -4158,3 +4158,169 @@ class CausalDiagnosticRecord(Base):
     provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
     metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+# v2.38.0 — Spatial & Temporal Visual Reasoning
+
+class SpatialTemporalSceneRecord(Base):
+    __tablename__ = "spatial_temporal_scenes"
+    __table_args__ = (
+        UniqueConstraint("project_entity_id", "scene_key", name="uq_spatiotemporal_scene_project_key"),
+        Index("ix_spatiotemporal_scene_project", "project_entity_id"),
+        Index("ix_spatiotemporal_scene_model", "model_entity_id"),
+        Index("ix_spatiotemporal_scene_state", "scene_state"),
+        Index("ix_spatiotemporal_scene_visibility", "visibility"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    scene_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    name: Mapped[str] = mapped_column(String(300), nullable=False)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="private", index=True)
+    project_entity_id: Mapped[str] = mapped_column(ForeignKey("entities.id", ondelete="CASCADE"), nullable=False)
+    model_entity_id: Mapped[str | None] = mapped_column(ForeignKey("entities.id", ondelete="SET NULL"), nullable=True)
+    model_version_entity_id: Mapped[str | None] = mapped_column(ForeignKey("entities.id", ondelete="SET NULL"), nullable=True)
+    causal_graph_id: Mapped[str | None] = mapped_column(ForeignKey("causal_graphs.id", ondelete="SET NULL"), nullable=True)
+    visual_entity_id: Mapped[str | None] = mapped_column(ForeignKey("visual_reasoning_objects.entity_id", ondelete="SET NULL"), nullable=True)
+    scene_state: Mapped[str] = mapped_column(String(50), nullable=False, default="draft", index=True)
+    spatial_reference_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    temporal_reference_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    spatial_extent_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    temporal_start: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    temporal_end: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+class SpatialFeatureRecord(Base):
+    __tablename__ = "spatial_temporal_features"
+    __table_args__ = (
+        UniqueConstraint("scene_id", "feature_key", name="uq_spatiotemporal_feature_scene_key"),
+        Index("ix_spatiotemporal_feature_scene", "scene_id"),
+        Index("ix_spatiotemporal_feature_entity", "bound_entity_id"),
+        Index("ix_spatiotemporal_feature_kind", "feature_kind"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    scene_id: Mapped[str] = mapped_column(ForeignKey("spatial_temporal_scenes.id", ondelete="CASCADE"), nullable=False)
+    feature_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    label: Mapped[str] = mapped_column(String(300), nullable=False)
+    feature_kind: Mapped[str] = mapped_column(String(100), nullable=False, default="feature")
+    geometry_type: Mapped[str] = mapped_column(String(50), nullable=False)
+    geometry_json: Mapped[dict] = mapped_column(JSON, nullable=False)
+    srid: Mapped[int] = mapped_column(Integer, nullable=False, default=4326)
+    crs: Mapped[str] = mapped_column(String(120), nullable=False, default="EPSG:4326")
+    spatial_role: Mapped[str] = mapped_column(String(80), nullable=False, default="context")
+    bound_entity_id: Mapped[str | None] = mapped_column(ForeignKey("entities.id", ondelete="SET NULL"), nullable=True)
+    visual_element_id: Mapped[str | None] = mapped_column(ForeignKey("visual_reasoning_elements.id", ondelete="SET NULL"), nullable=True)
+    temporal_start: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    temporal_end: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    properties_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    uncertainty_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class TemporalEventRecord(Base):
+    __tablename__ = "spatial_temporal_events"
+    __table_args__ = (
+        UniqueConstraint("scene_id", "event_key", name="uq_spatiotemporal_event_scene_key"),
+        Index("ix_spatiotemporal_event_scene_time", "scene_id", "starts_at"),
+        Index("ix_spatiotemporal_event_kind", "event_kind"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    scene_id: Mapped[str] = mapped_column(ForeignKey("spatial_temporal_scenes.id", ondelete="CASCADE"), nullable=False)
+    event_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    label: Mapped[str] = mapped_column(String(300), nullable=False)
+    event_kind: Mapped[str] = mapped_column(String(100), nullable=False, default="event")
+    starts_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    ends_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    temporal_precision: Mapped[str] = mapped_column(String(50), nullable=False, default="instant")
+    timezone_name: Mapped[str] = mapped_column(String(100), nullable=False, default="UTC")
+    bound_entity_id: Mapped[str | None] = mapped_column(ForeignKey("entities.id", ondelete="SET NULL"), nullable=True)
+    feature_id: Mapped[str | None] = mapped_column(ForeignKey("spatial_temporal_features.id", ondelete="SET NULL"), nullable=True)
+    uncertainty_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class TrajectoryRecord(Base):
+    __tablename__ = "spatial_temporal_trajectories"
+    __table_args__ = (
+        UniqueConstraint("scene_id", "trajectory_key", name="uq_spatiotemporal_trajectory_scene_key"),
+        Index("ix_spatiotemporal_trajectory_scene", "scene_id"),
+        Index("ix_spatiotemporal_trajectory_subject", "subject_entity_id"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    scene_id: Mapped[str] = mapped_column(ForeignKey("spatial_temporal_scenes.id", ondelete="CASCADE"), nullable=False)
+    trajectory_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    label: Mapped[str] = mapped_column(String(300), nullable=False)
+    subject_entity_id: Mapped[str | None] = mapped_column(ForeignKey("entities.id", ondelete="SET NULL"), nullable=True)
+    feature_id: Mapped[str | None] = mapped_column(ForeignKey("spatial_temporal_features.id", ondelete="SET NULL"), nullable=True)
+    interpolation: Mapped[str] = mapped_column(String(80), nullable=False, default="linear")
+    unit: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class TrajectoryPointRecord(Base):
+    __tablename__ = "spatial_temporal_trajectory_points"
+    __table_args__ = (
+        UniqueConstraint("trajectory_id", "sequence_position", name="uq_spatiotemporal_trajectory_point_position"),
+        Index("ix_spatiotemporal_trajectory_point_time", "trajectory_id", "observed_at"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    trajectory_id: Mapped[str] = mapped_column(ForeignKey("spatial_temporal_trajectories.id", ondelete="CASCADE"), nullable=False)
+    sequence_position: Mapped[int] = mapped_column(Integer, nullable=False)
+    observed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    geometry_json: Mapped[dict] = mapped_column(JSON, nullable=False)
+    srid: Mapped[int] = mapped_column(Integer, nullable=False, default=4326)
+    value_json: Mapped[object] = mapped_column(JSON, nullable=True)
+    uncertainty_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class SpatialTemporalChangeRecord(Base):
+    __tablename__ = "spatial_temporal_changes"
+    __table_args__ = (
+        UniqueConstraint("scene_id", "change_key", name="uq_spatiotemporal_change_scene_key"),
+        Index("ix_spatiotemporal_change_scene", "scene_id"),
+        Index("ix_spatiotemporal_change_kind", "change_kind"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    scene_id: Mapped[str] = mapped_column(ForeignKey("spatial_temporal_scenes.id", ondelete="CASCADE"), nullable=False)
+    change_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    label: Mapped[str] = mapped_column(String(300), nullable=False)
+    change_kind: Mapped[str] = mapped_column(String(100), nullable=False, default="change")
+    feature_id: Mapped[str | None] = mapped_column(ForeignKey("spatial_temporal_features.id", ondelete="SET NULL"), nullable=True)
+    before_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    after_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    before_json: Mapped[object] = mapped_column(JSON, nullable=True)
+    after_json: Mapped[object] = mapped_column(JSON, nullable=True)
+    delta_json: Mapped[object] = mapped_column(JSON, nullable=True)
+    method: Mapped[str] = mapped_column(String(120), nullable=False, default="reported")
+    source_execution_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class SpatialTemporalViewRecord(Base):
+    __tablename__ = "spatial_temporal_views"
+    __table_args__ = (
+        UniqueConstraint("scene_id", "view_key", name="uq_spatiotemporal_view_scene_key"),
+        Index("ix_spatiotemporal_view_scene", "scene_id"),
+        Index("ix_spatiotemporal_view_kind", "view_kind"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    scene_id: Mapped[str] = mapped_column(ForeignKey("spatial_temporal_scenes.id", ondelete="CASCADE"), nullable=False)
+    view_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    name: Mapped[str] = mapped_column(String(300), nullable=False)
+    view_kind: Mapped[str] = mapped_column(String(80), nullable=False, default="linked-map-timeline")
+    spatial_window_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    temporal_start: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    temporal_end: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    layer_config_json: Mapped[list] = mapped_column(JSON, default=list)
+    renderer_contract: Mapped[str] = mapped_column(String(120), nullable=False, default="contract.d3")
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)

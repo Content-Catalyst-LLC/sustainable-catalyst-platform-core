@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "title": "Temporal Event",
+  "required": [
+    "event_key",
+    "label",
+    "starts_at"
+  ],
+  "properties": {
+    "event_key": {
+      "type": "string"
+    },
+    "label": {
+      "type": "string"
+    },
+    "starts_at": {
+      "type": "string"
+    },
+    "ends_at": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  }
+}

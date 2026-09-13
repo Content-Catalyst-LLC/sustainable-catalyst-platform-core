@@ -261,3 +261,5 @@ Planned.
 Planned.
 
 Next planned: **v2.37.0 — Causal Systems Explorer**.
+
+- v2.38.0 Spatial & Temporal Visual Reasoning ✓

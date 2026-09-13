@@ -611,3 +611,15 @@ def _causal_systems_bundle(self, graph_id: str):
 PublicApiClient.causal_systems_readiness = _causal_systems_readiness
 PublicApiClient.causal_systems_graphs = _causal_systems_graphs
 PublicApiClient.causal_systems_bundle = _causal_systems_bundle
+
+
+# v2.38.0 Spatial & Temporal Visual Reasoning public metadata helpers
+def _spatial_temporal_readiness(self):
+    return self.request("GET", "/spatial-temporal/readiness")
+def _spatial_temporal_scenes(self, **params):
+    return self.request("GET", "/spatial-temporal/scenes", params=params)
+def _spatial_temporal_bundle(self, scene_id: str):
+    return self.request("GET", f"/spatial-temporal/scenes/{scene_id}/bundle")
+PublicApiClient.spatial_temporal_readiness = _spatial_temporal_readiness
+PublicApiClient.spatial_temporal_scenes = _spatial_temporal_scenes
+PublicApiClient.spatial_temporal_bundle = _spatial_temporal_bundle

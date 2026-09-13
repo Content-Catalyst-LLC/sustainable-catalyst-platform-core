@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Sustainable Catalyst Platform Core
  * Description: WordPress connector for Sustainable Catalyst Platform Core registry, graph, evidence, developer, gateway, free live-data, international-law, scientific-data, official-statistics, geospatial, time-series, STAC, map-layer, streaming, alerts, source-reliability, and operational-facility, humanitarian-access, essential-services, and country-evidence federation and reconciliation, and Earth/Ocean/Space scientific-service routing, cross-product exchange, distributed scale-control services, and governance/access/audit, production-certification/recovery, and observability/SLO production-operations services, plus incident-response, change-control, rollback-coordination, continuity, backup-verification, disaster-recovery, and multi-region resilience/failover-coordination, and data-lifecycle/archival-integrity/preservation services, plus Federated Core trusted-node exchange services and capacity forecasting/resource-governance services, plus identity/credential/cryptographic-key lifecycle governance, distributed workload governance, and scientific object storage/processing adapter services, research object/model services, renderer-neutral visual reasoning object services, and visualization specification/renderer registry services, and governed System Maps and Flow Maps services.
- * Version: 2.37.0.2
+ * Version: 2.38.0
  * Author: Content Catalyst LLC
  * License: MIT
  */
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('SCPC_VERSION', '2.37.0.2');
+define('SCPC_VERSION', '2.38.0');
 define('SCPC_OPTION_BACKEND_URL', 'scpc_backend_url');
 define('SCPC_OPTION_READ_KEY', 'scpc_read_key');
 
@@ -1284,3 +1284,13 @@ function scpc_causal_systems_status_shortcode() {
     return '<div class="scpc-status"><strong>Causal Systems Explorer</strong><br />' . intval($counts['graphs'] ?? 0) . ' graphs · ' . intval($counts['variables'] ?? 0) . ' variables · ' . intval($counts['edges'] ?? 0) . ' edges · ' . intval($counts['estimates'] ?? 0) . ' estimates<br /><span class="scpc-meta">Core ' . esc_html($release) . ' · governed causal graphs, interventions, explicit identification assumptions, diagnostics, and attributable effect estimates. Structural graph reasoning is deterministic; causal identification and effect estimation are never silently inferred.</span></div>';
 }
 add_shortcode('sc_platform_core_causal_systems_status', 'scpc_causal_systems_status_shortcode');
+
+
+// v2.38.0 Spatial & Temporal Visual Reasoning
+function scpc_spatial_temporal_status_shortcode() {
+    $status = scpc_api_get('/v1/spatial-temporal/readiness');
+    if (!is_array($status)) { return '<div class="scpc-status"><strong>Spatial & Temporal Visual Reasoning</strong><br /><span class="scpc-meta">Status unavailable.</span></div>'; }
+    $counts = $status['counts'] ?? array(); $release = $status['release'] ?? SCPC_VERSION;
+    return '<div class="scpc-status"><strong>Spatial & Temporal Visual Reasoning</strong><br />' . intval($counts['scenes'] ?? 0) . ' scenes · ' . intval($counts['features'] ?? 0) . ' features · ' . intval($counts['events'] ?? 0) . ' events · ' . intval($counts['trajectories'] ?? 0) . ' trajectories<br /><span class="scpc-meta">Core ' . esc_html($release) . ' · governed spatial-temporal scenes, GeoJSON feature bindings, events, trajectories, change observations, and renderer-neutral map/timeline specifications. GIS, raster, remote-sensing, and temporal model execution remain external to Core.</span></div>';
+}
+add_shortcode('sc_platform_core_spatial_temporal_status', 'scpc_spatial_temporal_status_shortcode');
