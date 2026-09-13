@@ -1,6 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
+  "additionalProperties": true,
   "title": "Ensemble",
   "required": [
     "ensemble_key",
@@ -27,9 +28,20 @@
         "null"
       ]
     },
-    "combination_policy": {
+    "ensemble_state": {
+      "type": "string"
+    },
+    "weighting_policy": {
+      "type": "string"
+    },
+    "aggregation_contract": {
+      "type": "object"
+    },
+    "assumptions": {
+      "type": "array"
+    },
+    "metadata": {
       "type": "object"
     }
-  },
-  "additionalProperties": true
+  }
 }

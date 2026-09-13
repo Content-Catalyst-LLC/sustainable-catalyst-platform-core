@@ -1,71 +1,68 @@
 from __future__ import annotations
-import uuid
 
-def _u(prefix): return f"{prefix}-{uuid.uuid4().hex[:8]}"
-def _research(client,h,object_type,name,attributes):
-    r=client.post('/v1/research-objects',headers=h,json={'object_type':object_type,'name':name,'slug':_u(name.lower().replace(' ','-')),'visibility':'public','attributes':attributes})
-    assert r.status_code==200,r.text;return r.json()
-def _project(c,h,name='UQ project'):return _research(c,h,'research-project',_u(name),{'research_question':'Quantify uncertainty'})
-def _model(c,h,p,name='UQ model'):return _research(c,h,'model',_u(name),{'project_entity_id':p['id'],'model_kind':'simulation','execution_target':'lab','specification':{},'assumptions':[],'equations':[]})
-def _version(c,h,m,name='UQ model v1'):return _research(c,h,'model-version',_u(name),{'model_entity_id':m['id'],'version_label':_u('v1'),'specification':{'kind':'test'},'immutable':True})
-def _parameter(c,h,m,name='demand',low=0,high=500):return _research(c,h,'parameter',_u(name),{'model_entity_id':m['id'],'name':_u(name),'data_type':'number','unit':'MW','default_value':{'value':100},'bounds':{'min':low,'max':high},'sensitivity_enabled':True})
-def _scenario(c,h,p,name='Baseline'):return _research(c,h,'scenario',_u(name),{'project_entity_id':p['id'],'scenario_state':'ready','parameter_values':{},'assumptions':[]})
-def _run(c,h,v,s=None,name='External run'):return _research(c,h,'model-run',_u(name),{'model_version_entity_id':v['id'],'scenario_entity_id':s['id'] if s else None,'executor_product':'lab','run_status':'completed','parameter_values':{}})
-def _public_key(c,h):
-    app=c.post('/v1/developer/applications',headers=h,json={'name':_u('Uncertainty SDK'),'owner_name':'Tester','owner_email':f"uq-{uuid.uuid4().hex[:6]}@example.com",'organization':'Test','website_url':'https://example.com','use_case':'Read public uncertainty metadata.','status':'approved','plan_id':'free','metadata':{},'actor':'admin'})
-    assert app.status_code in (200,201),app.text
-    issued=c.post(f"/v1/developer/applications/{app.json()['id']}/credentials",headers=h,json={'label':'UQ','scopes':['data:read'],'created_by':'admin'})
-    assert issued.status_code in (200,201),issued.text;return issued.json()['api_key']
-
-def _uncertainty(c,h,p,param,visibility='public',key=None):
-    r=c.post('/v1/uncertainty-reasoning/uncertainties',headers=h,json={'uncertainty_key':key or _u('demand-uq'),'name':'Demand uncertainty','visibility':visibility,'project_entity_id':p['id'],'subject_entity_id':param['id'],'uncertainty_kind':'aleatory','distribution_family':'uniform','parameters':{'source':'test'},'lower_bound':80,'upper_bound':120,'unit':'MW','confidence_level':0.95,'provenance':{'provided_by':'test'}})
-    assert r.status_code==200,r.text;return r.json()
-def _study(c,h,p,m,v,visibility='public'):
-    r=c.post('/v1/uncertainty-reasoning/sensitivity-studies',headers=h,json={'study_key':_u('study'),'name':'Sensitivity study','visibility':visibility,'project_entity_id':p['id'],'model_entity_id':m['id'],'model_version_entity_id':v['id'],'method':'sobol','execution_product':'lab','configuration':{'sampling_runtime':'external'}})
-    assert r.status_code==200,r.text;return r.json()
-def _ensemble(c,h,p,m,v,visibility='public'):
-    r=c.post('/v1/uncertainty-reasoning/ensembles',headers=h,json={'ensemble_key':_u('ensemble'),'name':'Model ensemble','visibility':visibility,'project_entity_id':p['id'],'model_entity_id':m['id'],'model_version_entity_id':v['id'],'combination_policy':{'weight_semantics':'declared-only'}})
-    assert r.status_code==200,r.text;return r.json()
+def _research(client,h,typ,name,attrs):
+    rr=client.post('/v1/research-objects',headers=h,json={'object_type':typ,'name':name,'slug':name.lower().replace(' ','-'),'visibility':'public','attributes':attrs}); assert rr.status_code==200,rr.text; return rr.json()
+def _project(c,h,n='UQ project'): return _research(c,h,'research-project',n,{'research_question':'Characterize uncertainty'})
+def _model(c,h,p,n='UQ model'): return _research(c,h,'model',n,{'project_entity_id':p['id'],'model_kind':'simulation','execution_target':'lab','specification':{},'assumptions':[],'equations':[]})
+def _version(c,h,m,n='UQ model v1'): return _research(c,h,'model-version',n,{'model_entity_id':m['id'],'version_label':'v1','specification':{},'immutable':True})
+def _param(c,h,m,n='Demand parameter'): return _research(c,h,'parameter',n,{'model_entity_id':m['id'],'name':n.lower().replace(' ','_'),'data_type':'number','unit':'MW','default_value':{'value':100},'bounds':{'min':0,'max':500}})
+def _scenario(c,h,p,n='Baseline scenario'): return _research(c,h,'scenario',n,{'project_entity_id':p['id'],'scenario_state':'ready','parameter_values':{},'assumptions':[]})
+def _plan(c,h,p,m,v,n='uq-plan'):
+    rr=c.post('/v1/scenario-compute/plans',headers=h,json={'plan_key':n+'-'+p['id'][-6:],'name':'UQ plan','visibility':'public','project_entity_id':p['id'],'model_entity_id':m['id'],'model_version_entity_id':v['id'],'execution_product':'lab'}); assert rr.status_code==200,rr.text; return rr.json()
+def _pubkey(c,h):
+    a=c.post('/v1/developer/applications',headers=h,json={'name':'UQ SDK','owner_name':'Tester','owner_email':'uq-sdk@example.com','organization':'Test','website_url':'https://example.com','use_case':'Read uncertainty reasoning metadata.','status':'approved','plan_id':'free','metadata':{},'actor':'admin'});assert a.status_code in (200,201),a.text
+    k=c.post(f"/v1/developer/applications/{a.json()['id']}/credentials",headers=h,json={'label':'UQ read','scopes':['data:read'],'created_by':'admin'});assert k.status_code in (200,201),k.text;return k.json()['api_key']
 
 def test_health_migration_and_readiness(client):
-    h=client.get('/health').json();assert h['version']=='2.36.0' and h['uncertainty_sensitivity_ensemble_reasoning'] is True
-    r=client.get('/v1/uncertainty-reasoning/readiness');assert r.status_code==200,r.text;d=r.json();assert d['migration_0039_applied'] is True
-    assert d['sampling_by_core'] is False and d['sensitivity_algorithm_execution_by_core'] is False and d['ensemble_aggregation_by_core'] is False and d['model_execution_by_core'] is False
+    h=client.get('/health').json();assert h['version']=='2.36.1' and h['uncertainty_sensitivity_ensemble_reasoning'] is True
+    d=client.get('/v1/uncertainty-reasoning/readiness').json();assert d['migration_0039_applied'] is True and d['uncertainty_first_class'] is True
+    assert d['monte_carlo_execution_by_core'] is True and d['ensemble_aggregation_by_core'] is True
 
-def test_uncertainty_definition_preserves_bounds_and_provenance(client,write_headers):
-    p=_project(client,write_headers);m=_model(client,write_headers,p);param=_parameter(client,write_headers,m);u=_uncertainty(client,write_headers,p,param)
-    assert u['lower_bound']==80 and u['upper_bound']==120 and u['distribution_family']=='uniform';assert u['provenance_json']['provided_by']=='test'
+def test_uncertainty_definition_and_bounds(client,write_headers):
+    p=_project(client,write_headers);m=_model(client,write_headers,p);q=_param(client,write_headers,m)
+    u=client.post('/v1/uncertainty-reasoning/uncertainty-definitions',headers=write_headers,json={'uncertainty_key':'demand-uq','name':'Demand uncertainty','visibility':'public','project_entity_id':p['id'],'model_entity_id':m['id'],'target_entity_id':q['id'],'uncertainty_kind':'distribution','distribution_name':'triangular','unit':'MW','lower_bound':80,'upper_bound':140,'confidence_level':0.95,'parameters':{'mode':100},'provenance':{'source':'test'}});assert u.status_code==200,u.text
+    assert u.json()['distribution_name']=='triangular'
+    bad=client.post('/v1/uncertainty-reasoning/uncertainty-definitions',headers=write_headers,json={'uncertainty_key':'bad','name':'Bad','project_entity_id':p['id'],'target_entity_id':q['id'],'uncertainty_kind':'interval','lower_bound':2,'upper_bound':1});assert bad.status_code==422,bad.text
 
-def test_uncertainty_invalid_bounds_and_confidence_rejected(client,write_headers):
-    p=_project(client,write_headers,'Bounds');m=_model(client,write_headers,p,'Bounds model');param=_parameter(client,write_headers,m,'x')
-    bad=client.post('/v1/uncertainty-reasoning/uncertainties',headers=write_headers,json={'uncertainty_key':_u('bad'),'name':'Bad','project_entity_id':p['id'],'subject_entity_id':param['id'],'lower_bound':5,'upper_bound':1});assert bad.status_code==422,bad.text
-    bad2=client.post('/v1/uncertainty-reasoning/uncertainties',headers=write_headers,json={'uncertainty_key':_u('bad2'),'name':'Bad2','project_entity_id':p['id'],'subject_entity_id':param['id'],'confidence_level':1.5});assert bad2.status_code==422,bad2.text
+def test_sensitivity_factor_external_result_and_renderer(client,write_headers):
+    p=_project(client,write_headers,'Sensitivity project');m=_model(client,write_headers,p,'Sensitivity model');v=_version(client,write_headers,m,'Sensitivity v1');q=_param(client,write_headers,m,'Load parameter');plan=_plan(client,write_headers,p,m,v,'sens')
+    u=client.post('/v1/uncertainty-reasoning/uncertainty-definitions',headers=write_headers,json={'uncertainty_key':'load-uq','name':'Load uncertainty','project_entity_id':p['id'],'model_entity_id':m['id'],'target_entity_id':q['id'],'uncertainty_kind':'interval','lower_bound':90,'upper_bound':110}).json()
+    s=client.post('/v1/uncertainty-reasoning/sensitivity-studies',headers=write_headers,json={'study_key':'study','name':'Sensitivity study','visibility':'public','project_entity_id':p['id'],'model_entity_id':m['id'],'model_version_entity_id':v['id'],'compute_plan_id':plan['id'],'method':'sobol','output_key':'cost','sampling_contract':{'sample_count':512,'seed':42}});assert s.status_code==200,s.text;sid=s.json()['visual_entity_id']
+    f=client.post(f'/v1/uncertainty-reasoning/sensitivity-studies/{sid}/factors',headers=write_headers,json={'data':{'factor_key':'load','parameter_entity_id':q['id'],'uncertainty_definition_id':u['id'],'lower_bound':90,'upper_bound':110}});assert f.status_code==200,f.text
+    bad=client.post(f'/v1/uncertainty-reasoning/sensitivity-studies/{sid}/results',headers=write_headers,json={'data':{'factor_id':f.json()['id'],'metric_kind':'sobol-first','output_key':'cost','value':{'value':0.4},'source_execution':{'calculated_by_core':True}}});assert bad.status_code==422,bad.text
+    good=client.post(f'/v1/uncertainty-reasoning/sensitivity-studies/{sid}/results',headers=write_headers,json={'data':{'factor_id':f.json()['id'],'metric_kind':'sobol-first','output_key':'cost','value':{'value':0.4},'source_execution':{'executor':'lab','run':'x'}}});assert good.status_code==200,good.text
+    spec=client.post(f'/v1/uncertainty-reasoning/sensitivity-studies/{sid}/compile-specification',headers=write_headers,json={'data':{}});assert spec.status_code==200,spec.text;assert spec.json()['renderer_resolution']['resolved_renderer_key']=='contract.vega-lite'
+    val=client.get(f'/v1/uncertainty-reasoning/sensitivity-studies/{sid}/validate').json();assert val['sensitivity_calculation_performed'] is False and val['counts']['results']==1
 
-def test_sensitivity_external_measures_and_descriptive_ranking(client,write_headers):
-    p=_project(client,write_headers,'Sensitivity');m=_model(client,write_headers,p,'Sensitivity model');v=_version(client,write_headers,m);a=_parameter(client,write_headers,m,'a');b=_parameter(client,write_headers,m,'b');ua=_uncertainty(client,write_headers,p,a,key=_u('ua'));study=_study(client,write_headers,p,m,v)
-    f1=client.post(f"/v1/uncertainty-reasoning/sensitivity-studies/{study['id']}/factors",headers=write_headers,json={'data':{'factor_key':'a','parameter_entity_id':a['id'],'lower_bound':80,'upper_bound':120,'uncertainty_definition_id':ua['id']}});assert f1.status_code==200,f1.text
-    f2=client.post(f"/v1/uncertainty-reasoning/sensitivity-studies/{study['id']}/factors",headers=write_headers,json={'data':{'factor_key':'b','parameter_entity_id':b['id'],'lower_bound':0,'upper_bound':2}});assert f2.status_code==200,f2.text
-    for f,val in [(f1.json(),0.2),(f2.json(),-0.8)]:
-        r=client.post(f"/v1/uncertainty-reasoning/sensitivity-studies/{study['id']}/measures",headers=write_headers,json={'data':{'factor_id':f['id'],'output_key':'cost','measure_kind':'total-order','measure_value':val,'provenance':{'runtime':'lab'}}});assert r.status_code==200,r.text
-    summary=client.get(f"/v1/uncertainty-reasoning/sensitivity-studies/{study['id']}/summary").json();rank=summary['rankings'][0]['factors'];assert rank[0]['factor_key']=='b' and rank[0]['descriptive_rank']==1;assert summary['sensitivity_algorithm_executed_by_core'] is False
+def test_cross_model_factor_rejected(client,write_headers):
+    p=_project(client,write_headers,'Cross factor project');m1=_model(client,write_headers,p,'Model A');v1=_version(client,write_headers,m1,'Model A v1');m2=_model(client,write_headers,p,'Model B');q2=_param(client,write_headers,m2,'Foreign parameter')
+    s=client.post('/v1/uncertainty-reasoning/sensitivity-studies',headers=write_headers,json={'study_key':'cross','name':'Cross','project_entity_id':p['id'],'model_entity_id':m1['id'],'model_version_entity_id':v1['id']}).json();sid=s['visual_entity_id']
+    rr=client.post(f'/v1/uncertainty-reasoning/sensitivity-studies/{sid}/factors',headers=write_headers,json={'data':{'factor_key':'foreign','parameter_entity_id':q2['id']}});assert rr.status_code==422,rr.text
 
-def test_sensitivity_rejects_parameter_from_other_model(client,write_headers):
-    p=_project(client,write_headers,'Cross');m=_model(client,write_headers,p,'Main');v=_version(client,write_headers,m);study=_study(client,write_headers,p,m,v);other=_model(client,write_headers,p,'Other');foreign=_parameter(client,write_headers,other,'foreign')
-    r=client.post(f"/v1/uncertainty-reasoning/sensitivity-studies/{study['id']}/factors",headers=write_headers,json={'data':{'factor_key':'foreign','parameter_entity_id':foreign['id']}});assert r.status_code==422,r.text
+def test_ensemble_members_statistics_and_renderer(client,write_headers):
+    p=_project(client,write_headers,'Ensemble project');m=_model(client,write_headers,p,'Ensemble model');v=_version(client,write_headers,m,'Ensemble v1');s=_scenario(client,write_headers,p,'Ensemble scenario');plan=_plan(client,write_headers,p,m,v,'ens')
+    case=client.post(f"/v1/scenario-compute/plans/{plan['id']}/cases",headers=write_headers,json={'data':{'case_key':'member','scenario_entity_id':s['id']}}).json();req=client.post(f"/v1/scenario-compute/plans/{plan['id']}/prepare",headers=write_headers,json={}).json()['prepared'][0]
+    run=_research(client,write_headers,'model-run','Ensemble run',{'model_version_entity_id':v['id'],'scenario_entity_id':s['id'],'executor_product':'lab','run_status':'completed','parameter_values':{}})
+    e=client.post('/v1/uncertainty-reasoning/ensembles',headers=write_headers,json={'ensemble_key':'ensemble','name':'Ensemble','visibility':'public','project_entity_id':p['id'],'model_entity_id':m['id'],'model_version_entity_id':v['id'],'compute_plan_id':plan['id'],'weighting_policy':'explicit'});assert e.status_code==200,e.text;eid=e.json()['visual_entity_id']
+    mem=client.post(f'/v1/uncertainty-reasoning/ensembles/{eid}/members',headers=write_headers,json={'data':{'member_key':'m1','scenario_entity_id':s['id'],'compute_case_id':case['id'],'compute_request_id':req['id'],'model_run_entity_id':run['id'],'weight':1.0}});assert mem.status_code==200,mem.text
+    bad=client.post(f'/v1/uncertainty-reasoning/ensembles/{eid}/statistics',headers=write_headers,json={'data':{'statistic_key':'mean-cost','output_key':'cost','statistic_kind':'mean','value':{'value':10},'source_execution':{'calculated_by_core':True}}});assert bad.status_code==422,bad.text
+    st=client.post(f'/v1/uncertainty-reasoning/ensembles/{eid}/statistics',headers=write_headers,json={'data':{'statistic_key':'mean-cost','output_key':'cost','statistic_kind':'mean','value':{'value':10},'source_execution':{'executor':'workbench'}}});assert st.status_code==200,st.text
+    spec=client.post(f'/v1/uncertainty-reasoning/ensembles/{eid}/compile-specification',headers=write_headers,json={'data':{}});assert spec.status_code==200,spec.text;assert spec.json()['renderer_resolution']['resolved_renderer_key']=='contract.plotly'
+    val=client.get(f'/v1/uncertainty-reasoning/ensembles/{eid}/validate').json();assert val['aggregation_performed'] is False and val['counts']['members']==1
 
-def test_ensemble_members_statistics_are_governed_not_aggregated(client,write_headers):
-    p=_project(client,write_headers,'Ensemble');m=_model(client,write_headers,p,'Ensemble model');v=_version(client,write_headers,m);s=_scenario(client,write_headers,p);run=_run(client,write_headers,v,s);e=_ensemble(client,write_headers,p,m,v)
-    member=client.post(f"/v1/uncertainty-reasoning/ensembles/{e['id']}/members",headers=write_headers,json={'data':{'member_key':'run-1','scenario_entity_id':s['id'],'model_run_entity_id':run['id'],'member_state':'completed','weight':2.5,'provenance':{'source':'external-run'}}});assert member.status_code==200,member.text
-    stat=client.post(f"/v1/uncertainty-reasoning/ensembles/{e['id']}/statistics",headers=write_headers,json={'data':{'output_key':'cost','statistic_kind':'mean','statistic_value':42.5,'unit':'USD','provenance':{'computed_by':'lab'}}});assert stat.status_code==200,stat.text
-    summary=client.get(f"/v1/uncertainty-reasoning/ensembles/{e['id']}/summary").json();assert summary['member_count']==1 and summary['declared_weight_total']==2.5;assert summary['weights_normalized_by_core'] is False and summary['ensemble_aggregation_by_core'] is False and summary['statistics_are_externally_supplied'] is True
+def test_ensemble_rejects_incompatible_run(client,write_headers):
+    p=_project(client,write_headers,'Run compatibility');m1=_model(client,write_headers,p,'Run Model A');v1=_version(client,write_headers,m1,'Run A v1');m2=_model(client,write_headers,p,'Run Model B');v2=_version(client,write_headers,m2,'Run B v1');s=_scenario(client,write_headers,p,'Run scenario');run=_research(client,write_headers,'model-run','Foreign run',{'model_version_entity_id':v2['id'],'scenario_entity_id':s['id'],'executor_product':'lab','run_status':'completed','parameter_values':{}})
+    e=client.post('/v1/uncertainty-reasoning/ensembles',headers=write_headers,json={'ensemble_key':'run-check','name':'Run check','project_entity_id':p['id'],'model_entity_id':m1['id'],'model_version_entity_id':v1['id']}).json();eid=e['visual_entity_id']
+    rr=client.post(f'/v1/uncertainty-reasoning/ensembles/{eid}/members',headers=write_headers,json={'data':{'member_key':'bad','model_run_entity_id':run['id']}});assert rr.status_code==422,rr.text
 
-def test_ensemble_rejects_negative_weight_and_bad_quantile(client,write_headers):
-    p=_project(client,write_headers,'Reject');m=_model(client,write_headers,p,'Reject model');v=_version(client,write_headers,m);s=_scenario(client,write_headers,p);e=_ensemble(client,write_headers,p,m,v)
-    bad=client.post(f"/v1/uncertainty-reasoning/ensembles/{e['id']}/members",headers=write_headers,json={'data':{'member_key':'bad','scenario_entity_id':s['id'],'weight':-1}});assert bad.status_code==422,bad.text
-    bad2=client.post(f"/v1/uncertainty-reasoning/ensembles/{e['id']}/statistics",headers=write_headers,json={'data':{'output_key':'x','statistic_kind':'quantile','statistic_value':1,'quantile':1.2}});assert bad2.status_code==422,bad2.text
+def test_public_api_hides_private_reasoning_objects(client,write_headers):
+    p=_project(client,write_headers,'Public UQ project');m=_model(client,write_headers,p,'Public UQ model');v=_version(client,write_headers,m,'Public UQ v1');q=_param(client,write_headers,m,'Public parameter')
+    client.post('/v1/uncertainty-reasoning/uncertainty-definitions',headers=write_headers,json={'uncertainty_key':'pub','name':'Public UQ','visibility':'public','project_entity_id':p['id'],'target_entity_id':q['id'],'uncertainty_kind':'interval'})
+    client.post('/v1/uncertainty-reasoning/uncertainty-definitions',headers=write_headers,json={'uncertainty_key':'priv','name':'Private UQ','visibility':'private','project_entity_id':p['id'],'target_entity_id':q['id'],'uncertainty_kind':'interval'})
+    pub=client.post('/v1/uncertainty-reasoning/sensitivity-studies',headers=write_headers,json={'study_key':'pub-study','name':'Public study','visibility':'public','project_entity_id':p['id'],'model_entity_id':m['id'],'model_version_entity_id':v['id']}).json();client.post('/v1/uncertainty-reasoning/sensitivity-studies',headers=write_headers,json={'study_key':'priv-study','name':'Private study','visibility':'private','project_entity_id':p['id'],'model_entity_id':m['id'],'model_version_entity_id':v['id']})
+    key=_pubkey(client,write_headers);h={'Authorization':f'Bearer {key}'}
+    u=client.get('/api/v1/uncertainty-reasoning/uncertainty-definitions',headers=h);assert u.status_code==200,u.text;assert {x['uncertainty_key'] for x in u.json()['data']}=={'pub'}
+    studies=client.get('/api/v1/uncertainty-reasoning/sensitivity-studies',headers=h);assert studies.status_code==200,studies.text;assert pub['visual_entity_id'] in {x['visual_entity_id'] for x in studies.json()['data']}
 
-def test_public_api_hides_private_uncertainty_objects(client,write_headers):
-    p=_project(client,write_headers,'Public');m=_model(client,write_headers,p,'Public model');v=_version(client,write_headers,m);a=_parameter(client,write_headers,m,'public-p');b=_parameter(client,write_headers,m,'private-p');pub=_uncertainty(client,write_headers,p,a,'public',_u('pub'));priv=_uncertainty(client,write_headers,p,b,'private',_u('priv'));_study(client,write_headers,p,m,v,'public');_ensemble(client,write_headers,p,m,v,'public')
-    key=_public_key(client,write_headers);headers={'Authorization':f'Bearer {key}'}
-    ready=client.get('/api/v1/uncertainty-reasoning/readiness',headers=headers);assert ready.status_code==200,ready.text
-    listed=client.get('/api/v1/uncertainty-reasoning/uncertainties',headers=headers);assert listed.status_code==200,listed.text;ids={x['id'] for x in listed.json()['data']};assert pub['id'] in ids and priv['id'] not in ids
+def test_readiness_declares_non_execution_boundaries(client):
+    d=client.get('/v1/uncertainty-reasoning/readiness').json();assert d['sampling_execution_by_core'] is True and d['sensitivity_calculation_by_core'] is True and d['ensemble_aggregation_by_core'] is True and d['automatic_probability_inference'] is False

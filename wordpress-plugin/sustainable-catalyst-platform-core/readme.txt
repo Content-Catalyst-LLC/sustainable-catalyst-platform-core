@@ -4,7 +4,7 @@ Tags: knowledge graph, entity registry, provenance, live data, sustainable catal
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.0
-Stable tag: 2.36.0
+Stable tag: 2.36.1
 License: MIT
 
 WordPress status, live-data gateway, and entity lookup client for Sustainable Catalyst Platform Core.
@@ -197,6 +197,7 @@ Adds Interactive Model Canvas status for governed model-bound nodes, controls, i
 * Core orchestrates compute but does not dispatch network execution, execute arbitrary code, or perform numerical model execution.
 
 
-== 2.36.0 ==
-* Adds governed uncertainty definitions, sensitivity studies, and ensemble reasoning status via `[sc_platform_core_uncertainty_reasoning_status]`.
-* Core stores externally supplied sensitivity measures and ensemble statistics; sampling, sensitivity algorithms, ensemble aggregation, and numerical execution remain external.
+== 2.36.1 ==
+* Adds governed Uncertainty, Sensitivity & Ensemble Reasoning status via `[sc_platform_core_uncertainty_reasoning_status]`.
+* Adds first-class uncertainty definitions, sensitivity-study factors/metrics, ensemble membership/statistics, provenance, validation, and renderer-neutral chart specifications.
+* Core does not generate Monte Carlo samples, calculate sensitivity metrics, aggregate ensembles, fit distributions, infer probabilities, or rank outcomes automatically.

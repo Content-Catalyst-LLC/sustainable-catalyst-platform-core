@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/uncertainty-compute-run-v1.schema.json",
+  "title": "Uncertainty Compute Run",
+  "type": "object",
+  "required": ["run_key", "method"],
+  "properties": {
+    "run_key": {"type": "string", "minLength": 1},
+    "name": {"type": "string"},
+    "method": {"type": "string"},
+    "runtime_product": {"enum": ["core-statistics", "lab", "workbench", "external"]},
+    "seed": {"type": ["integer", "null"]},
+    "sample_count": {"type": ["integer", "null"], "minimum": 1},
+    "input_manifest": {"type": "object"},
+    "provenance": {"type": "object"},
+    "metadata": {"type": "object"}
+  },
+  "additionalProperties": true
+}

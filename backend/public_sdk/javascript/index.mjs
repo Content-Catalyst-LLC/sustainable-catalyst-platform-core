@@ -442,10 +442,12 @@ export class PublicApiClient {
   scenarioComputePlanBundle(planId) { return this.request(`/scenario-compute/plans/${encodeURIComponent(planId)}/bundle`); }
 
   uncertaintyReasoningReadiness() { return this.request("/uncertainty-reasoning/readiness"); }
-  uncertaintyDefinitions(params = {}) { const clean = Object.fromEntries(Object.entries(params).filter(([, value]) => value !== null && value !== undefined)); const query = new URLSearchParams(clean); return this.request(`/uncertainty-reasoning/uncertainties?${query}`); }
+  uncertaintyDefinitions(params = {}) { const clean = Object.fromEntries(Object.entries(params).filter(([, value]) => value !== null && value !== undefined)); const query = new URLSearchParams(clean); return this.request(`/uncertainty-reasoning/uncertainty-definitions?${query}`); }
   sensitivityStudies(params = {}) { const clean = Object.fromEntries(Object.entries(params).filter(([, value]) => value !== null && value !== undefined)); const query = new URLSearchParams(clean); return this.request(`/uncertainty-reasoning/sensitivity-studies?${query}`); }
-  sensitivityStudySummary(studyId) { return this.request(`/uncertainty-reasoning/sensitivity-studies/${encodeURIComponent(studyId)}/summary`); }
+  sensitivityStudyBundle(entityId) { return this.request(`/uncertainty-reasoning/sensitivity-studies/${encodeURIComponent(entityId)}/bundle`); }
   ensembles(params = {}) { const clean = Object.fromEntries(Object.entries(params).filter(([, value]) => value !== null && value !== undefined)); const query = new URLSearchParams(clean); return this.request(`/uncertainty-reasoning/ensembles?${query}`); }
-  ensembleSummary(ensembleId) { return this.request(`/uncertainty-reasoning/ensembles/${encodeURIComponent(ensembleId)}/summary`); }
+  ensembleBundle(entityId) { return this.request(`/uncertainty-reasoning/ensembles/${encodeURIComponent(entityId)}/bundle`); }
+
+  uncertaintyComputeReadiness() { return this.request("/uncertainty-compute/readiness"); }
 
 }

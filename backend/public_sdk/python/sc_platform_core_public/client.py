@@ -550,7 +550,7 @@ def _scenario_compute_readiness(self):
     return self.request("GET", "/scenario-compute/readiness")
 
 def _scenario_compute_plans(self, **params):
-    return self.request("GET", "/scenario-compute/plans", params=params)
+    return self.request("GET", "/scenario-compute/plans", params={k:v for k,v in params.items() if v is not None})
 
 def _scenario_compute_plan(self, plan_id: str):
     return self.request("GET", f"/scenario-compute/plans/{plan_id}")
@@ -569,23 +569,29 @@ def _uncertainty_reasoning_readiness(self):
     return self.request("GET", "/uncertainty-reasoning/readiness")
 
 def _uncertainty_definitions(self, **params):
-    return self.request("GET", "/uncertainty-reasoning/uncertainties", params=params)
+    return self.request("GET", "/uncertainty-reasoning/uncertainty-definitions", params={k:v for k,v in params.items() if v is not None})
 
 def _sensitivity_studies(self, **params):
-    return self.request("GET", "/uncertainty-reasoning/sensitivity-studies", params=params)
+    return self.request("GET", "/uncertainty-reasoning/sensitivity-studies", params={k:v for k,v in params.items() if v is not None})
 
-def _sensitivity_study_summary(self, study_id: str):
-    return self.request("GET", f"/uncertainty-reasoning/sensitivity-studies/{study_id}/summary")
+def _sensitivity_study_bundle(self, entity_id: str):
+    return self.request("GET", f"/uncertainty-reasoning/sensitivity-studies/{entity_id}/bundle")
 
 def _ensembles(self, **params):
-    return self.request("GET", "/uncertainty-reasoning/ensembles", params=params)
+    return self.request("GET", "/uncertainty-reasoning/ensembles", params={k:v for k,v in params.items() if v is not None})
 
-def _ensemble_summary(self, ensemble_id: str):
-    return self.request("GET", f"/uncertainty-reasoning/ensembles/{ensemble_id}/summary")
+def _ensemble_bundle(self, entity_id: str):
+    return self.request("GET", f"/uncertainty-reasoning/ensembles/{entity_id}/bundle")
 
 PublicApiClient.uncertainty_reasoning_readiness = _uncertainty_reasoning_readiness
 PublicApiClient.uncertainty_definitions = _uncertainty_definitions
 PublicApiClient.sensitivity_studies = _sensitivity_studies
-PublicApiClient.sensitivity_study_summary = _sensitivity_study_summary
+PublicApiClient.sensitivity_study_bundle = _sensitivity_study_bundle
 PublicApiClient.ensembles = _ensembles
-PublicApiClient.ensemble_summary = _ensemble_summary
+PublicApiClient.ensemble_bundle = _ensemble_bundle
+
+
+# v2.36.1 Uncertainty Compute Runtime public metadata helper
+def _uncertainty_compute_readiness(self):
+    return self.get("/uncertainty-compute/readiness")
+PublicApiClient.uncertainty_compute_readiness = _uncertainty_compute_readiness

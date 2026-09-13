@@ -204,7 +204,11 @@ Completed: model-bound canvas nodes, dependency edges, governed parameter/scenar
 Completed: governed scenario-compute plans and cases, parameter-bound validation, deterministic input manifests, idempotent execution requests, external Lab/Workbench execution-attempt lineage, and canonical model-run/result bindings. Core orchestrates execution but performs no numerical computation, runner network dispatch, arbitrary-code execution, automatic optimization, or truth promotion. Adds migration `0038`.
 
 ## v2.36.0 — Uncertainty, Sensitivity & Ensemble Reasoning
-Completed: governed uncertainty definitions, sensitivity-study factors and externally supplied measures, ensemble membership/provenance, externally supplied ensemble statistics, descriptive sensitivity ranking, public-safe metadata APIs, and explicit external-execution boundaries. Adds migration `0039`.
+Completed: first-class uncertainty definitions; governed sensitivity studies, factors, external metrics, provenance, validation, and chart specifications; governed ensembles, member lineage, external statistics, weighting policies, validation, and chart specifications. Core performs no sampling, sensitivity calculation, ensemble aggregation, distribution fitting, automatic probability inference, ranking, or truth promotion. Adds migration `0039`.
+
+
+## v2.36.1 — Uncertainty Compute Runtime Integration
+Completed: deterministic Monte Carlo/LHS sampling, Sobol-compatible designs and index post-processing, Morris designs and elementary effects, ensemble weight normalization/statistics, empirical probability estimation, Lab/Workbench handoff manifests, and persisted compute provenance. Core still does not execute arbitrary model code or automatically promote results to truth. Adds migration `0040`.
 
 ## v2.37.0 — Causal Systems Explorer
 Planned.

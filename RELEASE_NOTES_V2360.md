@@ -2,16 +2,8 @@
 
 Release date: 2026-09-13
 
-Migration `0039` adds governed uncertainty definitions, sensitivity studies/factors/measures, ensembles/members/statistics, provenance, and public-safe metadata.
+Adds migration `0039` and a governed reasoning layer for uncertainty definitions, sensitivity studies, and ensembles. Core stores assumptions, bounds/distribution metadata, parameter-factor bindings, externally supplied sensitivity metrics, ensemble membership, externally supplied statistics, provenance, validation, and renderer-neutral visualization specifications. Lab/Workbench/external runtimes remain responsible for sampling and numerical calculation.
 
-Core records the semantics and lineage of uncertainty analysis. Sampling, sensitivity algorithms, ensemble aggregation, and model execution are performed by Lab, Workbench, or an approved external runtime and supplied back to Core.
+## Explicit non-capabilities
 
-## Primary capabilities
-- aleatory, epistemic, mixed, measurement, model, scenario, and unknown uncertainty;
-- deterministic/interval/uniform/normal/lognormal/triangular/beta/empirical/custom distribution metadata;
-- bounds, confidence level, assumptions, source, and provenance;
-- sensitivity methods including local, OAT, Morris, Sobol, Monte Carlo, correlation, elasticity, and custom contracts;
-- descriptive sensitivity ranking from externally supplied measures;
-- ensemble membership by scenario, Scenario Compute request, or model run;
-- externally supplied ensemble statistics and interval/quantile metadata;
-- no automatic probability generation or truth promotion.
+Core does not generate Monte Carlo samples, calculate Sobol/Morris/correlation metrics, aggregate ensembles, fit distributions, infer probabilities, rank outcomes automatically, or promote outputs to truth.

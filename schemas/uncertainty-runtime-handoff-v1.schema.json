@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/uncertainty-runtime-handoff-v1.schema.json",
+  "title": "Uncertainty Runtime Handoff",
+  "type": "object",
+  "required": ["runtime_product"],
+  "properties": {
+    "runtime_product": {"enum": ["lab", "workbench", "external"]},
+    "model_version_entity_id": {"type": ["string", "null"]},
+    "scenario_entity_id": {"type": ["string", "null"]},
+    "design_manifest": {"type": "object"},
+    "requested_outputs": {"type": "array", "items": {"type": "string"}},
+    "callback_contract": {"type": "object"}
+  },
+  "additionalProperties": true
+}

@@ -1,24 +1,23 @@
-# Sustainable Catalyst Platform Core v2.36.0
+# Sustainable Catalyst Platform Core v2.36.1
 
-Core v2.36.0 adds **Uncertainty, Sensitivity & Ensemble Reasoning** on top of the v2.35 Scenario Compute Engine. Core now governs uncertainty declarations, sensitivity-study design and externally supplied measures, and ensemble membership/statistics without becoming a sampler, model runtime, or statistical execution engine.
+Core v2.36.1 adds **Uncertainty Compute Runtime Integration** on top of v2.36.0. Platform Core can now perform bounded, reproducible statistical design generation and post-processing while preserving the execution boundary around arbitrary models.
 
-Key v2.36.0 additions:
-- additive migration `0039`;
-- uncertainty definitions bound to research parameters, variables, scenarios, models, model versions, or results;
-- aleatory, epistemic, mixed, measurement, model, scenario, and unknown uncertainty semantics;
-- governed distribution metadata, bounds, confidence levels, source records, assumptions, and provenance;
-- sensitivity studies bound to immutable model versions and optional Scenario Compute plans;
-- governed parameter factors and externally supplied sensitivity measures;
-- descriptive rankings over supplied sensitivity measures, with algorithms remaining external;
-- ensembles with scenario/request/run membership, declared weights, provenance, and externally supplied statistics;
-- public-safe metadata APIs, SDK helpers, schemas, and WordPress status integration.
+Key v2.36.1 additions:
+- additive migration `0040`;
+- deterministic Monte Carlo and Latin Hypercube sampling with explicit seeds;
+- Sobol-compatible A/B/AB design generation and first/total index calculation from supplied model outputs;
+- Morris trajectory generation and elementary-effect summaries from supplied outputs;
+- ensemble weight normalization and weighted descriptive statistics/quantiles;
+- empirical threshold and exceedance probabilities with 95% Wilson intervals;
+- governed Lab/Workbench/external runtime handoff manifests;
+- persisted uncertainty-compute run provenance;
+- public-safe readiness, SDK, and WordPress runtime surfaces.
 
-Explicit boundaries:
-- Core does not sample probability distributions;
-- Core does not run Sobol, Morris, Monte Carlo, correlation, or other sensitivity algorithms;
-- Core does not normalize ensemble weights or calculate ensemble statistics;
-- Core does not numerically execute models;
-- Core does not automatically generate probabilities or promote outputs to truth.
+Permanent boundaries:
+- Core does not execute arbitrary model code;
+- Core does not autonomously dispatch arbitrary external code;
+- model execution remains in Lab, Workbench, or an explicitly selected external runtime;
+- computed outputs are never automatically promoted to truth.
 
 Current release line:
 
@@ -31,12 +30,12 @@ v2.33.0 Scenario Landscapes
 v2.34.0 Interactive Model Canvas
 v2.35.0 Scenario Compute Engine
 v2.36.0 Uncertainty, Sensitivity & Ensemble Reasoning
+v2.36.1 Uncertainty Compute Runtime Integration
 ```
 
 Next planned: **v2.37.0 — Causal Systems Explorer**.
 
 ---
-
 Core v2.26.0 adds **Distributed Quotas, Admission Control & Workload Governance** on top of the v2.25.0 credential/key lifecycle line. It provides portable database-shared quota state, workload priority classes, burst budgets, idempotent admission decisions, expiring concurrency leases, SLO/capacity-aware throttling, and auditable hard rejection without introducing an external quota dependency.
 
 Key v2.26.0 additions:

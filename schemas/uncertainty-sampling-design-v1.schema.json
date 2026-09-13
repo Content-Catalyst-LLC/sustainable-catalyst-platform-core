@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/uncertainty-sampling-design-v1.schema.json",
+  "title": "Uncertainty Sampling Design",
+  "type": "object",
+  "required": ["method", "sample_count", "seed"],
+  "properties": {
+    "method": {"enum": ["monte-carlo", "latin-hypercube", "sobol-design", "morris-design"]},
+    "sample_count": {"type": "integer", "minimum": 1},
+    "seed": {"type": "integer"},
+    "factors": {"type": "array", "minItems": 1, "items": {"type": "object"}},
+    "uncertainty_definition_ids": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": true
+}

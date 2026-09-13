@@ -357,6 +357,13 @@ class RegistryStats(BaseModel):
     scenario_compute_requests: int
     scenario_compute_attempts: int
     scenario_compute_result_bindings: int
+    uncertainty_definitions: int
+    sensitivity_studies: int
+    sensitivity_factors: int
+    sensitivity_results: int
+    ensembles: int
+    ensemble_members: int
+    ensemble_statistics: int
     map_layers: int
     stac_collections: int
     stac_items: int

@@ -1,6 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
+  "additionalProperties": true,
   "title": "Sensitivity Factor",
   "required": [
     "factor_key",
@@ -13,6 +14,19 @@
     "parameter_entity_id": {
       "type": "string"
     },
+    "uncertainty_definition_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "label": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "baseline_value": {},
     "lower_bound": {
       "type": [
         "number",
@@ -31,12 +45,8 @@
         "null"
       ]
     },
-    "uncertainty_definition_id": {
-      "type": [
-        "string",
-        "null"
-      ]
+    "variation_policy": {
+      "type": "object"
     }
-  },
-  "additionalProperties": true
+  }
 }

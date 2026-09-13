@@ -1,11 +1,13 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
+  "additionalProperties": true,
   "title": "Uncertainty Definition",
   "required": [
     "uncertainty_key",
     "project_entity_id",
-    "subject_entity_id"
+    "target_entity_id",
+    "uncertainty_kind"
   ],
   "properties": {
     "uncertainty_key": {
@@ -14,35 +16,35 @@
     "project_entity_id": {
       "type": "string"
     },
-    "subject_entity_id": {
+    "model_entity_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "target_entity_id": {
       "type": "string"
     },
     "uncertainty_kind": {
       "enum": [
-        "aleatory",
-        "epistemic",
-        "mixed",
-        "measurement",
-        "model",
-        "scenario",
-        "unknown"
-      ]
-    },
-    "distribution_family": {
-      "enum": [
-        "deterministic",
         "interval",
-        "uniform",
-        "normal",
-        "lognormal",
-        "triangular",
-        "beta",
+        "distribution",
         "empirical",
-        "custom"
+        "categorical",
+        "qualitative"
       ]
     },
-    "parameters": {
-      "type": "object"
+    "distribution_name": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "unit": {
+      "type": [
+        "string",
+        "null"
+      ]
     },
     "lower_bound": {
       "type": [
@@ -61,15 +63,17 @@
         "number",
         "null"
       ],
-      "exclusiveMinimum": 0,
+      "minimum": 0,
       "maximum": 1
     },
-    "source": {
+    "parameters": {
       "type": "object"
+    },
+    "empirical_values": {
+      "type": "array"
     },
     "provenance": {
       "type": "object"
     }
-  },
-  "additionalProperties": true
+  }
 }
