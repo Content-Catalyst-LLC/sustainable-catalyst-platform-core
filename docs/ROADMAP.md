@@ -211,12 +211,6 @@ Completed: governed uncertainty definitions, sensitivity-study factors and exter
 
 Adds deterministic Monte Carlo/LHS sampling, Sobol/Morris design and post-processing, ensemble normalization/statistics, empirical probability estimation, and governed Lab/Workbench handoff manifests while preserving the deployed v2.36.0 uncertainty schema unchanged. Migration 0040 is additive.
 
-## v2.36.1.2 — Migration Metadata Length Repair
-
-- Production migration-ledger compatibility repair for migration `0040`.
-- Enforces the 300-character migration-description storage contract.
-- Safely resumes partial `0040` deployments without altering scientific semantics.
-
 ## v2.37.0 — Causal Systems Explorer
 Planned.
 

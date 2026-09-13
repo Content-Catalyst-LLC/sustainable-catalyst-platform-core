@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Sustainable Catalyst Platform Core
  * Description: WordPress connector for Sustainable Catalyst Platform Core registry, graph, evidence, developer, gateway, free live-data, international-law, scientific-data, official-statistics, geospatial, time-series, STAC, map-layer, streaming, alerts, source-reliability, and operational-facility, humanitarian-access, essential-services, and country-evidence federation and reconciliation, and Earth/Ocean/Space scientific-service routing, cross-product exchange, distributed scale-control services, and governance/access/audit, production-certification/recovery, and observability/SLO production-operations services, plus incident-response, change-control, rollback-coordination, continuity, backup-verification, disaster-recovery, and multi-region resilience/failover-coordination, and data-lifecycle/archival-integrity/preservation services, plus Federated Core trusted-node exchange services and capacity forecasting/resource-governance services, plus identity/credential/cryptographic-key lifecycle governance, distributed workload governance, and scientific object storage/processing adapter services, research object/model services, renderer-neutral visual reasoning object services, and visualization specification/renderer registry services, and governed System Maps and Flow Maps services.
- * Version: 2.36.1.2
+ * Version: 2.37.0
  * Author: Content Catalyst LLC
  * License: MIT
  */
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('SCPC_VERSION', '2.36.1.2');
+define('SCPC_VERSION', '2.37.0');
 define('SCPC_OPTION_BACKEND_URL', 'scpc_backend_url');
 define('SCPC_OPTION_READ_KEY', 'scpc_read_key');
 
@@ -115,6 +115,7 @@ function scpc_render_settings_page() {
         <code>[sc_platform_core_scenario_compute_status]</code><br />
         <code>[sc_platform_core_uncertainty_reasoning_status]</code><br />
         <code>[sc_platform_core_uncertainty_compute_status]</code><br />
+        <code>[sc_platform_core_causal_systems_status]</code><br />
         <code>[sc_platform_core_entity id="sc:product:workbench"]</code><br />
         <code>[sc_platform_core_relationships id="sc:product:research-librarian"]</code><br />
         <code>[sc_knowledge_explorer]</code><br />
@@ -1273,3 +1274,13 @@ function scpc_uncertainty_compute_status_shortcode() {
     return '<div class="scpc-status"><strong>Uncertainty Compute Runtime</strong><br />' . $runs . ' compute runs<br /><span class="scpc-meta">Core ' . esc_html($release) . ' · deterministic Monte Carlo/LHS sampling, Sobol/Morris analysis helpers, ensemble statistics, empirical probability estimation, and governed Lab/Workbench handoffs. Arbitrary model execution and automatic truth promotion remain outside Core.</span></div>';
 }
 add_shortcode('sc_platform_core_uncertainty_compute_status', 'scpc_uncertainty_compute_status_shortcode');
+
+// v2.37.0 Causal Systems Explorer
+function scpc_causal_systems_status_shortcode() {
+    $status = scpc_api_get('/v1/causal-systems/readiness');
+    if (!is_array($status)) { return '<div class="scpc-status"><strong>Causal Systems Explorer</strong><br /><span class="scpc-meta">Status unavailable.</span></div>'; }
+    $counts = $status['counts'] ?? array();
+    $release = $status['release'] ?? SCPC_VERSION;
+    return '<div class="scpc-status"><strong>Causal Systems Explorer</strong><br />' . intval($counts['graphs'] ?? 0) . ' graphs · ' . intval($counts['variables'] ?? 0) . ' variables · ' . intval($counts['edges'] ?? 0) . ' edges · ' . intval($counts['estimates'] ?? 0) . ' estimates<br /><span class="scpc-meta">Core ' . esc_html($release) . ' · governed causal graphs, interventions, explicit identification assumptions, diagnostics, and attributable effect estimates. Structural graph reasoning is deterministic; causal identification and effect estimation are never silently inferred.</span></div>';
+}
+add_shortcode('sc_platform_core_causal_systems_status', 'scpc_causal_systems_status_shortcode');

@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Causal Diagnostic",
+  "type": "object",
+  "required": [
+    "diagnostic_kind"
+  ],
+  "properties": {
+    "identification_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "diagnostic_kind": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string"
+    },
+    "value": {},
+    "threshold": {}
+  },
+  "additionalProperties": true
+}

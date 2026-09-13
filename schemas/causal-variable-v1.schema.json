@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Causal Variable",
+  "type": "object",
+  "required": [
+    "variable_key",
+    "label"
+  ],
+  "properties": {
+    "variable_key": {
+      "type": "string"
+    },
+    "label": {
+      "type": "string"
+    },
+    "causal_role": {
+      "type": "string"
+    },
+    "observed": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": true
+}

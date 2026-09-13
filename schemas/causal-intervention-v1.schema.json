@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Causal Intervention",
+  "type": "object",
+  "required": [
+    "variable_id"
+  ],
+  "properties": {
+    "variable_id": {
+      "type": "string"
+    },
+    "intervention_kind": {
+      "type": "string"
+    },
+    "value": {}
+  },
+  "additionalProperties": true
+}

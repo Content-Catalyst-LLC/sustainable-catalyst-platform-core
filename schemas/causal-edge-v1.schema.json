@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Causal Edge",
+  "type": "object",
+  "required": [
+    "source_variable_id",
+    "target_variable_id"
+  ],
+  "properties": {
+    "source_variable_id": {
+      "type": "string"
+    },
+    "target_variable_id": {
+      "type": "string"
+    },
+    "edge_kind": {
+      "type": "string"
+    },
+    "sign": {
+      "type": "string"
+    },
+    "confidence": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0,
+      "maximum": 1
+    }
+  },
+  "additionalProperties": true
+}

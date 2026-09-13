@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Causal Identification",
+  "type": "object",
+  "required": [
+    "treatment_variable_id",
+    "outcome_variable_id"
+  ],
+  "properties": {
+    "treatment_variable_id": {
+      "type": "string"
+    },
+    "outcome_variable_id": {
+      "type": "string"
+    },
+    "estimand": {
+      "type": "string"
+    },
+    "identification_method": {
+      "type": "string"
+    },
+    "identification_status": {
+      "type": "string"
+    },
+    "adjustment_set": {
+      "type": "array"
+    },
+    "assumptions": {
+      "type": "array"
+    }
+  },
+  "additionalProperties": true
+}

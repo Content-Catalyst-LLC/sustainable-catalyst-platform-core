@@ -451,4 +451,8 @@ export class PublicApiClient {
 
   uncertaintyComputeReadiness() { return this.request("/uncertainty-compute/readiness"); }
 
+  causalSystemsReadiness() { return this.request("/causal-systems/readiness"); }
+  causalSystemsGraphs(params = {}) { const clean = Object.fromEntries(Object.entries(params).filter(([, value]) => value !== null && value !== undefined)); const query = new URLSearchParams(clean); return this.request(`/causal-systems/graphs?${query}`); }
+  causalSystemsBundle(graphId) { return this.request(`/causal-systems/graphs/${encodeURIComponent(graphId)}/bundle`); }
+
 }

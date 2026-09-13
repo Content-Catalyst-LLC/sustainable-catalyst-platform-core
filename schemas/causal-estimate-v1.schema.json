@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Causal Estimate",
+  "type": "object",
+  "required": [
+    "estimate_value"
+  ],
+  "properties": {
+    "identification_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "estimate_kind": {
+      "type": "string"
+    },
+    "estimate_value": {
+      "type": "number"
+    },
+    "lower_bound": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "upper_bound": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "confidence_level": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "exclusiveMinimum": 0,
+      "maximum": 1
+    },
+    "method": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": true
+}

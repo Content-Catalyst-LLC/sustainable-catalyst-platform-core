@@ -1,4 +1,4 @@
-# Sustainable Catalyst Public API Python Client v2.36.1.2
+# Sustainable Catalyst Public API Python Client v2.37.0
 
 ```python
 from sc_platform_core_public import PublicApiClient
@@ -153,5 +153,8 @@ Adds public readiness/list/detail/bundle helpers for governed interactive model 
 Adds public metadata helpers for governed uncertainty definitions, sensitivity-study summaries, and ensemble summaries. Sampling, model execution, sensitivity algorithms, and ensemble aggregation remain external to Platform Core.
 
 
-## v2.36.1.2 — Uncertainty Compute Runtime Integration repair
+## v2.37.0 — Uncertainty Compute Runtime Integration repair
 Adds public compute readiness helpers while preserving v2.36.0 uncertainty APIs.
+
+## v2.37.0 — Causal Systems Explorer
+Public readiness, graph discovery, and public causal-system bundle helpers.

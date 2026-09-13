@@ -596,3 +596,18 @@ def _uncertainty_compute_readiness(self):
     return self.request("GET", "/uncertainty-compute/readiness")
 
 PublicApiClient.uncertainty_compute_readiness = _uncertainty_compute_readiness
+
+
+# v2.37.0 Causal Systems Explorer public metadata helpers
+def _causal_systems_readiness(self):
+    return self.request("GET", "/causal-systems/readiness")
+
+def _causal_systems_graphs(self, **params):
+    return self.request("GET", "/causal-systems/graphs", params=params)
+
+def _causal_systems_bundle(self, graph_id: str):
+    return self.request("GET", f"/causal-systems/graphs/{graph_id}/bundle")
+
+PublicApiClient.causal_systems_readiness = _causal_systems_readiness
+PublicApiClient.causal_systems_graphs = _causal_systems_graphs
+PublicApiClient.causal_systems_bundle = _causal_systems_bundle

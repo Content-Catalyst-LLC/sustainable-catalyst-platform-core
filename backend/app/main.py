@@ -55,6 +55,7 @@ from .routers import (
     scenario_compute,
     uncertainty_reasoning,
     uncertainty_compute,
+    causal_systems,
     ledger,
     live_data,
     meta,
@@ -219,6 +220,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(uncertainty_reasoning.public_router)
     app.include_router(uncertainty_compute.router)
     app.include_router(uncertainty_compute.public_router)
+    app.include_router(causal_systems.router)
+    app.include_router(causal_systems.public_router)
     app.include_router(economic_data.router)
     app.include_router(economic_data.public_router)
     app.include_router(data_fabric.router)

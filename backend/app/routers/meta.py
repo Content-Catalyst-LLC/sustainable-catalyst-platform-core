@@ -86,6 +86,7 @@ from ..models import (
     EnsembleMemberRecord,
     EnsembleStatisticRecord,
     UncertaintyComputeRunRecord,
+    CausalGraphRecord, CausalVariableRecord, CausalEdgeRecord, CausalInterventionRecord, CausalIdentificationRecord, CausalEstimateRecord, CausalDiagnosticRecord,
     MapLayer,
     StacCollection,
     StacItem,
@@ -160,6 +161,7 @@ def health(request: Request):
         "scenario_compute_engine": request.app.state.settings.scenario_compute_engine_enabled,
         "uncertainty_sensitivity_ensemble_reasoning": request.app.state.settings.uncertainty_reasoning_enabled,
         "uncertainty_compute_runtime_integration": request.app.state.settings.uncertainty_compute_runtime_enabled,
+        "causal_systems_explorer": request.app.state.settings.causal_systems_explorer_enabled,
     }
 
 
@@ -251,6 +253,7 @@ async def ready(request: Request, db: Session = Depends(get_session)):
         "scenario_compute_engine": "ready" if settings.scenario_compute_engine_enabled else "disabled",
         "uncertainty_sensitivity_ensemble_reasoning": "ready" if settings.uncertainty_reasoning_enabled else "disabled",
         "uncertainty_compute_runtime_integration": "ready" if settings.uncertainty_compute_runtime_enabled else "disabled",
+        "causal_systems_explorer": "ready" if settings.causal_systems_explorer_enabled else "disabled",
         "external_provider_health_release_blocking": False,
         "services": [
             {
@@ -468,6 +471,7 @@ def meta(request: Request):
             "sensitivity_algorithm_execution_external_to_core",
             "ensemble_aggregation_external_to_core",
             "uncertainty_compute_runtime_integration",
+            "causal_systems_explorer",
             "deterministic_monte_carlo_sampling",
             "latin_hypercube_sampling",
             "sobol_design_and_index_analysis",

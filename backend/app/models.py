@@ -3988,7 +3988,7 @@ class EnsembleStatisticRecord(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
 
 
-# v2.36.1.2 — Uncertainty Compute Runtime Integration migration-metadata compatibility repair
+# v2.36.1.1 — Uncertainty Compute Runtime Integration production-schema compatibility repair
 
 class UncertaintyComputeRunRecord(Base):
     __tablename__ = "uncertainty_compute_runs"
@@ -4020,3 +4020,141 @@ class UncertaintyComputeRunRecord(Base):
     created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+# v2.37.0 — Causal Systems Explorer
+
+class CausalGraphRecord(Base):
+    __tablename__ = "causal_graphs"
+    __table_args__ = (
+        UniqueConstraint("project_entity_id", "graph_key", name="uq_causal_graph_project_key"),
+        Index("ix_causal_graph_project", "project_entity_id"),
+        Index("ix_causal_graph_model", "model_entity_id"),
+        Index("ix_causal_graph_state", "graph_state"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    graph_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    name: Mapped[str] = mapped_column(String(300), nullable=False)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="private", index=True)
+    project_entity_id: Mapped[str] = mapped_column(ForeignKey("entities.id", ondelete="CASCADE"), nullable=False)
+    model_entity_id: Mapped[str | None] = mapped_column(ForeignKey("entities.id", ondelete="SET NULL"), nullable=True)
+    model_version_entity_id: Mapped[str | None] = mapped_column(ForeignKey("entities.id", ondelete="SET NULL"), nullable=True)
+    visual_entity_id: Mapped[str | None] = mapped_column(ForeignKey("visual_reasoning_objects.entity_id", ondelete="SET NULL"), nullable=True)
+    graph_state: Mapped[str] = mapped_column(String(50), nullable=False, default="draft", index=True)
+    causal_semantics: Mapped[str] = mapped_column(String(50), nullable=False, default="directed-acyclic")
+    assumptions_json: Mapped[list] = mapped_column(JSON, default=list)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+class CausalVariableRecord(Base):
+    __tablename__ = "causal_variables"
+    __table_args__ = (
+        UniqueConstraint("graph_id", "variable_key", name="uq_causal_variable_graph_key"),
+        Index("ix_causal_variable_graph", "graph_id"),
+        Index("ix_causal_variable_role", "causal_role"),
+        Index("ix_causal_variable_entity", "bound_entity_id"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    graph_id: Mapped[str] = mapped_column(ForeignKey("causal_graphs.id", ondelete="CASCADE"), nullable=False)
+    variable_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    label: Mapped[str] = mapped_column(String(300), nullable=False)
+    causal_role: Mapped[str] = mapped_column(String(80), nullable=False, default="variable", index=True)
+    bound_entity_id: Mapped[str | None] = mapped_column(ForeignKey("entities.id", ondelete="SET NULL"), nullable=True)
+    observed: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    unit: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    temporal_index_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    uncertainty_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class CausalEdgeRecord(Base):
+    __tablename__ = "causal_edges"
+    __table_args__ = (
+        UniqueConstraint("graph_id", "source_variable_id", "target_variable_id", "edge_kind", name="uq_causal_edge_identity"),
+        Index("ix_causal_edge_graph", "graph_id"),
+        Index("ix_causal_edge_source", "source_variable_id"),
+        Index("ix_causal_edge_target", "target_variable_id"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    graph_id: Mapped[str] = mapped_column(ForeignKey("causal_graphs.id", ondelete="CASCADE"), nullable=False)
+    source_variable_id: Mapped[str] = mapped_column(ForeignKey("causal_variables.id", ondelete="CASCADE"), nullable=False)
+    target_variable_id: Mapped[str] = mapped_column(ForeignKey("causal_variables.id", ondelete="CASCADE"), nullable=False)
+    edge_kind: Mapped[str] = mapped_column(String(80), nullable=False, default="causal")
+    sign: Mapped[str] = mapped_column(String(30), nullable=False, default="unknown")
+    lag_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    confidence: Mapped[float | None] = mapped_column(Float, nullable=True)
+    assumptions_json: Mapped[list] = mapped_column(JSON, default=list)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class CausalInterventionRecord(Base):
+    __tablename__ = "causal_interventions"
+    __table_args__ = (Index("ix_causal_intervention_graph", "graph_id"), Index("ix_causal_intervention_variable", "variable_id"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    graph_id: Mapped[str] = mapped_column(ForeignKey("causal_graphs.id", ondelete="CASCADE"), nullable=False)
+    variable_id: Mapped[str] = mapped_column(ForeignKey("causal_variables.id", ondelete="CASCADE"), nullable=False)
+    intervention_kind: Mapped[str] = mapped_column(String(80), nullable=False, default="set")
+    value_json: Mapped[object] = mapped_column(JSON, nullable=True)
+    comparison_value_json: Mapped[object] = mapped_column(JSON, nullable=True)
+    unit: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    assumptions_json: Mapped[list] = mapped_column(JSON, default=list)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class CausalIdentificationRecord(Base):
+    __tablename__ = "causal_identifications"
+    __table_args__ = (Index("ix_causal_identification_graph", "graph_id"), Index("ix_causal_identification_status", "identification_status"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    graph_id: Mapped[str] = mapped_column(ForeignKey("causal_graphs.id", ondelete="CASCADE"), nullable=False)
+    treatment_variable_id: Mapped[str] = mapped_column(ForeignKey("causal_variables.id", ondelete="CASCADE"), nullable=False)
+    outcome_variable_id: Mapped[str] = mapped_column(ForeignKey("causal_variables.id", ondelete="CASCADE"), nullable=False)
+    estimand: Mapped[str] = mapped_column(String(80), nullable=False, default="ATE")
+    identification_method: Mapped[str] = mapped_column(String(100), nullable=False, default="unassessed")
+    identification_status: Mapped[str] = mapped_column(String(50), nullable=False, default="unassessed", index=True)
+    adjustment_set_json: Mapped[list] = mapped_column(JSON, default=list)
+    assumptions_json: Mapped[list] = mapped_column(JSON, default=list)
+    rationale_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class CausalEstimateRecord(Base):
+    __tablename__ = "causal_estimates"
+    __table_args__ = (Index("ix_causal_estimate_graph", "graph_id"), Index("ix_causal_estimate_identification", "identification_id"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    graph_id: Mapped[str] = mapped_column(ForeignKey("causal_graphs.id", ondelete="CASCADE"), nullable=False)
+    identification_id: Mapped[str | None] = mapped_column(ForeignKey("causal_identifications.id", ondelete="SET NULL"), nullable=True)
+    estimate_kind: Mapped[str] = mapped_column(String(100), nullable=False, default="effect")
+    estimate_value: Mapped[float] = mapped_column(Float, nullable=False)
+    lower_bound: Mapped[float | None] = mapped_column(Float, nullable=True)
+    upper_bound: Mapped[float | None] = mapped_column(Float, nullable=True)
+    confidence_level: Mapped[float | None] = mapped_column(Float, nullable=True)
+    unit: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    method: Mapped[str] = mapped_column(String(120), nullable=False, default="external")
+    source_execution_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class CausalDiagnosticRecord(Base):
+    __tablename__ = "causal_diagnostics"
+    __table_args__ = (Index("ix_causal_diagnostic_graph", "graph_id"), Index("ix_causal_diagnostic_kind", "diagnostic_kind"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    graph_id: Mapped[str] = mapped_column(ForeignKey("causal_graphs.id", ondelete="CASCADE"), nullable=False)
+    identification_id: Mapped[str | None] = mapped_column(ForeignKey("causal_identifications.id", ondelete="SET NULL"), nullable=True)
+    diagnostic_kind: Mapped[str] = mapped_column(String(100), nullable=False)
+    status: Mapped[str] = mapped_column(String(50), nullable=False, default="reported")
+    value_json: Mapped[object] = mapped_column(JSON, nullable=True)
+    threshold_json: Mapped[object] = mapped_column(JSON, nullable=True)
+    interpretation: Mapped[str | None] = mapped_column(Text, nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
