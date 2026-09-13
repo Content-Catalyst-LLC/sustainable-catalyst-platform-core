@@ -1,0 +1,8 @@
+# bundle-only
+SC_CORE_BUNDLE_ONLY=1 ./deploy_and_validate_platform_core_v2_37_0_1_macos.sh "$HOME/Downloads/sustainable-catalyst-platform-core-v2.37.0.1-release-bundle.zip"
+
+# validate + promote
+./deploy_and_validate_platform_core_v2_37_0_1_macos.sh "$HOME/Downloads/sustainable-catalyst-platform-core-v2.37.0.1-release-bundle.zip"
+
+# Contabo
+scp -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes DEPLOY_PLATFORM_CORE_V2370_1_CONTABO.sh catalystadmin@94.72.113.77:/tmp/

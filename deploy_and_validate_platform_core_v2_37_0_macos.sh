@@ -36,6 +36,8 @@ export PYTHONPATH="backend:backend/public_sdk/python" PYTEST_DISABLE_PLUGIN_AUTO
 backend/.venv/bin/python -m pytest -q \
  backend/tests/test_causal_systems_explorer_v2370.py \
  backend/tests/test_causal_systems_schema_compatibility_v2370.py \
+ backend/tests/test_migration_metadata_length_v2361_2.py \
+ backend/tests/test_partial_0040_recovery_v2361_2.py \
  backend/tests/test_uncertainty_compute_runtime_v2361_1.py \
  backend/tests/test_uncertainty_compute_schema_compatibility_v2361_1.py \
  backend/tests/test_uncertainty_sensitivity_ensemble_v2360.py \

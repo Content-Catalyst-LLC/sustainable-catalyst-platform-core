@@ -212,7 +212,7 @@ Completed: governed uncertainty definitions, sensitivity-study factors and exter
 Adds deterministic Monte Carlo/LHS sampling, Sobol/Morris design and post-processing, ensemble normalization/statistics, empirical probability estimation, and governed Lab/Workbench handoff manifests while preserving the deployed v2.36.0 uncertainty schema unchanged. Migration 0040 is additive.
 
 ## v2.37.0 — Causal Systems Explorer
-Planned.
+Completed. Production migration metadata/tag identity repaired in v2.37.0.2.
 
 ## v2.38.0 — Spatial & Temporal Visual Reasoning
 Planned.

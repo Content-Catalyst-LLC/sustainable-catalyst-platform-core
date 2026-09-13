@@ -4,7 +4,7 @@ Tags: knowledge graph, entity registry, provenance, live data, sustainable catal
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.0
-Stable tag: 2.37.0
+Stable tag: 2.37.0.2
 License: MIT
 
 WordPress status, live-data gateway, and entity lookup client for Sustainable Catalyst Platform Core.
@@ -204,5 +204,5 @@ Adds Interactive Model Canvas status for governed model-bound nodes, controls, i
 == 2.36.1.1 ==
 Production schema compatibility repair for Uncertainty Compute Runtime Integration. Preserves v2.36.0 uncertainty tables and adds compute readiness/status.
 
-== 2.37.0 ==
+== 2.37.0.2 ==
 * Adds Causal Systems Explorer status integration and runtime readiness.

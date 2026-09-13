@@ -28,7 +28,8 @@ for check in \
   t="${check%%:*}"; c="${check##*:}"; v="$(psqlq "SELECT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='$t' AND column_name='$c');")"; echo "$t.$c=$v"; [ "$v" = t ] || { echo "STOP: required production schema column missing: $t.$c"; exit 1; }
 done
 BAD="$(psqlq "SELECT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='sensitivity_studies' AND column_name='visual_entity_id');")"; echo "sensitivity_studies.visual_entity_id=$BAD"; [ "$BAD" = f ] || { echo "STOP: incompatible sensitivity schema detected"; exit 1; }
-echo "PASS: repaired v2.36 uncertainty schema confirmed"
+M40="$(psqlq "SELECT EXISTS (SELECT 1 FROM schema_migrations WHERE version='0040');")"; echo "schema_migrations.0040=$M40"; [ "$M40" = t ] || { echo "STOP: migration 0040 is not recorded; deploy v2.36.1.2 first"; exit 1; }
+echo "PASS: deployed v2.36.1.2 uncertainty schema and migration 0040 confirmed"
 echo; echo "=== BACKUP CURRENT CORE + DATABASE ==="; mkdir -p "$BACKUP"; tar --exclude='.git' -czf "$BACKUP/core-before-v2.37.0.tar.gz" .; docker exec -e PGPASSWORD="$DB_PASS" sc-postgres pg_dump -h 127.0.0.1 -U "$DB_USER" -d "$DB_NAME" -Fc > "$BACKUP/platform-core-before-v2.37.0.dump"; ls -lh "$BACKUP"/*
 echo; echo "=== FETCH EXACT v2.37.0 RELEASE ==="; git fetch origin --tags; git rev-parse v2.37.0 >/dev/null 2>&1 || { echo "STOP: v2.37.0 tag is not available from GitHub"; exit 1; }; git pull --ff-only origin main; echo "HEAD: $(git log -1 --oneline)"; git tag --points-at HEAD | grep -qx 'v2.37.0' || { echo "STOP: production HEAD is not exactly tagged v2.37.0"; exit 1; }
 echo; echo "=== BUILD CORE v2.37.0 ==="; $COMPOSE build core

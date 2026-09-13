@@ -1,0 +1,8 @@
+BUNDLE ONLY
+cd ~/Downloads
+chmod +x deploy_and_validate_platform_core_v2_37_0_2_macos.sh
+SC_CORE_BUNDLE_ONLY=1 ./deploy_and_validate_platform_core_v2_37_0_2_macos.sh "$HOME/Downloads/sustainable-catalyst-platform-core-v2.37.0.2-release-bundle.zip"
+
+FULL VALIDATION + GITHUB PROMOTION
+cd ~/Downloads
+./deploy_and_validate_platform_core_v2_37_0_2_macos.sh "$HOME/Downloads/sustainable-catalyst-platform-core-v2.37.0.2-release-bundle.zip"

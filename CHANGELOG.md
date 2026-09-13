@@ -1,9 +1,24 @@
+## v2.37.0.2 — Bundle Validator Bootstrap Repair
+
+- Makes bundle-only verification dependency-free by statically inspecting migration metadata instead of importing the SQLAlchemy runtime.
+- Preserves migration head `0041` and the v2.37.0.1 causal migration/tag-identity repairs.
+- Adds a clean-Python (`python -S`) regression test so bundle-only validation cannot accidentally depend on installed third-party packages.
+- Keeps full release validation isolated in `backend/.venv` before GitHub promotion.
+
+## 2.37.0.1 — Causal Migration Metadata & Tag Identity Repair
+
+- Keeps the v2.37.0 Causal Systems Explorer object model and migration head `0041`.
+- Shortens migration `0041` metadata to fit the production `VARCHAR(300)` ledger contract.
+- Adds safe recovery for a partial `0041` state where all causal tables exist but the ledger row is absent.
+- Makes release promotion fail on a pre-existing patch tag rather than silently reusing it.
+- Verifies the new tag resolves to the exact promoted HEAD.
+
 ## 2.37.0 — Causal Systems Explorer
 
 - Adds migration 0041 and additive causal-system tables.
 - Adds DAG validation, path reasoning, conservative adjustment-set candidates, interventions, identification records, externally attributable effect estimates and diagnostics.
 - Adds Lab/Workbench/external causal-estimation handoff contracts.
-- Preserves v2.36.0/v2.36.1.1 uncertainty persistence contracts.
+- Preserves v2.36.0/v2.36.1.2 uncertainty persistence contracts.
 - No automatic causal identification, effect estimation, or truth promotion.
 
 # Changelog

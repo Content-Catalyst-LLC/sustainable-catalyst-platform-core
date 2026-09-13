@@ -22,4 +22,13 @@ svc=(ROOT/'backend/app/services/causal_systems.py').read_text()
 for guard in ["'automatic_causal_identification':False","'automatic_effect_estimation':False","'automatic_truth_promotion':False"]: assert guard in svc
 wp=(ROOT/'wordpress-plugin/sustainable-catalyst-platform-core/sustainable-catalyst-platform-core.php').read_text(); assert 'Version: 2.37.0' in wp and "add_shortcode('sc_platform_core_causal_systems_status'" in wp
 manifest=json.loads((ROOT/'BUILD_MANIFEST.json').read_text()); assert manifest['release']=='2.37.0' and manifest['file_count']==len(manifest['files'])
+
+# Production schema_migrations.description is VARCHAR(300).
+import sys
+from pathlib import Path as _Path
+sys.path.insert(0, str(_Path(__file__).resolve().parents[1] / "backend"))
+from app.migrations import MIGRATIONS
+violations=[(v,len(d)) for v,d in MIGRATIONS if len(d)>300]
+assert not violations, f'migration descriptions exceed VARCHAR(300): {violations}'
+
 print('PASS - v2.37.0 Causal Systems Explorer release contract')

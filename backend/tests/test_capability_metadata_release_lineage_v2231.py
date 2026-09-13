@@ -8,7 +8,7 @@ PROMOTED_IMPLEMENTED = {"distributed_connector_workers", "server_sent_live_data_
 
 def test_v2231_capability_truth_remains_inherited(client):
     body = client.get('/v1/meta').json()
-    assert body['version'] == '2.37.0'
+    assert body['version'] == '2.37.0.2'
     implemented = body['capabilities']
     deferred = body['deferred_capabilities']
     assert len(implemented) == len(set(implemented))
