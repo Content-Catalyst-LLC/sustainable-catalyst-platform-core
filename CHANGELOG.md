@@ -1,3 +1,13 @@
+# Changelog
+
+## 2.32.0 — 2026-09-12
+
+- Added governed Flow Maps and migration `0035`.
+- Added typed channels and relation-bound directed flows that reuse v2.29 visual-reasoning flow relations.
+- Added quantitative/qualitative flow metadata, uncertainty/provenance, node-state observations, saved views, and exact-unit balance summaries.
+- Added structural validation plus v2.30 network/map specification compilation and external renderer-contract resolution.
+- Explicitly disabled automatic unit conversion, simulation, conservation claims, layout execution, and truth promotion.
+
 ## 2.31.0 — 2026-09-11
 - System Maps: explicit boundaries, domains, memberships, saved views, structural validation, and visualization-specification compilation.
 - Migration 0034.

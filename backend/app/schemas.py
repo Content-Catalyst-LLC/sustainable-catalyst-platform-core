@@ -336,6 +336,11 @@ class RegistryStats(BaseModel):
     system_map_domains: int
     system_map_memberships: int
     system_map_views: int
+    flow_maps: int
+    flow_map_channels: int
+    flow_map_flows: int
+    flow_map_node_states: int
+    flow_map_views: int
     map_layers: int
     stac_collections: int
     stac_items: int

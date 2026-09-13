@@ -13,6 +13,7 @@ from .models import (
     VisualizationSpecificationRecord, RendererDefinitionRecord, RendererVersionRecord,
     RendererCompatibilityRuleRecord, RendererResolutionRecord,
     SystemMapRecord, SystemMapBoundaryRecord, SystemMapDomainRecord, SystemMapMembershipRecord, SystemMapViewRecord,
+    FlowMapRecord, FlowMapChannelRecord, FlowMapFlowRecord, FlowMapNodeStateRecord, FlowMapViewRecord,
 )
 from .predicate_catalog import DEFAULT_PREDICATES
 from .api_plan_catalog import DEFAULT_API_PLANS
@@ -55,6 +56,7 @@ MIGRATIONS = [
     ("0032", "Renderer-neutral visual reasoning objects, semantic elements and relations, layers, annotations, source bindings, and immutable semantic snapshots."),
     ("0033", "Immutable visualization specifications, renderer contract registry, renderer-version metadata, governed compatibility rules, and non-executing renderer resolution records."),
     ("0034", "Governed System Maps with explicit system boundaries, domains, element memberships, saved views, structural validation, and deterministic visualization-specification compilation."),
+    ("0035", "Governed Flow Maps with typed channels, relation-bound directed flows, quantitative and uncertainty metadata, node-state observations, saved flow views, unit-safe balance summaries, validation, and visualization-specification compilation."),
 ]
 
 
@@ -427,5 +429,10 @@ def migration_status(database: Database) -> dict:
         system_map_domains = len(session.scalars(select(SystemMapDomainRecord.id)).all())
         system_map_memberships = len(session.scalars(select(SystemMapMembershipRecord.id)).all())
         system_map_views = len(session.scalars(select(SystemMapViewRecord.id)).all())
+        flow_maps = len(session.scalars(select(FlowMapRecord.visual_entity_id)).all())
+        flow_map_channels = len(session.scalars(select(FlowMapChannelRecord.id)).all())
+        flow_map_flows = len(session.scalars(select(FlowMapFlowRecord.id)).all())
+        flow_map_node_states = len(session.scalars(select(FlowMapNodeStateRecord.id)).all())
+        flow_map_views = len(session.scalars(select(FlowMapViewRecord.id)).all())
     expected = {version for version, _ in MIGRATIONS}
-    return {"expected":sorted(expected),"applied":sorted(applied),"pending":sorted(expected-applied),"predicate_definitions":predicates,"api_plans":api_plans,"evaluation_definitions":evaluation_definitions,"workflow_definitions":workflow_definitions,"live_data_sources":live_data_sources,"live_data_connectors":live_data_connectors,"scientific_storage_backends":scientific_storage_backends,"scientific_processing_adapters":scientific_processing_adapters,"research_projects":research_projects,"research_models":research_models,"research_model_versions":research_model_versions,"research_variables":research_variables,"research_parameters":research_parameters,"research_scenarios":research_scenarios,"research_model_runs":research_model_runs,"research_results":research_results,"visual_reasoning_objects":visual_reasoning_objects,"visual_reasoning_elements":visual_reasoning_elements,"visual_reasoning_relations":visual_reasoning_relations,"visual_reasoning_layers":visual_reasoning_layers,"visual_reasoning_annotations":visual_reasoning_annotations,"visual_reasoning_snapshots":visual_reasoning_snapshots,"visualization_specifications":visualization_specifications,"renderer_definitions":renderer_definitions,"renderer_versions":renderer_versions,"renderer_compatibility_rules":renderer_compatibility_rules,"renderer_resolutions":renderer_resolutions,"system_maps":system_maps,"system_map_boundaries":system_map_boundaries,"system_map_domains":system_map_domains,"system_map_memberships":system_map_memberships,"system_map_views":system_map_views}
+    return {"expected":sorted(expected),"applied":sorted(applied),"pending":sorted(expected-applied),"predicate_definitions":predicates,"api_plans":api_plans,"evaluation_definitions":evaluation_definitions,"workflow_definitions":workflow_definitions,"live_data_sources":live_data_sources,"live_data_connectors":live_data_connectors,"scientific_storage_backends":scientific_storage_backends,"scientific_processing_adapters":scientific_processing_adapters,"research_projects":research_projects,"research_models":research_models,"research_model_versions":research_model_versions,"research_variables":research_variables,"research_parameters":research_parameters,"research_scenarios":research_scenarios,"research_model_runs":research_model_runs,"research_results":research_results,"visual_reasoning_objects":visual_reasoning_objects,"visual_reasoning_elements":visual_reasoning_elements,"visual_reasoning_relations":visual_reasoning_relations,"visual_reasoning_layers":visual_reasoning_layers,"visual_reasoning_annotations":visual_reasoning_annotations,"visual_reasoning_snapshots":visual_reasoning_snapshots,"visualization_specifications":visualization_specifications,"renderer_definitions":renderer_definitions,"renderer_versions":renderer_versions,"renderer_compatibility_rules":renderer_compatibility_rules,"renderer_resolutions":renderer_resolutions,"system_maps":system_maps,"system_map_boundaries":system_map_boundaries,"system_map_domains":system_map_domains,"system_map_memberships":system_map_memberships,"system_map_views":system_map_views,"flow_maps":flow_maps,"flow_map_channels":flow_map_channels,"flow_map_flows":flow_map_flows,"flow_map_node_states":flow_map_node_states,"flow_map_views":flow_map_views}

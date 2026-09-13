@@ -475,3 +475,27 @@ PublicApiClient.system_maps_readiness = _system_maps_readiness
 PublicApiClient.system_maps = _system_maps
 PublicApiClient.system_map = _system_map
 PublicApiClient.system_map_bundle = _system_map_bundle
+
+
+# v2.32.0 Flow Maps public metadata methods.
+def _flow_maps_readiness(self):
+    return self.request("GET", "/flow-maps/readiness")
+
+def _flow_maps(self, **params):
+    clean={k:v for k,v in params.items() if v is not None}
+    return self.request("GET", "/flow-maps", params=clean)
+
+def _flow_map(self, entity_id: str):
+    return self.request("GET", f"/flow-maps/{entity_id}")
+
+def _flow_map_bundle(self, entity_id: str):
+    return self.request("GET", f"/flow-maps/{entity_id}/bundle")
+
+def _flow_map_balance(self, entity_id: str):
+    return self.request("GET", f"/flow-maps/{entity_id}/balance")
+
+PublicApiClient.flow_maps_readiness = _flow_maps_readiness
+PublicApiClient.flow_maps = _flow_maps
+PublicApiClient.flow_map = _flow_map
+PublicApiClient.flow_map_bundle = _flow_map_bundle
+PublicApiClient.flow_map_balance = _flow_map_balance

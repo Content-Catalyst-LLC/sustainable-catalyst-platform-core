@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Flow Map",
+  "type": "object",
+  "required": [
+    "visual_entity_id",
+    "flow_purpose",
+    "map_state",
+    "quantity_mode"
+  ],
+  "properties": {
+    "visual_entity_id": {
+      "type": "string"
+    },
+    "flow_purpose": {
+      "type": "string"
+    },
+    "flow_domain": {
+      "type": "string"
+    },
+    "map_state": {
+      "enum": [
+        "draft",
+        "review",
+        "published",
+        "archived"
+      ]
+    },
+    "quantity_mode": {
+      "enum": [
+        "qualitative",
+        "quantitative",
+        "mixed"
+      ]
+    },
+    "default_unit": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "time_basis": {
+      "enum": [
+        "unspecified",
+        "snapshot",
+        "interval",
+        "series"
+      ]
+    },
+    "conservation_policy": {
+      "enum": [
+        "none",
+        "advisory"
+      ]
+    },
+    "assumptions": {
+      "type": "array"
+    },
+    "metadata": {
+      "type": "object"
+    }
+  }
+}

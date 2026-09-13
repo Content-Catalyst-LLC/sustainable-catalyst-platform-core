@@ -190,3 +190,9 @@ Next planned: **v2.32.0 — Flow Maps**.
 
 ## v2.24.0 R1 — Secret-Scan Example Credential & Promotion Repair
 Completed: promotion tooling repair only; runtime remains v2.24.0 and migration head remains `0027`.
+
+
+## v2.32.0 — Flow Maps
+Completed: typed flow channels, relation-bound directed flows, quantitative/uncertainty metadata, node-state observations, saved views, unit-safe balance summaries, structural validation, and external-renderer specification compilation. Core does not convert units, simulate systems, or assert conservation automatically.
+
+Next planned: **v2.33.0 — Scenario Landscapes**.

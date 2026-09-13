@@ -57,7 +57,7 @@ def _child(client, write_headers, visual_id, child, data):
 def test_v2290_migration_health_meta_and_readiness(client):
     assert any(version == '0032' for version, _ in MIGRATIONS)
     health = client.get('/health').json()
-    assert health['version'] == '2.31.0'
+    assert health['version'] == '2.32.0'
     assert health['visual_reasoning_object_model'] is True
     meta = client.get('/v1/meta').json()
     for capability in {
@@ -139,7 +139,7 @@ def test_visual_reasoning_semantic_bundle_and_snapshot(client, write_headers):
     assert body['annotations'][0]['id'] == annotation['id']
     assert body['renderer_contract']['renderer_neutral'] is True
     assert body['renderer_contract']['layout_engine_in_core'] is False
-    assert body['renderer_contract']['visualization_specification_layer'].startswith('v2.31.0')
+    assert body['renderer_contract']['visualization_specification_layer'].startswith('v2.32.0')
     assert body['renderer_contract']['renderer_execution_by_core'] is False
 
     edges = client.get('/v1/relationships', params={'subject_id': visual['id']}).json()['items']

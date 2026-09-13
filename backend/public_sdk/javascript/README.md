@@ -1,4 +1,4 @@
-# Sustainable Catalyst Public API JavaScript Client v2.31.0
+# Sustainable Catalyst Public API JavaScript Client v2.32.0
 
 ```javascript
 import { PublicApiClient } from "./index.mjs";
@@ -134,3 +134,7 @@ Use `visualizationReadiness()`, `visualizationRenderers()`, and `visualizationSp
 
 ## v2.31.0 — System Maps
 Adds `systemMapsReadiness`, `systemMaps`, `systemMap`, and `systemMapBundle`.
+
+
+## v2.32.0 — Flow Maps
+Adds public Flow Maps readiness, listing, detail, bundle, and unit-safe balance-summary helpers. Core does not convert units or execute simulations.

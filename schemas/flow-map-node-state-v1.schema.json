@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Flow Map Node State",
+  "type": "object",
+  "required": [
+    "visual_entity_id",
+    "element_id",
+    "state_key",
+    "state_kind"
+  ],
+  "properties": {
+    "visual_entity_id": {
+      "type": "string"
+    },
+    "element_id": {
+      "type": "string"
+    },
+    "state_key": {
+      "type": "string"
+    },
+    "state_kind": {
+      "type": "string"
+    },
+    "quantity_value": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "unit": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "observed_at": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "uncertainty": {
+      "type": "object"
+    },
+    "provenance": {
+      "type": "object"
+    },
+    "metadata": {
+      "type": "object"
+    }
+  }
+}

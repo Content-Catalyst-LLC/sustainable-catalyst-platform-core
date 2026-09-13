@@ -25,13 +25,13 @@ with tempfile.TemporaryDirectory() as td:
             object_type="research-project",
             name="Release validation project",
             slug="release-validation-project",
-            description="v2.31.0 release validator",
+            description="v2.32.0 release validator",
             entity_id=None,
             visibility="public",
             entity_status="active",
             attributes={"research_question": "Can the model foundation preserve governed lineage?"},
-            metadata={"validator": "v2.31.0"},
-            release="2.31.0",
+            metadata={"validator": "v2.32.0"},
+            release="2.32.0",
         )
         model = research_objects.create_object(
             db,
@@ -49,7 +49,7 @@ with tempfile.TemporaryDirectory() as td:
                 "specification": {"equation": "y = ax + b"},
             },
             metadata={},
-            release="2.31.0",
+            release="2.32.0",
         )
         version = research_objects.create_object(
             db,
@@ -62,7 +62,7 @@ with tempfile.TemporaryDirectory() as td:
             entity_status="active",
             attributes={"model_entity_id": model["id"], "version_label": "1.0.0", "specification": {"equation": "y = ax + b"}},
             metadata={},
-            release="2.31.0",
+            release="2.32.0",
         )
         scenario = research_objects.create_object(
             db,
@@ -75,7 +75,7 @@ with tempfile.TemporaryDirectory() as td:
             entity_status="active",
             attributes={"project_entity_id": project["id"], "scenario_state": "ready"},
             metadata={},
-            release="2.31.0",
+            release="2.32.0",
         )
         run = research_objects.create_object(
             db,
@@ -88,7 +88,7 @@ with tempfile.TemporaryDirectory() as td:
             entity_status="active",
             attributes={"model_version_entity_id": version["id"], "scenario_entity_id": scenario["id"], "executor_product": "workbench"},
             metadata={},
-            release="2.31.0",
+            release="2.32.0",
         )
         result = research_objects.create_object(
             db,
@@ -101,7 +101,7 @@ with tempfile.TemporaryDirectory() as td:
             entity_status="active",
             attributes={"model_run_entity_id": run["id"], "value": {"y": 3.0}},
             metadata={},
-            release="2.31.0",
+            release="2.32.0",
         )
         bundle = research_objects.project_bundle(db, project["id"])
         assert bundle["total_objects"] == 6
@@ -119,11 +119,11 @@ with tempfile.TemporaryDirectory() as td:
     assert status["research_results"] == 1
 
     print({
-        "version": "2.31.0",
+        "version": "2.32.0",
         "migration_0031_applied": True,
         "object_types": 8,
         "graph_native": True,
         "model_execution_by_core": False,
         "automatic_truth_promotion": False,
     })
-    print("PASS - Core 2.31.0 Research Object & Model Foundation validation")
+    print("PASS - Core 2.32.0 Research Object & Model Foundation validation")

@@ -1,39 +1,35 @@
-# Sustainable Catalyst Platform Core v2.31.0
+# Sustainable Catalyst Platform Core v2.32.0
 
-Core v2.31.0 adds **System Maps** on top of the v2.29 Visual Reasoning Object Model and v2.30 Visualization Specification & Renderer Registry. Core now governs explicit system boundaries, domains, element memberships, saved views, structural validation, and deterministic compilation to immutable visualization specifications.
+Core v2.32.0 adds **Flow Maps** on top of the v2.29 Visual Reasoning Object Model, v2.30 Visualization Specification & Renderer Registry, and v2.31 System Maps. Core now governs typed flow channels, directed relation-bound flows, quantitative and uncertainty metadata, node-state observations, saved flow views, unit-safe balance summaries, structural validation, and deterministic compilation to v2.30 visualization specifications.
 
-Key v2.31.0 additions:
-- additive migration `0034`;
-- first-class System Map records bound to `system-map` visual reasoning objects;
-- explicit included, excluded, contextual, and interface boundaries;
-- hierarchical domains and same-map element membership controls;
-- saved lenses, filters, highlights, and layout intent;
-- structural validation that reports warnings without inferring causality;
-- compilation to v2.30 diagram specifications and renderer-contract resolution;
-- public metadata, SDK helpers, and WordPress status.
+Key v2.32.0 additions:
+- additive migration `0035`;
+- first-class Flow Map records bound to `flow-map` visual reasoning objects;
+- directed flows reuse v2.29 `relation_kind=flow` relations rather than creating a parallel graph;
+- typed material, energy, money, information, people, emissions, resource, service, and generic channels;
+- qualitative, amount, rate, count, and index quantities with explicit units and uncertainty/provenance metadata;
+- node-state observations for stocks, capacity, supply, demand, balance, inventory, and reserves;
+- saved channel/time/layout views;
+- unit-safe balance summaries that aggregate only within exact units;
+- compilation to v2.30 `network` or `map` specifications for external renderer runtimes.
 
 Explicit boundaries:
-- Platform Core does not calculate layout or renderer coordinates;
-- Core does not infer causal loops or causal direction from map structure;
-- Core does not execute renderers or generate visual output;
-- system-map structure never promotes itself to evidence or truth.
+- Core performs no automatic unit conversion;
+- Core performs no simulation or numerical model execution;
+- Core makes no automatic conservation claim;
+- Core performs no renderer or layout execution;
+- flow-map structure does not promote itself to evidence or truth.
 
 Current release line:
 
 ```text
-v2.27.0 Scientific Object Storage & Processing Adapter Fabric
-v2.28.0 Research Object & Model Foundation
 v2.29.0 Visual Reasoning Object Model
 v2.30.0 Visualization Specification & Renderer Registry
+v2.31.0 System Maps
+v2.32.0 Flow Maps
 ```
 
-Next planned: **v2.31.0 — System Maps**.
-
-## v2.28.0 — Research Object & Model Foundation
-Core v2.28.0 added graph-native research projects, models, immutable model versions, variables, parameters, scenarios, model runs, and results while preserving Lab/Workbench as the execution boundary.
-
-## v2.27.0 — Scientific Object Storage & Processing Adapter Fabric
-Core v2.27.0 added governed scientific-object storage, stable credential-free provider references, integrity verification, derived-object lineage, and processing-adapter contracts. xarray, GDAL, and Astropy remain contract-only until real workers are configured.
+Next planned: **v2.33.0 — Scenario Landscapes**.
 
 ---
 

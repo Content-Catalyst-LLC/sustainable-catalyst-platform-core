@@ -3283,7 +3283,7 @@ class RendererResolutionRecord(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
 
 
-# v2.31.0 — System Maps
+# v2.32.0 — System Maps
 
 class SystemMapRecord(Base):
     __tablename__ = "system_maps"
@@ -3364,6 +3364,112 @@ class SystemMapViewRecord(Base):
     lens_json: Mapped[dict] = mapped_column(JSON, default=dict)
     filters_json: Mapped[dict] = mapped_column(JSON, default=dict)
     highlights_json: Mapped[list] = mapped_column(JSON, default=list)
+    layout_intent_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    specification_id: Mapped[str | None] = mapped_column(ForeignKey("visualization_specifications.id", ondelete="SET NULL"), nullable=True)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+# v2.32.0 — Flow Maps
+
+class FlowMapRecord(Base):
+    __tablename__ = "flow_maps"
+    visual_entity_id: Mapped[str] = mapped_column(ForeignKey("visual_reasoning_objects.entity_id", ondelete="CASCADE"), primary_key=True)
+    flow_purpose: Mapped[str] = mapped_column(String(120), nullable=False, default="trace")
+    flow_domain: Mapped[str] = mapped_column(String(120), nullable=False, default="generic")
+    map_state: Mapped[str] = mapped_column(String(50), nullable=False, default="draft", index=True)
+    quantity_mode: Mapped[str] = mapped_column(String(50), nullable=False, default="mixed")
+    default_unit: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    time_basis: Mapped[str] = mapped_column(String(50), nullable=False, default="unspecified")
+    conservation_policy: Mapped[str] = mapped_column(String(50), nullable=False, default="advisory")
+    assumptions_json: Mapped[list] = mapped_column(JSON, default=list)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class FlowMapChannelRecord(Base):
+    __tablename__ = "flow_map_channels"
+    __table_args__ = (
+        UniqueConstraint("visual_entity_id", "channel_key", name="uq_flow_map_channel_key"),
+        Index("ix_flow_map_channel_visual", "visual_entity_id"),
+        Index("ix_flow_map_channel_kind", "flow_kind"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    visual_entity_id: Mapped[str] = mapped_column(ForeignKey("flow_maps.visual_entity_id", ondelete="CASCADE"), nullable=False)
+    channel_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    name: Mapped[str] = mapped_column(String(300), nullable=False)
+    flow_kind: Mapped[str] = mapped_column(String(80), nullable=False, default="generic", index=True)
+    unit: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    order_index: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class FlowMapFlowRecord(Base):
+    __tablename__ = "flow_map_flows"
+    __table_args__ = (
+        UniqueConstraint("visual_entity_id", "flow_key", name="uq_flow_map_flow_key"),
+        Index("ix_flow_map_flow_visual", "visual_entity_id"),
+        Index("ix_flow_map_flow_relation", "relation_id"),
+        Index("ix_flow_map_flow_channel", "channel_id"),
+        Index("ix_flow_map_flow_status", "flow_status"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    visual_entity_id: Mapped[str] = mapped_column(ForeignKey("flow_maps.visual_entity_id", ondelete="CASCADE"), nullable=False)
+    flow_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    relation_id: Mapped[str] = mapped_column(ForeignKey("visual_reasoning_relations.id", ondelete="CASCADE"), nullable=False)
+    channel_id: Mapped[str | None] = mapped_column(ForeignKey("flow_map_channels.id", ondelete="SET NULL"), nullable=True)
+    quantity_kind: Mapped[str] = mapped_column(String(50), nullable=False, default="qualitative")
+    quantity_value: Mapped[float | None] = mapped_column(Float, nullable=True)
+    unit: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    lower_bound: Mapped[float | None] = mapped_column(Float, nullable=True)
+    upper_bound: Mapped[float | None] = mapped_column(Float, nullable=True)
+    period_start: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    period_end: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    flow_status: Mapped[str] = mapped_column(String(50), nullable=False, default="observed", index=True)
+    uncertainty_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class FlowMapNodeStateRecord(Base):
+    __tablename__ = "flow_map_node_states"
+    __table_args__ = (
+        Index("ix_flow_map_node_state_visual", "visual_entity_id"),
+        Index("ix_flow_map_node_state_element", "element_id"),
+        Index("ix_flow_map_node_state_kind", "state_kind"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    visual_entity_id: Mapped[str] = mapped_column(ForeignKey("flow_maps.visual_entity_id", ondelete="CASCADE"), nullable=False)
+    element_id: Mapped[str] = mapped_column(ForeignKey("visual_reasoning_elements.id", ondelete="CASCADE"), nullable=False)
+    state_key: Mapped[str] = mapped_column(String(180), nullable=False, default="state")
+    state_kind: Mapped[str] = mapped_column(String(80), nullable=False, default="stock")
+    quantity_value: Mapped[float | None] = mapped_column(Float, nullable=True)
+    unit: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    observed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    uncertainty_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class FlowMapViewRecord(Base):
+    __tablename__ = "flow_map_views"
+    __table_args__ = (
+        UniqueConstraint("visual_entity_id", "view_key", name="uq_flow_map_view_key"),
+        Index("ix_flow_map_view_visual", "visual_entity_id"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    visual_entity_id: Mapped[str] = mapped_column(ForeignKey("flow_maps.visual_entity_id", ondelete="CASCADE"), nullable=False)
+    view_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    name: Mapped[str] = mapped_column(String(300), nullable=False)
+    channel_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    filters_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    time_window_json: Mapped[dict] = mapped_column(JSON, default=dict)
     layout_intent_json: Mapped[dict] = mapped_column(JSON, default=dict)
     specification_id: Mapped[str | None] = mapped_column(ForeignKey("visualization_specifications.id", ondelete="SET NULL"), nullable=True)
     metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)

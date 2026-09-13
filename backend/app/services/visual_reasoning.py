@@ -450,7 +450,7 @@ def bundle(db: Session, visual_entity_id: str, *, public_only: bool = False) -> 
             "renderer_neutral": True,
             "layout_engine_in_core": False,
             "style_specification_in_core": False,
-            "visualization_specification_layer": "v2.31.0 System Maps on v2.30 Visualization Specification & Renderer Registry",
+            "visualization_specification_layer": "v2.32.0 System Maps + Flow Maps on v2.30 Visualization Specification & Renderer Registry",
             "renderer_execution_by_core": False,
         },
     }
