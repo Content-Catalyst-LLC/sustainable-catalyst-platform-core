@@ -3988,7 +3988,7 @@ class EnsembleStatisticRecord(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
 
 
-# v2.36.1.1 — Uncertainty Compute Runtime Integration production-schema compatibility repair
+# v2.36.1.2 — Uncertainty Compute Runtime Integration migration-metadata compatibility repair
 
 class UncertaintyComputeRunRecord(Base):
     __tablename__ = "uncertainty_compute_runs"

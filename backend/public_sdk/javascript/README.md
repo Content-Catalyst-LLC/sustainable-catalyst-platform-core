@@ -1,4 +1,4 @@
-# Sustainable Catalyst Public API JavaScript Client v2.36.1.1
+# Sustainable Catalyst Public API JavaScript Client v2.36.1.2
 
 ```javascript
 import { PublicApiClient } from "./index.mjs";
@@ -153,5 +153,5 @@ Adds public readiness/list/detail/bundle helpers for governed interactive model 
 Adds public metadata helpers for governed uncertainty definitions, sensitivity-study summaries, and ensemble summaries. Sampling, model execution, sensitivity algorithms, and ensemble aggregation remain external to Platform Core.
 
 
-## v2.36.1.1 — Uncertainty Compute Runtime Integration repair
+## v2.36.1.2 — Uncertainty Compute Runtime Integration repair
 Adds public compute readiness helpers while preserving v2.36.0 uncertainty APIs.

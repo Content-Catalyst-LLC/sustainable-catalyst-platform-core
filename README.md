@@ -1,4 +1,6 @@
-# Sustainable Catalyst Platform Core v2.36.1.1
+# Sustainable Catalyst Platform Core v2.36.1.2
+
+> **v2.36.1.2 migration metadata repair:** shortens migration 0040 metadata to fit the production `schema_migrations.description VARCHAR(300)` contract and adds a permanent migration-metadata length gate. The uncertainty-compute schema and runtime semantics are unchanged.
 
 > **v2.36.1.1 production compatibility repair:** preserves the exact v2.36.0 uncertainty/sensitivity/ensemble persistence contract (`sensitivity_studies.id`, `sensitivity_factors.study_id`, `sensitivity_measures`, `ensembles.id`) while adding the bounded Uncertainty Compute Runtime and migration 0040.
 

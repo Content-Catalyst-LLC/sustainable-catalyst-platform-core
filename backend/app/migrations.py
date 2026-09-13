@@ -65,7 +65,7 @@ MIGRATIONS = [
     ("0037", "Governed Interactive Model Canvas with model-bound nodes, dependency edges, parameter controls, immutable interaction states, saved views, external-execution handoff contracts, structural validation, and visualization-specification compilation."),
     ("0038", "Governed Scenario Compute Engine orchestration with reproducible compute plans, scenario cases, parameter-override validation, deterministic input manifests, idempotent execution requests, external execution attempts, and research run/result bindings."),
     ("0039", "Governed uncertainty definitions, sensitivity-study factors and externally supplied measures, ensemble memberships and externally supplied statistics, with explicit provenance and no Core-side sampling, sensitivity algorithms, ensemble aggregation, or model execution."),
-    ("0040", "Reproducible uncertainty compute runtime integration with deterministic Monte Carlo and Latin Hypercube sampling, Sobol/Morris design and analysis helpers, ensemble weight normalization and descriptive statistics, empirical exceedance probabilities, and governed Lab/Workbench execution handoff manifests, while preserving the v2.36.0 production schema."),
+    ("0040", "Reproducible uncertainty compute runtime with Monte Carlo/LHS sampling, Sobol/Morris analysis helpers, ensemble normalization/statistics, exceedance probabilities, and governed Lab/Workbench handoffs; preserves the v2.36 production schema."),
 ]
 
 

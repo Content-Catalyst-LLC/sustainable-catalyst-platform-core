@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.36.1.2 — Migration Metadata Length Repair
+
+- Shortens migration `0040` description to fit `schema_migrations.description VARCHAR(300)`.
+- Adds a permanent release gate requiring every migration description to fit the production storage contract.
+- Supports safe recovery from the partial `0040` state where `uncertainty_compute_runs` exists but migration `0040` is not yet recorded.
+- Leaves the v2.36.0 uncertainty schema and v2.36.1.1 compute runtime semantics unchanged.
+
 ## 2.36.1.1 — Uncertainty Compute Runtime Integration · Production Schema Compatibility Repair
 
 - Preserves the deployed v2.36.0 uncertainty/sensitivity/ensemble database contract unchanged.
