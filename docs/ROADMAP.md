@@ -1,8 +1,10 @@
+# Platform Core Roadmap
+## v2.41.0 — Reproducible Visual Knowledge Layer
+Current release. Locks the visual/research stack into reproducible knowledge packages before Open Forensics.
+
 
 ## v2.40.0 — Cross-Product Visual Research Objects
 Governed, reference-first cross-product visual research packages with explicit source-product identity, semantic member relations, saved composite views, immutable snapshots, portable bundles, and non-executing runtime handoffs.
-# Platform Core Roadmap
-
 ## v2.0.0 — Universal Entity Registry
 Completed.
 
@@ -263,7 +265,7 @@ Planned.
 ## v2.51.0 — Reproducible Investigation Packages
 Planned.
 
-Next planned: **v2.40.0 — Cross-Product Visual Research Objects**.
+Next planned: **v2.42.0 — Forensic Object Model & Evidence Provenance**.
 
 - v2.38.0 Spatial & Temporal Visual Reasoning ✓
 - v2.39.0 Research Librarian Visual Explanation ✓

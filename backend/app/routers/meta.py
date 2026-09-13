@@ -52,6 +52,12 @@ from ..models import (
     CrossProductVisualResearchRelationRecord,
     CrossProductVisualResearchViewRecord,
     CrossProductVisualResearchSnapshotRecord,
+    ReproducibleVisualKnowledgePackageRecord,
+    ReproducibleVisualKnowledgeInputRecord,
+    ReproducibleVisualKnowledgeEnvironmentRecord,
+    ReproducibleVisualKnowledgeReplayPlanRecord,
+    ReproducibleVisualKnowledgeVerificationRecord,
+    ReproducibleVisualKnowledgeSnapshotRecord,
     VisualizationSpecificationRecord,
     RendererDefinitionRecord,
     RendererVersionRecord,
@@ -170,6 +176,7 @@ def health(request: Request):
         "spatial_temporal_visual_reasoning": request.app.state.settings.spatial_temporal_visual_reasoning_enabled,
         "research_librarian_visual_explanation": request.app.state.settings.research_librarian_visual_explanation_enabled,
         "cross_product_visual_research_objects": request.app.state.settings.cross_product_visual_research_enabled,
+        "reproducible_visual_knowledge_layer": request.app.state.settings.reproducible_visual_knowledge_enabled,
     }
 
 
@@ -265,6 +272,7 @@ async def ready(request: Request, db: Session = Depends(get_session)):
         "spatial_temporal_visual_reasoning": "ready" if settings.spatial_temporal_visual_reasoning_enabled else "disabled",
         "research_librarian_visual_explanation": "ready" if settings.research_librarian_visual_explanation_enabled else "disabled",
         "cross_product_visual_research_objects": "ready" if settings.cross_product_visual_research_enabled else "disabled",
+        "reproducible_visual_knowledge_layer": "ready" if settings.reproducible_visual_knowledge_enabled else "disabled",
         "external_provider_health_release_blocking": False,
         "services": [
             {
@@ -746,6 +754,12 @@ def stats(db: Session = Depends(get_session)):
         cross_product_visual_research_relations=count(CrossProductVisualResearchRelationRecord),
         cross_product_visual_research_views=count(CrossProductVisualResearchViewRecord),
         cross_product_visual_research_snapshots=count(CrossProductVisualResearchSnapshotRecord),
+        reproducible_visual_knowledge_packages=count(ReproducibleVisualKnowledgePackageRecord),
+        reproducible_visual_knowledge_inputs=count(ReproducibleVisualKnowledgeInputRecord),
+        reproducible_visual_knowledge_environments=count(ReproducibleVisualKnowledgeEnvironmentRecord),
+        reproducible_visual_knowledge_replay_plans=count(ReproducibleVisualKnowledgeReplayPlanRecord),
+        reproducible_visual_knowledge_verifications=count(ReproducibleVisualKnowledgeVerificationRecord),
+        reproducible_visual_knowledge_snapshots=count(ReproducibleVisualKnowledgeSnapshotRecord),
         visualization_specifications=count(VisualizationSpecificationRecord),
         renderer_definitions=count(RendererDefinitionRecord),
         renderer_versions=count(RendererVersionRecord),

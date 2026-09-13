@@ -1,0 +1,12 @@
+#!/usr/bin/env python3
+import json, os, tempfile
+from fastapi.testclient import TestClient
+from app.config import Settings
+from app.main import create_app
+from app.models import Entity
+p=tempfile.mktemp(prefix='sc-core-v2410-',suffix='.db'); app=create_app(Settings(database_url='sqlite:///'+p,version='2.41.0')); c=TestClient(app)
+with app.state.database.session_factory() as db: db.add(Entity(id='project:validate-v2410',entity_type='research-project',slug='validate-v2410',name='Validate v2410',visibility='private')); db.commit()
+o=c.post('/v1/cross-product-visual-research',json={'data':{'project_entity_id':'project:validate-v2410','object_key':'root','name':'Root'}}).json(); c.post(f"/v1/cross-product-visual-research/{o['id']}/members",json={'data':{'member_key':'core','member_kind':'research-object','source_product':'platform-core','label':'Core','local_entity_id':'project:validate-v2410'}})
+pkg=c.post('/v1/reproducible-visual-knowledge',json={'data':{'project_entity_id':'project:validate-v2410','source_object_id':o['id'],'package_key':'rvk','name':'RVK'}}).json(); c.post(f"/v1/reproducible-visual-knowledge/{pkg['id']}/inputs",json={'data':{'input_key':'core','label':'Core','input_role':'source','source_product':'platform-core','source_ref':'entity:project:validate-v2410','content_hash':'a'*64}}); c.post(f"/v1/reproducible-visual-knowledge/{pkg['id']}/environments",json={'data':{'environment_key':'core-env','name':'Core','runtime_versions':{'core':'2.41.0'}}}); c.post(f"/v1/reproducible-visual-knowledge/{pkg['id']}/replay-plans",json={'data':{'plan_key':'replay','name':'Replay','steps':[{'target_product':'platform-core','operation':'resolve-semantic-state'}]}})
+ready=c.get('/v1/reproducible-visual-knowledge/readiness').json(); mf=c.get(f"/v1/reproducible-visual-knowledge/{pkg['id']}/manifest").json(); val=c.get(f"/v1/reproducible-visual-knowledge/{pkg['id']}/validate").json(); assert ready['migration_0045_applied'] and ready['release']=='2.41.0'; assert len(mf['fingerprint'])==64 and val['valid']; assert ready['specialist_execution_by_core'] is False and ready['automatic_truth_promotion'] is False
+print(json.dumps({'version':'2.41.0','migration_0045_applied':True,'manifest_hash':mf['fingerprint'],'valid':val['valid'],'replay_execution_by_core':ready['replay_execution_by_core'],'automatic_truth_promotion':ready['automatic_truth_promotion']},sort_keys=True)); print('PASS - Platform Core v2.41.0 Reproducible Visual Knowledge Layer runtime validation')

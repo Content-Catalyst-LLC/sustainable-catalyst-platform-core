@@ -331,6 +331,12 @@ class RegistryStats(BaseModel):
     cross_product_visual_research_relations: int
     cross_product_visual_research_views: int
     cross_product_visual_research_snapshots: int
+    reproducible_visual_knowledge_packages: int
+    reproducible_visual_knowledge_inputs: int
+    reproducible_visual_knowledge_environments: int
+    reproducible_visual_knowledge_replay_plans: int
+    reproducible_visual_knowledge_verifications: int
+    reproducible_visual_knowledge_snapshots: int
     visualization_specifications: int
     renderer_definitions: int
     renderer_versions: int

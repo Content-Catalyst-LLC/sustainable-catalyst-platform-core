@@ -1,3 +1,10 @@
+# Changelog
+## v2.41.0 — Reproducible Visual Knowledge Layer
+- Added migration `0045` and six additive reproducibility tables.
+- Added versioned/hashed input manifests and runtime environment capture.
+- Added external-only replay plans, integrity/output verification records, immutable snapshots, and portable reproducibility packages.
+- Preserved explicit product identity and non-execution/truth-promotion boundaries.
+
 
 ## v2.40.0 — Cross-Product Visual Research Objects
 Governed, reference-first cross-product visual research packages with explicit source-product identity, semantic member relations, saved composite views, immutable snapshots, portable bundles, and non-executing runtime handoffs.

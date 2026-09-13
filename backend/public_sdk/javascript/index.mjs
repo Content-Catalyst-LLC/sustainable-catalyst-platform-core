@@ -468,3 +468,8 @@ export class PublicApiClient {
   crossProductVisualResearchBundle(objectId) { return this.request(`/cross-product-visual-research/${encodeURIComponent(objectId)}/bundle`); }
 
 }
+
+
+PublicApiClient.prototype.reproducibleVisualKnowledgeReadiness = function () { return this.request("/reproducible-visual-knowledge/readiness"); };
+PublicApiClient.prototype.reproducibleVisualKnowledgePackages = function (params = {}) { const query = new URLSearchParams(params); return this.request(`/reproducible-visual-knowledge?${query}`); };
+PublicApiClient.prototype.reproducibleVisualKnowledgeBundle = function (packageId) { return this.request(`/reproducible-visual-knowledge/${encodeURIComponent(packageId)}/bundle`); };

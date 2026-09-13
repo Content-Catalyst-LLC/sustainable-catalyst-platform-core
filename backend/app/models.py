@@ -4573,3 +4573,135 @@ class CrossProductVisualResearchSnapshotRecord(Base):
     provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
     created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+# v2.41.0 — Reproducible Visual Knowledge Layer
+
+class ReproducibleVisualKnowledgePackageRecord(Base):
+    __tablename__ = "reproducible_visual_knowledge_packages"
+    __table_args__ = (
+        UniqueConstraint("project_entity_id", "package_key", name="uq_repro_visual_knowledge_project_key"),
+        Index("ix_repro_visual_knowledge_project", "project_entity_id"),
+        Index("ix_repro_visual_knowledge_source_object", "source_object_id"),
+        Index("ix_repro_visual_knowledge_state", "lifecycle_state"),
+        Index("ix_repro_visual_knowledge_visibility", "visibility"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    package_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    name: Mapped[str] = mapped_column(String(300), nullable=False)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    project_entity_id: Mapped[str] = mapped_column(ForeignKey("entities.id", ondelete="CASCADE"), nullable=False)
+    source_object_id: Mapped[str] = mapped_column(ForeignKey("cross_product_visual_research_objects.id", ondelete="CASCADE"), nullable=False)
+    source_snapshot_id: Mapped[str | None] = mapped_column(ForeignKey("cross_product_visual_research_snapshots.id", ondelete="SET NULL"), nullable=True)
+    lifecycle_state: Mapped[str] = mapped_column(String(50), nullable=False, default="draft")
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="private")
+    reproducibility_level: Mapped[str] = mapped_column(String(50), nullable=False, default="documented")
+    knowledge_contract: Mapped[str] = mapped_column(String(120), nullable=False, default="sc.reproducible-visual-knowledge.v1")
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class ReproducibleVisualKnowledgeInputRecord(Base):
+    __tablename__ = "reproducible_visual_knowledge_inputs"
+    __table_args__ = (
+        UniqueConstraint("package_id", "input_key", name="uq_repro_visual_knowledge_input_key"),
+        Index("ix_repro_visual_knowledge_input_package", "package_id"),
+        Index("ix_repro_visual_knowledge_input_product", "source_product"),
+        Index("ix_repro_visual_knowledge_input_role", "input_role"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    package_id: Mapped[str] = mapped_column(ForeignKey("reproducible_visual_knowledge_packages.id", ondelete="CASCADE"), nullable=False)
+    input_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    label: Mapped[str] = mapped_column(String(300), nullable=False)
+    input_role: Mapped[str] = mapped_column(String(80), nullable=False, default="source")
+    source_product: Mapped[str] = mapped_column(String(80), nullable=False)
+    source_ref: Mapped[str] = mapped_column(String(1500), nullable=False)
+    source_version: Mapped[str | None] = mapped_column(String(180), nullable=True)
+    content_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    hash_algorithm: Mapped[str] = mapped_column(String(30), nullable=False, default="sha256")
+    immutable: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ReproducibleVisualKnowledgeEnvironmentRecord(Base):
+    __tablename__ = "reproducible_visual_knowledge_environments"
+    __table_args__ = (
+        UniqueConstraint("package_id", "environment_key", name="uq_repro_visual_knowledge_environment_key"),
+        Index("ix_repro_visual_knowledge_environment_package", "package_id"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    package_id: Mapped[str] = mapped_column(ForeignKey("reproducible_visual_knowledge_packages.id", ondelete="CASCADE"), nullable=False)
+    environment_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    name: Mapped[str] = mapped_column(String(300), nullable=False)
+    runtime_versions_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    dependencies_json: Mapped[list] = mapped_column(JSON, default=list)
+    container_ref: Mapped[str | None] = mapped_column(String(1500), nullable=True)
+    container_digest: Mapped[str | None] = mapped_column(String(180), nullable=True)
+    code_ref: Mapped[str | None] = mapped_column(String(1500), nullable=True)
+    random_seed: Mapped[str | None] = mapped_column(String(180), nullable=True)
+    locale: Mapped[str | None] = mapped_column(String(80), nullable=True)
+    timezone: Mapped[str | None] = mapped_column(String(80), nullable=True)
+    deterministic_claim: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ReproducibleVisualKnowledgeReplayPlanRecord(Base):
+    __tablename__ = "reproducible_visual_knowledge_replay_plans"
+    __table_args__ = (
+        UniqueConstraint("package_id", "plan_key", name="uq_repro_visual_knowledge_replay_plan_key"),
+        Index("ix_repro_visual_knowledge_replay_package", "package_id"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    package_id: Mapped[str] = mapped_column(ForeignKey("reproducible_visual_knowledge_packages.id", ondelete="CASCADE"), nullable=False)
+    plan_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    name: Mapped[str] = mapped_column(String(300), nullable=False)
+    steps_json: Mapped[list] = mapped_column(JSON, nullable=False, default=list)
+    expected_outputs_json: Mapped[list] = mapped_column(JSON, default=list)
+    environment_id: Mapped[str | None] = mapped_column(ForeignKey("reproducible_visual_knowledge_environments.id", ondelete="SET NULL"), nullable=True)
+    execution_policy: Mapped[str] = mapped_column(String(80), nullable=False, default="external-only")
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ReproducibleVisualKnowledgeVerificationRecord(Base):
+    __tablename__ = "reproducible_visual_knowledge_verifications"
+    __table_args__ = (
+        Index("ix_repro_visual_knowledge_verification_package", "package_id"),
+        Index("ix_repro_visual_knowledge_verification_status", "status"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    package_id: Mapped[str] = mapped_column(ForeignKey("reproducible_visual_knowledge_packages.id", ondelete="CASCADE"), nullable=False)
+    verification_kind: Mapped[str] = mapped_column(String(80), nullable=False, default="integrity")
+    status: Mapped[str] = mapped_column(String(50), nullable=False, default="recorded")
+    expected_fingerprint: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    observed_fingerprint: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    verifier_product: Mapped[str] = mapped_column(String(80), nullable=False, default="platform-core")
+    external_run_ref: Mapped[str | None] = mapped_column(String(1500), nullable=True)
+    assertions_json: Mapped[list] = mapped_column(JSON, default=list)
+    evidence_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ReproducibleVisualKnowledgeSnapshotRecord(Base):
+    __tablename__ = "reproducible_visual_knowledge_snapshots"
+    __table_args__ = (
+        UniqueConstraint("package_id", "revision", name="uq_repro_visual_knowledge_snapshot_revision"),
+        Index("ix_repro_visual_knowledge_snapshot_package", "package_id"),
+        Index("ix_repro_visual_knowledge_snapshot_hash", "content_hash"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    package_id: Mapped[str] = mapped_column(ForeignKey("reproducible_visual_knowledge_packages.id", ondelete="CASCADE"), nullable=False)
+    revision: Mapped[int] = mapped_column(Integer, nullable=False)
+    content_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    state_json: Mapped[dict] = mapped_column(JSON, nullable=False)
+    manifest_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)

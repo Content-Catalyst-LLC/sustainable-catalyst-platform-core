@@ -1,3 +1,8 @@
+# Sustainable Catalyst Platform Core
+## v2.41.0 — Reproducible Visual Knowledge Layer
+
+Platform Core now governs reproducible visual knowledge packages above cross-product visual research objects, with explicit versioned inputs, environment manifests, external-only replay plans, verification evidence, immutable snapshots, deterministic SHA-256 manifests, and portable provenance-preserving packages. Specialist execution remains outside Core.
+
 
 ## v2.40.0 — Cross-Product Visual Research Objects
 Governed, reference-first cross-product visual research packages with explicit source-product identity, semantic member relations, saved composite views, immutable snapshots, portable bundles, and non-executing runtime handoffs.

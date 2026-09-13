@@ -647,3 +647,14 @@ def _cross_product_visual_research_bundle(self, object_id: str):
 PublicApiClient.cross_product_visual_research_readiness = _cross_product_visual_research_readiness
 PublicApiClient.cross_product_visual_research_objects = _cross_product_visual_research_objects
 PublicApiClient.cross_product_visual_research_bundle = _cross_product_visual_research_bundle
+
+
+def _reproducible_visual_knowledge_readiness(self):
+    return self.request("GET", "/reproducible-visual-knowledge/readiness")
+def _reproducible_visual_knowledge_packages(self, **params):
+    return self.request("GET", "/reproducible-visual-knowledge", params=params)
+def _reproducible_visual_knowledge_bundle(self, package_id: str):
+    return self.request("GET", f"/reproducible-visual-knowledge/{package_id}/bundle")
+PublicApiClient.reproducible_visual_knowledge_readiness = _reproducible_visual_knowledge_readiness
+PublicApiClient.reproducible_visual_knowledge_packages = _reproducible_visual_knowledge_packages
+PublicApiClient.reproducible_visual_knowledge_bundle = _reproducible_visual_knowledge_bundle
