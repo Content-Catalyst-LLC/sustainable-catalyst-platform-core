@@ -1,3 +1,6 @@
+
+## v2.40.0 — Cross-Product Visual Research Objects
+Governed, reference-first cross-product visual research packages with explicit source-product identity, semantic member relations, saved composite views, immutable snapshots, portable bundles, and non-executing runtime handoffs.
 # Platform Core v2.39.0 — Research Librarian Visual Explanation
 
 - Governed citation-aware research visual explanation model, renderer-neutral specifications, immutable snapshots, and Research Librarian/specialist-runtime handoff contracts.

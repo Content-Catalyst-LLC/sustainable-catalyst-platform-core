@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Sustainable Catalyst Platform Core
  * Description: WordPress connector for Sustainable Catalyst Platform Core registry, graph, evidence, developer, gateway, free live-data, international-law, scientific-data, official-statistics, geospatial, time-series, STAC, map-layer, streaming, alerts, source-reliability, and operational-facility, humanitarian-access, essential-services, and country-evidence federation and reconciliation, and Earth/Ocean/Space scientific-service routing, cross-product exchange, distributed scale-control services, and governance/access/audit, production-certification/recovery, and observability/SLO production-operations services, plus incident-response, change-control, rollback-coordination, continuity, backup-verification, disaster-recovery, and multi-region resilience/failover-coordination, and data-lifecycle/archival-integrity/preservation services, plus Federated Core trusted-node exchange services and capacity forecasting/resource-governance services, plus identity/credential/cryptographic-key lifecycle governance, distributed workload governance, and scientific object storage/processing adapter services, research object/model services, renderer-neutral visual reasoning object services, and visualization specification/renderer registry services, and governed System Maps and Flow Maps services.
- * Version: 2.39.0
+ * Version: 2.40.0
  * Author: Content Catalyst LLC
  * License: MIT
  */
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('SCPC_VERSION', '2.39.0');
+define('SCPC_VERSION', '2.40.0');
 define('SCPC_OPTION_BACKEND_URL', 'scpc_backend_url');
 define('SCPC_OPTION_READ_KEY', 'scpc_read_key');
 
@@ -1304,3 +1304,13 @@ function scpc_research_visual_explanation_status_shortcode() {
     return '<div class="scpc-status"><strong>Research Librarian Visual Explanation</strong><br />' . intval($counts['explanations'] ?? 0) . ' explanations · ' . intval($counts['nodes'] ?? 0) . ' nodes · ' . intval($counts['relations'] ?? 0) . ' relations · ' . intval($counts['citations'] ?? 0) . ' citations<br /><span class="scpc-meta">Core ' . esc_html($release) . ' · governed, citation-aware research explanation graphs, evidence bindings, saved views, immutable snapshots, and renderer-neutral visual contracts. Retrieval, prose generation, citation selection, source ranking, and rendering remain outside Core.</span></div>';
 }
 add_shortcode('sc_platform_core_research_visual_explanation_status', 'scpc_research_visual_explanation_status_shortcode');
+
+
+// v2.40.0 Cross-Product Visual Research Objects
+function scpc_cross_product_visual_research_status_shortcode() {
+    $status = scpc_api_get('/v1/cross-product-visual-research/readiness');
+    if (!is_array($status)) { return '<div class="scpc-status"><strong>Cross-Product Visual Research Objects</strong><br /><span class="scpc-meta">Status unavailable.</span></div>'; }
+    $counts = $status['counts'] ?? array(); $release = $status['release'] ?? SCPC_VERSION;
+    return '<div class="scpc-status"><strong>Cross-Product Visual Research Objects</strong><br />' . intval($counts['objects'] ?? 0) . ' objects · ' . intval($counts['members'] ?? 0) . ' members · ' . intval($counts['relations'] ?? 0) . ' relations · ' . intval($counts['snapshots'] ?? 0) . ' snapshots<br /><span class="scpc-meta">Core ' . esc_html($release) . ' · governed cross-product semantic packages with explicit product identity, provenance-aware member references, cross-product relations, saved composite views, immutable snapshots, and renderer-neutral portability. Remote fetching, model/analysis execution, truth merging, layout, and rendering remain outside Core.</span></div>';
+}
+add_shortcode('sc_platform_core_cross_product_visual_research_status', 'scpc_cross_product_visual_research_status_shortcode');

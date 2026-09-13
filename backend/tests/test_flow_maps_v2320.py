@@ -33,10 +33,10 @@ def _public_key(client,write_headers):
 def test_v2320_health_migration_and_readiness(client):
     assert any(v=='0035' for v,_ in MIGRATIONS)
     health=client.get('/health').json()
-    assert health['version']=='2.39.0'
+    assert health['version']=='2.40.0'
     assert health['flow_maps'] is True
     ready=client.get('/v1/flow-maps/readiness').json()
-    assert ready['release']=='2.39.0'
+    assert ready['release']=='2.40.0'
     assert ready['migration_0035_applied'] is True
     assert ready['visual_kind']=='flow-map'
     assert ready['flow_relations_reused'] is True

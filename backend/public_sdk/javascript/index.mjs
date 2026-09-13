@@ -463,4 +463,8 @@ export class PublicApiClient {
   researchVisualExplanations(params = {}) { const clean = Object.fromEntries(Object.entries(params).filter(([, value]) => value !== null && value !== undefined)); const query = new URLSearchParams(clean); return this.request(`/research-visual-explanations?${query}`); }
   researchVisualExplanationBundle(explanationId) { return this.request(`/research-visual-explanations/${encodeURIComponent(explanationId)}/bundle`); }
 
+  crossProductVisualResearchReadiness() { return this.request("/cross-product-visual-research/readiness"); }
+  crossProductVisualResearchObjects(params = {}) { const clean = Object.fromEntries(Object.entries(params).filter(([, value]) => value !== null && value !== undefined)); const query = new URLSearchParams(clean); return this.request(`/cross-product-visual-research?${query}`); }
+  crossProductVisualResearchBundle(objectId) { return this.request(`/cross-product-visual-research/${encodeURIComponent(objectId)}/bundle`); }
+
 }

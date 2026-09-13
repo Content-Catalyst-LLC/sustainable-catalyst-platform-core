@@ -47,6 +47,11 @@ from ..models import (
     VisualReasoningLayerRecord,
     VisualReasoningAnnotationRecord,
     VisualReasoningSnapshotRecord,
+    CrossProductVisualResearchObjectRecord,
+    CrossProductVisualResearchMemberRecord,
+    CrossProductVisualResearchRelationRecord,
+    CrossProductVisualResearchViewRecord,
+    CrossProductVisualResearchSnapshotRecord,
     VisualizationSpecificationRecord,
     RendererDefinitionRecord,
     RendererVersionRecord,
@@ -164,6 +169,7 @@ def health(request: Request):
         "causal_systems_explorer": request.app.state.settings.causal_systems_explorer_enabled,
         "spatial_temporal_visual_reasoning": request.app.state.settings.spatial_temporal_visual_reasoning_enabled,
         "research_librarian_visual_explanation": request.app.state.settings.research_librarian_visual_explanation_enabled,
+        "cross_product_visual_research_objects": request.app.state.settings.cross_product_visual_research_enabled,
     }
 
 
@@ -258,6 +264,7 @@ async def ready(request: Request, db: Session = Depends(get_session)):
         "causal_systems_explorer": "ready" if settings.causal_systems_explorer_enabled else "disabled",
         "spatial_temporal_visual_reasoning": "ready" if settings.spatial_temporal_visual_reasoning_enabled else "disabled",
         "research_librarian_visual_explanation": "ready" if settings.research_librarian_visual_explanation_enabled else "disabled",
+        "cross_product_visual_research_objects": "ready" if settings.cross_product_visual_research_enabled else "disabled",
         "external_provider_health_release_blocking": False,
         "services": [
             {
@@ -481,6 +488,12 @@ def meta(request: Request):
             "citation_aware_visual_explanations",
             "renderer_neutral_research_explanation_specs",
             "research_librarian_visual_handoff_contracts",
+            "cross_product_visual_research_objects",
+            "product_scoped_visual_research_members",
+            "cross_product_semantic_relations",
+            "reference_first_portable_visual_packages",
+            "cross_product_product_identity_preservation",
+            "cross_runtime_visual_research_handoffs",
             "deterministic_monte_carlo_sampling",
             "latin_hypercube_sampling",
             "sobol_design_and_index_analysis",
@@ -728,6 +741,11 @@ def stats(db: Session = Depends(get_session)):
         visual_reasoning_layers=count(VisualReasoningLayerRecord),
         visual_reasoning_annotations=count(VisualReasoningAnnotationRecord),
         visual_reasoning_snapshots=count(VisualReasoningSnapshotRecord),
+        cross_product_visual_research_objects=count(CrossProductVisualResearchObjectRecord),
+        cross_product_visual_research_members=count(CrossProductVisualResearchMemberRecord),
+        cross_product_visual_research_relations=count(CrossProductVisualResearchRelationRecord),
+        cross_product_visual_research_views=count(CrossProductVisualResearchViewRecord),
+        cross_product_visual_research_snapshots=count(CrossProductVisualResearchSnapshotRecord),
         visualization_specifications=count(VisualizationSpecificationRecord),
         renderer_definitions=count(RendererDefinitionRecord),
         renderer_versions=count(RendererVersionRecord),

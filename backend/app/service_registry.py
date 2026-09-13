@@ -117,19 +117,19 @@ _DEFAULTS: tuple[dict, ...] = (
         "service_id": "workbench",
         "name": "Sustainable Catalyst Workbench",
         "route_prefix": "workbench",
-        "capabilities": ("calculations", "models", "visual-analysis"),
+        "capabilities": ("calculations", "models", "visual-analysis", "visual-research-object-handoff"),
     },
     {
         "service_id": "decision-studio",
         "name": "Decision Studio",
         "route_prefix": "decision-studio",
-        "capabilities": ("decision-briefs", "scenarios", "exports"),
+        "capabilities": ("decision-briefs", "scenarios", "exports", "visual-research-object-handoff"),
     },
     {
         "service_id": "research-librarian",
         "name": "Research Librarian",
         "route_prefix": "research-librarian",
-        "capabilities": ("site-scoped-retrieval", "research-routes", "visual-explanations", "citation-aware-explanations"),
+        "capabilities": ("site-scoped-retrieval", "research-routes", "visual-explanations", "citation-aware-explanations", "cross-product-visual-research-objects"),
     },
     {
         "service_id": "finance",

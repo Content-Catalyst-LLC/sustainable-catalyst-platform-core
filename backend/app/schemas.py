@@ -326,6 +326,11 @@ class RegistryStats(BaseModel):
     visual_reasoning_layers: int
     visual_reasoning_annotations: int
     visual_reasoning_snapshots: int
+    cross_product_visual_research_objects: int
+    cross_product_visual_research_members: int
+    cross_product_visual_research_relations: int
+    cross_product_visual_research_views: int
+    cross_product_visual_research_snapshots: int
     visualization_specifications: int
     renderer_definitions: int
     renderer_versions: int

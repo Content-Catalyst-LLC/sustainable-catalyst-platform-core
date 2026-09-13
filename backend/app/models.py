@@ -4459,3 +4459,117 @@ class ResearchExplanationSnapshotRecord(Base):
     provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
     created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+# v2.40.0 — Cross-Product Visual Research Objects
+
+class CrossProductVisualResearchObjectRecord(Base):
+    __tablename__ = "cross_product_visual_research_objects"
+    __table_args__ = (
+        UniqueConstraint("project_entity_id", "object_key", name="uq_cross_product_visual_research_project_key"),
+        Index("ix_cross_product_visual_research_project", "project_entity_id"),
+        Index("ix_cross_product_visual_research_kind", "object_kind"),
+        Index("ix_cross_product_visual_research_state", "lifecycle_state"),
+        Index("ix_cross_product_visual_research_visibility", "visibility"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    object_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    name: Mapped[str] = mapped_column(String(300), nullable=False)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    object_kind: Mapped[str] = mapped_column(String(100), nullable=False, default="research-composite")
+    lifecycle_state: Mapped[str] = mapped_column(String(50), nullable=False, default="draft")
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="private")
+    project_entity_id: Mapped[str] = mapped_column(ForeignKey("entities.id", ondelete="CASCADE"), nullable=False)
+    root_visual_entity_id: Mapped[str | None] = mapped_column(ForeignKey("visual_reasoning_objects.entity_id", ondelete="SET NULL"), nullable=True)
+    root_explanation_id: Mapped[str | None] = mapped_column(ForeignKey("research_visual_explanations.id", ondelete="SET NULL"), nullable=True)
+    source_products_json: Mapped[list] = mapped_column(JSON, default=list)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class CrossProductVisualResearchMemberRecord(Base):
+    __tablename__ = "cross_product_visual_research_members"
+    __table_args__ = (
+        UniqueConstraint("object_id", "member_key", name="uq_cross_product_visual_research_member_key"),
+        Index("ix_cross_product_visual_research_member_object", "object_id"),
+        Index("ix_cross_product_visual_research_member_product", "source_product"),
+        Index("ix_cross_product_visual_research_member_kind", "member_kind"),
+        Index("ix_cross_product_visual_research_member_entity", "local_entity_id"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    object_id: Mapped[str] = mapped_column(ForeignKey("cross_product_visual_research_objects.id", ondelete="CASCADE"), nullable=False)
+    member_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    member_kind: Mapped[str] = mapped_column(String(100), nullable=False, default="research-object")
+    source_product: Mapped[str] = mapped_column(String(80), nullable=False)
+    semantic_role: Mapped[str] = mapped_column(String(100), nullable=False, default="context")
+    label: Mapped[str] = mapped_column(String(300), nullable=False)
+    local_entity_id: Mapped[str | None] = mapped_column(ForeignKey("entities.id", ondelete="SET NULL"), nullable=True)
+    visual_entity_id: Mapped[str | None] = mapped_column(ForeignKey("visual_reasoning_objects.entity_id", ondelete="SET NULL"), nullable=True)
+    explanation_id: Mapped[str | None] = mapped_column(ForeignKey("research_visual_explanations.id", ondelete="SET NULL"), nullable=True)
+    external_ref: Mapped[str | None] = mapped_column(String(1500), nullable=True)
+    source_ref_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    display_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class CrossProductVisualResearchRelationRecord(Base):
+    __tablename__ = "cross_product_visual_research_relations"
+    __table_args__ = (
+        UniqueConstraint("object_id", "relation_key", name="uq_cross_product_visual_research_relation_key"),
+        Index("ix_cross_product_visual_research_relation_object", "object_id"),
+        Index("ix_cross_product_visual_research_relation_kind", "relation_kind"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    object_id: Mapped[str] = mapped_column(ForeignKey("cross_product_visual_research_objects.id", ondelete="CASCADE"), nullable=False)
+    relation_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    source_member_id: Mapped[str] = mapped_column(ForeignKey("cross_product_visual_research_members.id", ondelete="CASCADE"), nullable=False)
+    target_member_id: Mapped[str] = mapped_column(ForeignKey("cross_product_visual_research_members.id", ondelete="CASCADE"), nullable=False)
+    relation_kind: Mapped[str] = mapped_column(String(80), nullable=False, default="relates-to")
+    directed: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    label: Mapped[str | None] = mapped_column(String(300), nullable=True)
+    rationale: Mapped[str | None] = mapped_column(Text, nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class CrossProductVisualResearchViewRecord(Base):
+    __tablename__ = "cross_product_visual_research_views"
+    __table_args__ = (
+        UniqueConstraint("object_id", "view_key", name="uq_cross_product_visual_research_view_key"),
+        Index("ix_cross_product_visual_research_view_object", "object_id"),
+        Index("ix_cross_product_visual_research_view_kind", "view_kind"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    object_id: Mapped[str] = mapped_column(ForeignKey("cross_product_visual_research_objects.id", ondelete="CASCADE"), nullable=False)
+    view_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    name: Mapped[str] = mapped_column(String(300), nullable=False)
+    view_kind: Mapped[str] = mapped_column(String(80), nullable=False, default="composite")
+    renderer_contract: Mapped[str] = mapped_column(String(120), nullable=False, default="contract.d3")
+    member_order_json: Mapped[list] = mapped_column(JSON, default=list)
+    layer_config_json: Mapped[list] = mapped_column(JSON, default=list)
+    layout_hints_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    interaction_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class CrossProductVisualResearchSnapshotRecord(Base):
+    __tablename__ = "cross_product_visual_research_snapshots"
+    __table_args__ = (
+        UniqueConstraint("object_id", "revision", name="uq_cross_product_visual_research_snapshot_revision"),
+        Index("ix_cross_product_visual_research_snapshot_object", "object_id"),
+        Index("ix_cross_product_visual_research_snapshot_hash", "content_hash"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    object_id: Mapped[str] = mapped_column(ForeignKey("cross_product_visual_research_objects.id", ondelete="CASCADE"), nullable=False)
+    revision: Mapped[int] = mapped_column(Integer, nullable=False)
+    content_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    state_json: Mapped[dict] = mapped_column(JSON, nullable=False)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)

@@ -1,3 +1,6 @@
+
+## v2.40.0 — Cross-Product Visual Research Objects
+Governed, reference-first cross-product visual research packages with explicit source-product identity, semantic member relations, saved composite views, immutable snapshots, portable bundles, and non-executing runtime handoffs.
 # Sustainable Catalyst Platform Core v2.39.0
 
 > **Research Librarian Visual Explanation:** governed, citation-aware research explanation graphs with semantic nodes/relations, evidence bindings, saved renderer-neutral views, immutable snapshots, and explicit specialist-runtime handoffs.

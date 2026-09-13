@@ -635,3 +635,15 @@ def _research_visual_explanation_bundle(self, explanation_id: str):
 PublicApiClient.research_visual_explanations_readiness = _research_visual_explanations_readiness
 PublicApiClient.research_visual_explanations = _research_visual_explanations
 PublicApiClient.research_visual_explanation_bundle = _research_visual_explanation_bundle
+
+
+# v2.40.0 Cross-Product Visual Research Objects public metadata helpers
+def _cross_product_visual_research_readiness(self):
+    return self.request("GET", "/cross-product-visual-research/readiness")
+def _cross_product_visual_research_objects(self, **params):
+    return self.request("GET", "/cross-product-visual-research", params=params)
+def _cross_product_visual_research_bundle(self, object_id: str):
+    return self.request("GET", f"/cross-product-visual-research/{object_id}/bundle")
+PublicApiClient.cross_product_visual_research_readiness = _cross_product_visual_research_readiness
+PublicApiClient.cross_product_visual_research_objects = _cross_product_visual_research_objects
+PublicApiClient.cross_product_visual_research_bundle = _cross_product_visual_research_bundle

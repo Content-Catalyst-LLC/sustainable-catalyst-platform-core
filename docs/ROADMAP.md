@@ -1,3 +1,6 @@
+
+## v2.40.0 — Cross-Product Visual Research Objects
+Governed, reference-first cross-product visual research packages with explicit source-product identity, semantic member relations, saved composite views, immutable snapshots, portable bundles, and non-executing runtime handoffs.
 # Platform Core Roadmap
 
 ## v2.0.0 — Universal Entity Registry

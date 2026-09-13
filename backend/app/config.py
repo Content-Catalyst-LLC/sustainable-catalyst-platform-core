@@ -20,7 +20,7 @@ def _int(name: str, default: int) -> int:
 @dataclass(frozen=True)
 class Settings:
     app_name: str = "Sustainable Catalyst Platform Core"
-    version: str = "2.39.0"
+    version: str = "2.40.0"
     environment: str = "development"
     database_url: str = "sqlite:///./platform_core.db"
     write_api_key: str = ""
@@ -53,7 +53,7 @@ class Settings:
     live_data_enabled: bool = True
     live_data_ingest_enabled: bool = True
     live_data_strict_free_sources: bool = True
-    live_data_user_agent: str = "SustainableCatalystPlatformCore/2.39.0 (+https://sustainablecatalyst.com/contact/)"
+    live_data_user_agent: str = "SustainableCatalystPlatformCore/2.40.0 (+https://sustainablecatalyst.com/contact/)"
     live_data_timeout_seconds: int = 20
     live_data_max_response_bytes: int = 12582912
     live_data_raw_payload_max_bytes: int = 1048576
@@ -203,6 +203,8 @@ class Settings:
     spatial_temporal_public_metadata_enabled: bool = True
     research_librarian_visual_explanation_enabled: bool = True
     research_librarian_visual_explanation_public_metadata_enabled: bool = True
+    cross_product_visual_research_enabled: bool = True
+    cross_product_visual_research_public_metadata_enabled: bool = True
 
     @classmethod
     def from_env(cls) -> "Settings":
@@ -280,7 +282,7 @@ class Settings:
             live_data_strict_free_sources=_bool("SC_CORE_LIVE_DATA_STRICT_FREE_SOURCES", True),
             live_data_user_agent=os.getenv(
                 "SC_CORE_LIVE_DATA_USER_AGENT",
-                "SustainableCatalystPlatformCore/2.39.0 (+https://sustainablecatalyst.com/contact/)",
+                "SustainableCatalystPlatformCore/2.40.0 (+https://sustainablecatalyst.com/contact/)",
             ).strip(),
             live_data_timeout_seconds=max(
                 1, min(_int("SC_CORE_LIVE_DATA_TIMEOUT_SECONDS", 20), 120)
@@ -442,4 +444,6 @@ class Settings:
             spatial_temporal_public_metadata_enabled=_bool("SC_CORE_SPATIAL_TEMPORAL_PUBLIC_METADATA_ENABLED", True),
             research_librarian_visual_explanation_enabled=_bool("SC_CORE_RESEARCH_LIBRARIAN_VISUAL_EXPLANATION_ENABLED", True),
             research_librarian_visual_explanation_public_metadata_enabled=_bool("SC_CORE_RESEARCH_LIBRARIAN_VISUAL_EXPLANATION_PUBLIC_METADATA_ENABLED", True),
+            cross_product_visual_research_enabled=_bool("SC_CORE_CROSS_PRODUCT_VISUAL_RESEARCH_ENABLED", True),
+            cross_product_visual_research_public_metadata_enabled=_bool("SC_CORE_CROSS_PRODUCT_VISUAL_RESEARCH_PUBLIC_METADATA_ENABLED", True),
         )
