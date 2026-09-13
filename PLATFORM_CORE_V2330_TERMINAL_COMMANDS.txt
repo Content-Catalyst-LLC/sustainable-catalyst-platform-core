@@ -1,0 +1,8 @@
+Mac bundle-only:
+SC_CORE_BUNDLE_ONLY=1 ./deploy_and_validate_platform_core_v2_33_0_macos.sh "$HOME/Downloads/sustainable-catalyst-platform-core-v2.33.0-release-bundle.zip"
+
+Full validation/promotion:
+./deploy_and_validate_platform_core_v2_33_0_macos.sh "$HOME/Downloads/sustainable-catalyst-platform-core-v2.33.0-release-bundle.zip"
+
+Contabo:
+/tmp/DEPLOY_PLATFORM_CORE_V2330_CONTABO.sh

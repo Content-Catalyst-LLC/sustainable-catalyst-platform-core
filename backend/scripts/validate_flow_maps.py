@@ -16,7 +16,7 @@ try:
         assert ready['flow_relations_reused'] is True
         assert ready['unit_conversion_by_core'] is False
         assert ready['simulation_by_core'] is False
-        fm=flow_maps.create_map(session,{'name':'Validator flow map','slug':'validator-flow-map-v232','visibility':'public','quantity_mode':'quantitative','default_unit':'MWh'},release='2.32.0'); mid=fm['visual_entity_id']
+        fm=flow_maps.create_map(session,{'name':'Validator flow map','slug':'validator-flow-map-v232','visibility':'public','quantity_mode':'quantitative','default_unit':'MWh'},release='2.33.0'); mid=fm['visual_entity_id']
         a=visual_reasoning.add_element(session,mid,{'element_key':'source','element_kind':'node','semantic_role':'input','label':'Source'})
         b=visual_reasoning.add_element(session,mid,{'element_key':'sink','element_kind':'node','semantic_role':'output','label':'Sink'})
         ch=flow_maps.add_channel(session,mid,{'channel_key':'energy','name':'Energy','flow_kind':'energy','unit':'MWh'})
@@ -26,7 +26,7 @@ try:
         spec=flow_maps.compile_specification(session,mid,{'spec_key':'validator','spec_kind':'network','created_by':'validator'})
         resolution=visualization_registry.resolve_renderer(session,spec['id'],created_by='validator')
         assert resolution['resolved_renderer_key']=='contract.d3' and resolution['execution_performed'] is False
-    print({'version':'2.32.0','migration_0035_applied':True,'flow_maps':True,'relation_bound_flows':True,'unit_conversion_by_core':False,'simulation_by_core':False})
-    print('PASS - Core 2.32.0 Flow Maps validation')
+    print({'version':'2.33.0','migration_0035_applied':True,'flow_maps':True,'relation_bound_flows':True,'unit_conversion_by_core':False,'simulation_by_core':False})
+    print('PASS - Core 2.33.0 Flow Maps validation')
 finally:
     Path(path).unlink(missing_ok=True)

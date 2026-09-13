@@ -1,4 +1,4 @@
-# Sustainable Catalyst Public API JavaScript Client v2.32.0
+# Sustainable Catalyst Public API JavaScript Client v2.33.0
 
 ```javascript
 import { PublicApiClient } from "./index.mjs";
@@ -136,5 +136,10 @@ Use `visualizationReadiness()`, `visualizationRenderers()`, and `visualizationSp
 Adds `systemMapsReadiness`, `systemMaps`, `systemMap`, and `systemMapBundle`.
 
 
-## v2.32.0 — Flow Maps
+## v2.33.0 — Flow Maps
 Adds public Flow Maps readiness, listing, detail, bundle, and unit-safe balance-summary helpers. Core does not convert units or execute simulations.
+
+
+## v2.33.0 — Scenario Landscapes
+
+Adds `scenarioLandscapesReadiness`, `scenarioLandscapes`, `scenarioLandscape`, `scenarioLandscapeBundle`, and `scenarioLandscapeComparison`. Core persists comparison semantics; compute, ranking, and optimization remain external.

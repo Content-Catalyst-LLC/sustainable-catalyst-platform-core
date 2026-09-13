@@ -499,3 +499,27 @@ PublicApiClient.flow_maps = _flow_maps
 PublicApiClient.flow_map = _flow_map
 PublicApiClient.flow_map_bundle = _flow_map_bundle
 PublicApiClient.flow_map_balance = _flow_map_balance
+
+
+# v2.33.0 Scenario Landscapes public metadata methods.
+def _scenario_landscapes_readiness(self):
+    return self.request("GET", "/scenario-landscapes/readiness")
+
+def _scenario_landscapes(self, **params):
+    clean={k:v for k,v in params.items() if v is not None}
+    return self.request("GET", "/scenario-landscapes", params=clean)
+
+def _scenario_landscape(self, entity_id: str):
+    return self.request("GET", f"/scenario-landscapes/{entity_id}")
+
+def _scenario_landscape_bundle(self, entity_id: str):
+    return self.request("GET", f"/scenario-landscapes/{entity_id}/bundle")
+
+def _scenario_landscape_comparison(self, entity_id: str):
+    return self.request("GET", f"/scenario-landscapes/{entity_id}/comparison")
+
+PublicApiClient.scenario_landscapes_readiness = _scenario_landscapes_readiness
+PublicApiClient.scenario_landscapes = _scenario_landscapes
+PublicApiClient.scenario_landscape = _scenario_landscape
+PublicApiClient.scenario_landscape_bundle = _scenario_landscape_bundle
+PublicApiClient.scenario_landscape_comparison = _scenario_landscape_comparison

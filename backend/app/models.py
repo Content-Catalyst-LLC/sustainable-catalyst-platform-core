@@ -3283,7 +3283,7 @@ class RendererResolutionRecord(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
 
 
-# v2.32.0 — System Maps
+# v2.33.0 — System Maps
 
 class SystemMapRecord(Base):
     __tablename__ = "system_maps"
@@ -3370,7 +3370,7 @@ class SystemMapViewRecord(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
 
 
-# v2.32.0 — Flow Maps
+# v2.33.0 — Flow Maps
 
 class FlowMapRecord(Base):
     __tablename__ = "flow_maps"
@@ -3470,6 +3470,105 @@ class FlowMapViewRecord(Base):
     channel_ids_json: Mapped[list] = mapped_column(JSON, default=list)
     filters_json: Mapped[dict] = mapped_column(JSON, default=dict)
     time_window_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    layout_intent_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    specification_id: Mapped[str | None] = mapped_column(ForeignKey("visualization_specifications.id", ondelete="SET NULL"), nullable=True)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+# v2.33.0 — Scenario Landscapes
+
+class ScenarioLandscapeRecord(Base):
+    __tablename__ = "scenario_landscapes"
+    visual_entity_id: Mapped[str] = mapped_column(ForeignKey("visual_reasoning_objects.entity_id", ondelete="CASCADE"), primary_key=True)
+    project_entity_id: Mapped[str] = mapped_column(ForeignKey("entities.id", ondelete="CASCADE"), nullable=False, index=True)
+    baseline_scenario_entity_id: Mapped[str | None] = mapped_column(ForeignKey("entities.id", ondelete="SET NULL"), nullable=True, index=True)
+    comparison_mode: Mapped[str] = mapped_column(String(60), nullable=False, default="baseline-relative")
+    landscape_state: Mapped[str] = mapped_column(String(50), nullable=False, default="draft", index=True)
+    objective: Mapped[str | None] = mapped_column(Text, nullable=True)
+    dimension_policy: Mapped[str] = mapped_column(String(60), nullable=False, default="explicit")
+    assumptions_json: Mapped[list] = mapped_column(JSON, default=list)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class ScenarioLandscapeScenarioRecord(Base):
+    __tablename__ = "scenario_landscape_scenarios"
+    __table_args__ = (
+        UniqueConstraint("visual_entity_id", "scenario_entity_id", name="uq_scenario_landscape_scenario"),
+        Index("ix_scenario_landscape_scenario_visual", "visual_entity_id"),
+        Index("ix_scenario_landscape_scenario_role", "scenario_role"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    visual_entity_id: Mapped[str] = mapped_column(ForeignKey("scenario_landscapes.visual_entity_id", ondelete="CASCADE"), nullable=False)
+    scenario_entity_id: Mapped[str] = mapped_column(ForeignKey("entities.id", ondelete="CASCADE"), nullable=False)
+    scenario_role: Mapped[str] = mapped_column(String(50), nullable=False, default="alternative")
+    display_label: Mapped[str | None] = mapped_column(String(300), nullable=True)
+    order_index: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ScenarioLandscapeDimensionRecord(Base):
+    __tablename__ = "scenario_landscape_dimensions"
+    __table_args__ = (
+        UniqueConstraint("visual_entity_id", "dimension_key", name="uq_scenario_landscape_dimension_key"),
+        Index("ix_scenario_landscape_dimension_visual", "visual_entity_id"),
+        Index("ix_scenario_landscape_dimension_kind", "dimension_kind"),
+        Index("ix_scenario_landscape_dimension_source", "source_entity_id"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    visual_entity_id: Mapped[str] = mapped_column(ForeignKey("scenario_landscapes.visual_entity_id", ondelete="CASCADE"), nullable=False)
+    dimension_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    dimension_kind: Mapped[str] = mapped_column(String(60), nullable=False, default="metric")
+    source_entity_id: Mapped[str | None] = mapped_column(ForeignKey("entities.id", ondelete="SET NULL"), nullable=True)
+    label: Mapped[str] = mapped_column(String(300), nullable=False)
+    unit: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    preference_direction: Mapped[str] = mapped_column(String(40), nullable=False, default="neutral")
+    order_index: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ScenarioLandscapeValueRecord(Base):
+    __tablename__ = "scenario_landscape_values"
+    __table_args__ = (
+        UniqueConstraint("visual_entity_id", "scenario_entity_id", "dimension_id", name="uq_scenario_landscape_value"),
+        Index("ix_scenario_landscape_value_visual", "visual_entity_id"),
+        Index("ix_scenario_landscape_value_scenario", "scenario_entity_id"),
+        Index("ix_scenario_landscape_value_dimension", "dimension_id"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    visual_entity_id: Mapped[str] = mapped_column(ForeignKey("scenario_landscapes.visual_entity_id", ondelete="CASCADE"), nullable=False)
+    scenario_entity_id: Mapped[str] = mapped_column(ForeignKey("entities.id", ondelete="CASCADE"), nullable=False)
+    dimension_id: Mapped[str] = mapped_column(ForeignKey("scenario_landscape_dimensions.id", ondelete="CASCADE"), nullable=False)
+    numeric_value: Mapped[float | None] = mapped_column(Float, nullable=True)
+    value_json: Mapped[object] = mapped_column(JSON, nullable=True)
+    unit: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    lower_bound: Mapped[float | None] = mapped_column(Float, nullable=True)
+    upper_bound: Mapped[float | None] = mapped_column(Float, nullable=True)
+    uncertainty_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class ScenarioLandscapeViewRecord(Base):
+    __tablename__ = "scenario_landscape_views"
+    __table_args__ = (
+        UniqueConstraint("visual_entity_id", "view_key", name="uq_scenario_landscape_view_key"),
+        Index("ix_scenario_landscape_view_visual", "visual_entity_id"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    visual_entity_id: Mapped[str] = mapped_column(ForeignKey("scenario_landscapes.visual_entity_id", ondelete="CASCADE"), nullable=False)
+    view_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    name: Mapped[str] = mapped_column(String(300), nullable=False)
+    scenario_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    dimension_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    filters_json: Mapped[dict] = mapped_column(JSON, default=dict)
     layout_intent_json: Mapped[dict] = mapped_column(JSON, default=dict)
     specification_id: Mapped[str | None] = mapped_column(ForeignKey("visualization_specifications.id", ondelete="SET NULL"), nullable=True)
     metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)

@@ -35,7 +35,7 @@ with tempfile.TemporaryDirectory() as td:
             title="Validator scientific object",
             format_name="csv",
             media_type="text/csv",
-            provenance={"validator": "v2.32.0"},
+            provenance={"validator": "v2.33.0"},
             created_by="release-validator",
         )
         path = scientific_objects.content_path(db, settings, source.id)
@@ -50,7 +50,7 @@ with tempfile.TemporaryDirectory() as td:
             format_name="netcdf",
             content_hash="a" * 64,
             checksum_algorithm="sha256",
-            provenance={"validator": "v2.32.0"},
+            provenance={"validator": "v2.33.0"},
         )
         assert external.backend_key == "external-reference"
         assert external.integrity_status == "declared"
@@ -77,7 +77,7 @@ with tempfile.TemporaryDirectory() as td:
     status = migration_status(database)
     assert "0030" in status["applied"] and not status["pending"]
     print({
-        "version": "2.32.0",
+        "version": "2.33.0",
         "migration_0030_applied": True,
         "storage_backend": "local-filesystem",
         "external_reference_fetch": False,
@@ -85,4 +85,4 @@ with tempfile.TemporaryDirectory() as td:
         "derived_lineage": True,
         "arbitrary_code_execution": False,
     })
-    print("PASS - Core 2.32.0 scientific object storage and processing adapter validation")
+    print("PASS - Core 2.33.0 scientific object storage and processing adapter validation")

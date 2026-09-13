@@ -50,6 +50,7 @@ from .routers import (
     visualization_registry,
     system_maps,
     flow_maps,
+    scenario_landscapes,
     ledger,
     live_data,
     meta,
@@ -204,6 +205,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(system_maps.public_router)
     app.include_router(flow_maps.router)
     app.include_router(flow_maps.public_router)
+    app.include_router(scenario_landscapes.router)
+    app.include_router(scenario_landscapes.public_router)
     app.include_router(economic_data.router)
     app.include_router(economic_data.public_router)
     app.include_router(data_fabric.router)

@@ -341,6 +341,11 @@ class RegistryStats(BaseModel):
     flow_map_flows: int
     flow_map_node_states: int
     flow_map_views: int
+    scenario_landscapes: int
+    scenario_landscape_scenarios: int
+    scenario_landscape_dimensions: int
+    scenario_landscape_values: int
+    scenario_landscape_views: int
     map_layers: int
     stac_collections: int
     stac_items: int

@@ -18,7 +18,7 @@ def auth(): return {'X-SC-API-Key':'write-test-key'}
 
 def test_release_and_migration_readiness():
   with tempfile.TemporaryDirectory() as td:
-    c=client(td); b=c.get('/v1/workload-governance/readiness').json(); assert c.get('/health').json()['version']=='2.32.0'; assert b['release']=='2.32.0' and b['migration_0029_applied'] and b['distributed_quota_backend']=='database-shared' and b['hard_admission_control'] is True
+    c=client(td); b=c.get('/v1/workload-governance/readiness').json(); assert c.get('/health').json()['version']=='2.33.0'; assert b['release']=='2.33.0' and b['migration_0029_applied'] and b['distributed_quota_backend']=='database-shared' and b['hard_admission_control'] is True
 
 def test_bootstrap_creates_classes_and_policies_without_external_dependency():
   with tempfile.TemporaryDirectory() as td:

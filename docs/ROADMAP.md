@@ -185,7 +185,6 @@ Status: implemented. Adds migration `0033`, immutable revisioned visualization s
 ## v2.31.0 — System Maps
 Status: implemented. Adds migration `0034`, explicit boundaries, domains, same-map memberships, saved views, structural validation, and deterministic compilation to v2.30 visualization specifications while keeping layout and causal inference external.
 
-Next planned: **v2.32.0 — Flow Maps**.
 
 
 ## v2.24.0 R1 — Secret-Scan Example Credential & Promotion Repair
@@ -195,4 +194,7 @@ Completed: promotion tooling repair only; runtime remains v2.24.0 and migration 
 ## v2.32.0 — Flow Maps
 Completed: typed flow channels, relation-bound directed flows, quantitative/uncertainty metadata, node-state observations, saved views, unit-safe balance summaries, structural validation, and external-renderer specification compilation. Core does not convert units, simulate systems, or assert conservation automatically.
 
-Next planned: **v2.33.0 — Scenario Landscapes**.
+## v2.33.0 — Scenario Landscapes
+Completed: governed scenario memberships, baseline/reference roles, explicit comparison dimensions, uncertainty-aware externally supplied values, provenance, saved views, direct unit-matched baseline summaries, validation, and renderer-neutral specification compilation. Scenario execution, ranking, optimization, and unit conversion remain external.
+
+Next planned: **v2.34.0 — Interactive Model Canvas**.

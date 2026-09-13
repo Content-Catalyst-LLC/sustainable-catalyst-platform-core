@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/scenario-landscape-v1.schema.json",
+  "title": "Scenario Landscape V1",
+  "type": "object",
+  "required": [
+    "visual_entity_id",
+    "project_entity_id",
+    "comparison_mode",
+    "landscape_state"
+  ],
+  "properties": {
+    "visual_entity_id": {
+      "type": "string"
+    },
+    "project_entity_id": {
+      "type": "string"
+    },
+    "comparison_mode": {
+      "type": "string"
+    },
+    "landscape_state": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": true
+}

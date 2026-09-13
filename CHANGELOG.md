@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.33.0 — 2026-09-13
+
+- Added governed Scenario Landscapes and migration `0036`.
+- Reused v2.28 research scenarios with explicit comparison roles and one governed baseline.
+- Added comparison dimensions, uncertainty-aware externally supplied values, provenance, saved views, and direct unit-matched baseline deltas.
+- Added renderer-neutral chart/composite/table specification compilation.
+- Explicitly kept scenario/model execution, unit conversion, ranking, optimization, rendering, and truth promotion outside Core.
+
 ## 2.32.0 — 2026-09-12
 
 - Added governed Flow Maps and migration `0035`.

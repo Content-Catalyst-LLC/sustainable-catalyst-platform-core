@@ -425,4 +425,10 @@ export class PublicApiClient {
   flowMapBundle(entityId) { return this.request(`/flow-maps/${encodeURIComponent(entityId)}/bundle`); }
   flowMapBalance(entityId) { return this.request(`/flow-maps/${encodeURIComponent(entityId)}/balance`); }
 
+  scenarioLandscapesReadiness() { return this.request("/scenario-landscapes/readiness"); }
+  scenarioLandscapes(params = {}) { const clean = Object.fromEntries(Object.entries(params).filter(([, value]) => value !== null && value !== undefined)); const query = new URLSearchParams(clean); return this.request(`/scenario-landscapes?${query}`); }
+  scenarioLandscape(entityId) { return this.request(`/scenario-landscapes/${encodeURIComponent(entityId)}`); }
+  scenarioLandscapeBundle(entityId) { return this.request(`/scenario-landscapes/${encodeURIComponent(entityId)}/bundle`); }
+  scenarioLandscapeComparison(entityId) { return this.request(`/scenario-landscapes/${encodeURIComponent(entityId)}/comparison`); }
+
 }

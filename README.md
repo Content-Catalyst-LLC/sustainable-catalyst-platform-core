@@ -1,24 +1,24 @@
-# Sustainable Catalyst Platform Core v2.32.0
+# Sustainable Catalyst Platform Core v2.33.0
 
-Core v2.32.0 adds **Flow Maps** on top of the v2.29 Visual Reasoning Object Model, v2.30 Visualization Specification & Renderer Registry, and v2.31 System Maps. Core now governs typed flow channels, directed relation-bound flows, quantitative and uncertainty metadata, node-state observations, saved flow views, unit-safe balance summaries, structural validation, and deterministic compilation to v2.30 visualization specifications.
+Core v2.33.0 adds **Scenario Landscapes** on top of the v2.28 Research Object & Model Foundation, v2.29 Visual Reasoning Object Model, and v2.30 Visualization Specification & Renderer Registry. Core now governs multi-scenario comparison structure without becoming a scenario compute engine.
 
-Key v2.32.0 additions:
-- additive migration `0035`;
-- first-class Flow Map records bound to `flow-map` visual reasoning objects;
-- directed flows reuse v2.29 `relation_kind=flow` relations rather than creating a parallel graph;
-- typed material, energy, money, information, people, emissions, resource, service, and generic channels;
-- qualitative, amount, rate, count, and index quantities with explicit units and uncertainty/provenance metadata;
-- node-state observations for stocks, capacity, supply, demand, balance, inventory, and reserves;
-- saved channel/time/layout views;
-- unit-safe balance summaries that aggregate only within exact units;
-- compilation to v2.30 `network` or `map` specifications for external renderer runtimes.
+Key v2.33.0 additions:
+- additive migration `0036`;
+- Scenario Landscape records bound to `scenario-landscape` visual reasoning objects;
+- direct reuse of v2.28 research scenarios with baseline, alternative, reference, stress, and sensitivity roles;
+- explicit parameter/result/variable/metric/time/custom dimensions;
+- externally supplied numeric/JSON values with exact units, uncertainty bounds, provenance, and metadata;
+- saved scenario/dimension views;
+- direct baseline-relative numeric deltas only when units already match;
+- structural validation and deterministic compilation to v2.30 chart/composite/table visualization specifications.
 
 Explicit boundaries:
-- Core performs no automatic unit conversion;
-- Core performs no simulation or numerical model execution;
-- Core makes no automatic conservation claim;
-- Core performs no renderer or layout execution;
-- flow-map structure does not promote itself to evidence or truth.
+- Core does not execute scenarios or numerical models;
+- Core does not infer scenario values;
+- Core does not convert units;
+- Core does not rank or optimize alternatives;
+- Core does not execute renderers or layout;
+- scenario structure and outputs do not automatically become evidence or truth.
 
 Current release line:
 
@@ -27,9 +27,10 @@ v2.29.0 Visual Reasoning Object Model
 v2.30.0 Visualization Specification & Renderer Registry
 v2.31.0 System Maps
 v2.32.0 Flow Maps
+v2.33.0 Scenario Landscapes
 ```
 
-Next planned: **v2.33.0 — Scenario Landscapes**.
+Next planned: **v2.34.0 — Interactive Model Canvas**.
 
 ---
 
