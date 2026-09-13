@@ -1,6 +1,6 @@
-# Platform Core v2.36.1 — Uncertainty Compute Runtime Integration
+# Platform Core v2.36.1.1 — Uncertainty Compute Runtime Integration
 
-v2.36.1 adds bounded, reproducible statistical computation to the v2.36 uncertainty/sensitivity/ensemble semantic layer.
+v2.36.1.1 preserves the deployed v2.36.0 schema and adds bounded, reproducible statistical computation to the v2.36 uncertainty/sensitivity/ensemble semantic layer.
 
 ## Core-native bounded computation
 
@@ -22,4 +22,9 @@ Core does **not** dispatch arbitrary model code itself and does **not** execute 
 
 ## Epistemic boundary
 
-Computed statistics are results, not automatically truth. v2.36.1 does not automatically promote a probability, sensitivity index, ensemble statistic, or simulation result into a verified finding or truth claim.
+Computed statistics are results, not automatically truth. v2.36.1.1 does not automatically promote a probability, sensitivity index, ensemble statistic, or simulation result into a verified finding or truth claim.
+
+
+## Production schema compatibility
+
+The repair deliberately retains the v2.36.0 persistence identities: `sensitivity_studies.id`, `sensitivity_factors.study_id`, `sensitivity_measures`, `ensembles.id`, `ensemble_members.ensemble_id`, and `ensemble_statistics.ensemble_id`. Migration 0040 adds `uncertainty_compute_runs` without rewriting those tables.

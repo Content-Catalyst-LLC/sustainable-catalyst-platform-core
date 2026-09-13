@@ -1,23 +1,15 @@
-# v2.36.0 Uncertainty, Sensitivity & Ensemble Reasoning
+# Uncertainty, Sensitivity & Ensemble Reasoning — v2.36.0
 
-## Purpose
+Platform Core v2.36.0 governs the semantics, provenance, and inspectability of uncertainty analysis while leaving numerical execution to Lab, Workbench, or external runtimes.
 
-Make uncertainty and multi-run reasoning first-class, governed Platform Core semantics without moving scientific computation into Core.
+## Object families
+1. `UncertaintyDefinitionRecord`
+2. `SensitivityStudyRecord`
+3. `SensitivityFactorRecord`
+4. `SensitivityMeasureRecord`
+5. `EnsembleRecord`
+6. `EnsembleMemberRecord`
+7. `EnsembleStatisticRecord`
 
-## Objects
-
-- `UncertaintyDefinitionRecord`
-- `SensitivityStudyRecord`
-- `SensitivityFactorRecord`
-- `SensitivityResultRecord`
-- `EnsembleRecord`
-- `EnsembleMemberRecord`
-- `EnsembleStatisticRecord`
-
-## Execution boundary
-
-Sampling plans and aggregation contracts are metadata. Numerical execution is external. Sensitivity results and ensemble statistics must identify external provenance and cannot claim calculation by Core.
-
-## Visualization
-
-Sensitivity studies use `sensitivity-map`; ensembles use `ensemble-view`. Core compiles chart specifications and resolves Vega-Lite/Plotly renderer contracts without executing the renderer.
+## Boundaries
+Core does not sample distributions, execute sensitivity algorithms, normalize ensemble weights, calculate ensemble statistics, execute models, automatically generate probabilities, or promote model output to truth.

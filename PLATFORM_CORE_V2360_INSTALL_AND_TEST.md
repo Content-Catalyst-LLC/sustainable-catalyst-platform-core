@@ -1,9 +1,9 @@
-# Platform Core v2.36.0 Install & Test
+# Install and Test — Platform Core v2.36.0
 
-1. Run the bundle-only Mac validator.
-2. Run release-critical validation and GitHub promotion.
-3. Upload and run `DEPLOY_PLATFORM_CORE_V2360_CONTABO.sh`.
-4. Confirm migration `0039`, public health `2.36.0`, and `/v1/uncertainty-reasoning/readiness`.
-5. Install the WordPress plugin and test `[sc_platform_core_uncertainty_reasoning_status]`.
+1. Run the bundle-only Mac verifier.
+2. Run the normal release-critical validator/promoter.
+3. Deploy the tagged backend to Contabo.
+4. Verify migration `0039`, health 2.36.0, uncertainty-reasoning readiness, persistent scientific storage, and public Caddy route.
+5. Install the WordPress plugin and verify `[sc_platform_core_uncertainty_reasoning_status]`.
 
-The default validation path is the focused release-critical suite. Set `SC_CORE_FULL_CERTIFICATION=1` only when intentionally running the historical suite.
+Full historical certification is opt-in with `SC_CORE_FULL_CERTIFICATION=1`.

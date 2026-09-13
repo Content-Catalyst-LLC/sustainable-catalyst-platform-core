@@ -1,7 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
-  "additionalProperties": true,
   "title": "Ensemble Member",
   "required": [
     "member_key"
@@ -10,19 +9,7 @@
     "member_key": {
       "type": "string"
     },
-    "label": {
-      "type": [
-        "string",
-        "null"
-      ]
-    },
     "scenario_entity_id": {
-      "type": [
-        "string",
-        "null"
-      ]
-    },
-    "compute_case_id": {
       "type": [
         "string",
         "null"
@@ -40,20 +27,26 @@
         "null"
       ]
     },
+    "member_state": {
+      "enum": [
+        "declared",
+        "requested",
+        "running",
+        "completed",
+        "failed",
+        "excluded"
+      ]
+    },
     "weight": {
       "type": [
         "number",
         "null"
-      ]
-    },
-    "inclusion_state": {
-      "type": "string"
+      ],
+      "minimum": 0
     },
     "provenance": {
       "type": "object"
-    },
-    "metadata": {
-      "type": "object"
     }
-  }
+  },
+  "additionalProperties": true
 }

@@ -70,7 +70,7 @@ def factors_from_uncertainty_definitions(db:Session,ids:list[str])->list[dict[st
     for uid in ids:
         u=db.get(UncertaintyDefinitionRecord,str(uid))
         if u is None: raise ValueError(f'Unknown uncertainty definition: {uid}')
-        out.append(_factor_spec({'key':u.uncertainty_key,'distribution':u.distribution_name or ('empirical' if u.empirical_values_json else 'uniform'),'lower_bound':u.lower_bound,'upper_bound':u.upper_bound,'parameters':u.parameters_json,'empirical_values':u.empirical_values_json,'unit':u.unit}))
+        out.append(_factor_spec({'key':u.uncertainty_key,'distribution':u.distribution_family,'lower_bound':u.lower_bound,'upper_bound':u.upper_bound,'parameters':u.parameters_json,'empirical_values':list((u.source_json or {}).get('empirical_values') or []),'unit':u.unit}))
     return out
 
 def _inv_sample(spec:dict[str,Any],u:float,rng:random.Random)->float:
@@ -204,7 +204,12 @@ def runtime_handoff(payload:dict[str,Any])->dict[str,Any]:
     manifest['handoff_sha256']=_stable_hash(manifest);return manifest
 
 def persist_run(db:Session,payload:dict[str,Any],output:dict[str,Any])->dict[str,Any]:
-    row=UncertaintyComputeRunRecord(run_key=str(payload.get('run_key') or _stable_hash({'m':payload.get('method'),'i':payload})[:24]),name=str(payload.get('name') or payload.get('method') or 'Uncertainty compute run'),method=str(payload.get('method') or 'compute'),run_state='completed',project_entity_id=payload.get('project_entity_id'),model_entity_id=payload.get('model_entity_id'),model_version_entity_id=payload.get('model_version_entity_id'),sensitivity_study_visual_entity_id=payload.get('sensitivity_study_visual_entity_id'),ensemble_visual_entity_id=payload.get('ensemble_visual_entity_id'),runtime_product=str(payload.get('runtime_product') or 'core-statistics'),seed=payload.get('seed'),sample_count=payload.get('sample_count'),input_manifest_json=dict(payload.get('input_manifest') or {}),output_summary_json=output,provenance_json={'generated_at':datetime.now(timezone.utc).isoformat(),'core_compute':True,**dict(payload.get('provenance') or {})},metadata_json=dict(payload.get('metadata') or {}),created_by=str(payload.get('created_by') or 'operator'))
+    study_id=payload.get('sensitivity_study_id') or payload.get('sensitivity_study_visual_entity_id')
+    ensemble_id=payload.get('ensemble_id') or payload.get('ensemble_visual_entity_id')
+    if study_id and db.get(SensitivityStudyRecord,str(study_id)) is None: raise ValueError('sensitivity_study_id must reference an existing sensitivity study.')
+    if ensemble_id and db.get(EnsembleRecord,str(ensemble_id)) is None: raise ValueError('ensemble_id must reference an existing ensemble.')
+    payload={**payload,'sensitivity_study_id':study_id,'ensemble_id':ensemble_id}
+    row=UncertaintyComputeRunRecord(run_key=str(payload.get('run_key') or _stable_hash({'m':payload.get('method'),'i':payload})[:24]),name=str(payload.get('name') or payload.get('method') or 'Uncertainty compute run'),method=str(payload.get('method') or 'compute'),run_state='completed',project_entity_id=payload.get('project_entity_id'),model_entity_id=payload.get('model_entity_id'),model_version_entity_id=payload.get('model_version_entity_id'),sensitivity_study_id=payload.get('sensitivity_study_id') or payload.get('sensitivity_study_visual_entity_id'),ensemble_id=payload.get('ensemble_id') or payload.get('ensemble_visual_entity_id'),runtime_product=str(payload.get('runtime_product') or 'core-statistics'),seed=payload.get('seed'),sample_count=payload.get('sample_count'),input_manifest_json=dict(payload.get('input_manifest') or {}),output_summary_json=output,provenance_json={'generated_at':datetime.now(timezone.utc).isoformat(),'core_compute':True,**dict(payload.get('provenance') or {})},metadata_json=dict(payload.get('metadata') or {}),created_by=str(payload.get('created_by') or 'operator'))
     db.add(row)
     try:db.commit();db.refresh(row)
     except IntegrityError as exc:db.rollback();raise HTTPException(status_code=409,detail='uncertainty compute run_key already exists.') from exc

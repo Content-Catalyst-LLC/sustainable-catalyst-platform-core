@@ -1,4 +1,4 @@
-# Sustainable Catalyst Public API JavaScript Client v2.36.1
+# Sustainable Catalyst Public API JavaScript Client v2.36.1.1
 
 ```javascript
 import { PublicApiClient } from "./index.mjs";
@@ -145,14 +145,13 @@ Adds public Flow Maps readiness, listing, detail, bundle, and unit-safe balance-
 Adds `scenarioLandscapesReadiness`, `scenarioLandscapes`, `scenarioLandscape`, `scenarioLandscapeBundle`, and `scenarioLandscapeComparison`. Core persists comparison semantics; compute, ranking, and optimization remain external.
 
 
-## v2.36.1 — Scenario Compute Engine
+## v2.35.0 — Scenario Compute Engine
 Adds public readiness/list/detail/bundle helpers for governed interactive model canvases. Model execution remains external to Core.
 
 
-## v2.36.1 — Uncertainty, Sensitivity & Ensemble Reasoning
+## v2.36.0 — Uncertainty, Sensitivity & Ensemble Reasoning
+Adds public metadata helpers for governed uncertainty definitions, sensitivity-study summaries, and ensemble summaries. Sampling, model execution, sensitivity algorithms, and ensemble aggregation remain external to Platform Core.
 
-Adds public-safe readiness, uncertainty-definition listing, sensitivity-study metadata/bundles, and ensemble metadata/bundles. Numerical sampling, sensitivity calculation, ensemble aggregation, and probability inference remain external to Core.
 
-
-## v2.36.1 — Uncertainty Compute Runtime Integration
-Adds public-safe readiness for deterministic sampling, sensitivity post-processing, ensemble statistics, probability estimation, and governed compute handoff integration.
+## v2.36.1.1 — Uncertainty Compute Runtime Integration repair
+Adds public compute readiness helpers while preserving v2.36.0 uncertainty APIs.

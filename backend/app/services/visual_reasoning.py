@@ -34,8 +34,6 @@ VISUAL_KINDS = {
     "scenario-landscape",
     "model-map",
     "model-canvas",
-    "sensitivity-map",
-    "ensemble-view",
     "evidence-map",
     "causal-map",
     "spatial-temporal-map",
@@ -453,7 +451,7 @@ def bundle(db: Session, visual_entity_id: str, *, public_only: bool = False) -> 
             "renderer_neutral": True,
             "layout_engine_in_core": False,
             "style_specification_in_core": False,
-            "visualization_specification_layer": "v2.36.1 System Maps + Flow Maps + Scenario Landscapes + Interactive Model Canvas + Scenario Compute Engine + Uncertainty/Sensitivity/Ensemble Reasoning + Uncertainty Compute Runtime Integration on v2.30 Visualization Specification & Renderer Registry",
+            "visualization_specification_layer": "v2.36.0 System Maps + Flow Maps + Scenario Landscapes + Interactive Model Canvas + Scenario Compute Engine + Uncertainty/Sensitivity/Ensemble Reasoning on v2.30 Visualization Specification & Renderer Registry",
             "renderer_execution_by_core": False,
         },
     }

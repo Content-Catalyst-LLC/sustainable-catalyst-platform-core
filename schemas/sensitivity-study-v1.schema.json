@@ -1,14 +1,12 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
-  "additionalProperties": true,
   "title": "Sensitivity Study",
   "required": [
     "study_key",
     "project_entity_id",
     "model_entity_id",
-    "model_version_entity_id",
-    "method"
+    "model_version_entity_id"
   ],
   "properties": {
     "study_key": {
@@ -29,38 +27,28 @@
         "null"
       ]
     },
-    "study_state": {
-      "enum": [
-        "draft",
-        "ready",
-        "running",
-        "completed",
-        "archived"
-      ]
-    },
     "method": {
       "enum": [
+        "local",
         "one-at-a-time",
-        "local-gradient",
         "morris",
         "sobol",
-        "variance-based",
+        "monte-carlo",
         "correlation",
-        "scenario-sweep",
+        "elasticity",
         "custom"
       ]
     },
-    "output_key": {
-      "type": [
-        "string",
-        "null"
+    "execution_product": {
+      "enum": [
+        "lab",
+        "workbench",
+        "external"
       ]
     },
-    "sampling_contract": {
+    "configuration": {
       "type": "object"
-    },
-    "execution_product": {
-      "type": "string"
     }
-  }
+  },
+  "additionalProperties": true
 }

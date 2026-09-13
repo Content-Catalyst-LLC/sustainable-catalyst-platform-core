@@ -1,19 +1,21 @@
-## v2.36.1 — Uncertainty Compute Runtime Integration
-- Migration 0040.
-- Deterministic Monte Carlo and Latin Hypercube sampling.
-- Sobol/Morris design and post-processing helpers.
-- Ensemble normalization and weighted statistics.
-- Empirical exceedance probability estimation.
-- Lab/Workbench/external runtime handoff manifests.
-- Persisted compute provenance; no arbitrary code execution or automatic truth promotion.
+# Changelog
+
+## 2.36.1.1 — Uncertainty Compute Runtime Integration · Production Schema Compatibility Repair
+
+- Preserves the deployed v2.36.0 uncertainty/sensitivity/ensemble database contract unchanged.
+- Restores `sensitivity_studies.id`, `sensitivity_factors.study_id`, `sensitivity_measures`, `ensembles.id`, and related API semantics.
+- Adds migration 0040 only through the additive `uncertainty_compute_runs` table.
+- Keeps deterministic Monte Carlo/LHS sampling, Sobol/Morris design/post-processing, ensemble statistics/weight normalization, probability estimation, and governed Lab/Workbench handoffs.
+- Adds a true v2.36.0 -> v2.36.1.1 upgrade compatibility gate.
 
 ## 2.36.0 — 2026-09-13
 
-- Added first-class Uncertainty, Sensitivity & Ensemble Reasoning and migration `0039`.
-- Added interval/distribution/empirical/categorical/qualitative uncertainty definitions with assumptions and provenance.
-- Added sensitivity studies, parameter factors, external metric provenance, validation, and Vega-Lite/Plotly chart-specification compilation.
-- Added governed ensembles, scenario/compute/run membership, weighting policy metadata, external statistics, validation, and chart-specification compilation.
-- Explicitly kept sampling, Monte Carlo execution, sensitivity calculation, ensemble aggregation, distribution fitting, probability inference, ranking, and truth promotion outside Core.
+- Added governed Uncertainty, Sensitivity & Ensemble Reasoning and migration `0039`.
+- Added uncertainty definitions with uncertainty kind, distribution metadata, bounds, confidence, source, assumptions, and provenance.
+- Added sensitivity studies, model-bound parameter factors, externally supplied sensitivity measures, and descriptive rankings.
+- Added ensembles with scenario/request/run membership, declared weights, provenance, and externally supplied statistics.
+- Added public metadata APIs, Python/JavaScript SDK helpers, schemas, WordPress status, and release validation.
+- Explicitly kept sampling, sensitivity algorithms, ensemble aggregation, model execution, probability generation, and truth promotion outside Core.
 
 ## 2.35.0 — 2026-09-13
 

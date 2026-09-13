@@ -33,9 +33,9 @@ def _public_key(client,h):
 def test_v234_health_migration_and_readiness(client):
     assert any(v=='0037' for v,_ in MIGRATIONS)
     health=client.get('/health').json()
-    assert health['version']=='2.36.1' and health['interactive_model_canvas'] is True
+    assert health['version']=='2.36.1.1' and health['interactive_model_canvas'] is True
     ready=client.get('/v1/model-canvases/readiness').json()
-    assert ready['release']=='2.36.1' and ready['migration_0037_applied'] is True
+    assert ready['release']=='2.36.1.1' and ready['migration_0037_applied'] is True
     assert ready['visual_kind']=='model-canvas' and ready['research_models_reused'] is True
     assert ready['model_execution_by_core'] is False and ready['numerical_computation_by_core'] is False
 
