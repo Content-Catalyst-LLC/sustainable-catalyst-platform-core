@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "title": "Scenario Compute Attempt",
+  "required": [
+    "request_id",
+    "attempt_number"
+  ],
+  "properties": {
+    "request_id": {
+      "type": "string"
+    },
+    "attempt_number": {
+      "type": "integer"
+    },
+    "attempt_state": {
+      "type": "string"
+    },
+    "executor_product": {
+      "type": "string"
+    },
+    "runtime_metadata": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": true
+}

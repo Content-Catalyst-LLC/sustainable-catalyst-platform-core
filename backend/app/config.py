@@ -20,7 +20,7 @@ def _int(name: str, default: int) -> int:
 @dataclass(frozen=True)
 class Settings:
     app_name: str = "Sustainable Catalyst Platform Core"
-    version: str = "2.34.0"
+    version: str = "2.35.0"
     environment: str = "development"
     database_url: str = "sqlite:///./platform_core.db"
     write_api_key: str = ""
@@ -190,6 +190,8 @@ class Settings:
     scenario_landscapes_public_metadata_enabled: bool = True
     interactive_model_canvas_enabled: bool = True
     interactive_model_canvas_public_metadata_enabled: bool = True
+    scenario_compute_engine_enabled: bool = True
+    scenario_compute_engine_public_metadata_enabled: bool = True
 
     @classmethod
     def from_env(cls) -> "Settings":
@@ -416,4 +418,6 @@ class Settings:
             scenario_landscapes_public_metadata_enabled=_bool("SC_CORE_SCENARIO_LANDSCAPES_PUBLIC_METADATA_ENABLED", True),
             interactive_model_canvas_enabled=_bool("SC_CORE_INTERACTIVE_MODEL_CANVAS_ENABLED", True),
             interactive_model_canvas_public_metadata_enabled=_bool("SC_CORE_INTERACTIVE_MODEL_CANVAS_PUBLIC_METADATA_ENABLED", True),
+            scenario_compute_engine_enabled=_bool("SC_CORE_SCENARIO_COMPUTE_ENGINE_ENABLED", True),
+            scenario_compute_engine_public_metadata_enabled=_bool("SC_CORE_SCENARIO_COMPUTE_ENGINE_PUBLIC_METADATA_ENABLED", True),
         )

@@ -352,6 +352,11 @@ class RegistryStats(BaseModel):
     model_canvas_controls: int
     model_canvas_states: int
     model_canvas_views: int
+    scenario_compute_plans: int
+    scenario_compute_cases: int
+    scenario_compute_requests: int
+    scenario_compute_attempts: int
+    scenario_compute_result_bindings: int
     map_layers: int
     stac_collections: int
     stac_items: int

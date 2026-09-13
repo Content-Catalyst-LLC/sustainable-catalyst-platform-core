@@ -200,4 +200,59 @@ Completed: governed scenario memberships, baseline/reference roles, explicit com
 ## v2.34.0 — Interactive Model Canvas
 Completed: model-bound canvas nodes, dependency edges, governed parameter/scenario controls, immutable interaction states, saved views, external-execution handoff contracts, structural validation, and renderer-neutral visualization-specification compilation. Model execution and layout remain external.
 
-Next planned: **v2.35.0 — Scenario Compute Engine**.
+## v2.35.0 — Scenario Compute Engine
+Completed: governed scenario-compute plans and cases, parameter-bound validation, deterministic input manifests, idempotent execution requests, external Lab/Workbench execution-attempt lineage, and canonical model-run/result bindings. Core orchestrates execution but performs no numerical computation, runner network dispatch, arbitrary-code execution, automatic optimization, or truth promotion. Adds migration `0038`.
+
+## v2.36.0 — Uncertainty, Sensitivity & Ensemble Reasoning
+Planned.
+
+## v2.37.0 — Causal Systems Explorer
+Planned.
+
+## v2.38.0 — Spatial & Temporal Visual Reasoning
+Planned.
+
+## v2.39.0 — Research Librarian Visual Explanation
+Planned.
+
+## v2.40.0 — Cross-Product Visual Research Objects
+Planned.
+
+## v2.41.0 — Reproducible Visual Knowledge Layer
+Planned.
+
+### Open Forensics foundation
+
+Open Forensics is a cross-platform capability, not an isolated app. Platform Core owns universal forensic semantics, provenance, evidence relationships, and governance; Library, Research Librarian, Lab, Workbench, Site Intelligence, Decision Studio, and Catalyst Data provide source, analysis, computation, spatial, decision, and data capabilities. The system is general-purpose and must not encode a predetermined conclusion for any investigation.
+
+## v2.42.0 — Forensic Object Model & Evidence Provenance
+Planned.
+
+## v2.43.0 — Evidence Integrity & Chain of Custody
+Planned.
+
+## v2.44.0 — Claims, Contradictions & Competing Hypotheses
+Planned.
+
+## v2.45.0 — Forensic Timeline & Event Reconstruction
+Planned.
+
+## v2.46.0 — Forensic Spatial/Temporal Evidence Integration
+Planned.
+
+## v2.47.0 — Media Artifact & Derivative Provenance
+Planned.
+
+## v2.48.0 — Quantitative Reconstruction & Reproduction Handoffs
+Planned.
+
+## v2.49.0 — Testimony, Statements & Documentary Evidence
+Planned.
+
+## v2.50.0 — Forensic Research Graph
+Planned.
+
+## v2.51.0 — Reproducible Investigation Packages
+Planned.
+
+Next planned: **v2.36.0 — Uncertainty, Sensitivity & Ensemble Reasoning**.

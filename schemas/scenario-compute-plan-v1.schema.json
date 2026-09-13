@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "title": "Scenario Compute Plan",
+  "required": [
+    "plan_key",
+    "project_entity_id",
+    "model_entity_id",
+    "model_version_entity_id"
+  ],
+  "properties": {
+    "plan_key": {
+      "type": "string"
+    },
+    "project_entity_id": {
+      "type": "string"
+    },
+    "model_entity_id": {
+      "type": "string"
+    },
+    "model_version_entity_id": {
+      "type": "string"
+    },
+    "execution_product": {
+      "enum": [
+        "lab",
+        "workbench",
+        "external"
+      ]
+    },
+    "execution_contract": {
+      "type": "object"
+    },
+    "output_contract": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": true
+}

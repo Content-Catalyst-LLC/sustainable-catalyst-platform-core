@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "title": "Scenario Compute Result Binding",
+  "required": [
+    "request_id",
+    "result_entity_id",
+    "output_key"
+  ],
+  "properties": {
+    "request_id": {
+      "type": "string"
+    },
+    "result_entity_id": {
+      "type": "string"
+    },
+    "output_key": {
+      "type": "string"
+    },
+    "binding_role": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": true
+}

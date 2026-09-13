@@ -3697,3 +3697,116 @@ class ModelCanvasViewRecord(Base):
     specification_id: Mapped[str | None] = mapped_column(ForeignKey("visualization_specifications.id", ondelete="SET NULL"), nullable=True)
     metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+# v2.35.0 — Scenario Compute Engine
+
+class ScenarioComputePlanRecord(Base):
+    __tablename__ = "scenario_compute_plans"
+    __table_args__ = (
+        UniqueConstraint("project_entity_id", "plan_key", name="uq_scenario_compute_plan_project_key"),
+        Index("ix_scenario_compute_plan_project", "project_entity_id"),
+        Index("ix_scenario_compute_plan_model", "model_entity_id"),
+        Index("ix_scenario_compute_plan_state", "plan_state"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    plan_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    name: Mapped[str] = mapped_column(String(300), nullable=False)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="private", index=True)
+    project_entity_id: Mapped[str] = mapped_column(ForeignKey("entities.id", ondelete="CASCADE"), nullable=False)
+    model_entity_id: Mapped[str] = mapped_column(ForeignKey("entities.id", ondelete="CASCADE"), nullable=False)
+    model_version_entity_id: Mapped[str] = mapped_column(ForeignKey("entities.id", ondelete="RESTRICT"), nullable=False)
+    scenario_landscape_visual_entity_id: Mapped[str | None] = mapped_column(ForeignKey("scenario_landscapes.visual_entity_id", ondelete="SET NULL"), nullable=True)
+    model_canvas_visual_entity_id: Mapped[str | None] = mapped_column(ForeignKey("model_canvases.visual_entity_id", ondelete="SET NULL"), nullable=True)
+    plan_state: Mapped[str] = mapped_column(String(50), nullable=False, default="draft", index=True)
+    execution_product: Mapped[str] = mapped_column(String(80), nullable=False, default="lab")
+    execution_contract_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    output_contract_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    concurrency_policy_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class ScenarioComputeCaseRecord(Base):
+    __tablename__ = "scenario_compute_cases"
+    __table_args__ = (
+        UniqueConstraint("plan_id", "case_key", name="uq_scenario_compute_case_plan_key"),
+        Index("ix_scenario_compute_case_plan", "plan_id"),
+        Index("ix_scenario_compute_case_scenario", "scenario_entity_id"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    plan_id: Mapped[str] = mapped_column(ForeignKey("scenario_compute_plans.id", ondelete="CASCADE"), nullable=False)
+    case_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    label: Mapped[str] = mapped_column(String(300), nullable=False)
+    scenario_entity_id: Mapped[str] = mapped_column(ForeignKey("entities.id", ondelete="RESTRICT"), nullable=False)
+    comparison_role: Mapped[str] = mapped_column(String(50), nullable=False, default="alternative")
+    parameter_overrides_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    expected_outputs_json: Mapped[list] = mapped_column(JSON, default=list)
+    case_hash: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
+    enabled: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True, index=True)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ScenarioComputeRequestRecord(Base):
+    __tablename__ = "scenario_compute_requests"
+    __table_args__ = (
+        UniqueConstraint("plan_id", "idempotency_key", name="uq_scenario_compute_request_idempotency"),
+        Index("ix_scenario_compute_request_plan", "plan_id"),
+        Index("ix_scenario_compute_request_case", "case_id"),
+        Index("ix_scenario_compute_request_state", "request_state"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    plan_id: Mapped[str] = mapped_column(ForeignKey("scenario_compute_plans.id", ondelete="CASCADE"), nullable=False)
+    case_id: Mapped[str] = mapped_column(ForeignKey("scenario_compute_cases.id", ondelete="CASCADE"), nullable=False)
+    idempotency_key: Mapped[str] = mapped_column(String(255), nullable=False)
+    request_state: Mapped[str] = mapped_column(String(50), nullable=False, default="requested", index=True)
+    requested_product: Mapped[str] = mapped_column(String(80), nullable=False, default="lab")
+    input_manifest_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    request_hash: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
+    external_request_id: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    model_run_entity_id: Mapped[str | None] = mapped_column(ForeignKey("entities.id", ondelete="SET NULL"), nullable=True)
+    submitted_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class ScenarioComputeAttemptRecord(Base):
+    __tablename__ = "scenario_compute_attempts"
+    __table_args__ = (
+        UniqueConstraint("request_id", "attempt_number", name="uq_scenario_compute_attempt_number"),
+        Index("ix_scenario_compute_attempt_request", "request_id"),
+        Index("ix_scenario_compute_attempt_state", "attempt_state"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    request_id: Mapped[str] = mapped_column(ForeignKey("scenario_compute_requests.id", ondelete="CASCADE"), nullable=False)
+    attempt_number: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
+    attempt_state: Mapped[str] = mapped_column(String(50), nullable=False, default="accepted", index=True)
+    executor_product: Mapped[str] = mapped_column(String(80), nullable=False, default="lab")
+    external_execution_id: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    runtime_metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    error_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    started_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class ScenarioComputeResultBindingRecord(Base):
+    __tablename__ = "scenario_compute_result_bindings"
+    __table_args__ = (
+        UniqueConstraint("request_id", "output_key", name="uq_scenario_compute_result_output"),
+        Index("ix_scenario_compute_result_request", "request_id"),
+        Index("ix_scenario_compute_result_entity", "result_entity_id"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    request_id: Mapped[str] = mapped_column(ForeignKey("scenario_compute_requests.id", ondelete="CASCADE"), nullable=False)
+    result_entity_id: Mapped[str] = mapped_column(ForeignKey("entities.id", ondelete="RESTRICT"), nullable=False)
+    output_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    binding_role: Mapped[str] = mapped_column(String(50), nullable=False, default="primary")
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+

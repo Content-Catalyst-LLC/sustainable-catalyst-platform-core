@@ -1,3 +1,10 @@
+## 2.35.0 — 2026-09-13
+
+- Added governed Scenario Compute Engine orchestration and migration `0038`.
+- Added reproducible compute plans, scenario cases, parameter-bound validation, deterministic manifests, idempotent requests, external attempt tracking, and run/result bindings.
+- Added public SDK helpers and WordPress status integration.
+- Preserved the Core/Lab/Workbench execution boundary: Core performs no numerical or arbitrary-code execution.
+
 # Changelog
 
 ## 2.34.0 — 2026-09-13

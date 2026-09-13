@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "title": "Scenario Compute Request",
+  "required": [
+    "plan_id",
+    "case_id",
+    "request_hash"
+  ],
+  "properties": {
+    "plan_id": {
+      "type": "string"
+    },
+    "case_id": {
+      "type": "string"
+    },
+    "request_state": {
+      "type": "string"
+    },
+    "input_manifest": {
+      "type": "object"
+    },
+    "request_hash": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": true
+}

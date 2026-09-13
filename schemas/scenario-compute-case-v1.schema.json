@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "title": "Scenario Compute Case",
+  "required": [
+    "case_key",
+    "scenario_entity_id"
+  ],
+  "properties": {
+    "case_key": {
+      "type": "string"
+    },
+    "scenario_entity_id": {
+      "type": "string"
+    },
+    "comparison_role": {
+      "type": "string"
+    },
+    "parameter_overrides": {
+      "type": "object"
+    },
+    "expected_outputs": {
+      "type": "array"
+    }
+  },
+  "additionalProperties": true
+}

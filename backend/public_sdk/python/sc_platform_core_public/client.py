@@ -543,3 +543,22 @@ PublicApiClient.model_canvases_readiness = _model_canvases_readiness
 PublicApiClient.model_canvases = _model_canvases
 PublicApiClient.model_canvas = _model_canvas
 PublicApiClient.model_canvas_bundle = _model_canvas_bundle
+
+
+# v2.35.0 Scenario Compute Engine public metadata helpers
+def _scenario_compute_readiness(self):
+    return self.get("/scenario-compute/readiness")
+
+def _scenario_compute_plans(self, **params):
+    return self.get("/scenario-compute/plans", params=params)
+
+def _scenario_compute_plan(self, plan_id: str):
+    return self.get(f"/scenario-compute/plans/{plan_id}")
+
+def _scenario_compute_plan_bundle(self, plan_id: str):
+    return self.get(f"/scenario-compute/plans/{plan_id}/bundle")
+
+PublicApiClient.scenario_compute_readiness = _scenario_compute_readiness
+PublicApiClient.scenario_compute_plans = _scenario_compute_plans
+PublicApiClient.scenario_compute_plan = _scenario_compute_plan
+PublicApiClient.scenario_compute_plan_bundle = _scenario_compute_plan_bundle

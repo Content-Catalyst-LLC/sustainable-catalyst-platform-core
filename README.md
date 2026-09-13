@@ -1,23 +1,23 @@
-# Sustainable Catalyst Platform Core v2.34.0
+# Sustainable Catalyst Platform Core v2.35.0
 
-Core v2.34.0 adds **Interactive Model Canvas** on top of the v2.28 Research Object & Model Foundation, v2.29 Visual Reasoning Object Model, and v2.30 Visualization Specification & Renderer Registry. Core now governs interactive model structure and handoff intent without becoming a numerical execution engine.
+Core v2.35.0 adds the **Scenario Compute Engine** as a governed orchestration plane over the v2.28 Research Object & Model Foundation, v2.33 Scenario Landscapes, and v2.34 Interactive Model Canvas. Core prepares deterministic scenario execution requests and records external execution lineage without becoming a numerical runtime.
 
-Key v2.34.0 additions:
-- additive migration `0037`;
-- model canvases bound directly to existing research models and optional immutable model versions;
-- governed model/component/input/parameter/variable/state/scenario/run/result/output nodes;
-- directed dependency/flow/causal/derived/parameterization/production edges;
-- parameter and scenario controls with explicit external-execution handoff contracts;
-- immutable interaction-state snapshots with deterministic SHA-256 hashes;
-- saved model-canvas views;
-- structural validation and deterministic compilation to v2.30 diagram/composite/network visualization specifications.
+Key v2.35.0 additions:
+- additive migration `0038`;
+- reproducible scenario compute plans bound to projects, models, and immutable model versions;
+- scenario cases with validated parameter overrides and comparison roles;
+- deterministic SHA-256 case and request manifests;
+- idempotent execution-request preparation;
+- explicit Lab, Workbench, or external execution contracts and attempt ledgers;
+- canonical research `model-run` and `result` bindings;
+- public-safe compute-plan metadata, SDK helpers, and WordPress readiness status.
 
 Explicit boundaries:
-- Core does not execute numerical models;
-- Core does not perform numerical computation;
-- Core does not execute UI controls;
-- Core does not calculate graphical layout;
-- Core does not automatically promote model state or output to evidence or truth.
+- Core orchestrates scenario compute but does not numerically execute models;
+- Core does not dispatch runner network calls itself;
+- Core does not execute arbitrary code;
+- Core does not optimize or rank scenarios automatically;
+- Core does not automatically promote results to evidence or truth.
 
 Current release line:
 
@@ -28,9 +28,10 @@ v2.31.0 System Maps
 v2.32.0 Flow Maps
 v2.33.0 Scenario Landscapes
 v2.34.0 Interactive Model Canvas
+v2.35.0 Scenario Compute Engine
 ```
 
-Next planned: **v2.35.0 — Scenario Compute Engine**.
+Next planned: **v2.36.0 — Uncertainty, Sensitivity & Ensemble Reasoning**.
 
 ---
 
