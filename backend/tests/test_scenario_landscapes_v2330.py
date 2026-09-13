@@ -13,8 +13,8 @@ def _public_key(client,h):
     issued=client.post(f"/v1/developer/applications/{app.json()['id']}/credentials",headers=h,json={'label':'Scenario landscapes','scopes':['data:read'],'created_by':'admin'});assert issued.status_code in (200,201),issued.text;return issued.json()['api_key']
 
 def test_v233_health_migration_and_readiness(client):
-    assert any(v=='0036' for v,_ in MIGRATIONS);health=client.get('/health').json();assert health['version']=='2.33.0' and health['scenario_landscapes'] is True
-    ready=client.get('/v1/scenario-landscapes/readiness').json();assert ready['release']=='2.33.0' and ready['migration_0036_applied'] is True and ready['visual_kind']=='scenario-landscape';assert ready['research_scenarios_reused'] is True;assert ready['scenario_execution_by_core'] is False and ready['ranking_by_core'] is False and ready['automatic_truth_promotion'] is False
+    assert any(v=='0036' for v,_ in MIGRATIONS);health=client.get('/health').json();assert health['version']=='2.34.0' and health['scenario_landscapes'] is True
+    ready=client.get('/v1/scenario-landscapes/readiness').json();assert ready['release']=='2.34.0' and ready['migration_0036_applied'] is True and ready['visual_kind']=='scenario-landscape';assert ready['research_scenarios_reused'] is True;assert ready['scenario_execution_by_core'] is False and ready['ranking_by_core'] is False and ready['automatic_truth_promotion'] is False
 
 def test_membership_dimensions_values_baseline_summary(client,write_headers):
     p=_project(client,write_headers);pid=p['id'];base=_scenario(client,write_headers,pid,'Baseline');alt=_scenario(client,write_headers,pid,'High renewables',base['id']);land=_landscape(client,write_headers,pid,base['id']);lid=land['visual_entity_id']

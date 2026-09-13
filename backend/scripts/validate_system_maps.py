@@ -16,7 +16,7 @@ try:
         assert ready["renderer_neutral"] is True
         assert ready["layout_engine_in_core"] is False
         assert ready["causal_inference_by_core"] is False
-    print({"version":"2.33.0","migration_0034_applied":True,"system_maps":True,"renderer_neutral":True,"layout_engine_in_core":False,"causal_inference_by_core":False})
-    print("PASS - Core 2.33.0 System Maps validation")
+    print({"version":"2.34.0","migration_0034_applied":True,"system_maps":True,"renderer_neutral":True,"layout_engine_in_core":False,"causal_inference_by_core":False})
+    print("PASS - Core 2.34.0 System Maps validation")
 finally:
     Path(path).unlink(missing_ok=True)

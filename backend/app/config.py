@@ -20,7 +20,7 @@ def _int(name: str, default: int) -> int:
 @dataclass(frozen=True)
 class Settings:
     app_name: str = "Sustainable Catalyst Platform Core"
-    version: str = "2.33.0"
+    version: str = "2.34.0"
     environment: str = "development"
     database_url: str = "sqlite:///./platform_core.db"
     write_api_key: str = ""
@@ -53,7 +53,7 @@ class Settings:
     live_data_enabled: bool = True
     live_data_ingest_enabled: bool = True
     live_data_strict_free_sources: bool = True
-    live_data_user_agent: str = "SustainableCatalystPlatformCore/2.33.0 (+https://sustainablecatalyst.com/contact/)"
+    live_data_user_agent: str = "SustainableCatalystPlatformCore/2.34.0 (+https://sustainablecatalyst.com/contact/)"
     live_data_timeout_seconds: int = 20
     live_data_max_response_bytes: int = 12582912
     live_data_raw_payload_max_bytes: int = 1048576
@@ -188,6 +188,8 @@ class Settings:
     flow_maps_public_metadata_enabled: bool = True
     scenario_landscapes_enabled: bool = True
     scenario_landscapes_public_metadata_enabled: bool = True
+    interactive_model_canvas_enabled: bool = True
+    interactive_model_canvas_public_metadata_enabled: bool = True
 
     @classmethod
     def from_env(cls) -> "Settings":
@@ -265,7 +267,7 @@ class Settings:
             live_data_strict_free_sources=_bool("SC_CORE_LIVE_DATA_STRICT_FREE_SOURCES", True),
             live_data_user_agent=os.getenv(
                 "SC_CORE_LIVE_DATA_USER_AGENT",
-                "SustainableCatalystPlatformCore/2.33.0 (+https://sustainablecatalyst.com/contact/)",
+                "SustainableCatalystPlatformCore/2.34.0 (+https://sustainablecatalyst.com/contact/)",
             ).strip(),
             live_data_timeout_seconds=max(
                 1, min(_int("SC_CORE_LIVE_DATA_TIMEOUT_SECONDS", 20), 120)
@@ -412,4 +414,6 @@ class Settings:
             flow_maps_public_metadata_enabled=_bool("SC_CORE_FLOW_MAPS_PUBLIC_METADATA_ENABLED", True),
             scenario_landscapes_enabled=_bool("SC_CORE_SCENARIO_LANDSCAPES_ENABLED", True),
             scenario_landscapes_public_metadata_enabled=_bool("SC_CORE_SCENARIO_LANDSCAPES_PUBLIC_METADATA_ENABLED", True),
+            interactive_model_canvas_enabled=_bool("SC_CORE_INTERACTIVE_MODEL_CANVAS_ENABLED", True),
+            interactive_model_canvas_public_metadata_enabled=_bool("SC_CORE_INTERACTIVE_MODEL_CANVAS_PUBLIC_METADATA_ENABLED", True),
         )

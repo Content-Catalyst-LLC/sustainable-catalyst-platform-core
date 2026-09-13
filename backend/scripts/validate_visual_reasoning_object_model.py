@@ -27,13 +27,13 @@ with tempfile.TemporaryDirectory() as td:
             object_type="research-project",
             name="Visual release validation project",
             slug="visual-release-validation-project",
-            description="v2.33.0 visual reasoning release validator",
+            description="v2.34.0 visual reasoning release validator",
             entity_id=None,
             visibility="public",
             entity_status="active",
             attributes={"research_question": "Can semantic visual reasoning preserve governed lineage?"},
-            metadata={"validator": "v2.33.0"},
-            release="2.33.0",
+            metadata={"validator": "v2.34.0"},
+            release="2.34.0",
         )
         model = research_objects.create_object(
             db,
@@ -46,7 +46,7 @@ with tempfile.TemporaryDirectory() as td:
             entity_status="active",
             attributes={"project_entity_id": project["id"], "model_kind": "conceptual", "execution_target": "not-executable"},
             metadata={},
-            release="2.33.0",
+            release="2.34.0",
         )
         visual = visual_reasoning.create_object(
             db,
@@ -65,8 +65,8 @@ with tempfile.TemporaryDirectory() as td:
             lens={"focus": "structure"},
             filters={},
             assumptions=["semantic model before renderer"],
-            metadata={"validator": "v2.33.0"},
-            release="2.33.0",
+            metadata={"validator": "v2.34.0"},
+            release="2.34.0",
         )
         a = visual_reasoning.add_element(db, visual["id"], {
             "element_key": "project", "element_kind": "node", "semantic_role": "context",
@@ -88,7 +88,7 @@ with tempfile.TemporaryDirectory() as td:
             "text": "Renderer-neutral semantic object; no layout is executed by Core.",
         })
         snapshot = visual_reasoning.create_snapshot(
-            db, visual["id"], snapshot_key="release-v1", created_by="validator", provenance={"release": "2.33.0"}
+            db, visual["id"], snapshot_key="release-v1", created_by="validator", provenance={"release": "2.34.0"}
         )
         bundle = visual_reasoning.bundle(db, visual["id"])
         assert len(bundle["elements"]) == 2
@@ -110,7 +110,7 @@ with tempfile.TemporaryDirectory() as td:
     assert status["visual_reasoning_snapshots"] == 1
 
     print({
-        "version": "2.33.0",
+        "version": "2.34.0",
         "migration_0032_applied": True,
         "graph_native": True,
         "renderer_neutral": True,
@@ -118,4 +118,4 @@ with tempfile.TemporaryDirectory() as td:
         "layout_engine_in_core": False,
         "automatic_truth_promotion": False,
     })
-    print("PASS - Core 2.33.0 Visual Reasoning Object Model validation")
+    print("PASS - Core 2.34.0 Visual Reasoning Object Model validation")

@@ -1,4 +1,4 @@
-# Sustainable Catalyst Public API JavaScript Client v2.33.0
+# Sustainable Catalyst Public API JavaScript Client v2.34.0
 
 ```javascript
 import { PublicApiClient } from "./index.mjs";
@@ -143,3 +143,7 @@ Adds public Flow Maps readiness, listing, detail, bundle, and unit-safe balance-
 ## v2.33.0 — Scenario Landscapes
 
 Adds `scenarioLandscapesReadiness`, `scenarioLandscapes`, `scenarioLandscape`, `scenarioLandscapeBundle`, and `scenarioLandscapeComparison`. Core persists comparison semantics; compute, ranking, and optimization remain external.
+
+
+## v2.34.0 — Interactive Model Canvas
+Adds public readiness/list/detail/bundle helpers for governed interactive model canvases. Model execution remains external to Core.

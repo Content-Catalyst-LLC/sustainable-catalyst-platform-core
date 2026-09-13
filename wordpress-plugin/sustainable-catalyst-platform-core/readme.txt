@@ -4,7 +4,7 @@ Tags: knowledge graph, entity registry, provenance, live data, sustainable catal
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.0
-Stable tag: 2.33.0
+Stable tag: 2.34.0
 License: MIT
 
 WordPress status, live-data gateway, and entity lookup client for Sustainable Catalyst Platform Core.
@@ -185,3 +185,7 @@ Streaming, Alerts, and Source Reliability.
 * Binds existing research scenarios into baseline/alternative/reference/stress/sensitivity comparison roles.
 * Adds explicit dimensions, externally supplied values, uncertainty bounds, provenance, saved views, direct baseline-relative numeric summaries, and visualization-specification compilation.
 * Core does not execute scenarios, rank alternatives, optimize decisions, convert units, or promote scenario outputs to truth.
+
+
+== 2.34.0 ==
+Adds Interactive Model Canvas status for governed model-bound nodes, controls, immutable interaction states, and external execution handoffs.

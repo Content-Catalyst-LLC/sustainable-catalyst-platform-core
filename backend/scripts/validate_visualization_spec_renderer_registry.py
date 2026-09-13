@@ -25,21 +25,21 @@ with tempfile.TemporaryDirectory() as td:
             entity_id=None, visibility='public', entity_status='active', visual_kind='system-map',
             reasoning_purpose='explain', semantic_state='draft', coordinate_space='abstract',
             project_entity_id=None, primary_subject_entity_id=None, lens={}, filters={}, assumptions=[],
-            metadata={'validator':'v2.33.0'}, release='2.33.0',
+            metadata={'validator':'v2.34.0'}, release='2.34.0',
         )
         spec = visualization_registry.create_specification(db, {
             'visual_entity_id': visual['id'], 'spec_key':'main', 'revision':1, 'spec_version':'1.0',
             'spec_kind':'diagram', 'title':'Validation specification', 'renderer_policy':'compatible',
             'encoding': {'nodes': {'label':'label'}}, 'interaction': {}, 'accessibility': {},
-            'layout_constraints': {}, 'export': {}, 'metadata': {'validator':'v2.33.0'}, 'created_by':'validator',
+            'layout_constraints': {}, 'export': {}, 'metadata': {'validator':'v2.34.0'}, 'created_by':'validator',
         })
         assert len(spec['state_hash']) == 64
         resolved = visualization_registry.resolve_renderer(db, spec['id'], created_by='validator')
         assert resolved['resolved_renderer_key'] == 'contract.d3'
         assert resolved['execution_performed'] is False
         print({
-            'version':'2.33.0', 'migration_0033_applied':True, 'renderer_registry':True,
+            'version':'2.34.0', 'migration_0033_applied':True, 'renderer_registry':True,
             'renderer_contracts': ready['counts']['renderers'], 'resolved_renderer':resolved['resolved_renderer_key'],
             'renderer_execution_by_core':False, 'layout_execution_by_core':False,
         })
-        print('PASS - Core 2.33.0 Visualization Specification & Renderer Registry validation')
+        print('PASS - Core 2.34.0 Visualization Specification & Renderer Registry validation')

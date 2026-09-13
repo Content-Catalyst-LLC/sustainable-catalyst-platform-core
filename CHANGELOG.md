@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.34.0 — 2026-09-13
+
+- Added governed Interactive Model Canvas and migration `0037`.
+- Reused v2.28 research models, model versions, variables, parameters, scenarios, runs, and results as canvas bindings.
+- Added model-bound nodes, dependency edges, parameter/scenario controls, immutable interaction states, saved views, and external execution handoff contracts.
+- Added renderer-neutral diagram/composite/network specification compilation.
+- Explicitly kept model execution, numerical computation, control execution, layout, and truth promotion outside Core.
+
 ## 2.33.0 — 2026-09-13
 
 - Added governed Scenario Landscapes and migration `0036`.

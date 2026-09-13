@@ -431,4 +431,9 @@ export class PublicApiClient {
   scenarioLandscapeBundle(entityId) { return this.request(`/scenario-landscapes/${encodeURIComponent(entityId)}/bundle`); }
   scenarioLandscapeComparison(entityId) { return this.request(`/scenario-landscapes/${encodeURIComponent(entityId)}/comparison`); }
 
+  modelCanvasesReadiness() { return this.request("/model-canvases/readiness"); }
+  modelCanvases(params = {}) { const clean = Object.fromEntries(Object.entries(params).filter(([, value]) => value !== null && value !== undefined)); const query = new URLSearchParams(clean); return this.request(`/model-canvases?${query}`); }
+  modelCanvas(entityId) { return this.request(`/model-canvases/${encodeURIComponent(entityId)}`); }
+  modelCanvasBundle(entityId) { return this.request(`/model-canvases/${encodeURIComponent(entityId)}/bundle`); }
+
 }

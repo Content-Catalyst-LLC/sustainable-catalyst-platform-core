@@ -523,3 +523,23 @@ PublicApiClient.scenario_landscapes = _scenario_landscapes
 PublicApiClient.scenario_landscape = _scenario_landscape
 PublicApiClient.scenario_landscape_bundle = _scenario_landscape_bundle
 PublicApiClient.scenario_landscape_comparison = _scenario_landscape_comparison
+
+
+# v2.34.0 Interactive Model Canvas public metadata methods.
+def _model_canvases_readiness(self):
+    return self.request("GET", "/model-canvases/readiness")
+
+def _model_canvases(self, **params):
+    clean={k:v for k,v in params.items() if v is not None}
+    return self.request("GET", "/model-canvases", params=clean)
+
+def _model_canvas(self, entity_id: str):
+    return self.request("GET", f"/model-canvases/{entity_id}")
+
+def _model_canvas_bundle(self, entity_id: str):
+    return self.request("GET", f"/model-canvases/{entity_id}/bundle")
+
+PublicApiClient.model_canvases_readiness = _model_canvases_readiness
+PublicApiClient.model_canvases = _model_canvases
+PublicApiClient.model_canvas = _model_canvas
+PublicApiClient.model_canvas_bundle = _model_canvas_bundle

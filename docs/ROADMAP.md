@@ -197,4 +197,7 @@ Completed: typed flow channels, relation-bound directed flows, quantitative/unce
 ## v2.33.0 — Scenario Landscapes
 Completed: governed scenario memberships, baseline/reference roles, explicit comparison dimensions, uncertainty-aware externally supplied values, provenance, saved views, direct unit-matched baseline summaries, validation, and renderer-neutral specification compilation. Scenario execution, ranking, optimization, and unit conversion remain external.
 
-Next planned: **v2.34.0 — Interactive Model Canvas**.
+## v2.34.0 — Interactive Model Canvas
+Completed: model-bound canvas nodes, dependency edges, governed parameter/scenario controls, immutable interaction states, saved views, external-execution handoff contracts, structural validation, and renderer-neutral visualization-specification compilation. Model execution and layout remain external.
+
+Next planned: **v2.35.0 — Scenario Compute Engine**.

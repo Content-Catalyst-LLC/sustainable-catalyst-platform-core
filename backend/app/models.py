@@ -3573,3 +3573,127 @@ class ScenarioLandscapeViewRecord(Base):
     specification_id: Mapped[str | None] = mapped_column(ForeignKey("visualization_specifications.id", ondelete="SET NULL"), nullable=True)
     metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+# v2.34.0 — Interactive Model Canvas
+
+class ModelCanvasRecord(Base):
+    __tablename__ = "model_canvases"
+    visual_entity_id: Mapped[str] = mapped_column(ForeignKey("visual_reasoning_objects.entity_id", ondelete="CASCADE"), primary_key=True)
+    project_entity_id: Mapped[str] = mapped_column(ForeignKey("entities.id", ondelete="CASCADE"), nullable=False, index=True)
+    model_entity_id: Mapped[str] = mapped_column(ForeignKey("entities.id", ondelete="CASCADE"), nullable=False, index=True)
+    model_version_entity_id: Mapped[str | None] = mapped_column(ForeignKey("entities.id", ondelete="SET NULL"), nullable=True, index=True)
+    canvas_state: Mapped[str] = mapped_column(String(50), nullable=False, default="draft", index=True)
+    interaction_mode: Mapped[str] = mapped_column(String(60), nullable=False, default="inspect-configure")
+    execution_target: Mapped[str] = mapped_column(String(80), nullable=False, default="external")
+    assumptions_json: Mapped[list] = mapped_column(JSON, default=list)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class ModelCanvasNodeRecord(Base):
+    __tablename__ = "model_canvas_nodes"
+    __table_args__ = (
+        UniqueConstraint("visual_entity_id", "node_key", name="uq_model_canvas_node_key"),
+        Index("ix_model_canvas_node_visual", "visual_entity_id"),
+        Index("ix_model_canvas_node_kind", "node_kind"),
+        Index("ix_model_canvas_node_bound", "bound_entity_id"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    visual_entity_id: Mapped[str] = mapped_column(ForeignKey("model_canvases.visual_entity_id", ondelete="CASCADE"), nullable=False)
+    node_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    node_kind: Mapped[str] = mapped_column(String(60), nullable=False, default="component")
+    semantic_role: Mapped[str] = mapped_column(String(60), nullable=False, default="context")
+    bound_entity_id: Mapped[str | None] = mapped_column(ForeignKey("entities.id", ondelete="SET NULL"), nullable=True)
+    label: Mapped[str] = mapped_column(String(300), nullable=False)
+    unit: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    position_hint_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    interaction_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ModelCanvasEdgeRecord(Base):
+    __tablename__ = "model_canvas_edges"
+    __table_args__ = (
+        Index("ix_model_canvas_edge_visual", "visual_entity_id"),
+        Index("ix_model_canvas_edge_source", "source_node_id"),
+        Index("ix_model_canvas_edge_target", "target_node_id"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    visual_entity_id: Mapped[str] = mapped_column(ForeignKey("model_canvases.visual_entity_id", ondelete="CASCADE"), nullable=False)
+    source_node_id: Mapped[str] = mapped_column(ForeignKey("model_canvas_nodes.id", ondelete="CASCADE"), nullable=False)
+    target_node_id: Mapped[str] = mapped_column(ForeignKey("model_canvas_nodes.id", ondelete="CASCADE"), nullable=False)
+    edge_kind: Mapped[str] = mapped_column(String(60), nullable=False, default="dependency")
+    directed: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    label: Mapped[str | None] = mapped_column(String(300), nullable=True)
+    bound_relation_id: Mapped[str | None] = mapped_column(ForeignKey("visual_reasoning_relations.id", ondelete="SET NULL"), nullable=True)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ModelCanvasControlRecord(Base):
+    __tablename__ = "model_canvas_controls"
+    __table_args__ = (
+        UniqueConstraint("visual_entity_id", "control_key", name="uq_model_canvas_control_key"),
+        Index("ix_model_canvas_control_visual", "visual_entity_id"),
+        Index("ix_model_canvas_control_bound", "bound_entity_id"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    visual_entity_id: Mapped[str] = mapped_column(ForeignKey("model_canvases.visual_entity_id", ondelete="CASCADE"), nullable=False)
+    control_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    control_kind: Mapped[str] = mapped_column(String(60), nullable=False, default="input")
+    node_id: Mapped[str | None] = mapped_column(ForeignKey("model_canvas_nodes.id", ondelete="SET NULL"), nullable=True)
+    bound_entity_id: Mapped[str | None] = mapped_column(ForeignKey("entities.id", ondelete="SET NULL"), nullable=True)
+    label: Mapped[str] = mapped_column(String(300), nullable=False)
+    data_type: Mapped[str] = mapped_column(String(50), nullable=False, default="number")
+    unit: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    default_value_json: Mapped[object] = mapped_column(JSON, nullable=True)
+    bounds_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    allowed_values_json: Mapped[list] = mapped_column(JSON, default=list)
+    handoff_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ModelCanvasStateRecord(Base):
+    __tablename__ = "model_canvas_states"
+    __table_args__ = (
+        UniqueConstraint("visual_entity_id", "state_key", name="uq_model_canvas_state_key"),
+        Index("ix_model_canvas_state_visual", "visual_entity_id"),
+        Index("ix_model_canvas_state_scenario", "scenario_entity_id"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    visual_entity_id: Mapped[str] = mapped_column(ForeignKey("model_canvases.visual_entity_id", ondelete="CASCADE"), nullable=False)
+    state_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    name: Mapped[str] = mapped_column(String(300), nullable=False)
+    scenario_entity_id: Mapped[str | None] = mapped_column(ForeignKey("entities.id", ondelete="SET NULL"), nullable=True)
+    model_run_entity_id: Mapped[str | None] = mapped_column(ForeignKey("entities.id", ondelete="SET NULL"), nullable=True)
+    values_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    state_hash: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
+    immutable: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ModelCanvasViewRecord(Base):
+    __tablename__ = "model_canvas_views"
+    __table_args__ = (
+        UniqueConstraint("visual_entity_id", "view_key", name="uq_model_canvas_view_key"),
+        Index("ix_model_canvas_view_visual", "visual_entity_id"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    visual_entity_id: Mapped[str] = mapped_column(ForeignKey("model_canvases.visual_entity_id", ondelete="CASCADE"), nullable=False)
+    view_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    name: Mapped[str] = mapped_column(String(300), nullable=False)
+    node_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    edge_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    control_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    filters_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    layout_intent_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    specification_id: Mapped[str | None] = mapped_column(ForeignKey("visualization_specifications.id", ondelete="SET NULL"), nullable=True)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)

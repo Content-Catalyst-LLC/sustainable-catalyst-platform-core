@@ -1,4 +1,4 @@
-# Sustainable Catalyst Public API Python Client v2.33.0
+# Sustainable Catalyst Public API Python Client v2.34.0
 
 ```python
 from sc_platform_core_public import PublicApiClient
@@ -143,3 +143,7 @@ Adds public Flow Maps readiness, listing, detail, bundle, and unit-safe balance-
 ## v2.33.0 — Scenario Landscapes
 
 Adds `scenario_landscapes_readiness`, `scenario_landscapes`, `scenario_landscape`, `scenario_landscape_bundle`, and `scenario_landscape_comparison` public metadata helpers. Scenario execution, ranking, optimization, and unit conversion remain outside Core.
+
+
+## v2.34.0 — Interactive Model Canvas
+Adds public readiness/list/detail/bundle helpers for governed interactive model canvases. Model execution remains external to Core.

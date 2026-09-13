@@ -346,6 +346,12 @@ class RegistryStats(BaseModel):
     scenario_landscape_dimensions: int
     scenario_landscape_values: int
     scenario_landscape_views: int
+    model_canvases: int
+    model_canvas_nodes: int
+    model_canvas_edges: int
+    model_canvas_controls: int
+    model_canvas_states: int
+    model_canvas_views: int
     map_layers: int
     stac_collections: int
     stac_items: int
