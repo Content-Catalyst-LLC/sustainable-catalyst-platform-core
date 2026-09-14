@@ -6,7 +6,7 @@ from app.models import Entity
 
 
 def app_client(tmp_path):
-    app=create_app(Settings(database_url=f"sqlite:///{tmp_path/'v2410.db'}",version="2.42.0"))
+    app=create_app(Settings(database_url=f"sqlite:///{tmp_path/'v2410.db'}",version="2.43.0"))
     return app, TestClient(app)
 
 
@@ -28,8 +28,8 @@ def create_package(client, oid):
 
 def test_readiness_health_and_migration_0045(tmp_path):
     app,c=app_client(tmp_path); seed(app,c)
-    h=c.get('/health').json(); assert h['version']=='2.42.0' and h['reproducible_visual_knowledge_layer'] is True
-    r=c.get('/v1/reproducible-visual-knowledge/readiness').json(); assert r['release']=='2.42.0' and r['migration_0045_applied'] is True
+    h=c.get('/health').json(); assert h['version']=='2.43.0' and h['reproducible_visual_knowledge_layer'] is True
+    r=c.get('/v1/reproducible-visual-knowledge/readiness').json(); assert r['release']=='2.43.0' and r['migration_0045_applied'] is True
     assert r['specialist_execution_by_core'] is False and r['replay_execution_by_core'] is False and r['automatic_truth_promotion'] is False
     assert migration_status(app.state.database)['pending']==[]
 

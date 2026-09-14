@@ -15,6 +15,8 @@ from ..models import (
     ForensicInvestigationRecord, ForensicObjectRecord, ForensicEvidenceItemRecord,
     ForensicEvidenceSourceBindingRecord, ForensicProvenanceActivityRecord,
     ForensicObjectRelationRecord, ForensicSnapshotRecord,
+    ForensicCustodianRecord, ForensicCustodyEventRecord, ForensicEvidenceSealRecord,
+    ForensicIntegrityCheckRecord, ForensicCustodyContinuityAssessmentRecord, ForensicCustodySnapshotRecord,
 )
 
 OBJECT_KINDS = {
@@ -35,7 +37,7 @@ RELATION_KINDS = {
     "located-with", "temporally-related", "associated-with", "part-of", "version-of",
     "corresponds-to", "duplicates", "related-to",
 }
-FORBIDDEN_ACTIVITY_TERMS = {"custody", "transfer", "sealed", "seal", "unseal", "possession", "released-to", "received-by"}
+FORBIDDEN_ACTIVITY_TERMS = set()
 FORBIDDEN_RELATION_KINDS = {"causes", "authored-by", "committed-by", "guilty-of", "responsible-for", "proves"}
 
 
@@ -53,7 +55,7 @@ def _dt(value):
     if value is None or value == "":
         return None
     if isinstance(value, datetime):
-        return value
+        return value if value.tzinfo else value.replace(tzinfo=timezone.utc)
     text = str(value).strip().replace("Z", "+00:00")
     result = datetime.fromisoformat(text)
     return result if result.tzinfo else result.replace(tzinfo=timezone.utc)
@@ -96,8 +98,18 @@ def _boundaries():
         "evidence_ledger_binding_by_core": True,
         "source_snapshot_binding_by_core": True,
         "immutable_forensic_snapshots_by_core": True,
-        "chain_of_custody_by_core": False,
+        "chain_of_custody_by_core": True,
+        "chain_of_custody_recording_by_core": True,
+        "tamper_evident_custody_event_chain_by_core": True,
+        "evidence_integrity_verification_by_core": True,
+        "seal_state_recording_by_core": True,
+        "custody_continuity_analysis_by_core": True,
+        "external_custody_attestation_binding_by_core": True,
         "custody_transfer_attestation_by_core": False,
+        "physical_transfer_verification_by_core": False,
+        "identity_verification_by_core": False,
+        "legal_admissibility_determination_by_core": False,
+        "ownership_determination_by_core": False,
         "authenticity_determination_by_core": False,
         "identity_attribution_by_core": False,
         "causal_conclusion_by_core": False,
@@ -111,6 +123,7 @@ def readiness(db: Session) -> dict[str, Any]:
         return int(db.scalar(select(func.count()).select_from(model)) or 0)
     return {
         "migration_0046_applied": True,
+        "migration_0047_applied": True,
         "forensic_contract": "sc.open-forensics.investigation.v1",
         "counts": {
             "investigations": count(ForensicInvestigationRecord),
@@ -120,6 +133,12 @@ def readiness(db: Session) -> dict[str, Any]:
             "provenance_activities": count(ForensicProvenanceActivityRecord),
             "relations": count(ForensicObjectRelationRecord),
             "snapshots": count(ForensicSnapshotRecord),
+            "custodians": count(ForensicCustodianRecord),
+            "custody_events": count(ForensicCustodyEventRecord),
+            "evidence_seals": count(ForensicEvidenceSealRecord),
+            "integrity_checks": count(ForensicIntegrityCheckRecord),
+            "custody_continuity_assessments": count(ForensicCustodyContinuityAssessmentRecord),
+            "custody_snapshots": count(ForensicCustodySnapshotRecord),
         },
         **_boundaries(),
     }
@@ -287,9 +306,7 @@ def add_provenance_activity(db: Session, investigation_id: str, payload: dict[st
     _investigation(db, investigation_id)
     kind = str(payload.get("activity_kind") or "observed").strip().lower()
     if kind not in PROVENANCE_ACTIVITY_KINDS:
-        if any(term in kind for term in FORBIDDEN_ACTIVITY_TERMS):
-            raise ValueError("Custody, possession, sealing, and transfer events are reserved for the v2.43 chain-of-custody layer.")
-        raise ValueError("Unsupported activity_kind.")
+        raise ValueError("Unsupported provenance activity_kind; custody events must use the dedicated chain-of-custody API.")
     evidence_id = payload.get("evidence_item_id")
     if evidence_id:
         _evidence(db, investigation_id, evidence_id)
@@ -388,10 +405,163 @@ def portable_package(db: Session, investigation_id: str):
     canonical = json.dumps(state, sort_keys=True, separators=(",", ":"), default=str).encode("utf-8")
     return {
         "contract": "sc.open-forensics.portable-investigation.v1",
-        "release_boundary": "v2.42-object-model-and-evidence-provenance",
+        "release_boundary": "v2.43-evidence-integrity-and-chain-of-custody",
         "content_hash": hashlib.sha256(canonical).hexdigest(),
         "hash_algorithm": "sha256", "state": state,
-        "not_chain_of_custody": True,
+        "custody": custody_bundle(db, investigation_id),
+        "chain_of_custody_recorded": True,
+        "not_chain_of_custody": False,
         "not_authenticity_determination": True,
         "not_legal_conclusion": True,
     }
+
+
+CUSTODY_EVENT_KINDS = {"intake", "receipt", "transfer", "release", "storage-in", "storage-out", "inspection", "seal", "unseal", "integrity-check", "duplicate-created", "other"}
+
+
+def _custodian(db: Session, investigation_id: str, custodian_id: str | None):
+    if not custodian_id:
+        return None
+    row = db.get(ForensicCustodianRecord, custodian_id)
+    if row is None or row.investigation_id != investigation_id:
+        raise ValueError("custodian must belong to this investigation.")
+    return row
+
+
+def _custody_event_payload(*, investigation_id: str, evidence_item_id: str, sequence: int, event_kind: str,
+                           from_custodian_id: str | None, to_custodian_id: str | None,
+                           location_ref: str | None, occurred_at: datetime, previous_event_hash: str | None,
+                           external_attestation_ref: str | None, notes: str | None,
+                           provenance: dict[str, Any], metadata: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "investigation_id": investigation_id, "evidence_item_id": evidence_item_id, "sequence": sequence,
+        "event_kind": event_kind, "from_custodian_id": from_custodian_id, "to_custodian_id": to_custodian_id,
+        "location_ref": location_ref, "occurred_at": _dt(occurred_at).isoformat(), "previous_event_hash": previous_event_hash,
+        "external_attestation_ref": external_attestation_ref, "notes": notes,
+        "provenance": provenance, "metadata": metadata,
+    }
+
+
+def _event_hash(payload: dict[str, Any]) -> str:
+    raw = json.dumps(payload, sort_keys=True, separators=(",", ":"), default=str).encode("utf-8")
+    return hashlib.sha256(raw).hexdigest()
+
+
+def add_custodian(db: Session, investigation_id: str, payload: dict[str, Any]):
+    _investigation(db, investigation_id)
+    key=str(payload.get("custodian_key") or "").strip(); name=str(payload.get("display_name") or "").strip()
+    if not key or not name: raise ValueError("custodian_key and display_name are required.")
+    # Core may bind an external identity attestation but never upgrades identity state on its own.
+    attestation=payload.get("external_identity_attestation_ref")
+    state="externally-attested" if attestation else "unverified"
+    row=ForensicCustodianRecord(
+        investigation_id=investigation_id,custodian_key=key,display_name=name,actor_ref=payload.get("actor_ref"),
+        organization_ref=payload.get("organization_ref"),role=payload.get("role"),identity_verification_state=state,
+        external_identity_attestation_ref=attestation,provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {}))
+    db.add(row)
+    try: db.commit(); db.refresh(row)
+    except IntegrityError as exc: db.rollback(); raise HTTPException(status_code=409,detail="Custodian key already exists in this investigation.") from exc
+    return _ser(row)
+
+
+def record_custody_event(db: Session, investigation_id: str, evidence_id: str, payload: dict[str, Any]):
+    _investigation(db, investigation_id); _evidence(db, investigation_id, evidence_id)
+    kind=str(payload.get("event_kind") or "").strip().lower()
+    if kind not in CUSTODY_EVENT_KINDS: raise ValueError("Unsupported custody event_kind.")
+    from_id=payload.get("from_custodian_id"); to_id=payload.get("to_custodian_id")
+    _custodian(db, investigation_id, from_id); _custodian(db, investigation_id, to_id)
+    if kind == "transfer":
+        if not from_id or not to_id or from_id == to_id: raise ValueError("transfer requires distinct from_custodian_id and to_custodian_id.")
+    if kind in {"intake","receipt","storage-in"} and not to_id: raise ValueError(f"{kind} requires to_custodian_id.")
+    if kind in {"release","storage-out"} and not from_id: raise ValueError(f"{kind} requires from_custodian_id.")
+    last=db.scalar(select(ForensicCustodyEventRecord).where(ForensicCustodyEventRecord.evidence_item_id==evidence_id).order_by(ForensicCustodyEventRecord.sequence.desc()).limit(1))
+    sequence=(last.sequence+1) if last else 1; prev=last.event_hash if last else None
+    occurred=_dt(payload.get("occurred_at")) or datetime.now(timezone.utc)
+    provenance=dict(payload.get("provenance") or {}); metadata=dict(payload.get("metadata") or {})
+    event_payload=_custody_event_payload(investigation_id=investigation_id,evidence_item_id=evidence_id,sequence=sequence,event_kind=kind,from_custodian_id=from_id,to_custodian_id=to_id,location_ref=payload.get("location_ref"),occurred_at=occurred,previous_event_hash=prev,external_attestation_ref=payload.get("external_attestation_ref"),notes=payload.get("notes"),provenance=provenance,metadata=metadata)
+    row=ForensicCustodyEventRecord(investigation_id=investigation_id,evidence_item_id=evidence_id,sequence=sequence,event_kind=kind,from_custodian_id=from_id,to_custodian_id=to_id,location_ref=payload.get("location_ref"),occurred_at=occurred,previous_event_hash=prev,event_hash=_event_hash(event_payload),external_attestation_ref=payload.get("external_attestation_ref"),notes=payload.get("notes"),provenance_json=provenance,metadata_json=metadata)
+    db.add(row); db.commit(); db.refresh(row); return _ser(row)
+
+
+def custody_chain(db: Session, investigation_id: str, evidence_id: str):
+    _evidence(db, investigation_id, evidence_id)
+    events=db.scalars(select(ForensicCustodyEventRecord).where(ForensicCustodyEventRecord.evidence_item_id==evidence_id).order_by(ForensicCustodyEventRecord.sequence)).all()
+    findings=[]; prev_hash=None; expected_seq=1; current=None; hash_valid=True
+    for e in events:
+        if e.sequence != expected_seq: findings.append({"kind":"sequence-gap","expected":expected_seq,"observed":e.sequence})
+        if e.previous_event_hash != prev_hash: findings.append({"kind":"previous-hash-mismatch","sequence":e.sequence}); hash_valid=False
+        payload=_custody_event_payload(investigation_id=e.investigation_id,evidence_item_id=e.evidence_item_id,sequence=e.sequence,event_kind=e.event_kind,from_custodian_id=e.from_custodian_id,to_custodian_id=e.to_custodian_id,location_ref=e.location_ref,occurred_at=e.occurred_at,previous_event_hash=e.previous_event_hash,external_attestation_ref=e.external_attestation_ref,notes=e.notes,provenance=e.provenance_json or {},metadata=e.metadata_json or {})
+        if _event_hash(payload) != e.event_hash: findings.append({"kind":"event-hash-mismatch","sequence":e.sequence}); hash_valid=False
+        if e.event_kind == "transfer":
+            if current is not None and e.from_custodian_id != current: findings.append({"kind":"custodian-discontinuity","sequence":e.sequence,"expected_from":current,"observed_from":e.from_custodian_id})
+            current=e.to_custodian_id
+        elif e.event_kind in {"intake","receipt","storage-in"}:
+            if current is not None and e.to_custodian_id != current: findings.append({"kind":"overlapping-custody","sequence":e.sequence,"current":current,"received_by":e.to_custodian_id})
+            current=e.to_custodian_id
+        elif e.event_kind in {"release","storage-out"}:
+            if current is not None and e.from_custodian_id != current: findings.append({"kind":"custodian-discontinuity","sequence":e.sequence,"expected_from":current,"observed_from":e.from_custodian_id})
+            current=None
+        prev_hash=e.event_hash; expected_seq=e.sequence+1
+    gap_count=len([f for f in findings if f["kind"] in {"sequence-gap","previous-hash-mismatch","event-hash-mismatch","custodian-discontinuity","overlapping-custody"}])
+    return {"contract":"sc.open-forensics.custody-chain.v1","investigation_id":investigation_id,"evidence_item_id":evidence_id,"events":[_ser(e) for e in events],"hash_chain_valid":hash_valid,"gap_count":gap_count,"continuity_status":"continuous" if events and gap_count==0 else ("no-events" if not events else "review-required"),"current_custodian_id":current,"findings":findings,"boundaries":_boundaries()}
+
+
+def record_seal(db: Session, investigation_id: str, evidence_id: str, payload: dict[str, Any]):
+    evidence=_evidence(db, investigation_id, evidence_id); action=str(payload.get("action") or "seal").lower(); identifier=str(payload.get("seal_identifier") or "").strip()
+    if not identifier: raise ValueError("seal_identifier is required.")
+    if action == "seal":
+        custodian=payload.get("custodian_id"); _custodian(db,investigation_id,custodian)
+        content_hash=payload.get("content_hash_at_seal") or evidence.content_hash; algorithm=str(payload.get("hash_algorithm") or evidence.hash_algorithm or "sha256") if content_hash else None; _validate_hash(content_hash,algorithm)
+        row=ForensicEvidenceSealRecord(evidence_item_id=evidence_id,seal_identifier=identifier,status="sealed",sealed_by_custodian_id=custodian,sealed_at=_dt(payload.get("occurred_at")) or datetime.now(timezone.utc),content_hash_at_seal=content_hash,hash_algorithm=algorithm,external_attestation_ref=payload.get("external_attestation_ref"),reason=payload.get("reason"),provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {}))
+        db.add(row)
+        try: db.commit(); db.refresh(row)
+        except IntegrityError as exc: db.rollback(); raise HTTPException(status_code=409,detail="Seal identifier already exists for this evidence item.") from exc
+        return _ser(row)
+    if action == "unseal":
+        row=db.scalar(select(ForensicEvidenceSealRecord).where(ForensicEvidenceSealRecord.evidence_item_id==evidence_id,ForensicEvidenceSealRecord.seal_identifier==identifier))
+        if row is None: raise ValueError("seal_identifier was not previously recorded for this evidence item.")
+        if row.status != "sealed": raise ValueError("seal is not currently sealed.")
+        custodian=payload.get("custodian_id"); _custodian(db,investigation_id,custodian); row.status="unsealed"; row.unsealed_by_custodian_id=custodian; row.unsealed_at=_dt(payload.get("occurred_at")) or datetime.now(timezone.utc); row.reason=payload.get("reason") or row.reason; row.external_attestation_ref=payload.get("external_attestation_ref") or row.external_attestation_ref; db.add(row); db.commit(); db.refresh(row); return _ser(row)
+    raise ValueError("action must be seal or unseal.")
+
+
+def record_integrity_check(db: Session, investigation_id: str, evidence_id: str, payload: dict[str, Any]):
+    evidence=_evidence(db, investigation_id, evidence_id); key=str(payload.get("check_key") or "").strip()
+    if not key: raise ValueError("check_key is required.")
+    algo=str(payload.get("hash_algorithm") or evidence.hash_algorithm or "sha256"); expected=payload.get("expected_hash") or evidence.content_hash; observed=payload.get("observed_hash")
+    _validate_hash(expected,algo); _validate_hash(observed,algo)
+    status="indeterminate" if not expected or not observed else ("match" if expected.lower()==observed.lower() else "mismatch")
+    row=ForensicIntegrityCheckRecord(evidence_item_id=evidence_id,check_key=key,check_kind=str(payload.get("check_kind") or "content-hash"),hash_algorithm=algo,expected_hash=expected,observed_hash=observed,status=status,checker_ref=payload.get("checker_ref"),tool_ref=payload.get("tool_ref"),checked_at=_dt(payload.get("checked_at")) or datetime.now(timezone.utc),external_attestation_ref=payload.get("external_attestation_ref"),evidence_json=dict(payload.get("evidence") or {}),provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {}))
+    evidence.integrity_state="verified-hash-match" if status=="match" else ("hash-mismatch" if status=="mismatch" else evidence.integrity_state)
+    db.add(row); db.add(evidence)
+    try: db.commit(); db.refresh(row)
+    except IntegrityError as exc: db.rollback(); raise HTTPException(status_code=409,detail="Integrity check key already exists for this evidence item.") from exc
+    return _ser(row)
+
+
+def create_continuity_assessment(db: Session, investigation_id: str, evidence_id: str, payload: dict[str, Any]):
+    chain=custody_chain(db,investigation_id,evidence_id); key=str(payload.get("assessment_key") or "").strip()
+    if not key: raise ValueError("assessment_key is required.")
+    status="continuous" if chain["continuity_status"]=="continuous" and chain["hash_chain_valid"] else ("no-events" if chain["continuity_status"]=="no-events" else "review-required")
+    row=ForensicCustodyContinuityAssessmentRecord(evidence_item_id=evidence_id,assessment_key=key,status=status,event_count=len(chain["events"]),gap_count=chain["gap_count"],hash_chain_valid=chain["hash_chain_valid"],findings_json=chain["findings"],assessed_at=datetime.now(timezone.utc),provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {}))
+    db.add(row)
+    try: db.commit(); db.refresh(row)
+    except IntegrityError as exc: db.rollback(); raise HTTPException(status_code=409,detail="Continuity assessment key already exists for this evidence item.") from exc
+    return _ser(row)
+
+
+def custody_bundle(db: Session, investigation_id: str):
+    _investigation(db, investigation_id)
+    evidence=db.scalars(select(ForensicEvidenceItemRecord).where(ForensicEvidenceItemRecord.investigation_id==investigation_id).order_by(ForensicEvidenceItemRecord.created_at)).all(); eids=[e.id for e in evidence]
+    custodians=db.scalars(select(ForensicCustodianRecord).where(ForensicCustodianRecord.investigation_id==investigation_id).order_by(ForensicCustodianRecord.created_at)).all()
+    events=db.scalars(select(ForensicCustodyEventRecord).where(ForensicCustodyEventRecord.investigation_id==investigation_id).order_by(ForensicCustodyEventRecord.evidence_item_id,ForensicCustodyEventRecord.sequence)).all()
+    seals=db.scalars(select(ForensicEvidenceSealRecord).where(ForensicEvidenceSealRecord.evidence_item_id.in_(eids)).order_by(ForensicEvidenceSealRecord.created_at)).all() if eids else []
+    checks=db.scalars(select(ForensicIntegrityCheckRecord).where(ForensicIntegrityCheckRecord.evidence_item_id.in_(eids)).order_by(ForensicIntegrityCheckRecord.checked_at)).all() if eids else []
+    assessments=db.scalars(select(ForensicCustodyContinuityAssessmentRecord).where(ForensicCustodyContinuityAssessmentRecord.evidence_item_id.in_(eids)).order_by(ForensicCustodyContinuityAssessmentRecord.assessed_at)).all() if eids else []
+    return {"contract":"sc.open-forensics.custody-bundle.v1","investigation_id":investigation_id,"custodians":[_ser(x) for x in custodians],"custody_events":[_ser(x) for x in events],"evidence_seals":[_ser(x) for x in seals],"integrity_checks":[_ser(x) for x in checks],"continuity_assessments":[_ser(x) for x in assessments],"boundaries":_boundaries()}
+
+
+def create_custody_snapshot(db: Session, investigation_id: str, payload: dict[str, Any]):
+    state=custody_bundle(db,investigation_id); canonical=json.dumps(state,sort_keys=True,separators=(",",":"),default=str).encode("utf-8"); digest=hashlib.sha256(canonical).hexdigest()
+    last=db.scalar(select(ForensicCustodySnapshotRecord).where(ForensicCustodySnapshotRecord.investigation_id==investigation_id).order_by(ForensicCustodySnapshotRecord.revision.desc()).limit(1)); revision=(last.revision+1) if last else 1
+    row=ForensicCustodySnapshotRecord(investigation_id=investigation_id,revision=revision,content_hash=digest,previous_snapshot_hash=last.content_hash if last else None,state_json=state,provenance_json=dict(payload.get("provenance") or {}),created_by=str(payload.get("created_by") or "operator")); db.add(row); db.commit(); db.refresh(row); return _ser(row)

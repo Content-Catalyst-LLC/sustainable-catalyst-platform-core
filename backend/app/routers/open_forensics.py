@@ -89,6 +89,54 @@ def snapshot(request:Request, investigation_id:str, payload:Payload, db:Session=
     try: return svc.create_snapshot(db,investigation_id,payload.data)
     except Exception as exc: raise bad(exc)
 
+
+
+@router.post("/investigations/{investigation_id}/custodians", dependencies=[Depends(require_write)])
+def add_custodian(request:Request, investigation_id:str, payload:Payload, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.add_custodian(db,investigation_id,payload.data)
+    except Exception as exc: raise bad(exc)
+
+@router.post("/investigations/{investigation_id}/evidence/{evidence_id}/custody-events", dependencies=[Depends(require_write)])
+def custody_event(request:Request, investigation_id:str, evidence_id:str, payload:Payload, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.record_custody_event(db,investigation_id,evidence_id,payload.data)
+    except Exception as exc: raise bad(exc)
+
+@router.get("/investigations/{investigation_id}/evidence/{evidence_id}/custody-chain", dependencies=[Depends(require_read)])
+def custody_chain(request:Request, investigation_id:str, evidence_id:str, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.custody_chain(db,investigation_id,evidence_id)
+    except Exception as exc: raise bad(exc)
+
+@router.post("/investigations/{investigation_id}/evidence/{evidence_id}/seals", dependencies=[Depends(require_write)])
+def seal(request:Request, investigation_id:str, evidence_id:str, payload:Payload, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.record_seal(db,investigation_id,evidence_id,payload.data)
+    except Exception as exc: raise bad(exc)
+
+@router.post("/investigations/{investigation_id}/evidence/{evidence_id}/integrity-checks", dependencies=[Depends(require_write)])
+def integrity_check(request:Request, investigation_id:str, evidence_id:str, payload:Payload, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.record_integrity_check(db,investigation_id,evidence_id,payload.data)
+    except Exception as exc: raise bad(exc)
+
+@router.post("/investigations/{investigation_id}/evidence/{evidence_id}/continuity-assessments", dependencies=[Depends(require_write)])
+def continuity_assessment(request:Request, investigation_id:str, evidence_id:str, payload:Payload, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.create_continuity_assessment(db,investigation_id,evidence_id,payload.data)
+    except Exception as exc: raise bad(exc)
+
+@router.get("/investigations/{investigation_id}/custody-bundle", dependencies=[Depends(require_read)])
+def custody_bundle(request:Request, investigation_id:str, db:Session=Depends(get_session)):
+    enabled(request); return svc.custody_bundle(db,investigation_id)
+
+@router.post("/investigations/{investigation_id}/custody-snapshots", dependencies=[Depends(require_write)])
+def custody_snapshot(request:Request, investigation_id:str, payload:Payload, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.create_custody_snapshot(db,investigation_id,payload.data)
+    except Exception as exc: raise bad(exc)
+
 @public_router.get("/readiness", response_model=PublicEnvelope)
 def public_readiness(request:Request, db:Session=Depends(get_session), _ctx:PublicApiContext=Depends(require_public_scope("data:read"))):
     public_enabled(request); data=svc.readiness(db); data.update({"release":request.app.state.settings.version,"enabled":True}); return PublicEnvelope(data=data,meta={"api_version":"v1","request_id":request.state.request_id})

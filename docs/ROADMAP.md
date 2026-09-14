@@ -1,3 +1,9 @@
+## v2.43.0 — Evidence Integrity & Chain of Custody
+
+Open Forensics custody/integrity layer: tamper-evident custody event chains, custodians, seals, hash verification, continuity assessment, external attestations, and immutable custody snapshots.
+
+Next planned: **v2.44.0 — Claims, Contradictions & Competing Hypotheses**.
+
 # Platform Core Roadmap
 ## v2.42.0 — Forensic Object Model & Evidence Provenance
 Current release. Begins Open Forensics with the governed forensic investigation/object/evidence/provenance foundation.
@@ -279,7 +285,7 @@ Planned.
 ## v2.51.0 — Reproducible Investigation Packages
 Planned.
 
-Next planned: **v2.42.0 — Forensic Object Model & Evidence Provenance**.
+Next planned: **v2.44.0 — Claims, Contradictions & Competing Hypotheses**.
 
 - v2.38.0 Spatial & Temporal Visual Reasoning ✓
 - v2.39.0 Research Librarian Visual Explanation ✓

@@ -1,0 +1,4 @@
+cd ~/Downloads
+chmod +x deploy_and_validate_platform_core_v2_43_0_macos.sh
+SC_CORE_BUNDLE_ONLY=1 ./deploy_and_validate_platform_core_v2_43_0_macos.sh "$HOME/Downloads/sustainable-catalyst-platform-core-v2.43.0-release-bundle.zip"
+./deploy_and_validate_platform_core_v2_43_0_macos.sh "$HOME/Downloads/sustainable-catalyst-platform-core-v2.43.0-release-bundle.zip"

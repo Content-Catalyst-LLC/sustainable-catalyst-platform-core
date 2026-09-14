@@ -475,7 +475,10 @@ PublicApiClient.prototype.reproducibleVisualKnowledgePackages = function (params
 PublicApiClient.prototype.reproducibleVisualKnowledgeBundle = function (packageId) { return this.request(`/reproducible-visual-knowledge/${encodeURIComponent(packageId)}/bundle`); };
 
 
-// v2.42.0 Open Forensics — Forensic Object Model & Evidence Provenance.
+// v2.43.0 Open Forensics — Evidence Integrity & Chain of Custody.
 PublicApiClient.prototype.openForensicsReadiness = function () { return this.request("/open-forensics/readiness"); };
 PublicApiClient.prototype.openForensicsInvestigations = function (params = {}) { const query = new URLSearchParams(params); return this.request(`/open-forensics/investigations?${query}`); };
 PublicApiClient.prototype.openForensicsInvestigationBundle = function (investigationId) { return this.request(`/open-forensics/investigations/${encodeURIComponent(investigationId)}/bundle`); };
+
+PublicApiClient.prototype.openForensicsCustodyChain = function (investigationId, evidenceId) { return this.request(`/open-forensics/investigations/${encodeURIComponent(investigationId)}/evidence/${encodeURIComponent(evidenceId)}/custody-chain`); };
+PublicApiClient.prototype.openForensicsCustodyBundle = function (investigationId) { return this.request(`/open-forensics/investigations/${encodeURIComponent(investigationId)}/custody-bundle`); };

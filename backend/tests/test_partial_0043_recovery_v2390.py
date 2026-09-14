@@ -18,10 +18,10 @@ def test_partial_0043_table_state_recovers_by_recording_short_metadata(tmp_path)
             if version == "0043": break
             session.add(SchemaMigration(version=version, description=description))
         session.commit(); assert session.get(SchemaMigration, "0043") is None
-    assert run_migrations(db) == ["0043", "0044", "0045", "0046"]
+    assert run_migrations(db) == ["0043", "0044", "0045", "0046", "0047"]
     with db.session_factory() as session:
         row = session.get(SchemaMigration, "0043"); assert row and len(row.description) <= 300
-    status = migration_status(db); assert status["pending"] == [] and status["applied"][-1] == "0046"
+    status = migration_status(db); assert status["pending"] == [] and status["applied"][-1] == "0047"
     assert TABLES <= set(inspect(db.engine).get_table_names())
 
 
@@ -43,7 +43,7 @@ def test_pristine_pre_0043_schema_upgrades_additively(tmp_path):
                 break
             session.add(SchemaMigration(version=version, description=description))
         session.commit()
-    assert run_migrations(db) == ["0043", "0044", "0045", "0046"]
+    assert run_migrations(db) == ["0043", "0044", "0045", "0046", "0047"]
     status = migration_status(db)
-    assert status["pending"] == [] and status["applied"][-1] == "0046"
+    assert status["pending"] == [] and status["applied"][-1] == "0047"
     assert TABLES <= set(inspect(db.engine).get_table_names())

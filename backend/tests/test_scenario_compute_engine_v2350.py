@@ -31,7 +31,7 @@ def _public_key(client,h):
     return issued.json()['api_key']
 
 def test_health_migration_and_readiness(client):
-    h=client.get('/health').json(); assert h['version']=='2.42.0' and h['scenario_compute_engine'] is True
+    h=client.get('/health').json(); assert h['version']=='2.43.0' and h['scenario_compute_engine'] is True
     r=client.get('/v1/scenario-compute/readiness'); assert r.status_code==200,r.text
     d=r.json(); assert d['migration_0038_applied'] is True and d['orchestration_by_core'] is True
     assert d['numerical_computation_by_core'] is False and d['arbitrary_code_execution_by_core'] is False

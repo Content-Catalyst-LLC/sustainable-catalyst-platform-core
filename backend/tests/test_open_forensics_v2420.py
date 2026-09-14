@@ -6,7 +6,7 @@ from app.models import Entity, SourceSnapshot, EvidenceRecord
 
 
 def app_client(tmp_path):
-    app=create_app(Settings(database_url=f"sqlite:///{tmp_path/'v2420.db'}",version="2.42.0"))
+    app=create_app(Settings(database_url=f"sqlite:///{tmp_path/'v2420.db'}",version="2.43.0"))
     return app,TestClient(app)
 
 
@@ -26,10 +26,11 @@ def create_inv(c):
 
 def test_readiness_health_and_migration_0046(tmp_path):
     app,c=app_client(tmp_path); seed(app)
-    h=c.get('/health').json(); assert h['version']=='2.42.0' and h['open_forensics'] is True
-    r=c.get('/v1/open-forensics/readiness').json(); assert r['release']=='2.42.0' and r['migration_0046_applied'] is True
+    h=c.get('/health').json(); assert h['version']=='2.43.0' and h['open_forensics'] is True
+    r=c.get('/v1/open-forensics/readiness').json(); assert r['release']=='2.43.0' and r['migration_0046_applied'] is True
     assert r['evidence_provenance_capture_by_core'] is True and r['content_hash_recording_by_core'] is True
-    for key in ('chain_of_custody_by_core','authenticity_determination_by_core','identity_attribution_by_core','causal_conclusion_by_core','legal_conclusion_by_core','automatic_truth_promotion'):
+    assert r['chain_of_custody_by_core'] is True
+    for key in ('authenticity_determination_by_core','identity_attribution_by_core','causal_conclusion_by_core','legal_conclusion_by_core','automatic_truth_promotion'):
         assert r[key] is False
     assert migration_status(app.state.database)['pending']==[]
 
@@ -44,7 +45,7 @@ def test_forensic_objects_evidence_provenance_graph_snapshot(tmp_path):
     rel=c.post(f'/v1/open-forensics/investigations/{iid}/relations',json={'data':{'relation_key':'extract-from-document','source_object_id':o2.json()['id'],'target_object_id':o1.json()['id'],'relation_kind':'extracted-from','assertion_state':'documented','confidence':0.95,'basis':{'evidence_item_id':e.json()['id']}}}); assert rel.status_code==200,rel.text
     graph=c.get(f'/v1/open-forensics/investigations/{iid}/provenance-graph').json(); assert graph['contract']=='sc.open-forensics.provenance-graph.v1' and len(graph['nodes'])>=3 and len(graph['edges'])>=3
     snap=c.post(f'/v1/open-forensics/investigations/{iid}/snapshots',json={'data':{'created_by':'test'}}).json(); assert snap['revision']==1 and len(snap['content_hash'])==64
-    portable=c.get(f'/v1/open-forensics/investigations/{iid}/portable-package').json(); assert portable['not_chain_of_custody'] is True and portable['not_authenticity_determination'] is True and len(portable['content_hash'])==64
+    portable=c.get(f'/v1/open-forensics/investigations/{iid}/portable-package').json(); assert portable['chain_of_custody_recorded'] is True and portable['not_chain_of_custody'] is False and portable['not_authenticity_determination'] is True and len(portable['content_hash'])==64
 
 
 def test_v242_rejects_custody_attribution_and_bad_hash_claims(tmp_path):
@@ -52,5 +53,5 @@ def test_v242_rejects_custody_attribution_and_bad_hash_claims(tmp_path):
     o1=c.post(f'/v1/open-forensics/investigations/{iid}/objects',json={'data':{'object_key':'a','object_kind':'artifact','label':'A'}}).json()
     o2=c.post(f'/v1/open-forensics/investigations/{iid}/objects',json={'data':{'object_key':'b','object_kind':'artifact','label':'B'}}).json()
     bad_hash=c.post(f'/v1/open-forensics/investigations/{iid}/evidence',json={'data':{'evidence_key':'bad','evidence_kind':'digital','label':'Bad','content_hash':'not-a-sha'}}); assert bad_hash.status_code==422
-    custody=c.post(f'/v1/open-forensics/investigations/{iid}/provenance-activities',json={'data':{'activity_kind':'custody-transfer','actor_ref':'person'}}); assert custody.status_code==422 and 'v2.43' in custody.text
+    custody=c.post(f'/v1/open-forensics/investigations/{iid}/provenance-activities',json={'data':{'activity_kind':'custody-transfer','actor_ref':'person'}}); assert custody.status_code==422 and 'dedicated chain-of-custody API' in custody.text
     attribution=c.post(f'/v1/open-forensics/investigations/{iid}/relations',json={'data':{'relation_key':'bad-rel','source_object_id':o1['id'],'target_object_id':o2['id'],'relation_kind':'authored-by'}}); assert attribution.status_code==422

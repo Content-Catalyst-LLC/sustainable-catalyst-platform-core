@@ -1,3 +1,7 @@
+## v2.43.0 — Evidence Integrity & Chain of Custody
+
+Adds hash-chained custody events, governed custodians, seal/unseal state, evidence integrity checks, custody continuity assessments, immutable custody snapshots, external attestation bindings, and explicit non-authenticity/non-admissibility boundaries.
+
 # Changelog
 ## v2.42.0 — Forensic Object Model & Evidence Provenance
 - Added migration `0046` and seven additive Open Forensics tables.

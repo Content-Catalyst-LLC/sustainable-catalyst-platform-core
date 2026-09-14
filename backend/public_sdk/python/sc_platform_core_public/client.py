@@ -660,7 +660,7 @@ PublicApiClient.reproducible_visual_knowledge_packages = _reproducible_visual_kn
 PublicApiClient.reproducible_visual_knowledge_bundle = _reproducible_visual_knowledge_bundle
 
 
-# v2.42.0 Open Forensics — Forensic Object Model & Evidence Provenance.
+# v2.43.0 Open Forensics — Evidence Integrity & Chain of Custody.
 def _open_forensics_readiness(self):
     return self.request("GET", "/open-forensics/readiness")
 
@@ -673,3 +673,11 @@ def _open_forensics_investigation_bundle(self, investigation_id: str):
 PublicApiClient.open_forensics_readiness = _open_forensics_readiness
 PublicApiClient.open_forensics_investigations = _open_forensics_investigations
 PublicApiClient.open_forensics_investigation_bundle = _open_forensics_investigation_bundle
+
+
+def _open_forensics_custody_chain(self, investigation_id: str, evidence_id: str):
+    return self.request("GET", f"/open-forensics/investigations/{investigation_id}/evidence/{evidence_id}/custody-chain")
+def _open_forensics_custody_bundle(self, investigation_id: str):
+    return self.request("GET", f"/open-forensics/investigations/{investigation_id}/custody-bundle")
+PublicApiClient.open_forensics_custody_chain = _open_forensics_custody_chain
+PublicApiClient.open_forensics_custody_bundle = _open_forensics_custody_bundle
