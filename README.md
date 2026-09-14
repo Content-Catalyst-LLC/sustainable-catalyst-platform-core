@@ -1,3 +1,7 @@
+## v2.45.0 — Forensic Timeline & Event Reconstruction
+
+Adds evidence-linked forensic events, bounded temporal assertions, participant references, explicit temporal relations, reconstruction hypotheses, saved timeline views, renderer-neutral timeline specifications, and immutable snapshots. Reconstructed sequences remain governed hypotheses; Core does not infer missing events/timestamps, resolve identity, rank reconstructions, or determine sequence truth.
+
 ## v2.44.0 — Claims, Contradictions & Competing Hypotheses
 
 Structured forensic claims, explicit contradictions, evidence-position assessments, competing hypotheses, descriptive comparison matrices, and immutable reasoning snapshots with no automated verdict/ranking/truth promotion.

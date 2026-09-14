@@ -488,3 +488,8 @@ PublicApiClient.prototype.openForensicsCustodyBundle = function (investigationId
 PublicApiClient.prototype.openForensicsClaimMap = function (investigationId) { return this.request(`/open-forensics/investigations/${encodeURIComponent(investigationId)}/claim-map`); };
 PublicApiClient.prototype.openForensicsHypothesisMatrix = function (investigationId) { return this.request(`/open-forensics/investigations/${encodeURIComponent(investigationId)}/hypothesis-matrix`); };
 PublicApiClient.prototype.openForensicsReasoningBundle = function (investigationId) { return this.request(`/open-forensics/investigations/${encodeURIComponent(investigationId)}/reasoning-bundle`); };
+
+
+// v2.45.0 Open Forensics — Forensic Timeline & Event Reconstruction.
+PublicApiClient.prototype.openForensicsTimeline = function (investigationId) { return this.request(`/open-forensics/investigations/${encodeURIComponent(investigationId)}/timeline`); };
+PublicApiClient.prototype.openForensicsTimelineSpecification = function (investigationId) { return this.request(`/open-forensics/investigations/${encodeURIComponent(investigationId)}/timeline-specification`); };

@@ -62,6 +62,8 @@ from ..models import (
     ForensicProvenanceActivityRecord, ForensicObjectRelationRecord, ForensicSnapshotRecord,
     ForensicClaimRecord, ForensicClaimEvidenceAssessmentRecord, ForensicContradictionRecord, ForensicHypothesisRecord,
     ForensicHypothesisEvidenceAssessmentRecord, ForensicHypothesisRelationRecord, ForensicReasoningSnapshotRecord,
+    ForensicEventRecord, ForensicEventEvidenceBindingRecord, ForensicEventParticipantRecord, ForensicEventRelationRecord,
+    ForensicEventReconstructionRecord, ForensicTimelineViewRecord, ForensicTimelineSnapshotRecord,
     VisualizationSpecificationRecord,
     RendererDefinitionRecord,
     RendererVersionRecord,
@@ -182,6 +184,7 @@ def health(request: Request):
         "cross_product_visual_research_objects": request.app.state.settings.cross_product_visual_research_enabled,
         "reproducible_visual_knowledge_layer": request.app.state.settings.reproducible_visual_knowledge_enabled,
         "open_forensics": request.app.state.settings.open_forensics_enabled,
+        "forensic_timeline_event_reconstruction": request.app.state.settings.open_forensics_enabled,
     }
 
 
@@ -279,6 +282,7 @@ async def ready(request: Request, db: Session = Depends(get_session)):
         "cross_product_visual_research_objects": "ready" if settings.cross_product_visual_research_enabled else "disabled",
         "reproducible_visual_knowledge_layer": "ready" if settings.reproducible_visual_knowledge_enabled else "disabled",
         "open_forensics": "ready" if settings.open_forensics_enabled else "disabled",
+        "forensic_timeline_event_reconstruction": "ready" if settings.open_forensics_enabled else "disabled",
         "external_provider_health_release_blocking": False,
         "services": [
             {
@@ -780,6 +784,13 @@ def stats(db: Session = Depends(get_session)):
         forensic_hypothesis_evidence_assessments=count(ForensicHypothesisEvidenceAssessmentRecord),
         forensic_hypothesis_relations=count(ForensicHypothesisRelationRecord),
         forensic_reasoning_snapshots=count(ForensicReasoningSnapshotRecord),
+        forensic_events=count(ForensicEventRecord),
+        forensic_event_evidence_bindings=count(ForensicEventEvidenceBindingRecord),
+        forensic_event_participants=count(ForensicEventParticipantRecord),
+        forensic_event_relations=count(ForensicEventRelationRecord),
+        forensic_event_reconstructions=count(ForensicEventReconstructionRecord),
+        forensic_timeline_views=count(ForensicTimelineViewRecord),
+        forensic_timeline_snapshots=count(ForensicTimelineSnapshotRecord),
         visualization_specifications=count(VisualizationSpecificationRecord),
         renderer_definitions=count(RendererDefinitionRecord),
         renderer_versions=count(RendererVersionRecord),

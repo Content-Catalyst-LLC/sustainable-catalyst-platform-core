@@ -4,7 +4,7 @@ Tags: knowledge graph, entity registry, provenance, live data, sustainable catal
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.0
-Stable tag: 2.44.0
+Stable tag: 2.45.0
 License: MIT
 
 WordPress status, live-data gateway, and entity lookup client for Sustainable Catalyst Platform Core.
@@ -227,9 +227,9 @@ Production schema compatibility repair for Uncertainty Compute Runtime Integrati
 * Adds versioned/hashed input manifests, runtime environment capture, external-only replay plans, integrity fingerprints, verification evidence, immutable snapshots, and portable reproducibility packages.
 * Core documents and verifies reproducibility state but does not execute specialist runtimes, arbitrary code, or claim output equivalence without external evidence.
 
-== 2.44.0 ==
+== 2.45.0 ==
 Adds Open Forensics: governed forensic investigations, typed objects, evidence provenance/source bindings, hashes, semantic relations, and immutable snapshots.
 
 
-== 2.44.0 ==
+== 2.45.0 ==
 Adds Open Forensics claims, contradictions, competing hypotheses, evidence-position assessments, descriptive comparison matrices, and immutable reasoning snapshots.

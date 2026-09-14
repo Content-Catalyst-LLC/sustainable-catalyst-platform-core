@@ -194,6 +194,59 @@ def reasoning_snapshot(request:Request, investigation_id:str, payload:Payload, d
     try: return svc.create_reasoning_snapshot(db,investigation_id,payload.data)
     except Exception as exc: raise bad(exc)
 
+
+
+# v2.45.0 — Forensic Timeline & Event Reconstruction
+@router.post("/investigations/{investigation_id}/events", dependencies=[Depends(require_write)])
+def add_event(request:Request, investigation_id:str, payload:Payload, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.add_event(db,investigation_id,payload.data)
+    except Exception as exc: raise bad(exc)
+
+@router.post("/investigations/{investigation_id}/events/{event_id}/evidence-bindings", dependencies=[Depends(require_write)])
+def bind_event_evidence(request:Request, investigation_id:str, event_id:str, payload:Payload, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.bind_event_evidence(db,investigation_id,event_id,payload.data)
+    except Exception as exc: raise bad(exc)
+
+@router.post("/investigations/{investigation_id}/events/{event_id}/participants", dependencies=[Depends(require_write)])
+def add_event_participant(request:Request, investigation_id:str, event_id:str, payload:Payload, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.add_event_participant(db,investigation_id,event_id,payload.data)
+    except Exception as exc: raise bad(exc)
+
+@router.post("/investigations/{investigation_id}/event-relations", dependencies=[Depends(require_write)])
+def add_event_relation(request:Request, investigation_id:str, payload:Payload, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.add_event_relation(db,investigation_id,payload.data)
+    except Exception as exc: raise bad(exc)
+
+@router.post("/investigations/{investigation_id}/event-reconstructions", dependencies=[Depends(require_write)])
+def add_event_reconstruction(request:Request, investigation_id:str, payload:Payload, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.add_event_reconstruction(db,investigation_id,payload.data)
+    except Exception as exc: raise bad(exc)
+
+@router.post("/investigations/{investigation_id}/timeline-views", dependencies=[Depends(require_write)])
+def add_timeline_view(request:Request, investigation_id:str, payload:Payload, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.add_timeline_view(db,investigation_id,payload.data)
+    except Exception as exc: raise bad(exc)
+
+@router.get("/investigations/{investigation_id}/timeline", dependencies=[Depends(require_read)])
+def timeline(request:Request, investigation_id:str, db:Session=Depends(get_session)):
+    enabled(request); return svc.timeline_bundle(db,investigation_id)
+
+@router.get("/investigations/{investigation_id}/timeline-specification", dependencies=[Depends(require_read)])
+def timeline_specification(request:Request, investigation_id:str, db:Session=Depends(get_session)):
+    enabled(request); return svc.timeline_specification(db,investigation_id)
+
+@router.post("/investigations/{investigation_id}/timeline-snapshots", dependencies=[Depends(require_write)])
+def timeline_snapshot(request:Request, investigation_id:str, payload:Payload, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.create_timeline_snapshot(db,investigation_id,payload.data)
+    except Exception as exc: raise bad(exc)
+
 @public_router.get("/readiness", response_model=PublicEnvelope)
 def public_readiness(request:Request, db:Session=Depends(get_session), _ctx:PublicApiContext=Depends(require_public_scope("data:read"))):
     public_enabled(request); data=svc.readiness(db); data.update({"release":request.app.state.settings.version,"enabled":True}); return PublicEnvelope(data=data,meta={"api_version":"v1","request_id":request.state.request_id})
@@ -205,3 +258,10 @@ def public_investigations(request:Request, project_entity_id:str|None=None, limi
 @public_router.get("/investigations/{investigation_id}/bundle", response_model=PublicEnvelope)
 def public_bundle(investigation_id:str, request:Request, db:Session=Depends(get_session), _ctx:PublicApiContext=Depends(require_public_scope("data:read"))):
     public_enabled(request); return PublicEnvelope(data=svc.bundle(db,investigation_id,public_only=True),meta={"api_version":"v1","request_id":request.state.request_id})
+
+
+@public_router.get("/investigations/{investigation_id}/timeline", response_model=PublicEnvelope)
+def public_timeline(investigation_id:str, request:Request, db:Session=Depends(get_session), _ctx:PublicApiContext=Depends(require_public_scope("data:read"))):
+    public_enabled(request); inv=svc._investigation(db,investigation_id)
+    if inv.visibility != "public": raise HTTPException(status_code=404,detail="Forensic investigation not found.")
+    return PublicEnvelope(data=svc.timeline_bundle(db,investigation_id),meta={"api_version":"v1","request_id":request.state.request_id})

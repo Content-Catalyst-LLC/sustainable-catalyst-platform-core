@@ -19,6 +19,8 @@ from ..models import (
     ForensicIntegrityCheckRecord, ForensicCustodyContinuityAssessmentRecord, ForensicCustodySnapshotRecord,
     ForensicClaimRecord, ForensicClaimEvidenceAssessmentRecord, ForensicContradictionRecord,
     ForensicHypothesisRecord, ForensicHypothesisEvidenceAssessmentRecord, ForensicHypothesisRelationRecord, ForensicReasoningSnapshotRecord,
+    ForensicEventRecord, ForensicEventEvidenceBindingRecord, ForensicEventParticipantRecord, ForensicEventRelationRecord,
+    ForensicEventReconstructionRecord, ForensicTimelineViewRecord, ForensicTimelineSnapshotRecord,
 )
 
 OBJECT_KINDS = {
@@ -48,6 +50,13 @@ CONTRADICTION_KINDS = {"direct", "temporal", "quantitative", "source", "definiti
 HYPOTHESIS_EVIDENCE_CONSISTENCY = {"supports", "inconsistent", "neutral", "unknown"}
 HYPOTHESIS_RELATION_KINDS = {"competes-with", "compatible-with", "subsumes", "distinct-from", "depends-on"}
 FORBIDDEN_REASONING_FIELDS = {"truth_value", "truth", "verdict", "guilt", "responsibility", "probability", "posterior", "rank", "winner"}
+
+EVENT_KINDS = {"event", "observation", "communication", "transaction", "movement", "measurement", "system-event", "decision", "publication", "incident", "other"}
+TEMPORAL_BASES = {"observed", "asserted", "derived", "reconstructed", "unknown"}
+TIME_PRECISIONS = {"exact", "second", "minute", "hour", "day", "month", "year", "bounded", "approximate", "unknown"}
+EVENT_EVIDENCE_ROLES = {"supports-occurrence", "supports-time", "supports-location", "supports-participant", "contradicts", "qualifies", "context"}
+EVENT_RELATION_KINDS = {"before", "after", "overlaps", "contains", "contained-by", "simultaneous", "possibly-before", "possibly-after", "related-to"}
+FORBIDDEN_RECONSTRUCTION_FIELDS = {"truth_value", "truth", "verdict", "guilt", "responsibility", "probability", "posterior", "rank", "winner", "confirmed_sequence"}
 
 
 def _ser(row):
@@ -120,6 +129,17 @@ def _boundaries():
         "competing_hypothesis_registry_by_core": True,
         "descriptive_hypothesis_comparison_matrix_by_core": True,
         "immutable_reasoning_snapshots_by_core": True,
+        "forensic_event_registry_by_core": True,
+        "bounded_temporal_assertion_capture_by_core": True,
+        "event_evidence_binding_by_core": True,
+        "explicit_event_relation_registry_by_core": True,
+        "reconstruction_hypothesis_registry_by_core": True,
+        "renderer_neutral_timeline_specification_by_core": True,
+        "immutable_timeline_snapshots_by_core": True,
+        "automatic_event_inference_by_core": False,
+        "automatic_timestamp_inference_by_core": False,
+        "automatic_sequence_truth_determination_by_core": False,
+        "automatic_participant_identity_resolution_by_core": False,
         "automatic_contradiction_detection_by_core": False,
         "claim_truth_determination_by_core": False,
         "contradiction_resolution_by_core": False,
@@ -146,6 +166,7 @@ def readiness(db: Session) -> dict[str, Any]:
         "migration_0046_applied": True,
         "migration_0047_applied": True,
         "migration_0048_applied": True,
+        "migration_0049_applied": True,
         "forensic_contract": "sc.open-forensics.investigation.v1",
         "counts": {
             "investigations": count(ForensicInvestigationRecord),
@@ -168,6 +189,13 @@ def readiness(db: Session) -> dict[str, Any]:
             "hypothesis_evidence_assessments": count(ForensicHypothesisEvidenceAssessmentRecord),
             "hypothesis_relations": count(ForensicHypothesisRelationRecord),
             "reasoning_snapshots": count(ForensicReasoningSnapshotRecord),
+            "events": count(ForensicEventRecord),
+            "event_evidence_bindings": count(ForensicEventEvidenceBindingRecord),
+            "event_participants": count(ForensicEventParticipantRecord),
+            "event_relations": count(ForensicEventRelationRecord),
+            "event_reconstructions": count(ForensicEventReconstructionRecord),
+            "timeline_views": count(ForensicTimelineViewRecord),
+            "timeline_snapshots": count(ForensicTimelineSnapshotRecord),
         },
         **_boundaries(),
     }
@@ -742,3 +770,136 @@ def create_reasoning_snapshot(db: Session, investigation_id: str, payload: dict[
     state=reasoning_bundle(db,investigation_id); canonical=json.dumps(state,sort_keys=True,separators=(",",":"),default=str).encode("utf-8"); digest=hashlib.sha256(canonical).hexdigest()
     last=db.scalar(select(ForensicReasoningSnapshotRecord).where(ForensicReasoningSnapshotRecord.investigation_id==investigation_id).order_by(ForensicReasoningSnapshotRecord.revision.desc()).limit(1)); revision=(last.revision+1) if last else 1
     row=ForensicReasoningSnapshotRecord(investigation_id=investigation_id,revision=revision,content_hash=digest,previous_snapshot_hash=last.content_hash if last else None,state_json=state,provenance_json=dict(payload.get("provenance") or {}),created_by=str(payload.get("created_by") or "operator")); db.add(row); db.commit(); db.refresh(row); return _ser(row)
+
+# v2.45.0 — Forensic Timeline & Event Reconstruction
+
+def _event(db: Session, investigation_id: str, event_id: str) -> ForensicEventRecord:
+    row=db.get(ForensicEventRecord,event_id)
+    if row is None or row.investigation_id != investigation_id:
+        raise ValueError("forensic event must belong to this investigation.")
+    return row
+
+
+def _reject_reconstruction_fields(payload: dict[str, Any]):
+    present=sorted(k for k in FORBIDDEN_RECONSTRUCTION_FIELDS if k in payload)
+    if present:
+        raise ValueError("Core does not determine event-sequence truth, probabilities, rankings, verdicts, guilt, or responsibility: " + ", ".join(present))
+
+
+def add_event(db: Session, investigation_id: str, payload: dict[str, Any]):
+    _investigation(db,investigation_id); _reject_reconstruction_fields(payload)
+    key=str(payload.get("event_key") or "").strip(); label=str(payload.get("label") or "").strip()
+    kind=str(payload.get("event_kind") or "event").lower(); basis=str(payload.get("temporal_basis") or "asserted").lower(); precision=str(payload.get("time_precision") or "unknown").lower()
+    if not key or not label: raise ValueError("event_key and label are required.")
+    if kind not in EVENT_KINDS: raise ValueError("unsupported event_kind.")
+    if basis not in TEMPORAL_BASES: raise ValueError("unsupported temporal_basis.")
+    if precision not in TIME_PRECISIONS: raise ValueError("unsupported time_precision.")
+    start,end,earliest,latest=(_dt(payload.get(k)) for k in ("start_time","end_time","earliest_time","latest_time"))
+    if start and end and start>end: raise ValueError("start_time must not be after end_time.")
+    if earliest and latest and earliest>latest: raise ValueError("earliest_time must not be after latest_time.")
+    if start and earliest and start<earliest: raise ValueError("start_time cannot precede earliest_time.")
+    if start and latest and start>latest: raise ValueError("start_time cannot follow latest_time.")
+    row=ForensicEventRecord(investigation_id=investigation_id,event_key=key,label=label,description=payload.get("description"),event_kind=kind,temporal_basis=basis,time_precision=precision,start_time=start,end_time=end,earliest_time=earliest,latest_time=latest,location_ref=payload.get("location_ref"),status=str(payload.get("status") or "working"),provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {}))
+    db.add(row)
+    try: db.commit(); db.refresh(row)
+    except IntegrityError as exc: db.rollback(); raise HTTPException(status_code=409,detail="Event key already exists in this investigation.") from exc
+    return _ser(row)
+
+
+def bind_event_evidence(db: Session, investigation_id: str, event_id: str, payload: dict[str, Any]):
+    _event(db,investigation_id,event_id); _reject_reconstruction_fields(payload)
+    evidence_id=str(payload.get("evidence_item_id") or ""); _evidence(db,investigation_id,evidence_id)
+    key=str(payload.get("binding_key") or "").strip(); role=str(payload.get("role") or "context").lower()
+    if not key: raise ValueError("binding_key is required.")
+    if role not in EVENT_EVIDENCE_ROLES: raise ValueError("unsupported event evidence role.")
+    row=ForensicEventEvidenceBindingRecord(event_id=event_id,evidence_item_id=evidence_id,binding_key=key,role=role,temporal_assertion_json=dict(payload.get("temporal_assertion") or {}),rationale=payload.get("rationale"),provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {}))
+    db.add(row)
+    try: db.commit(); db.refresh(row)
+    except IntegrityError as exc: db.rollback(); raise HTTPException(status_code=409,detail="Event evidence binding key already exists for this event.") from exc
+    return _ser(row)
+
+
+def add_event_participant(db: Session, investigation_id: str, event_id: str, payload: dict[str, Any]):
+    _event(db,investigation_id,event_id); _reject_reconstruction_fields(payload)
+    key=str(payload.get("participant_key") or "").strip(); object_id=payload.get("forensic_object_id"); external_ref=payload.get("external_ref"); evidence_id=payload.get("basis_evidence_item_id")
+    if not key: raise ValueError("participant_key is required.")
+    if not object_id and not external_ref: raise ValueError("forensic_object_id or external_ref is required.")
+    if object_id: _object(db,investigation_id,str(object_id))
+    if evidence_id: _evidence(db,investigation_id,str(evidence_id))
+    row=ForensicEventParticipantRecord(event_id=event_id,participant_key=key,forensic_object_id=str(object_id) if object_id else None,external_ref=str(external_ref) if external_ref else None,role=str(payload.get("role") or "associated"),basis_evidence_item_id=str(evidence_id) if evidence_id else None,provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {}))
+    db.add(row)
+    try: db.commit(); db.refresh(row)
+    except IntegrityError as exc: db.rollback(); raise HTTPException(status_code=409,detail="Participant key already exists for this event.") from exc
+    return _ser(row)
+
+
+def add_event_relation(db: Session, investigation_id: str, payload: dict[str, Any]):
+    _investigation(db,investigation_id); _reject_reconstruction_fields(payload)
+    key=str(payload.get("relation_key") or "").strip(); source=str(payload.get("source_event_id") or ""); target=str(payload.get("target_event_id") or ""); kind=str(payload.get("relation_kind") or "related-to").lower()
+    if not key: raise ValueError("relation_key is required.")
+    if source==target: raise ValueError("event relation requires two distinct events.")
+    _event(db,investigation_id,source); _event(db,investigation_id,target)
+    if kind not in EVENT_RELATION_KINDS: raise ValueError("unsupported event relation_kind.")
+    evidence_ids=[str(x) for x in (payload.get("basis_evidence_ids") or [])]
+    for eid in evidence_ids: _evidence(db,investigation_id,eid)
+    row=ForensicEventRelationRecord(investigation_id=investigation_id,relation_key=key,source_event_id=source,target_event_id=target,relation_kind=kind,basis_evidence_ids_json=evidence_ids,rationale=payload.get("rationale"),provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {}))
+    db.add(row)
+    try: db.commit(); db.refresh(row)
+    except IntegrityError as exc: db.rollback(); raise HTTPException(status_code=409,detail="Event relation key already exists in this investigation.") from exc
+    return _ser(row)
+
+
+def add_event_reconstruction(db: Session, investigation_id: str, payload: dict[str, Any]):
+    _investigation(db,investigation_id); _reject_reconstruction_fields(payload)
+    key=str(payload.get("reconstruction_key") or "").strip(); label=str(payload.get("label") or "").strip(); hypothesis_id=payload.get("hypothesis_id")
+    if not key or not label: raise ValueError("reconstruction_key and label are required.")
+    if hypothesis_id: _hypothesis(db,investigation_id,str(hypothesis_id))
+    event_ids=[str(x) for x in (payload.get("ordered_event_ids") or [])]
+    if len(event_ids)!=len(set(event_ids)): raise ValueError("ordered_event_ids cannot contain duplicates.")
+    for eid in event_ids: _event(db,investigation_id,eid)
+    relation_ids=[str(x) for x in (payload.get("event_relation_ids") or [])]
+    for rid in relation_ids:
+        r=db.get(ForensicEventRelationRecord,rid)
+        if r is None or r.investigation_id!=investigation_id: raise ValueError("event_relation_ids must belong to this investigation.")
+    row=ForensicEventReconstructionRecord(investigation_id=investigation_id,reconstruction_key=key,label=label,description=payload.get("description"),hypothesis_id=str(hypothesis_id) if hypothesis_id else None,ordered_event_ids_json=event_ids,event_relation_ids_json=relation_ids,assumptions_json=list(payload.get("assumptions") or []),unresolved_conflicts_json=list(payload.get("unresolved_conflicts") or []),status=str(payload.get("status") or "working"),provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {}))
+    db.add(row)
+    try: db.commit(); db.refresh(row)
+    except IntegrityError as exc: db.rollback(); raise HTTPException(status_code=409,detail="Reconstruction key already exists in this investigation.") from exc
+    return _ser(row)
+
+
+def add_timeline_view(db: Session, investigation_id: str, payload: dict[str, Any]):
+    _investigation(db,investigation_id); _reject_reconstruction_fields(payload)
+    key=str(payload.get("view_key") or "").strip(); label=str(payload.get("label") or "").strip(); event_ids=[str(x) for x in (payload.get("event_ids") or [])]; reconstruction_ids=[str(x) for x in (payload.get("reconstruction_ids") or [])]
+    if not key or not label: raise ValueError("view_key and label are required.")
+    for eid in event_ids: _event(db,investigation_id,eid)
+    for rid in reconstruction_ids:
+        r=db.get(ForensicEventReconstructionRecord,rid)
+        if r is None or r.investigation_id!=investigation_id: raise ValueError("reconstruction_ids must belong to this investigation.")
+    row=ForensicTimelineViewRecord(investigation_id=investigation_id,view_key=key,label=label,event_ids_json=event_ids,reconstruction_ids_json=reconstruction_ids,filters_json=dict(payload.get("filters") or {}),display_json=dict(payload.get("display") or {}),provenance_json=dict(payload.get("provenance") or {})); db.add(row)
+    try: db.commit(); db.refresh(row)
+    except IntegrityError as exc: db.rollback(); raise HTTPException(status_code=409,detail="Timeline view key already exists in this investigation.") from exc
+    return _ser(row)
+
+
+def timeline_bundle(db: Session, investigation_id: str):
+    _investigation(db,investigation_id)
+    events=db.scalars(select(ForensicEventRecord).where(ForensicEventRecord.investigation_id==investigation_id).order_by(ForensicEventRecord.start_time,ForensicEventRecord.created_at)).all(); event_ids=[e.id for e in events]
+    bindings=db.scalars(select(ForensicEventEvidenceBindingRecord).where(ForensicEventEvidenceBindingRecord.event_id.in_(event_ids)).order_by(ForensicEventEvidenceBindingRecord.created_at)).all() if event_ids else []
+    participants=db.scalars(select(ForensicEventParticipantRecord).where(ForensicEventParticipantRecord.event_id.in_(event_ids)).order_by(ForensicEventParticipantRecord.created_at)).all() if event_ids else []
+    relations=db.scalars(select(ForensicEventRelationRecord).where(ForensicEventRelationRecord.investigation_id==investigation_id).order_by(ForensicEventRelationRecord.created_at)).all()
+    reconstructions=db.scalars(select(ForensicEventReconstructionRecord).where(ForensicEventReconstructionRecord.investigation_id==investigation_id).order_by(ForensicEventReconstructionRecord.created_at)).all()
+    views=db.scalars(select(ForensicTimelineViewRecord).where(ForensicTimelineViewRecord.investigation_id==investigation_id).order_by(ForensicTimelineViewRecord.created_at)).all()
+    return {"contract":"sc.open-forensics.forensic-timeline.v1","investigation_id":investigation_id,"events":[_ser(x) for x in events],"evidence_bindings":[_ser(x) for x in bindings],"participants":[_ser(x) for x in participants],"relations":[_ser(x) for x in relations],"reconstructions":[_ser(x) for x in reconstructions],"views":[_ser(x) for x in views],"ordering_method":"explicit-timestamps-and-recorded-relations-not-sequence-truth","reconstructed_sequence_is_hypothesis":True,"boundaries":_boundaries()}
+
+
+def timeline_specification(db: Session, investigation_id: str):
+    state=timeline_bundle(db,investigation_id)
+    return {"contract":"sc.visual-spec.forensic-timeline.v1","visual_kind":"forensic-timeline","renderer_neutral":True,"investigation_id":investigation_id,"events":state["events"],"relations":state["relations"],"reconstructions":state["reconstructions"],"views":state["views"],"execution":{"layout_by_core":False,"rendering_by_core":False,"automatic_event_inference":False,"automatic_sequence_truth_determination":False},"boundaries":_boundaries()}
+
+
+def create_timeline_snapshot(db: Session, investigation_id: str, payload: dict[str, Any]):
+    state=timeline_bundle(db,investigation_id); canonical=json.dumps(state,sort_keys=True,separators=(",",":"),default=str).encode("utf-8"); digest=hashlib.sha256(canonical).hexdigest()
+    last=db.scalar(select(ForensicTimelineSnapshotRecord).where(ForensicTimelineSnapshotRecord.investigation_id==investigation_id).order_by(ForensicTimelineSnapshotRecord.revision.desc()).limit(1)); revision=(last.revision+1) if last else 1
+    row=ForensicTimelineSnapshotRecord(investigation_id=investigation_id,revision=revision,content_hash=digest,previous_snapshot_hash=last.content_hash if last else None,state_json=state,provenance_json=dict(payload.get("provenance") or {}),created_by=str(payload.get("created_by") or "operator")); db.add(row); db.commit(); db.refresh(row); return _ser(row)
+

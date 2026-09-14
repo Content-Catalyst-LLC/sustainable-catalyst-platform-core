@@ -5173,3 +5173,148 @@ class ForensicReasoningSnapshotRecord(Base):
     provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
     created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+# v2.45.0 — Forensic Timeline & Event Reconstruction
+class ForensicEventRecord(Base):
+    __tablename__ = "forensic_events"
+    __table_args__ = (
+        UniqueConstraint("investigation_id", "event_key", name="uq_forensic_event_key"),
+        Index("ix_forensic_event_investigation_time", "investigation_id", "start_time"),
+        Index("ix_forensic_event_temporal_basis", "temporal_basis"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    investigation_id: Mapped[str] = mapped_column(ForeignKey("forensic_investigations.id", ondelete="CASCADE"), nullable=False)
+    event_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    label: Mapped[str] = mapped_column(String(500), nullable=False)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    event_kind: Mapped[str] = mapped_column(String(80), nullable=False, default="event")
+    temporal_basis: Mapped[str] = mapped_column(String(40), nullable=False, default="asserted")
+    time_precision: Mapped[str] = mapped_column(String(40), nullable=False, default="unknown")
+    start_time: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    end_time: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    earliest_time: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    latest_time: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    location_ref: Mapped[str | None] = mapped_column(String(2000), nullable=True)
+    status: Mapped[str] = mapped_column(String(50), nullable=False, default="working")
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class ForensicEventEvidenceBindingRecord(Base):
+    __tablename__ = "forensic_event_evidence_bindings"
+    __table_args__ = (
+        UniqueConstraint("event_id", "binding_key", name="uq_forensic_event_evidence_binding_key"),
+        Index("ix_forensic_event_evidence_binding_event", "event_id"),
+        Index("ix_forensic_event_evidence_binding_evidence", "evidence_item_id"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    event_id: Mapped[str] = mapped_column(ForeignKey("forensic_events.id", ondelete="CASCADE"), nullable=False)
+    evidence_item_id: Mapped[str] = mapped_column(ForeignKey("forensic_evidence_items.id", ondelete="CASCADE"), nullable=False)
+    binding_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    role: Mapped[str] = mapped_column(String(80), nullable=False, default="context")
+    temporal_assertion_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    rationale: Mapped[str | None] = mapped_column(Text, nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ForensicEventParticipantRecord(Base):
+    __tablename__ = "forensic_event_participants"
+    __table_args__ = (
+        UniqueConstraint("event_id", "participant_key", name="uq_forensic_event_participant_key"),
+        Index("ix_forensic_event_participant_event", "event_id"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    event_id: Mapped[str] = mapped_column(ForeignKey("forensic_events.id", ondelete="CASCADE"), nullable=False)
+    participant_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    forensic_object_id: Mapped[str | None] = mapped_column(ForeignKey("forensic_objects.id", ondelete="SET NULL"), nullable=True)
+    external_ref: Mapped[str | None] = mapped_column(String(2000), nullable=True)
+    role: Mapped[str] = mapped_column(String(120), nullable=False, default="associated")
+    basis_evidence_item_id: Mapped[str | None] = mapped_column(ForeignKey("forensic_evidence_items.id", ondelete="SET NULL"), nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ForensicEventRelationRecord(Base):
+    __tablename__ = "forensic_event_relations"
+    __table_args__ = (
+        UniqueConstraint("investigation_id", "relation_key", name="uq_forensic_event_relation_key"),
+        Index("ix_forensic_event_relation_investigation", "investigation_id"),
+        Index("ix_forensic_event_relation_source", "source_event_id"),
+        Index("ix_forensic_event_relation_target", "target_event_id"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    investigation_id: Mapped[str] = mapped_column(ForeignKey("forensic_investigations.id", ondelete="CASCADE"), nullable=False)
+    relation_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    source_event_id: Mapped[str] = mapped_column(ForeignKey("forensic_events.id", ondelete="CASCADE"), nullable=False)
+    target_event_id: Mapped[str] = mapped_column(ForeignKey("forensic_events.id", ondelete="CASCADE"), nullable=False)
+    relation_kind: Mapped[str] = mapped_column(String(80), nullable=False)
+    basis_evidence_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    rationale: Mapped[str | None] = mapped_column(Text, nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ForensicEventReconstructionRecord(Base):
+    __tablename__ = "forensic_event_reconstructions"
+    __table_args__ = (
+        UniqueConstraint("investigation_id", "reconstruction_key", name="uq_forensic_event_reconstruction_key"),
+        Index("ix_forensic_event_reconstruction_investigation", "investigation_id"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    investigation_id: Mapped[str] = mapped_column(ForeignKey("forensic_investigations.id", ondelete="CASCADE"), nullable=False)
+    reconstruction_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    label: Mapped[str] = mapped_column(String(500), nullable=False)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    hypothesis_id: Mapped[str | None] = mapped_column(ForeignKey("forensic_hypotheses.id", ondelete="SET NULL"), nullable=True)
+    ordered_event_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    event_relation_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    assumptions_json: Mapped[list] = mapped_column(JSON, default=list)
+    unresolved_conflicts_json: Mapped[list] = mapped_column(JSON, default=list)
+    status: Mapped[str] = mapped_column(String(50), nullable=False, default="working")
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class ForensicTimelineViewRecord(Base):
+    __tablename__ = "forensic_timeline_views"
+    __table_args__ = (
+        UniqueConstraint("investigation_id", "view_key", name="uq_forensic_timeline_view_key"),
+        Index("ix_forensic_timeline_view_investigation", "investigation_id"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    investigation_id: Mapped[str] = mapped_column(ForeignKey("forensic_investigations.id", ondelete="CASCADE"), nullable=False)
+    view_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    label: Mapped[str] = mapped_column(String(500), nullable=False)
+    event_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    reconstruction_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    filters_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    display_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ForensicTimelineSnapshotRecord(Base):
+    __tablename__ = "forensic_timeline_snapshots"
+    __table_args__ = (
+        UniqueConstraint("investigation_id", "revision", name="uq_forensic_timeline_snapshot_revision"),
+        Index("ix_forensic_timeline_snapshot_investigation", "investigation_id"),
+        Index("ix_forensic_timeline_snapshot_hash", "content_hash"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    investigation_id: Mapped[str] = mapped_column(ForeignKey("forensic_investigations.id", ondelete="CASCADE"), nullable=False)
+    revision: Mapped[int] = mapped_column(Integer, nullable=False)
+    content_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    previous_snapshot_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    state_json: Mapped[dict] = mapped_column(JSON, nullable=False)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+

@@ -15,8 +15,8 @@ def test_partial_0046_table_state_recovers_by_recording_metadata(tmp_path):
             if version=='0046': break
             session.add(SchemaMigration(version=version,description=description))
         session.commit(); assert session.get(SchemaMigration,'0046') is None
-    assert run_migrations(db)==['0046','0047','0048']
-    status=migration_status(db); assert status['pending']==[] and status['applied'][-1]=='0048'
+    assert run_migrations(db)==['0046','0047','0048','0049']
+    status=migration_status(db); assert status['pending']==[] and status['applied'][-1]=='0049'
 
 
 def test_pristine_pre_0046_schema_upgrades_additively(tmp_path):
@@ -27,4 +27,4 @@ def test_pristine_pre_0046_schema_upgrades_additively(tmp_path):
             if version=='0046': break
             session.add(SchemaMigration(version=version,description=description))
         session.commit()
-    assert run_migrations(db)==['0046','0047','0048']; status=migration_status(db); assert status['pending']==[] and status['applied'][-1]=='0048'; assert TABLES <= set(inspect(db.engine).get_table_names())
+    assert run_migrations(db)==['0046','0047','0048','0049']; status=migration_status(db); assert status['pending']==[] and status['applied'][-1]=='0049'; assert TABLES <= set(inspect(db.engine).get_table_names())

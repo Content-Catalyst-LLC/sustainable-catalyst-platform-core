@@ -1,3 +1,9 @@
+## v2.45.0 — Forensic Timeline & Event Reconstruction
+- Added migration `0049` and seven additive forensic timeline/reconstruction tables.
+- Added evidence-linked events, bounded/approximate temporal assertions, participant references, and explicit event relations.
+- Added reconstruction hypotheses, saved timeline views, renderer-neutral timeline specifications, and immutable snapshots.
+- Preserved explicit non-inference, non-ranking, non-verdict, non-identity-resolution, and non-truth-promotion boundaries.
+
 ## v2.44.0 — Claims, Contradictions & Competing Hypotheses
 
 Structured forensic claims, explicit contradictions, evidence-position assessments, competing hypotheses, descriptive comparison matrices, and immutable reasoning snapshots with no automated verdict/ranking/truth promotion.
@@ -441,3 +447,4 @@ Governed, reference-first cross-product visual research packages with explicit s
 
 ## 2.38.0
 - Spatial & Temporal Visual Reasoning with governed scenes, features, events, trajectories, changes, views, public metadata, and runtime handoffs.
+

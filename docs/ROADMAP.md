@@ -6,7 +6,7 @@ Structured forensic claims, explicit contradictions, evidence-position assessmen
 
 Open Forensics custody/integrity layer: tamper-evident custody event chains, custodians, seals, hash verification, continuity assessment, external attestations, and immutable custody snapshots.
 
-Next planned: **v2.44.0 — Claims, Contradictions & Competing Hypotheses**.
+Next planned: **v2.46.0 — Forensic Spatial/Temporal Evidence Integration**.
 
 # Platform Core Roadmap
 ## v2.42.0 — Forensic Object Model & Evidence Provenance
@@ -266,10 +266,10 @@ Planned.
 Planned.
 
 ## v2.44.0 — Claims, Contradictions & Competing Hypotheses
-Planned.
+Delivered.
 
 ## v2.45.0 — Forensic Timeline & Event Reconstruction
-Planned.
+Delivered.
 
 ## v2.46.0 — Forensic Spatial/Temporal Evidence Integration
 Planned.
@@ -289,7 +289,9 @@ Planned.
 ## v2.51.0 — Reproducible Investigation Packages
 Planned.
 
-Next planned: **v2.44.0 — Claims, Contradictions & Competing Hypotheses**.
+Next planned: **v2.46.0 — Forensic Spatial/Temporal Evidence Integration**.
 
 - v2.38.0 Spatial & Temporal Visual Reasoning ✓
 - v2.39.0 Research Librarian Visual Explanation ✓
+
+- v2.45.0 — Forensic Timeline & Event Reconstruction: delivered.

@@ -35,7 +35,7 @@ def _create(client, write_headers, object_type, name, attributes=None, visibilit
 def test_v2280_migration_health_meta_and_readiness(client):
     assert any(version == '0031' for version, _ in MIGRATIONS)
     health = client.get('/health').json()
-    assert health['version'] == '2.44.0'
+    assert health['version'] == '2.45.0'
     assert health['research_object_model_foundation'] is True
     meta = client.get('/v1/meta').json()
     for capability in {

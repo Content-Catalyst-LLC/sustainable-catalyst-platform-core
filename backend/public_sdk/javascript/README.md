@@ -1,4 +1,4 @@
-# Sustainable Catalyst Public API JavaScript Client v2.44.0
+# Sustainable Catalyst Public API JavaScript Client v2.45.0
 
 ```javascript
 import { PublicApiClient } from "./index.mjs";
@@ -173,3 +173,6 @@ Adds public readiness, investigation listing, and investigation-bundle helpers f
 
 ## v2.44.0 — Claims, Contradictions & Competing Hypotheses
 Adds public read helpers for forensic claim maps, competing-hypothesis matrices, and reasoning bundles. Matrices are descriptive only; Core does not rank hypotheses or assign probabilities.
+
+## v2.45.0 — Forensic Timeline & Event Reconstruction
+Adds public helpers for evidence-linked forensic timelines and renderer-neutral timeline specifications. Reconstruction order is descriptive/hypothetical and is not a Core truth determination.
