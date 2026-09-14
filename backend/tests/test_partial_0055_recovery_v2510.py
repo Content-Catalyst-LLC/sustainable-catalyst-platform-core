@@ -9,7 +9,7 @@ def tables(path):
     finally:con.close()
 
 def test_pristine_upgrade_to_0055(tmp_path):
-    p=tmp_path/'pristine.db'; db=Database(f'sqlite:///{p}'); applied=run_migrations(db); assert '0055' in applied and migration_status(db)['pending']==[] and TABLES.issubset(tables(p))
+    p=tmp_path/'pristine.db'; db=Database(f'sqlite:///{p}'); applied=run_migrations(db); assert '0055' in applied and '0056' in applied and migration_status(db)['pending']==[] and TABLES.issubset(tables(p))
 
 def test_safe_partial_0055_tables_then_ledger_repair(tmp_path):
     p=tmp_path/'partial.db'; db=Database(f'sqlite:///{p}'); run_migrations(db); con=sqlite3.connect(p)

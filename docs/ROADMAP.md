@@ -312,3 +312,15 @@ Next planned: **v2.49.0 — Quantitative Reconstruction & Reproduction Handoffs*
 
 - **v2.49.0 — Testimony, Statements & Documentary Evidence** — Complete.
 - **v2.50.0 — Forensic Research Graph** — Next.
+
+
+## Predictive Intelligence
+- v2.52.0 — Predictive Model Object Model & Forecast Provenance
+- v2.53.0 — Time-Series Forecasting & Backtesting
+- v2.54.0 — Probabilistic Forecasting & Calibration
+- v2.55.0 — Predictive Ensembles & Model Comparison
+- v2.56.0 — Anomaly, Change-Point & Early-Warning Intelligence
+- v2.57.0 — Spatial-Temporal Predictive Intelligence
+- v2.58.0 — Causal-Predictive Integration
+- v2.59.0 — Predictive Decision Intelligence
+- v2.60.0 — Reproducible Predictive Intelligence Packages

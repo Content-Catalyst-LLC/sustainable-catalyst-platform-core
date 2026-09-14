@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Predictive Runtime Handoff",
+  "type": "object",
+  "required": [
+    "handoff_key",
+    "target_product"
+  ],
+  "properties": {
+    "handoff_key": {
+      "type": "string"
+    },
+    "target_product": {
+      "type": "string"
+    },
+    "manifest": {
+      "type": "object"
+    }
+  }
+}

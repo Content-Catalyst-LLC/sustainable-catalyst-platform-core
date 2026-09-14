@@ -48,6 +48,9 @@ from .models import (
     ForensicInvestigationPackageRecord, ForensicInvestigationPackageComponentRecord, ForensicInvestigationPackageArtifactRecord,
     ForensicInvestigationPackageEnvironmentRecord, ForensicInvestigationPackageVerificationRecord, ForensicInvestigationPackageReviewRecord,
     ForensicInvestigationPackageSnapshotRecord,
+    PredictiveModelRecord, PredictiveTargetRecord, PredictiveFeatureRecord, PredictiveTrainingWindowRecord,
+    PredictiveForecastRunRecord, PredictiveForecastObservationRecord, PredictiveEvaluationRecord,
+    PredictiveRuntimeHandoffRecord, PredictiveForecastSnapshotRecord,
 )
 from .predicate_catalog import DEFAULT_PREDICATES
 from .api_plan_catalog import DEFAULT_API_PLANS
@@ -111,6 +114,7 @@ MIGRATIONS = [
     ("0053", 'Testimony, statements, and documentary evidence with governed speaker/author references, source-context preservation, claim bindings, explicit corroboration/contradiction relations, temporal-consistency records, and immutable documentary snapshots without credibility or authorship determination.'),
     ("0054", 'Forensic Research Graph with governed graph registries, typed cross-forensics nodes, explicit evidence-backed edges, renderer-neutral views, cross-product handoffs, immutable snapshots, and portable packages without automated identity, causal, proof, or truth inference.'),
     ("0055", 'Reproducible Investigation Packages with frozen cross-forensics component manifests, artifact and environment records, integrity verification, review records, immutable snapshots, and portable review bundles without authenticity, admissibility, causal, or truth determination.'),
+    ("0056", 'Predictive model and forecast provenance with governed models, targets, features, training windows, forecast runs and observations, descriptive evaluation evidence, specialist-runtime handoffs, and immutable snapshots without Core-side fitting, inference, ranking, calibration, or truth promotion.'),
 ]
 
 

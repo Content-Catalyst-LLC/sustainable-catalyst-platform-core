@@ -1,3 +1,4 @@
+- v2.52.0 — Predictive Model Object Model & Forecast Provenance: governed models, targets, feature provenance, training windows, forecast runs/observations, descriptive evaluation evidence, specialist-runtime handoffs, and immutable snapshots.
 
 - v2.51.0 — Reproducible Investigation Packages: frozen cross-forensics manifests, artifact/environment records, integrity verification, independent review records, immutable snapshots, and portable review bundles.
 ## v2.49.0 — Testimony, Statements & Documentary Evidence

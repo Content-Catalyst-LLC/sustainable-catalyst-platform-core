@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Sustainable Catalyst Platform Core
  * Description: WordPress connector for Sustainable Catalyst Platform Core registry, graph, evidence, developer, gateway, free live-data, international-law, scientific-data, official-statistics, geospatial, time-series, STAC, map-layer, streaming, alerts, source-reliability, and operational-facility, humanitarian-access, essential-services, and country-evidence federation and reconciliation, and Earth/Ocean/Space scientific-service routing, cross-product exchange, distributed scale-control services, and governance/access/audit, production-certification/recovery, and observability/SLO production-operations services, plus incident-response, change-control, rollback-coordination, continuity, backup-verification, disaster-recovery, and multi-region resilience/failover-coordination, and data-lifecycle/archival-integrity/preservation services, plus Federated Core trusted-node exchange services and capacity forecasting/resource-governance services, plus identity/credential/cryptographic-key lifecycle governance, distributed workload governance, and scientific object storage/processing adapter services, research object/model services, renderer-neutral visual reasoning object services, and visualization specification/renderer registry services, and governed System Maps and Flow Maps services.
- * Version: 2.51.0
+ * Version: 2.52.0
  * Author: Content Catalyst LLC
  * License: MIT
  */
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('SCPC_VERSION', '2.51.0');
+define('SCPC_VERSION', '2.52.0');
 define('SCPC_OPTION_BACKEND_URL', 'scpc_backend_url');
 define('SCPC_OPTION_READ_KEY', 'scpc_read_key');
 
@@ -1447,3 +1447,16 @@ function scpc_reproducible_investigation_packages_status_shortcode() {
     return '<div class="scpc-status"><strong>Reproducible Investigation Packages ' . ($ready ? 'Ready' : 'Not Ready') . '</strong><br />' . intval($counts['investigation_packages'] ?? 0) . ' packages · ' . intval($counts['investigation_package_components'] ?? 0) . ' frozen components · ' . intval($counts['investigation_package_verifications'] ?? 0) . ' verifications<br /><span class="scpc-meta">Core ' . esc_html($data['release'] ?? SCPC_VERSION) . ' · reproducibility and integrity verification do not determine authenticity, admissibility, causation, or truth.</span></div>';
 }
 add_shortcode('sc_platform_core_reproducible_investigation_packages_status', 'scpc_reproducible_investigation_packages_status_shortcode');
+
+
+add_shortcode('sc_platform_core_predictive_intelligence_status', function () {
+    $base = rtrim(get_option('scpc_core_base_url', 'https://core.sustainablecatalyst.com'), '/');
+    $response = wp_remote_get($base . '/v1/predictive-intelligence/readiness', array('timeout' => 10));
+    if (is_wp_error($response)) return '<div class="scpc-status">Predictive Intelligence status unavailable.</div>';
+    $data = json_decode(wp_remote_retrieve_body($response), true);
+    if (!is_array($data)) return '<div class="scpc-status">Predictive Intelligence status unavailable.</div>';
+    $c = isset($data['counts']) && is_array($data['counts']) ? $data['counts'] : array();
+    return '<div class="scpc-status"><strong>Predictive Intelligence Online</strong><br>' .
+      esc_html(($c['models'] ?? 0) . ' models · ' . ($c['forecast_runs'] ?? 0) . ' forecast runs · ' . ($c['forecast_observations'] ?? 0) . ' forecast observations') .
+      '<br><small>Core records forecast provenance; fitting and inference remain specialist-runtime responsibilities.</small></div>';
+});

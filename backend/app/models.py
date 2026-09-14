@@ -6160,3 +6160,148 @@ class ForensicInvestigationPackageSnapshotRecord(Base):
     provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
     created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+# v2.52.0 — Predictive Model Object Model & Forecast Provenance
+class PredictiveModelRecord(Base):
+    __tablename__ = "predictive_models"
+    __table_args__ = (UniqueConstraint("project_entity_id", "model_key", name="uq_predictive_model_project_key"), Index("ix_predictive_model_project", "project_entity_id"), Index("ix_predictive_model_visibility", "visibility"))
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    project_entity_id: Mapped[str] = mapped_column(ForeignKey("entities.id", ondelete="CASCADE"), nullable=False)
+    model_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    name: Mapped[str] = mapped_column(String(500), nullable=False)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    model_kind: Mapped[str] = mapped_column(String(100), nullable=False, default="external")
+    runtime_product: Mapped[str] = mapped_column(String(100), nullable=False, default="external")
+    runtime_model_ref: Mapped[str | None] = mapped_column(String(2000), nullable=True)
+    model_version_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    lifecycle_state: Mapped[str] = mapped_column(String(60), nullable=False, default="draft")
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="private")
+    model_contract: Mapped[str] = mapped_column(String(160), nullable=False, default="sc.predictive.model.v1")
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class PredictiveTargetRecord(Base):
+    __tablename__ = "predictive_targets"
+    __table_args__ = (UniqueConstraint("model_id", "target_key", name="uq_predictive_target_model_key"), Index("ix_predictive_target_model", "model_id"))
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    model_id: Mapped[str] = mapped_column(ForeignKey("predictive_models.id", ondelete="CASCADE"), nullable=False)
+    target_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    label: Mapped[str] = mapped_column(String(500), nullable=False)
+    value_kind: Mapped[str] = mapped_column(String(80), nullable=False, default="numeric")
+    unit: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    horizon_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    source_ref: Mapped[str | None] = mapped_column(String(2000), nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class PredictiveFeatureRecord(Base):
+    __tablename__ = "predictive_features"
+    __table_args__ = (UniqueConstraint("model_id", "feature_key", name="uq_predictive_feature_model_key"), Index("ix_predictive_feature_model", "model_id"))
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    model_id: Mapped[str] = mapped_column(ForeignKey("predictive_models.id", ondelete="CASCADE"), nullable=False)
+    feature_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    label: Mapped[str] = mapped_column(String(500), nullable=False)
+    feature_role: Mapped[str] = mapped_column(String(80), nullable=False, default="predictor")
+    value_kind: Mapped[str] = mapped_column(String(80), nullable=False, default="numeric")
+    unit: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    source_product: Mapped[str] = mapped_column(String(100), nullable=False, default="external")
+    source_ref: Mapped[str] = mapped_column(String(2000), nullable=False)
+    lag_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class PredictiveTrainingWindowRecord(Base):
+    __tablename__ = "predictive_training_windows"
+    __table_args__ = (UniqueConstraint("model_id", "window_key", name="uq_predictive_training_window_model_key"), Index("ix_predictive_training_window_model", "model_id"))
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    model_id: Mapped[str] = mapped_column(ForeignKey("predictive_models.id", ondelete="CASCADE"), nullable=False)
+    window_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    start_time: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    end_time: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    cutoff_time: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    dataset_ref: Mapped[str] = mapped_column(String(2000), nullable=False)
+    input_manifest_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    split_strategy_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class PredictiveForecastRunRecord(Base):
+    __tablename__ = "predictive_forecast_runs"
+    __table_args__ = (UniqueConstraint("model_id", "run_key", name="uq_predictive_forecast_run_model_key"), Index("ix_predictive_forecast_run_model", "model_id"), Index("ix_predictive_forecast_run_issued", "issued_at"))
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    model_id: Mapped[str] = mapped_column(ForeignKey("predictive_models.id", ondelete="CASCADE"), nullable=False)
+    training_window_id: Mapped[str | None] = mapped_column(ForeignKey("predictive_training_windows.id", ondelete="SET NULL"), nullable=True)
+    run_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    issued_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    horizon_start: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    horizon_end: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    runtime_product: Mapped[str] = mapped_column(String(100), nullable=False, default="external")
+    runtime_run_ref: Mapped[str | None] = mapped_column(String(2000), nullable=True)
+    model_version_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    input_manifest_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    status: Mapped[str] = mapped_column(String(60), nullable=False, default="recorded")
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class PredictiveForecastObservationRecord(Base):
+    __tablename__ = "predictive_forecast_observations"
+    __table_args__ = (Index("ix_predictive_forecast_observation_run", "forecast_run_id"), Index("ix_predictive_forecast_observation_valid", "valid_time"))
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    forecast_run_id: Mapped[str] = mapped_column(ForeignKey("predictive_forecast_runs.id", ondelete="CASCADE"), nullable=False)
+    target_id: Mapped[str] = mapped_column(ForeignKey("predictive_targets.id", ondelete="CASCADE"), nullable=False)
+    valid_time: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    forecast_value_json: Mapped[dict] = mapped_column(JSON, nullable=False)
+    unit: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    observed_value_json: Mapped[dict | None] = mapped_column(JSON, nullable=True)
+    observation_source_ref: Mapped[str | None] = mapped_column(String(2000), nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class PredictiveEvaluationRecord(Base):
+    __tablename__ = "predictive_evaluations"
+    __table_args__ = (Index("ix_predictive_evaluation_model", "model_id"), Index("ix_predictive_evaluation_run", "forecast_run_id"))
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    model_id: Mapped[str] = mapped_column(ForeignKey("predictive_models.id", ondelete="CASCADE"), nullable=False)
+    forecast_run_id: Mapped[str | None] = mapped_column(ForeignKey("predictive_forecast_runs.id", ondelete="CASCADE"), nullable=True)
+    evaluation_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    metric_name: Mapped[str] = mapped_column(String(180), nullable=False)
+    metric_value_json: Mapped[dict] = mapped_column(JSON, nullable=False)
+    evaluation_window_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    evidence_ref: Mapped[str | None] = mapped_column(String(2000), nullable=True)
+    externally_computed: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class PredictiveRuntimeHandoffRecord(Base):
+    __tablename__ = "predictive_runtime_handoffs"
+    __table_args__ = (UniqueConstraint("model_id", "handoff_key", name="uq_predictive_runtime_handoff_model_key"), Index("ix_predictive_runtime_handoff_model", "model_id"))
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    model_id: Mapped[str] = mapped_column(ForeignKey("predictive_models.id", ondelete="CASCADE"), nullable=False)
+    handoff_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    target_product: Mapped[str] = mapped_column(String(100), nullable=False)
+    contract_version: Mapped[str] = mapped_column(String(160), nullable=False, default="sc.predictive.runtime-handoff.v1")
+    manifest_json: Mapped[dict] = mapped_column(JSON, nullable=False)
+    external_ref: Mapped[str | None] = mapped_column(String(2000), nullable=True)
+    status: Mapped[str] = mapped_column(String(60), nullable=False, default="prepared")
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class PredictiveForecastSnapshotRecord(Base):
+    __tablename__ = "predictive_forecast_snapshots"
+    __table_args__ = (UniqueConstraint("model_id", "revision", name="uq_predictive_forecast_snapshot_revision"), Index("ix_predictive_forecast_snapshot_hash", "content_hash"))
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    model_id: Mapped[str] = mapped_column(ForeignKey("predictive_models.id", ondelete="CASCADE"), nullable=False)
+    revision: Mapped[int] = mapped_column(Integer, nullable=False)
+    content_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    previous_snapshot_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    state_json: Mapped[dict] = mapped_column(JSON, nullable=False)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)

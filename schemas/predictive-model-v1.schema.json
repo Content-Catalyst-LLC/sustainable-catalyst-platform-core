@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Predictive Model",
+  "type": "object",
+  "required": [
+    "model_key",
+    "name",
+    "project_entity_id"
+  ],
+  "properties": {
+    "model_key": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "project_entity_id": {
+      "type": "string"
+    },
+    "model_kind": {
+      "type": "string"
+    },
+    "runtime_product": {
+      "type": "string"
+    },
+    "runtime_model_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "model_version_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  }
+}

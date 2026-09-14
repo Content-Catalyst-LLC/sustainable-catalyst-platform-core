@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Predictive Forecast Provenance",
+  "type": "object",
+  "required": [
+    "model_id",
+    "run_key"
+  ],
+  "properties": {
+    "model_id": {
+      "type": "string"
+    },
+    "run_key": {
+      "type": "string"
+    },
+    "runtime_product": {
+      "type": "string"
+    },
+    "runtime_run_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "input_manifest_hash": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

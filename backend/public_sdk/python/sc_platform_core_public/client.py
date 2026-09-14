@@ -750,3 +750,12 @@ PublicApiClient.open_forensics_research_graph_visual_spec = _open_forensics_rese
 def _open_forensics_reproducible_investigation_package(self, investigation_id: str, package_id: str):
     return self.get(f"/api/v1/open-forensics/investigations/{investigation_id}/reproducible-packages/{package_id}")
 PublicApiClient.open_forensics_reproducible_investigation_package = _open_forensics_reproducible_investigation_package
+
+
+# v2.52.0 Predictive Intelligence — Model Object Model & Forecast Provenance.
+def _predictive_intelligence_readiness(self): return self.request("GET", "/predictive-intelligence/readiness")
+def _predictive_models(self, **params): return self.request("GET", "/predictive-intelligence/models", params=params)
+def _predictive_model_bundle(self, model_id: str): return self.request("GET", f"/predictive-intelligence/models/{model_id}/bundle")
+PublicApiClient.predictive_intelligence_readiness=_predictive_intelligence_readiness
+PublicApiClient.predictive_models=_predictive_models
+PublicApiClient.predictive_model_bundle=_predictive_model_bundle

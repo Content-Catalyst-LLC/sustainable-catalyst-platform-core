@@ -6,7 +6,7 @@ from app.models import Entity
 
 
 def app_client(tmp_path):
-    app=create_app(Settings(database_url=f"sqlite:///{tmp_path/'v2440.db'}",version='2.51.0'))
+    app=create_app(Settings(database_url=f"sqlite:///{tmp_path/'v2440.db'}",version='2.52.0'))
     return app,TestClient(app)
 
 
@@ -25,8 +25,8 @@ def create_case(c):
 
 def test_v2440_readiness_boundaries_and_migration(tmp_path):
     app,c=app_client(tmp_path); seed(app)
-    h=c.get('/health').json(); assert h['version']=='2.51.0' and h['open_forensics'] is True
-    r=c.get('/v1/open-forensics/readiness').json(); assert r['release']=='2.51.0' and r['migration_0048_applied'] is True
+    h=c.get('/health').json(); assert h['version']=='2.52.0' and h['open_forensics'] is True
+    r=c.get('/v1/open-forensics/readiness').json(); assert r['release']=='2.52.0' and r['migration_0048_applied'] is True
     for key in ('structured_claim_registry_by_core','claim_evidence_position_mapping_by_core','explicit_contradiction_registry_by_core','competing_hypothesis_registry_by_core','descriptive_hypothesis_comparison_matrix_by_core','immutable_reasoning_snapshots_by_core'):
         assert r[key] is True,key
     for key in ('automatic_contradiction_detection_by_core','claim_truth_determination_by_core','contradiction_resolution_by_core','hypothesis_probability_assignment_by_core','hypothesis_ranking_by_core','verdict_generation_by_core','automatic_truth_promotion'):

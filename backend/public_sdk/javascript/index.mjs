@@ -527,3 +527,9 @@ PublicApiClient.prototype.openForensicsResearchGraphVisualSpec = function (inves
 PublicApiClient.prototype.openForensicsReproducibleInvestigationPackage = function (investigationId, packageId) {
   return this.get(`/api/v1/open-forensics/investigations/${encodeURIComponent(investigationId)}/reproducible-packages/${encodeURIComponent(packageId)}`);
 };
+
+
+// v2.52.0 Predictive Intelligence — Model Object Model & Forecast Provenance.
+PublicApiClient.prototype.predictiveIntelligenceReadiness=function(){return this.request("/predictive-intelligence/readiness");};
+PublicApiClient.prototype.predictiveModels=function(params={}){const q=new URLSearchParams(params);return this.request(`/predictive-intelligence/models?${q}`);};
+PublicApiClient.prototype.predictiveModelBundle=function(modelId){return this.request(`/predictive-intelligence/models/${encodeURIComponent(modelId)}/bundle`);};

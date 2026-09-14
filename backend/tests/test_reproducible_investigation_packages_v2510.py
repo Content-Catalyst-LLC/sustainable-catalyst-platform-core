@@ -5,7 +5,7 @@ from app.migrations import migration_status
 from app.models import Entity
 
 def app_client(tmp_path):
-    app=create_app(Settings(database_url=f"sqlite:///{tmp_path/'v2510.db'}",version='2.51.0')); return app,TestClient(app)
+    app=create_app(Settings(database_url=f"sqlite:///{tmp_path/'v2510.db'}",version='2.52.0')); return app,TestClient(app)
 
 def seed(app):
     with app.state.database.session_factory() as db:
@@ -15,7 +15,7 @@ def investigation(c):
     r=c.post('/v1/open-forensics/investigations',json={'data':{'project_entity_id':'project:pkg-v2510','investigation_key':'case','name':'Reproducible Case','visibility':'public'}}); assert r.status_code==200,r.text; return r.json()['id']
 
 def test_v2510_readiness_and_boundaries(tmp_path):
-    app,c=app_client(tmp_path); seed(app); r=c.get('/v1/open-forensics/readiness').json(); assert r['release']=='2.51.0' and r['migration_0055_applied'] is True
+    app,c=app_client(tmp_path); seed(app); r=c.get('/v1/open-forensics/readiness').json(); assert r['release']=='2.52.0' and r['migration_0055_applied'] is True
     for k in ('reproducible_investigation_packages_by_core','frozen_cross_forensics_component_manifests_by_core','investigation_package_artifact_registry_by_core','investigation_environment_manifest_capture_by_core','investigation_package_integrity_verification_by_core','independent_review_recording_by_core','portable_investigation_review_bundles_by_core'): assert r[k] is True,k
     for k in ('reproducibility_equals_truth_by_core','automatic_package_authenticity_determination_by_core','automatic_package_admissibility_determination_by_core','automatic_truth_promotion'): assert r[k] is False,k
     assert migration_status(app.state.database)['pending']==[]

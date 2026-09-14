@@ -1,4 +1,8 @@
-## v2.51.0 — Reproducible Investigation Packages
+## v2.52.0 — Predictive Model Object Model & Forecast Provenance
+
+Adds public Predictive Intelligence readiness, model discovery, and forecast-provenance bundle helpers. Core preserves provenance and handoff contracts; specialist runtimes perform fitting/inference.
+
+## v2.52.0 — Reproducible Investigation Packages
 
 Adds public helpers for Open Forensics media provenance, derivative-lineage graphs, and descriptive comparison bundles.
 

@@ -1,3 +1,6 @@
+== 2.52.0 ==
+Predictive Model Object Model & Forecast Provenance status surface and Core 2.52.0 compatibility.
+
 == 2.51.0 ==
 Reproducible Investigation Packages status surface and Core 2.51.0 compatibility.
 
@@ -13,7 +16,7 @@ Tags: knowledge graph, entity registry, provenance, live data, sustainable catal
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.0
-Stable tag: 2.51.0
+Stable tag: 2.52.0
 License: MIT
 
 WordPress status, live-data gateway, and entity lookup client for Sustainable Catalyst Platform Core.

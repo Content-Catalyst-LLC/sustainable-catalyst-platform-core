@@ -193,6 +193,7 @@ def health(request: Request):
         "forensic_testimony_statements_documentary_evidence": request.app.state.settings.open_forensics_enabled,
         "forensic_research_graph": request.app.state.settings.open_forensics_enabled,
         "reproducible_investigation_packages": request.app.state.settings.open_forensics_enabled,
+        "predictive_model_object_model_forecast_provenance": request.app.state.settings.predictive_intelligence_enabled,
     }
 
 
