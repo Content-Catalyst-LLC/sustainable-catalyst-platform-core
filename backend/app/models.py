@@ -5803,3 +5803,141 @@ class ForensicQuantitativeReproductionPackageRecord(Base):
     provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
     created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+# v2.49.0 — Testimony, Statements & Documentary Evidence
+class ForensicStatementRecord(Base):
+    __tablename__ = "forensic_statements"
+    __table_args__ = (UniqueConstraint("investigation_id", "statement_key", name="uq_forensic_statement_key"), Index("ix_forensic_statement_investigation", "investigation_id"))
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    investigation_id: Mapped[str] = mapped_column(ForeignKey("forensic_investigations.id", ondelete="CASCADE"), nullable=False)
+    statement_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    statement_kind: Mapped[str] = mapped_column(String(80), nullable=False, default="statement")
+    label: Mapped[str] = mapped_column(String(500), nullable=False)
+    statement_text: Mapped[str] = mapped_column(Text, nullable=False)
+    speaker_ref: Mapped[str | None] = mapped_column(String(2000), nullable=True)
+    speaker_label: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    author_ref: Mapped[str | None] = mapped_column(String(2000), nullable=True)
+    author_label: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    evidence_item_id: Mapped[str | None] = mapped_column(ForeignKey("forensic_evidence_items.id", ondelete="SET NULL"), nullable=True)
+    event_id: Mapped[str | None] = mapped_column(ForeignKey("forensic_events.id", ondelete="SET NULL"), nullable=True)
+    stated_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    temporal_basis: Mapped[str] = mapped_column(String(60), nullable=False, default="asserted")
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ForensicStatementSourceContextRecord(Base):
+    __tablename__ = "forensic_statement_source_contexts"
+    __table_args__ = (Index("ix_forensic_statement_context_statement", "statement_id"), Index("ix_forensic_statement_context_evidence", "evidence_item_id"))
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    statement_id: Mapped[str] = mapped_column(ForeignKey("forensic_statements.id", ondelete="CASCADE"), nullable=False)
+    evidence_item_id: Mapped[str | None] = mapped_column(ForeignKey("forensic_evidence_items.id", ondelete="SET NULL"), nullable=True)
+    source_ref: Mapped[str | None] = mapped_column(String(2000), nullable=True)
+    locator_json: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
+    surrounding_context: Mapped[str | None] = mapped_column(Text, nullable=True)
+    transcription_status: Mapped[str] = mapped_column(String(60), nullable=False, default="as-recorded")
+    content_hash: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    hash_algorithm: Mapped[str | None] = mapped_column(String(40), nullable=True, default="sha256")
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ForensicDocumentRecord(Base):
+    __tablename__ = "forensic_documents"
+    __table_args__ = (UniqueConstraint("investigation_id", "document_key", name="uq_forensic_document_key"), Index("ix_forensic_document_investigation", "investigation_id"))
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    investigation_id: Mapped[str] = mapped_column(ForeignKey("forensic_investigations.id", ondelete="CASCADE"), nullable=False)
+    document_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    document_kind: Mapped[str] = mapped_column(String(80), nullable=False, default="document")
+    title: Mapped[str] = mapped_column(String(1000), nullable=False)
+    evidence_item_id: Mapped[str | None] = mapped_column(ForeignKey("forensic_evidence_items.id", ondelete="SET NULL"), nullable=True)
+    forensic_object_id: Mapped[str | None] = mapped_column(ForeignKey("forensic_objects.id", ondelete="SET NULL"), nullable=True)
+    author_ref: Mapped[str | None] = mapped_column(String(2000), nullable=True)
+    author_label: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    issuer_ref: Mapped[str | None] = mapped_column(String(2000), nullable=True)
+    issued_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    source_ref: Mapped[str | None] = mapped_column(String(2000), nullable=True)
+    source_context_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    content_hash: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    hash_algorithm: Mapped[str | None] = mapped_column(String(40), nullable=True, default="sha256")
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ForensicDocumentAssertionRecord(Base):
+    __tablename__ = "forensic_document_assertions"
+    __table_args__ = (UniqueConstraint("document_id", "assertion_key", name="uq_forensic_document_assertion_key"), Index("ix_forensic_document_assertion_document", "document_id"), Index("ix_forensic_document_assertion_claim", "claim_id"))
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    document_id: Mapped[str] = mapped_column(ForeignKey("forensic_documents.id", ondelete="CASCADE"), nullable=False)
+    assertion_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    assertion_text: Mapped[str] = mapped_column(Text, nullable=False)
+    assertion_kind: Mapped[str] = mapped_column(String(80), nullable=False, default="documentary")
+    locator_json: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
+    claim_id: Mapped[str | None] = mapped_column(ForeignKey("forensic_claims.id", ondelete="SET NULL"), nullable=True)
+    evidence_item_id: Mapped[str | None] = mapped_column(ForeignKey("forensic_evidence_items.id", ondelete="SET NULL"), nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ForensicStatementClaimBindingRecord(Base):
+    __tablename__ = "forensic_statement_claim_bindings"
+    __table_args__ = (UniqueConstraint("statement_id", "claim_id", "binding_kind", name="uq_forensic_statement_claim_binding"), Index("ix_forensic_statement_claim_statement", "statement_id"), Index("ix_forensic_statement_claim_claim", "claim_id"))
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    statement_id: Mapped[str] = mapped_column(ForeignKey("forensic_statements.id", ondelete="CASCADE"), nullable=False)
+    claim_id: Mapped[str] = mapped_column(ForeignKey("forensic_claims.id", ondelete="CASCADE"), nullable=False)
+    binding_kind: Mapped[str] = mapped_column(String(80), nullable=False)
+    rationale: Mapped[str | None] = mapped_column(Text, nullable=True)
+    evidence_item_id: Mapped[str | None] = mapped_column(ForeignKey("forensic_evidence_items.id", ondelete="SET NULL"), nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ForensicStatementRelationRecord(Base):
+    __tablename__ = "forensic_statement_relations"
+    __table_args__ = (UniqueConstraint("source_statement_id", "target_statement_id", "relation_kind", name="uq_forensic_statement_relation"), Index("ix_forensic_statement_relation_source", "source_statement_id"), Index("ix_forensic_statement_relation_target", "target_statement_id"))
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    source_statement_id: Mapped[str] = mapped_column(ForeignKey("forensic_statements.id", ondelete="CASCADE"), nullable=False)
+    target_statement_id: Mapped[str] = mapped_column(ForeignKey("forensic_statements.id", ondelete="CASCADE"), nullable=False)
+    relation_kind: Mapped[str] = mapped_column(String(80), nullable=False)
+    rationale: Mapped[str | None] = mapped_column(Text, nullable=True)
+    evidence_basis_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ForensicTemporalConsistencyRecord(Base):
+    __tablename__ = "forensic_temporal_consistency_assessments"
+    __table_args__ = (Index("ix_forensic_temporal_consistency_investigation", "investigation_id"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    investigation_id: Mapped[str] = mapped_column(ForeignKey("forensic_investigations.id", ondelete="CASCADE"), nullable=False)
+    subject_a_kind: Mapped[str] = mapped_column(String(80), nullable=False)
+    subject_a_id: Mapped[str] = mapped_column(String(36), nullable=False)
+    subject_b_kind: Mapped[str] = mapped_column(String(80), nullable=False)
+    subject_b_id: Mapped[str] = mapped_column(String(36), nullable=False)
+    assessment: Mapped[str] = mapped_column(String(60), nullable=False)
+    rationale: Mapped[str | None] = mapped_column(Text, nullable=True)
+    evidence_basis_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ForensicDocumentarySnapshotRecord(Base):
+    __tablename__ = "forensic_documentary_snapshots"
+    __table_args__ = (UniqueConstraint("investigation_id", "revision", name="uq_forensic_documentary_snapshot_revision"), Index("ix_forensic_documentary_snapshot_hash", "content_hash"))
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    investigation_id: Mapped[str] = mapped_column(ForeignKey("forensic_investigations.id", ondelete="CASCADE"), nullable=False)
+    revision: Mapped[int] = mapped_column(Integer, nullable=False)
+    content_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    previous_snapshot_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    state_json: Mapped[dict] = mapped_column(JSON, nullable=False)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)

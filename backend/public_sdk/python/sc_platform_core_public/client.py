@@ -731,3 +731,8 @@ PublicApiClient.open_forensics_media_comparison_bundle = _open_forensics_media_c
 def _open_forensics_quantitative_reconstructions(self, investigation_id: str):
     return self.request("GET", f"/open-forensics/investigations/{investigation_id}/quantitative-reconstructions")
 PublicApiClient.open_forensics_quantitative_reconstructions = _open_forensics_quantitative_reconstructions
+
+
+def _open_forensics_documentary_evidence(self, investigation_id: str):
+    return self.get(f"/api/v1/open-forensics/investigations/{investigation_id}/documentary-evidence")
+PublicApiClient.open_forensics_documentary_evidence = _open_forensics_documentary_evidence

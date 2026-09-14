@@ -1,4 +1,4 @@
-## v2.48.0 — Quantitative Reconstruction & Reproduction Handoffs
+## v2.49.0 — Quantitative Reconstruction & Reproduction Handoffs
 Platform Core now provides a governed quantitative reconstruction layer for Open Forensics with evidence-linked inputs, explicit uncertainty, external specialist-runtime handoffs, result bindings, and reproducible quantitative packages. Core does not execute or solve quantitative models.
 
 ## v2.47.0 — Media Artifact & Derivative Provenance

@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Forensic Document Assertion v1",
+  "type": "object",
+  "required": [
+    "assertion_key",
+    "assertion_text",
+    "locator"
+  ],
+  "properties": {
+    "assertion_key": {
+      "type": "string"
+    },
+    "assertion_text": {
+      "type": "string"
+    },
+    "locator": {
+      "type": "object"
+    },
+    "claim_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  }
+}

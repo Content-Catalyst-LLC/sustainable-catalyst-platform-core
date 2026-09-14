@@ -6,7 +6,7 @@ from app.models import Entity
 
 
 def app_client(tmp_path):
-    app=create_app(Settings(database_url=f"sqlite:///{tmp_path/'v2460.db'}",version='2.48.0'))
+    app=create_app(Settings(database_url=f"sqlite:///{tmp_path/'v2460.db'}",version='2.49.0'))
     return app,TestClient(app)
 
 
@@ -29,8 +29,8 @@ def case(c):
 
 def test_v2460_readiness_boundaries_and_migration(tmp_path):
     app,c=app_client(tmp_path); seed(app)
-    h=c.get('/health').json(); assert h['version']=='2.48.0' and h['open_forensics'] is True
-    r=c.get('/v1/open-forensics/readiness').json(); assert r['release']=='2.48.0' and r['migration_0050_applied'] is True
+    h=c.get('/health').json(); assert h['version']=='2.49.0' and h['open_forensics'] is True
+    r=c.get('/v1/open-forensics/readiness').json(); assert r['release']=='2.49.0' and r['migration_0050_applied'] is True
     for key in ('forensic_place_registry_by_core','evidence_spatial_binding_by_core','event_place_binding_by_core','spatial_uncertainty_envelopes_by_core','trajectory_evidence_registry_by_core','explicit_spatial_temporal_intersections_by_core','linked_map_timeline_specification_by_core','site_intelligence_handoffs_by_core','immutable_spatial_temporal_snapshots_by_core'):
         assert r[key] is True,key
     for key in ('crs_reprojection_by_core','spatial_join_by_core','routing_by_core','remote_sensing_by_core','trajectory_interpolation_execution_by_core','automatic_location_truth_determination_by_core','automatic_truth_promotion'):

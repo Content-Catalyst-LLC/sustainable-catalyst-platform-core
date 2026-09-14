@@ -28,6 +28,8 @@ from ..models import (
     ForensicQuantitativeReconstructionRecord, ForensicQuantitativeMeasurementRecord, ForensicQuantitativeAssumptionRecord,
     ForensicQuantitativeParameterRecord, ForensicQuantitativeScenarioRecord, ForensicQuantitativeHandoffRecord,
     ForensicQuantitativeResultBindingRecord, ForensicQuantitativeReproductionPackageRecord,
+    ForensicStatementRecord, ForensicStatementSourceContextRecord, ForensicDocumentRecord, ForensicDocumentAssertionRecord,
+    ForensicStatementClaimBindingRecord, ForensicStatementRelationRecord, ForensicTemporalConsistencyRecord, ForensicDocumentarySnapshotRecord,
 )
 
 OBJECT_KINDS = {
@@ -86,6 +88,14 @@ QUANT_PARAMETER_ROLES = {"observed", "assumed", "calibrated", "derived-external"
 FORBIDDEN_QUANT_FIELDS = {"execute_by_core", "core_execute", "computed_by_core", "solved_by_core", "probability", "posterior", "rank", "winner", "verdict", "truth_value", "guilt", "responsibility"}
 
 FORBIDDEN_MEDIA_DETERMINATION_FIELDS = {"authentic", "authenticity", "inauthentic", "fake", "deepfake", "manipulated", "manipulation_intent", "author", "author_identity", "creator_identity", "originality_determination", "probability", "posterior", "rank", "winner", "verdict", "truth_value", "guilt", "responsibility"}
+
+STATEMENT_KINDS = {"testimony", "interview", "declaration", "statement", "communication", "transcript", "documentary-statement", "other"}
+DOCUMENT_KINDS = {"report", "letter", "memo", "record", "filing", "publication", "transcript", "correspondence", "form", "document", "other"}
+STATEMENT_CLAIM_BINDING_KINDS = {"reports", "supports", "inconsistent", "qualifies", "denies", "context", "unknown"}
+STATEMENT_RELATION_KINDS = {"corroborates", "contradicts", "qualifies", "repeats", "derived-from", "same-source-as", "contextualizes", "related-to"}
+TEMPORAL_CONSISTENCY_ASSESSMENTS = {"consistent", "inconsistent", "uncertain", "not-comparable", "unknown"}
+DOCUMENTARY_SUBJECT_KINDS = {"statement", "document-assertion", "event", "claim"}
+FORBIDDEN_DOCUMENTARY_FIELDS = {"credibility_score", "reliability_score", "truth_value", "truth", "verdict", "probability", "posterior", "rank", "winner", "verified_speaker", "verified_author", "authorship_determined", "speaker_identity_verified", "guilt", "responsibility"}
 
 
 def _ser(row):
@@ -189,6 +199,19 @@ def _boundaries():
         "workbench_lab_handoff_contracts_by_core": True,
         "external_result_binding_by_core": True,
         "reproducible_quantitative_packages_by_core": True,
+        "statement_testimony_registry_by_core": True,
+        "documentary_evidence_registry_by_core": True,
+        "speaker_author_reference_binding_by_core": True,
+        "source_context_preservation_by_core": True,
+        "statement_claim_binding_by_core": True,
+        "explicit_corroboration_contradiction_relations_by_core": True,
+        "temporal_consistency_recording_by_core": True,
+        "immutable_documentary_snapshots_by_core": True,
+        "automatic_claim_extraction_by_core": False,
+        "automatic_speaker_identity_resolution_by_core": False,
+        "automatic_authorship_attribution_by_core": False,
+        "automatic_corroboration_detection_by_core": False,
+        "credibility_scoring_by_core": False,
         "quantitative_model_execution_by_core": False,
         "numerical_solution_by_core": False,
         "statistical_inference_execution_by_core": False,
@@ -242,6 +265,7 @@ def readiness(db: Session) -> dict[str, Any]:
         "migration_0050_applied": True,
         "migration_0051_applied": True,
         "migration_0052_applied": True,
+        "migration_0053_applied": True,
         "forensic_contract": "sc.open-forensics.investigation.v1",
         "counts": {
             "investigations": count(ForensicInvestigationRecord),
@@ -294,6 +318,14 @@ def readiness(db: Session) -> dict[str, Any]:
             "quantitative_handoffs": count(ForensicQuantitativeHandoffRecord),
             "quantitative_result_bindings": count(ForensicQuantitativeResultBindingRecord),
             "quantitative_reproduction_packages": count(ForensicQuantitativeReproductionPackageRecord),
+            "statements": count(ForensicStatementRecord),
+            "statement_source_contexts": count(ForensicStatementSourceContextRecord),
+            "documents": count(ForensicDocumentRecord),
+            "document_assertions": count(ForensicDocumentAssertionRecord),
+            "statement_claim_bindings": count(ForensicStatementClaimBindingRecord),
+            "statement_relations": count(ForensicStatementRelationRecord),
+            "temporal_consistency_assessments": count(ForensicTemporalConsistencyRecord),
+            "documentary_snapshots": count(ForensicDocumentarySnapshotRecord),
         },
         **_boundaries(),
     }
@@ -1381,3 +1413,121 @@ def create_quantitative_reproduction_package(db: Session, investigation_id: str,
     last=db.scalar(select(ForensicQuantitativeReproductionPackageRecord).where(ForensicQuantitativeReproductionPackageRecord.investigation_id==investigation_id,ForensicQuantitativeReproductionPackageRecord.package_key==key).order_by(ForensicQuantitativeReproductionPackageRecord.revision.desc()).limit(1)); revision=(last.revision+1) if last else 1
     manifest={"contract":"sc.open-forensics.quantitative-reproduction-package.v1","manifest_hash":digest,"state":state,"specialist_execution_required":True,"quantitative_model_execution_by_core":False}
     row=ForensicQuantitativeReproductionPackageRecord(investigation_id=investigation_id,reconstruction_id=reconstruction_id,package_key=key,revision=revision,manifest_hash=digest,manifest_json=manifest,provenance_json=dict(payload.get("provenance") or {}),created_by=str(payload.get("created_by") or "operator")); db.add(row); db.commit(); db.refresh(row); return _ser(row)
+
+
+# v2.49.0 — Testimony, Statements & Documentary Evidence
+def _reject_documentary_fields(payload: dict[str, Any]):
+    bad=sorted(FORBIDDEN_DOCUMENTARY_FIELDS.intersection(payload))
+    if bad:
+        raise ValueError("Core preserves testimony/documentary source context and explicit analyst bindings but does not verify identity, determine authorship, score credibility, assign probability, or produce verdicts: " + ", ".join(bad))
+
+
+def _statement(db: Session, investigation_id: str, statement_id: str) -> ForensicStatementRecord:
+    row=db.get(ForensicStatementRecord,statement_id)
+    if row is None or row.investigation_id!=investigation_id: raise ValueError("statement must belong to this investigation.")
+    return row
+
+
+def _document(db: Session, investigation_id: str, document_id: str) -> ForensicDocumentRecord:
+    row=db.get(ForensicDocumentRecord,document_id)
+    if row is None or row.investigation_id!=investigation_id: raise ValueError("document must belong to this investigation.")
+    return row
+
+
+def add_statement(db: Session, investigation_id: str, payload: dict[str, Any]):
+    _investigation(db,investigation_id); _reject_documentary_fields(payload)
+    key=str(payload.get("statement_key") or "").strip(); label=str(payload.get("label") or "").strip(); text=str(payload.get("statement_text") or "").strip(); kind=str(payload.get("statement_kind") or "statement")
+    if not key or not label or not text: raise ValueError("statement_key, label, and statement_text are required.")
+    if kind not in STATEMENT_KINDS: raise ValueError("unsupported statement_kind.")
+    eid=payload.get("evidence_item_id"); event_id=payload.get("event_id")
+    if eid: _evidence(db,investigation_id,str(eid))
+    if event_id:
+        event=db.get(ForensicEventRecord,str(event_id));
+        if event is None or event.investigation_id!=investigation_id: raise ValueError("event_id must belong to this investigation.")
+    row=ForensicStatementRecord(investigation_id=investigation_id,statement_key=key,statement_kind=kind,label=label,statement_text=text,speaker_ref=payload.get("speaker_ref"),speaker_label=payload.get("speaker_label"),author_ref=payload.get("author_ref"),author_label=payload.get("author_label"),evidence_item_id=str(eid) if eid else None,event_id=str(event_id) if event_id else None,stated_at=_dt(payload.get("stated_at")),temporal_basis=str(payload.get("temporal_basis") or "asserted"),provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {})); db.add(row); db.commit(); db.refresh(row); return _ser(row)
+
+
+def add_statement_source_context(db: Session, investigation_id: str, statement_id: str, payload: dict[str, Any]):
+    _reject_documentary_fields(payload); _statement(db,investigation_id,statement_id)
+    locator=dict(payload.get("locator") or {})
+    if not locator: raise ValueError("source context requires an explicit locator such as page, section, timestamp, paragraph, or record identifier.")
+    eid=payload.get("evidence_item_id")
+    if eid: _evidence(db,investigation_id,str(eid))
+    _validate_hash(payload.get("content_hash"),payload.get("hash_algorithm"))
+    row=ForensicStatementSourceContextRecord(statement_id=statement_id,evidence_item_id=str(eid) if eid else None,source_ref=payload.get("source_ref"),locator_json=locator,surrounding_context=payload.get("surrounding_context"),transcription_status=str(payload.get("transcription_status") or "as-recorded"),content_hash=payload.get("content_hash"),hash_algorithm=payload.get("hash_algorithm") or "sha256",provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {})); db.add(row); db.commit(); db.refresh(row); return _ser(row)
+
+
+def add_document(db: Session, investigation_id: str, payload: dict[str, Any]):
+    _investigation(db,investigation_id); _reject_documentary_fields(payload)
+    key=str(payload.get("document_key") or "").strip(); title=str(payload.get("title") or "").strip(); kind=str(payload.get("document_kind") or "document")
+    if not key or not title: raise ValueError("document_key and title are required.")
+    if kind not in DOCUMENT_KINDS: raise ValueError("unsupported document_kind.")
+    eid=payload.get("evidence_item_id"); oid=payload.get("forensic_object_id")
+    if eid: _evidence(db,investigation_id,str(eid))
+    if oid:
+        obj=db.get(ForensicObjectRecord,str(oid));
+        if obj is None or obj.investigation_id!=investigation_id: raise ValueError("forensic_object_id must belong to this investigation.")
+    _validate_hash(payload.get("content_hash"),payload.get("hash_algorithm"))
+    row=ForensicDocumentRecord(investigation_id=investigation_id,document_key=key,document_kind=kind,title=title,evidence_item_id=str(eid) if eid else None,forensic_object_id=str(oid) if oid else None,author_ref=payload.get("author_ref"),author_label=payload.get("author_label"),issuer_ref=payload.get("issuer_ref"),issued_at=_dt(payload.get("issued_at")),source_ref=payload.get("source_ref"),source_context_json=dict(payload.get("source_context") or {}),content_hash=payload.get("content_hash"),hash_algorithm=payload.get("hash_algorithm") or "sha256",provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {})); db.add(row); db.commit(); db.refresh(row); return _ser(row)
+
+
+def add_document_assertion(db: Session, investigation_id: str, document_id: str, payload: dict[str, Any]):
+    _reject_documentary_fields(payload); _document(db,investigation_id,document_id)
+    key=str(payload.get("assertion_key") or "").strip(); text=str(payload.get("assertion_text") or "").strip(); locator=dict(payload.get("locator") or {})
+    if not key or not text or not locator: raise ValueError("assertion_key, assertion_text, and explicit locator are required.")
+    claim_id=payload.get("claim_id"); eid=payload.get("evidence_item_id")
+    if claim_id:
+        claim=db.get(ForensicClaimRecord,str(claim_id));
+        if claim is None or claim.investigation_id!=investigation_id: raise ValueError("claim_id must belong to this investigation.")
+    if eid: _evidence(db,investigation_id,str(eid))
+    row=ForensicDocumentAssertionRecord(document_id=document_id,assertion_key=key,assertion_text=text,assertion_kind=str(payload.get("assertion_kind") or "documentary"),locator_json=locator,claim_id=str(claim_id) if claim_id else None,evidence_item_id=str(eid) if eid else None,provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {})); db.add(row); db.commit(); db.refresh(row); return _ser(row)
+
+
+def bind_statement_claim(db: Session, investigation_id: str, statement_id: str, payload: dict[str, Any]):
+    _reject_documentary_fields(payload); _statement(db,investigation_id,statement_id)
+    claim_id=str(payload.get("claim_id") or ""); kind=str(payload.get("binding_kind") or "unknown")
+    claim=db.get(ForensicClaimRecord,claim_id)
+    if claim is None or claim.investigation_id!=investigation_id: raise ValueError("claim_id must belong to this investigation.")
+    if kind not in STATEMENT_CLAIM_BINDING_KINDS: raise ValueError("unsupported binding_kind.")
+    eid=payload.get("evidence_item_id");
+    if eid: _evidence(db,investigation_id,str(eid))
+    row=ForensicStatementClaimBindingRecord(statement_id=statement_id,claim_id=claim_id,binding_kind=kind,rationale=payload.get("rationale"),evidence_item_id=str(eid) if eid else None,provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {})); db.add(row); db.commit(); db.refresh(row); return _ser(row)
+
+
+def add_statement_relation(db: Session, investigation_id: str, payload: dict[str, Any]):
+    _reject_documentary_fields(payload); _investigation(db,investigation_id)
+    source=str(payload.get("source_statement_id") or ""); target=str(payload.get("target_statement_id") or ""); kind=str(payload.get("relation_kind") or "")
+    _statement(db,investigation_id,source); _statement(db,investigation_id,target)
+    if source==target: raise ValueError("statement relation endpoints must be distinct.")
+    if kind not in STATEMENT_RELATION_KINDS: raise ValueError("unsupported relation_kind.")
+    row=ForensicStatementRelationRecord(source_statement_id=source,target_statement_id=target,relation_kind=kind,rationale=payload.get("rationale"),evidence_basis_ids_json=list(payload.get("evidence_basis_ids") or []),provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {})); db.add(row); db.commit(); db.refresh(row); return _ser(row)
+
+
+def add_temporal_consistency_assessment(db: Session, investigation_id: str, payload: dict[str, Any]):
+    _reject_documentary_fields(payload); _investigation(db,investigation_id)
+    ak=str(payload.get("subject_a_kind") or ""); bk=str(payload.get("subject_b_kind") or ""); aid=str(payload.get("subject_a_id") or ""); bid=str(payload.get("subject_b_id") or ""); assessment=str(payload.get("assessment") or "unknown")
+    if ak not in DOCUMENTARY_SUBJECT_KINDS or bk not in DOCUMENTARY_SUBJECT_KINDS: raise ValueError("unsupported temporal consistency subject kind.")
+    if not aid or not bid: raise ValueError("subject_a_id and subject_b_id are required.")
+    if assessment not in TEMPORAL_CONSISTENCY_ASSESSMENTS: raise ValueError("unsupported temporal consistency assessment.")
+    row=ForensicTemporalConsistencyRecord(investigation_id=investigation_id,subject_a_kind=ak,subject_a_id=aid,subject_b_kind=bk,subject_b_id=bid,assessment=assessment,rationale=payload.get("rationale"),evidence_basis_ids_json=list(payload.get("evidence_basis_ids") or []),provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {})); db.add(row); db.commit(); db.refresh(row); return _ser(row)
+
+
+def documentary_evidence_bundle(db: Session, investigation_id: str):
+    _investigation(db,investigation_id)
+    statements=db.scalars(select(ForensicStatementRecord).where(ForensicStatementRecord.investigation_id==investigation_id).order_by(ForensicStatementRecord.created_at,ForensicStatementRecord.id)).all()
+    statement_ids=[x.id for x in statements]
+    documents=db.scalars(select(ForensicDocumentRecord).where(ForensicDocumentRecord.investigation_id==investigation_id).order_by(ForensicDocumentRecord.created_at,ForensicDocumentRecord.id)).all(); document_ids=[x.id for x in documents]
+    contexts=db.scalars(select(ForensicStatementSourceContextRecord).where(ForensicStatementSourceContextRecord.statement_id.in_(statement_ids))).all() if statement_ids else []
+    assertions=db.scalars(select(ForensicDocumentAssertionRecord).where(ForensicDocumentAssertionRecord.document_id.in_(document_ids))).all() if document_ids else []
+    bindings=db.scalars(select(ForensicStatementClaimBindingRecord).where(ForensicStatementClaimBindingRecord.statement_id.in_(statement_ids))).all() if statement_ids else []
+    relations=db.scalars(select(ForensicStatementRelationRecord).where(ForensicStatementRelationRecord.source_statement_id.in_(statement_ids))).all() if statement_ids else []
+    temporal=db.scalars(select(ForensicTemporalConsistencyRecord).where(ForensicTemporalConsistencyRecord.investigation_id==investigation_id)).all()
+    snapshots=db.scalars(select(ForensicDocumentarySnapshotRecord).where(ForensicDocumentarySnapshotRecord.investigation_id==investigation_id).order_by(ForensicDocumentarySnapshotRecord.revision)).all()
+    return {"contract":"sc.open-forensics.testimony-documentary-evidence.v1","investigation_id":investigation_id,"statements":[_ser(x) for x in statements],"source_contexts":[_ser(x) for x in contexts],"documents":[_ser(x) for x in documents],"document_assertions":[_ser(x) for x in assertions],"statement_claim_bindings":[_ser(x) for x in bindings],"statement_relations":[_ser(x) for x in relations],"temporal_consistency_assessments":[_ser(x) for x in temporal],"snapshots":[_ser(x) for x in snapshots],"descriptive_only":True,"credibility_scoring_by_core":False,"identity_verification_by_core":False,"automatic_authorship_attribution_by_core":False,"automatic_truth_promotion":False,"boundaries":_boundaries()}
+
+
+def create_documentary_snapshot(db: Session, investigation_id: str, payload: dict[str, Any]):
+    _reject_documentary_fields(payload); state=documentary_evidence_bundle(db,investigation_id); state["snapshots"]=[]
+    canonical=json.dumps(state,sort_keys=True,separators=(",",":"),default=str).encode("utf-8"); digest=hashlib.sha256(canonical).hexdigest()
+    last=db.scalar(select(ForensicDocumentarySnapshotRecord).where(ForensicDocumentarySnapshotRecord.investigation_id==investigation_id).order_by(ForensicDocumentarySnapshotRecord.revision.desc()).limit(1)); revision=(last.revision+1) if last else 1
+    row=ForensicDocumentarySnapshotRecord(investigation_id=investigation_id,revision=revision,content_hash=digest,previous_snapshot_hash=last.content_hash if last else None,state_json=state,provenance_json=dict(payload.get("provenance") or {}),created_by=str(payload.get("created_by") or "operator")); db.add(row); db.commit(); db.refresh(row); return _ser(row)

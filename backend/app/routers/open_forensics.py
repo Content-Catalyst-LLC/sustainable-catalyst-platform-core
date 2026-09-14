@@ -433,6 +433,60 @@ def quantitative_reproduction_package(request:Request, investigation_id:str, rec
     except Exception as exc: raise bad(exc)
 
 
+
+# v2.49.0 — Testimony, Statements & Documentary Evidence
+@router.post("/investigations/{investigation_id}/statements", dependencies=[Depends(require_write)])
+def add_statement(request:Request, investigation_id:str, payload:Payload, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.add_statement(db,investigation_id,payload.data)
+    except Exception as exc: raise bad(exc)
+
+@router.post("/investigations/{investigation_id}/statements/{statement_id}/source-contexts", dependencies=[Depends(require_write)])
+def add_statement_source_context(request:Request, investigation_id:str, statement_id:str, payload:Payload, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.add_statement_source_context(db,investigation_id,statement_id,payload.data)
+    except Exception as exc: raise bad(exc)
+
+@router.post("/investigations/{investigation_id}/documents", dependencies=[Depends(require_write)])
+def add_document(request:Request, investigation_id:str, payload:Payload, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.add_document(db,investigation_id,payload.data)
+    except Exception as exc: raise bad(exc)
+
+@router.post("/investigations/{investigation_id}/documents/{document_id}/assertions", dependencies=[Depends(require_write)])
+def add_document_assertion(request:Request, investigation_id:str, document_id:str, payload:Payload, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.add_document_assertion(db,investigation_id,document_id,payload.data)
+    except Exception as exc: raise bad(exc)
+
+@router.post("/investigations/{investigation_id}/statements/{statement_id}/claim-bindings", dependencies=[Depends(require_write)])
+def bind_statement_claim(request:Request, investigation_id:str, statement_id:str, payload:Payload, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.bind_statement_claim(db,investigation_id,statement_id,payload.data)
+    except Exception as exc: raise bad(exc)
+
+@router.post("/investigations/{investigation_id}/statement-relations", dependencies=[Depends(require_write)])
+def add_statement_relation(request:Request, investigation_id:str, payload:Payload, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.add_statement_relation(db,investigation_id,payload.data)
+    except Exception as exc: raise bad(exc)
+
+@router.post("/investigations/{investigation_id}/temporal-consistency", dependencies=[Depends(require_write)])
+def add_temporal_consistency(request:Request, investigation_id:str, payload:Payload, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.add_temporal_consistency_assessment(db,investigation_id,payload.data)
+    except Exception as exc: raise bad(exc)
+
+@router.get("/investigations/{investigation_id}/documentary-evidence", dependencies=[Depends(require_read)])
+def documentary_evidence(request:Request, investigation_id:str, db:Session=Depends(get_session)):
+    enabled(request); return svc.documentary_evidence_bundle(db,investigation_id)
+
+@router.post("/investigations/{investigation_id}/documentary-snapshots", dependencies=[Depends(require_write)])
+def documentary_snapshot(request:Request, investigation_id:str, payload:Payload, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.create_documentary_snapshot(db,investigation_id,payload.data)
+    except Exception as exc: raise bad(exc)
+
 @public_router.get("/readiness", response_model=PublicEnvelope)
 def public_readiness(request:Request, db:Session=Depends(get_session), _ctx:PublicApiContext=Depends(require_public_scope("data:read"))):
     public_enabled(request); data=svc.readiness(db); data.update({"release":request.app.state.settings.version,"enabled":True}); return PublicEnvelope(data=data,meta={"api_version":"v1","request_id":request.state.request_id})
@@ -489,3 +543,10 @@ def public_quantitative_reconstructions(investigation_id:str, request:Request, d
     public_enabled(request); inv=svc._investigation(db,investigation_id)
     if inv.visibility != "public": raise HTTPException(status_code=404,detail="Forensic investigation not found.")
     return PublicEnvelope(data=svc.quantitative_reconstruction_bundle(db,investigation_id),meta={"api_version":"v1","request_id":request.state.request_id})
+
+
+@public_router.get("/investigations/{investigation_id}/documentary-evidence", response_model=PublicEnvelope)
+def public_documentary_evidence(investigation_id:str, request:Request, db:Session=Depends(get_session), _ctx:PublicApiContext=Depends(require_public_scope("data:read"))):
+    public_enabled(request); inv=svc._investigation(db,investigation_id)
+    if inv.visibility != "public": raise HTTPException(status_code=404,detail="Forensic investigation not found.")
+    return PublicEnvelope(data=svc.documentary_evidence_bundle(db,investigation_id),meta={"api_version":"v1","request_id":request.state.request_id})

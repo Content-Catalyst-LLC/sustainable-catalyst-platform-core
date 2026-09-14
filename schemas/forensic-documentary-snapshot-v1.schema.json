@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Forensic Documentary Snapshot v1",
+  "type": "object",
+  "required": [
+    "revision",
+    "content_hash",
+    "state_json"
+  ],
+  "properties": {
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "content_hash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "state_json": {
+      "type": "object"
+    }
+  }
+}

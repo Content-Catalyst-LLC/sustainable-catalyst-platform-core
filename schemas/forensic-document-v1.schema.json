@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Forensic Document v1",
+  "type": "object",
+  "required": [
+    "document_key",
+    "document_kind",
+    "title"
+  ],
+  "properties": {
+    "document_key": {
+      "type": "string"
+    },
+    "document_kind": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "author_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "issuer_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "evidence_item_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "source_context": {
+      "type": "object"
+    }
+  }
+}

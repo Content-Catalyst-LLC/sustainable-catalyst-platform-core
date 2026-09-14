@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Forensic Statement v1",
+  "type": "object",
+  "required": [
+    "statement_key",
+    "statement_kind",
+    "label",
+    "statement_text"
+  ],
+  "properties": {
+    "statement_key": {
+      "type": "string"
+    },
+    "statement_kind": {
+      "type": "string"
+    },
+    "label": {
+      "type": "string"
+    },
+    "statement_text": {
+      "type": "string"
+    },
+    "speaker_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "author_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "evidence_item_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "stated_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    }
+  }
+}

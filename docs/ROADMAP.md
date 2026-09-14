@@ -1,4 +1,4 @@
-## v2.48.0 — Quantitative Reconstruction & Reproduction Handoffs
+## v2.49.0 — Quantitative Reconstruction & Reproduction Handoffs
 Status: Completed
 
 Next: v2.49.0 — Testimony, Statements & Documentary Evidence
@@ -18,7 +18,7 @@ Structured forensic claims, explicit contradictions, evidence-position assessmen
 
 Open Forensics custody/integrity layer: tamper-evident custody event chains, custodians, seals, hash verification, continuity assessment, external attestations, and immutable custody snapshots.
 
-Next planned: **v2.48.0 — Quantitative Reconstruction & Reproduction Handoffs**.
+Next planned: **v2.49.0 — Quantitative Reconstruction & Reproduction Handoffs**.
 
 # Platform Core Roadmap
 ## v2.42.0 — Forensic Object Model & Evidence Provenance
@@ -30,7 +30,7 @@ Current release. Begins Open Forensics with the governed forensic investigation/
 - v2.45.0 — Forensic Timeline & Event Reconstruction
 - v2.46.0 — Forensic Spatial/Temporal Evidence Integration
 - v2.47.0 — Media Artifact & Derivative Provenance
-- v2.48.0 — Quantitative Reconstruction & Reproduction Handoffs
+- v2.49.0 — Quantitative Reconstruction & Reproduction Handoffs
 - v2.49.0 — Testimony, Statements & Documentary Evidence
 - v2.50.0 — Forensic Research Graph
 - v2.51.0 — Reproducible Investigation Packages
@@ -289,7 +289,7 @@ Planned.
 ## v2.47.0 — Media Artifact & Derivative Provenance
 Planned.
 
-## v2.48.0 — Quantitative Reconstruction & Reproduction Handoffs
+## v2.49.0 — Quantitative Reconstruction & Reproduction Handoffs
 Planned.
 
 ## v2.49.0 — Testimony, Statements & Documentary Evidence
@@ -301,9 +301,12 @@ Planned.
 ## v2.51.0 — Reproducible Investigation Packages
 Planned.
 
-Next planned: **v2.48.0 — Quantitative Reconstruction & Reproduction Handoffs**.
+Next planned: **v2.49.0 — Quantitative Reconstruction & Reproduction Handoffs**.
 
 - v2.38.0 Spatial & Temporal Visual Reasoning ✓
 - v2.39.0 Research Librarian Visual Explanation ✓
 
 - v2.45.0 — Forensic Timeline & Event Reconstruction: delivered.
+
+- **v2.49.0 — Testimony, Statements & Documentary Evidence** — Complete.
+- **v2.50.0 — Forensic Research Graph** — Next.

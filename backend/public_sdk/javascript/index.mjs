@@ -508,3 +508,8 @@ PublicApiClient.prototype.openForensicsMediaComparisonBundle = function (investi
 
 // v2.48.0 Open Forensics — Quantitative Reconstruction & Reproduction Handoffs.
 PublicApiClient.prototype.openForensicsQuantitativeReconstructions = function (investigationId) { return this.request(`/open-forensics/investigations/${encodeURIComponent(investigationId)}/quantitative-reconstructions`); };
+
+
+PublicApiClient.prototype.openForensicsDocumentaryEvidence = function (investigationId) {
+  return this.get(`/api/v1/open-forensics/investigations/${encodeURIComponent(investigationId)}/documentary-evidence`);
+};

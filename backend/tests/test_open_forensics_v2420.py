@@ -6,7 +6,7 @@ from app.models import Entity, SourceSnapshot, EvidenceRecord
 
 
 def app_client(tmp_path):
-    app=create_app(Settings(database_url=f"sqlite:///{tmp_path/'v2420.db'}",version="2.48.0"))
+    app=create_app(Settings(database_url=f"sqlite:///{tmp_path/'v2420.db'}",version="2.49.0"))
     return app,TestClient(app)
 
 
@@ -26,8 +26,8 @@ def create_inv(c):
 
 def test_readiness_health_and_migration_0046(tmp_path):
     app,c=app_client(tmp_path); seed(app)
-    h=c.get('/health').json(); assert h['version']=='2.48.0' and h['open_forensics'] is True
-    r=c.get('/v1/open-forensics/readiness').json(); assert r['release']=='2.48.0' and r['migration_0046_applied'] is True
+    h=c.get('/health').json(); assert h['version']=='2.49.0' and h['open_forensics'] is True
+    r=c.get('/v1/open-forensics/readiness').json(); assert r['release']=='2.49.0' and r['migration_0046_applied'] is True
     assert r['evidence_provenance_capture_by_core'] is True and r['content_hash_recording_by_core'] is True
     assert r['chain_of_custody_by_core'] is True
     for key in ('authenticity_determination_by_core','identity_attribution_by_core','causal_conclusion_by_core','legal_conclusion_by_core','automatic_truth_promotion'):

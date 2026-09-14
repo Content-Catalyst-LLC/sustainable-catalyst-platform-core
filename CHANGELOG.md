@@ -1,4 +1,7 @@
-## 2.48.0 — Quantitative Reconstruction & Reproduction Handoffs
+## v2.49.0 — Testimony, Statements & Documentary Evidence
+- Added governed testimony/documentary evidence and migration 0053.
+
+## 2.49.0 — Quantitative Reconstruction & Reproduction Handoffs
 - Adds migration 0052 and eight additive quantitative-forensics tables.
 - Adds evidence-linked measurements, assumptions, parameters, scenarios, external Workbench/Lab handoffs, result bindings, and reproducible quantitative packages.
 - Core remains non-executing: numerical solving, statistical inference, uncertainty propagation, sensitivity analysis, and parameter optimization stay in specialist runtimes.
