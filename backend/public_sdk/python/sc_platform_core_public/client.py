@@ -761,3 +761,6 @@ PublicApiClient.predictive_models=_predictive_models
 PublicApiClient.predictive_model_bundle=_predictive_model_bundle
 def _predictive_backtest_bundle(self, model_id: str, plan_id: str): return self.request("GET", f"/predictive-intelligence/models/{model_id}/backtest-plans/{plan_id}/bundle")
 PublicApiClient.predictive_backtest_bundle=_predictive_backtest_bundle
+
+def _predictive_calibration_bundle(self, model_id: str, study_id: str): return self.request("GET", f"/predictive-intelligence/models/{model_id}/calibration-studies/{study_id}/bundle")
+PublicApiClient.predictive_calibration_bundle=_predictive_calibration_bundle

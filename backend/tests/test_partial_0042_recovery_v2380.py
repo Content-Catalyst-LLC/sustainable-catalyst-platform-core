@@ -13,8 +13,8 @@ def test_partial_0042_table_state_recovers_by_recording_short_metadata(tmp_path)
             if version=='0042':break
             s.add(SchemaMigration(version=version,description=description))
         s.commit(); assert s.get(SchemaMigration,'0042') is None
-    assert run_migrations(db)==['0042','0043','0044','0045','0046','0047','0048','0049','0050','0051','0052','0053','0054','0055','0056','0057']
+    assert run_migrations(db)==['0042','0043','0044','0045','0046','0047','0048','0049','0050','0051','0052','0053','0054','0055','0056','0057','0058']
     with db.session_factory() as s:
         row=s.get(SchemaMigration,'0042'); assert row and len(row.description)<=300
-    status=migration_status(db);assert status['pending']==[] and status['applied'][-1]=='0057'
+    status=migration_status(db);assert status['pending']==[] and status['applied'][-1]=='0058'
     assert TABLES <= set(inspect(db.engine).get_table_names())

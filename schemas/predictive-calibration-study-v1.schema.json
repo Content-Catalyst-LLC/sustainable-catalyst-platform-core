@@ -1,0 +1,52 @@
+{
+  "$id": "https://sustainablecatalyst.com/schemas/predictive-calibration-study-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": true,
+  "properties": {
+    "actual_outcome_source_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "assessment_kind": {
+      "enum": [
+        "categorical-reliability",
+        "coverage",
+        "other",
+        "pit",
+        "quantile-coverage",
+        "rank-histogram",
+        "reliability",
+        "threshold-reliability"
+      ]
+    },
+    "expected_calibration": {
+      "type": "object"
+    },
+    "model_id": {
+      "type": "string"
+    },
+    "provenance": {
+      "type": "object"
+    },
+    "scope": {
+      "type": "object"
+    },
+    "study_key": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "target_id": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "model_id",
+    "target_id",
+    "study_key",
+    "assessment_kind"
+  ],
+  "title": "Predictive Calibration Study v1",
+  "type": "object"
+}

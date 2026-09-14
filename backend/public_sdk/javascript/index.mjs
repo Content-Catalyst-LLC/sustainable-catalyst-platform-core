@@ -534,3 +534,6 @@ PublicApiClient.prototype.predictiveIntelligenceReadiness=function(){return this
 PublicApiClient.prototype.predictiveModels=function(params={}){const q=new URLSearchParams(params);return this.request(`/predictive-intelligence/models?${q}`);};
 PublicApiClient.prototype.predictiveModelBundle=function(modelId){return this.request(`/predictive-intelligence/models/${encodeURIComponent(modelId)}/bundle`);};
 PublicApiClient.prototype.predictiveBacktestBundle=function(modelId,planId){return this.request(`/predictive-intelligence/models/${encodeURIComponent(modelId)}/backtest-plans/${encodeURIComponent(planId)}/bundle`);};
+
+// v2.54.0 Predictive Intelligence — Probabilistic Forecasting & Calibration.
+PublicApiClient.prototype.predictiveCalibrationBundle=function(modelId,studyId){return this.request(`/predictive-intelligence/models/${encodeURIComponent(modelId)}/calibration-studies/${encodeURIComponent(studyId)}/bundle`);};

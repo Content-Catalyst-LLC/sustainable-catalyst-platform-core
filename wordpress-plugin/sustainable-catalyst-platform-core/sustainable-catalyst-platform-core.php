@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Sustainable Catalyst Platform Core
  * Description: WordPress connector for Sustainable Catalyst Platform Core registry, graph, evidence, developer, gateway, free live-data, international-law, scientific-data, official-statistics, geospatial, time-series, STAC, map-layer, streaming, alerts, source-reliability, and operational-facility, humanitarian-access, essential-services, and country-evidence federation and reconciliation, and Earth/Ocean/Space scientific-service routing, cross-product exchange, distributed scale-control services, and governance/access/audit, production-certification/recovery, and observability/SLO production-operations services, plus incident-response, change-control, rollback-coordination, continuity, backup-verification, disaster-recovery, and multi-region resilience/failover-coordination, and data-lifecycle/archival-integrity/preservation services, plus Federated Core trusted-node exchange services and capacity forecasting/resource-governance services, plus identity/credential/cryptographic-key lifecycle governance, distributed workload governance, and scientific object storage/processing adapter services, research object/model services, renderer-neutral visual reasoning object services, and visualization specification/renderer registry services, and governed System Maps and Flow Maps services.
- * Version: 2.53.0
+ * Version: 2.54.0
  * Author: Content Catalyst LLC
  * License: MIT
  */
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('SCPC_VERSION', '2.53.0');
+define('SCPC_VERSION', '2.54.0');
 define('SCPC_OPTION_BACKEND_URL', 'scpc_backend_url');
 define('SCPC_OPTION_READ_KEY', 'scpc_read_key');
 
@@ -1474,4 +1474,18 @@ add_shortcode('sc_platform_core_predictive_backtesting_status', function () {
       esc_html((string)($counts['time_series_datasets'] ?? 0)) . ' time-series datasets · ' .
       esc_html((string)($counts['backtest_plans'] ?? 0)) . ' backtest plans · ' .
       esc_html((string)($counts['backtest_folds'] ?? 0)) . ' folds · Core execution disabled</div>';
+});
+
+add_shortcode('sc_platform_core_predictive_calibration_status', function () {
+    $base = rtrim((string) get_option(SCPC_OPTION_BACKEND_URL, ''), '/');
+    if (!$base) return '<div class="scpc-status">Platform Core backend URL is not configured.</div>';
+    $response = wp_remote_get($base . '/v1/predictive-intelligence/readiness', array('timeout' => 10));
+    if (is_wp_error($response)) return '<div class="scpc-status">Probabilistic forecasting status unavailable.</div>';
+    $data = json_decode(wp_remote_retrieve_body($response), true);
+    if (!is_array($data)) return '<div class="scpc-status">Probabilistic forecasting status unavailable.</div>';
+    $counts = isset($data['counts']) && is_array($data['counts']) ? $data['counts'] : array();
+    return '<div class="scpc-status"><strong>Probabilistic Forecasting &amp; Calibration Online</strong><br>' .
+      esc_html((string)($counts['probabilistic_forecasts'] ?? 0)) . ' probabilistic forecasts · ' .
+      esc_html((string)($counts['calibration_studies'] ?? 0)) . ' calibration studies · ' .
+      esc_html((string)($counts['calibration_packages'] ?? 0)) . ' reproducible packages · Core fitting disabled</div>';
 });

@@ -1,4 +1,4 @@
-## v2.53.0 — Time-Series Forecasting & Backtesting
+## v2.54.0 — Time-Series Forecasting & Backtesting
 
 Adds public Predictive Intelligence readiness, model discovery, and forecast-provenance bundle helpers. Core preserves provenance and handoff contracts; specialist runtimes perform fitting/inference.
 

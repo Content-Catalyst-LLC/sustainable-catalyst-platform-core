@@ -1,3 +1,11 @@
+# v2.54.0 — Probabilistic Forecasting & Calibration
+
+- Additive migration 0058 with six governed probabilistic/calibration tables.
+- Probability, categorical, quantile, interval, and distribution forecast validation.
+- Calibration study/bin/mapping provenance and externally computed probabilistic evaluation evidence.
+- Hash-chained reproducible calibration packages and public SDK bundle access.
+- No Core-side fitting, inference, recalibration, scoring computation, automatic ranking, or truth promotion.
+
 ## 2.53.0 — Time-Series Forecasting & Backtesting
 - Added governed time-series datasets, forecast windows, baselines, leakage-aware backtesting, prediction/actual evidence, and reproducible backtest packages.
 

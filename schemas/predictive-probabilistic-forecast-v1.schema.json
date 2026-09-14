@@ -1,0 +1,63 @@
+{
+  "$id": "https://sustainablecatalyst.com/schemas/predictive-probabilistic-forecast-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": true,
+  "properties": {
+    "backtest_fold_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "forecast": {
+      "type": "object"
+    },
+    "forecast_run_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "model_id": {
+      "type": "string"
+    },
+    "provenance": {
+      "type": "object"
+    },
+    "representation": {
+      "enum": [
+        "binary-event",
+        "categorical",
+        "empirical-samples",
+        "ensemble-distribution",
+        "interval",
+        "parametric-distribution",
+        "quantile"
+      ]
+    },
+    "source_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "target_id": {
+      "type": "string"
+    },
+    "valid_time": {
+      "format": "date-time",
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "required": [
+    "model_id",
+    "target_id",
+    "representation",
+    "forecast"
+  ],
+  "title": "Predictive Probabilistic Forecast v1",
+  "type": "object"
+}

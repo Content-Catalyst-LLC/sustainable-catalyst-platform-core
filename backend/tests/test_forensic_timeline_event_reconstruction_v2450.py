@@ -6,7 +6,7 @@ from app.models import Entity
 
 
 def app_client(tmp_path):
-    app=create_app(Settings(database_url=f"sqlite:///{tmp_path/'v2450.db'}",version='2.53.0'))
+    app=create_app(Settings(database_url=f"sqlite:///{tmp_path/'v2450.db'}",version='2.54.0'))
     return app,TestClient(app)
 
 
@@ -25,8 +25,8 @@ def case(c):
 
 def test_v2450_readiness_boundaries_and_migration(tmp_path):
     app,c=app_client(tmp_path); seed(app)
-    h=c.get('/health').json(); assert h['version']=='2.53.0' and h['open_forensics'] is True
-    r=c.get('/v1/open-forensics/readiness').json(); assert r['release']=='2.53.0' and r['migration_0049_applied'] is True
+    h=c.get('/health').json(); assert h['version']=='2.54.0' and h['open_forensics'] is True
+    r=c.get('/v1/open-forensics/readiness').json(); assert r['release']=='2.54.0' and r['migration_0049_applied'] is True
     for key in ('forensic_event_registry_by_core','bounded_temporal_assertion_capture_by_core','event_evidence_binding_by_core','explicit_event_relation_registry_by_core','reconstruction_hypothesis_registry_by_core','renderer_neutral_timeline_specification_by_core','immutable_timeline_snapshots_by_core'):
         assert r[key] is True,key
     for key in ('automatic_event_inference_by_core','automatic_timestamp_inference_by_core','automatic_sequence_truth_determination_by_core','automatic_participant_identity_resolution_by_core','automatic_truth_promotion'):

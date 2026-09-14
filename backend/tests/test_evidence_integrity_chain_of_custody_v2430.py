@@ -6,7 +6,7 @@ from app.models import Entity
 
 
 def app_client(tmp_path):
-    app=create_app(Settings(database_url=f"sqlite:///{tmp_path/'v2430.db'}",version='2.53.0'))
+    app=create_app(Settings(database_url=f"sqlite:///{tmp_path/'v2430.db'}",version='2.54.0'))
     return app,TestClient(app)
 
 
@@ -28,8 +28,8 @@ def custodian(c,iid,key):
 
 def test_v2430_readiness_and_boundaries(tmp_path):
     app,c=app_client(tmp_path); seed(app)
-    h=c.get('/health').json(); assert h['version']=='2.53.0' and h['open_forensics'] is True
-    r=c.get('/v1/open-forensics/readiness').json(); assert r['release']=='2.53.0' and r['migration_0046_applied'] and r['migration_0047_applied']
+    h=c.get('/health').json(); assert h['version']=='2.54.0' and h['open_forensics'] is True
+    r=c.get('/v1/open-forensics/readiness').json(); assert r['release']=='2.54.0' and r['migration_0046_applied'] and r['migration_0047_applied']
     for key in ('chain_of_custody_by_core','chain_of_custody_recording_by_core','tamper_evident_custody_event_chain_by_core','evidence_integrity_verification_by_core','seal_state_recording_by_core','custody_continuity_analysis_by_core','external_custody_attestation_binding_by_core'):
         assert r[key] is True,key
     for key in ('custody_transfer_attestation_by_core','physical_transfer_verification_by_core','identity_verification_by_core','authenticity_determination_by_core','legal_admissibility_determination_by_core','ownership_determination_by_core','causal_conclusion_by_core','legal_conclusion_by_core','automatic_truth_promotion'):

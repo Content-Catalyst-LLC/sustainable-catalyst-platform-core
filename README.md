@@ -54,3 +54,7 @@ Citation-aware visual research explanations with immutable snapshots and rendere
 
 ### Predictive Intelligence v2.53.0
 Time-Series Forecasting & Backtesting adds governed datasets, rolling/expanding backtest semantics, temporal leakage guardrails, external baseline references, prediction-vs-actual evidence, and reproducible backtest packages while specialist runtimes retain execution.
+
+## Platform Core v2.54.0 — Probabilistic Forecasting & Calibration
+
+Platform Core now records explicit probabilistic forecast objects, calibration studies, externally fitted recalibration mappings, proper-scoring and calibration evidence, and reproducible calibration packages while preserving specialist-runtime execution boundaries.

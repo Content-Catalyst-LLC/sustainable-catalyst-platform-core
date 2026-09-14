@@ -1,0 +1,42 @@
+{
+  "$id": "https://sustainablecatalyst.com/schemas/predictive-calibration-package-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": true,
+  "properties": {
+    "bins": {
+      "type": "array"
+    },
+    "boundaries": {
+      "type": "object"
+    },
+    "contract": {
+      "const": "sc.predictive.calibration-package.v1"
+    },
+    "evaluations": {
+      "type": "array"
+    },
+    "mappings": {
+      "type": "array"
+    },
+    "packages": {
+      "type": "array"
+    },
+    "study": {
+      "type": "object"
+    },
+    "target": {
+      "type": "object"
+    }
+  },
+  "required": [
+    "contract",
+    "study",
+    "target",
+    "bins",
+    "mappings",
+    "evaluations",
+    "boundaries"
+  ],
+  "title": "Predictive Calibration Package v1",
+  "type": "object"
+}

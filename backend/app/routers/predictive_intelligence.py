@@ -114,6 +114,41 @@ def backtest_package(model_id:str,plan_id:str,request:Request,payload:Payload,db
     enabled(request)
     try:return svc.create_backtest_package(db,model_id,plan_id,payload.data)
     except Exception as exc:raise bad(exc)
+@router.post("/models/{model_id}/probabilistic-forecasts",dependencies=[Depends(require_write)])
+def probabilistic_forecast(model_id:str,request:Request,payload:Payload,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.add_probabilistic_forecast(db,model_id,payload.data)
+    except Exception as exc:raise bad(exc)
+@router.post("/models/{model_id}/calibration-studies",dependencies=[Depends(require_write)])
+def calibration_study(model_id:str,request:Request,payload:Payload,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.create_calibration_study(db,model_id,payload.data)
+    except Exception as exc:raise bad(exc)
+@router.post("/models/{model_id}/calibration-studies/{study_id}/bins",dependencies=[Depends(require_write)])
+def calibration_bin(model_id:str,study_id:str,request:Request,payload:Payload,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.add_calibration_bin(db,model_id,study_id,payload.data)
+    except Exception as exc:raise bad(exc)
+@router.post("/models/{model_id}/calibration-studies/{study_id}/mappings",dependencies=[Depends(require_write)])
+def calibration_mapping(model_id:str,study_id:str,request:Request,payload:Payload,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.add_calibration_mapping(db,model_id,study_id,payload.data)
+    except Exception as exc:raise bad(exc)
+@router.post("/models/{model_id}/probabilistic-evaluations",dependencies=[Depends(require_write)])
+def probabilistic_evaluation(model_id:str,request:Request,payload:Payload,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.add_probabilistic_evaluation(db,model_id,payload.data)
+    except Exception as exc:raise bad(exc)
+@router.get("/models/{model_id}/calibration-studies/{study_id}/bundle",dependencies=[Depends(require_read)])
+def calibration_bundle(model_id:str,study_id:str,request:Request,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.calibration_bundle(db,model_id,study_id)
+    except Exception as exc:raise bad(exc)
+@router.post("/models/{model_id}/calibration-studies/{study_id}/packages",dependencies=[Depends(require_write)])
+def calibration_package(model_id:str,study_id:str,request:Request,payload:Payload,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.create_calibration_package(db,model_id,study_id,payload.data)
+    except Exception as exc:raise bad(exc)
 @public_router.get("/readiness",response_model=PublicEnvelope)
 def public_readiness(request:Request,db:Session=Depends(get_session),_ctx:PublicApiContext=Depends(require_public_scope("data:read"))):
     public_enabled(request); data=svc.readiness(db); data.update({"release":request.app.state.settings.version,"enabled":True}); return PublicEnvelope(data=data,meta={"api_version":"v1","request_id":request.state.request_id})
@@ -123,3 +158,10 @@ def public_models(request:Request,project_entity_id:str|None=None,limit:int=Quer
 @public_router.get("/models/{model_id}/bundle",response_model=PublicEnvelope)
 def public_bundle(model_id:str,request:Request,db:Session=Depends(get_session),_ctx:PublicApiContext=Depends(require_public_scope("data:read"))):
     public_enabled(request); return PublicEnvelope(data=svc.bundle(db,model_id,public_only=True),meta={"api_version":"v1","request_id":request.state.request_id})
+@public_router.get("/models/{model_id}/calibration-studies/{study_id}/bundle",response_model=PublicEnvelope)
+def public_calibration_bundle(model_id:str,study_id:str,request:Request,db:Session=Depends(get_session),_ctx:PublicApiContext=Depends(require_public_scope("data:read"))):
+    public_enabled(request)
+    model=svc._model(db,model_id)
+    if model.visibility!="public": raise HTTPException(status_code=404,detail="Predictive model not found.")
+    return PublicEnvelope(data=svc.calibration_bundle(db,model_id,study_id),meta={"api_version":"v1","request_id":request.state.request_id})
+

@@ -6,7 +6,7 @@ from app.models import Entity
 
 
 def app_client(tmp_path):
-    app=create_app(Settings(database_url=f"sqlite:///{tmp_path/'v2530.db'}",version='2.53.0'))
+    app=create_app(Settings(database_url=f"sqlite:///{tmp_path/'v2530.db'}",version='2.54.0'))
     return app,TestClient(app)
 
 def seed(app):
@@ -21,7 +21,7 @@ def model_target(c):
 def test_v2530_readiness_and_boundaries(tmp_path):
     app,c=app_client(tmp_path); seed(app)
     r=c.get('/v1/predictive-intelligence/readiness'); assert r.status_code==200,r.text; d=r.json()
-    assert d['release']=='2.53.0' and d['migration_0056_applied'] is True and d['migration_0057_applied'] is True
+    assert d['release']=='2.54.0' and d['migration_0056_applied'] is True and d['migration_0057_applied'] is True
     for k in ('time_series_dataset_registry_by_core','forecast_window_registry_by_core','baseline_model_reference_registry_by_core','rolling_expanding_backtest_semantics_by_core','temporal_leakage_guardrails_by_core','backtest_fold_provenance_by_core','prediction_actual_pair_recording_by_core','descriptive_backtest_evaluation_by_core','reproducible_backtest_packages_by_core'): assert d[k] is True,k
     for k in ('model_fitting_by_core','forecast_inference_execution_by_core','backtest_execution_by_core','metric_computation_by_core','time_series_resampling_by_core','automatic_model_ranking_by_core','automatic_truth_promotion'): assert d[k] is False,k
     assert migration_status(app.state.database)['pending']==[]

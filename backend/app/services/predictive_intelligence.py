@@ -16,6 +16,8 @@ from ..models import (
     PredictiveRuntimeHandoffRecord, PredictiveForecastSnapshotRecord,
     PredictiveTimeSeriesDatasetRecord, PredictiveForecastWindowRecord, PredictiveBaselineModelRecord, PredictiveBacktestPlanRecord,
     PredictiveBacktestFoldRecord, PredictiveBacktestObservationRecord, PredictiveBacktestEvaluationRecord, PredictiveBacktestPackageRecord,
+    PredictiveProbabilisticForecastRecord, PredictiveCalibrationStudyRecord, PredictiveCalibrationBinRecord, PredictiveCalibrationMappingRecord,
+    PredictiveProbabilisticEvaluationRecord, PredictiveCalibrationPackageRecord,
 )
 
 MODEL_KINDS={"statistical","machine-learning","simulation","hybrid","rules-based","external","other"}
@@ -24,7 +26,11 @@ FEATURE_ROLES={"predictor","lagged-predictor","exogenous","context","identifier"
 BACKTEST_STRATEGIES={"fixed","rolling","expanding"}
 BASELINE_KINDS={"naive","seasonal-naive","drift","mean","median","external","other"}
 COMPARATOR_KINDS={"model","baseline"}
-FORBIDDEN_FIELDS={"fit_by_core","train_by_core","infer_by_core","execute_by_core","core_execute","probability_calibrated_by_core","winner","rank","verdict","truth_value","automatic_truth_promotion","model_selected_by_core","backtest_execute_by_core","metric_compute_by_core","resample_by_core"}
+PROBABILISTIC_REPRESENTATIONS={"binary-event","categorical","quantile","interval","parametric-distribution","empirical-samples","ensemble-distribution"}
+CALIBRATION_ASSESSMENTS={"reliability","coverage","quantile-coverage","pit","rank-histogram","categorical-reliability","threshold-reliability","other"}
+CALIBRATION_METHODS={"platt","isotonic","temperature","beta","histogram","conformal","external","other"}
+PROBABILISTIC_METRIC_FAMILIES={"proper-scoring-rule","calibration","coverage","sharpness","distribution-diagnostic","other"}
+FORBIDDEN_FIELDS={"fit_by_core","train_by_core","infer_by_core","execute_by_core","core_execute","probability_calibrated_by_core","winner","rank","verdict","truth_value","automatic_truth_promotion","model_selected_by_core","backtest_execute_by_core","metric_compute_by_core","resample_by_core","probabilistic_infer_by_core","calibration_fit_by_core","recalibration_apply_by_core","scoring_rule_compute_by_core","calibration_metric_compute_by_core"}
 
 def _ser(row):
     out={}
@@ -66,18 +72,25 @@ def boundaries():
       "time_series_dataset_registry_by_core":True,"forecast_window_registry_by_core":True,"baseline_model_reference_registry_by_core":True,
       "rolling_expanding_backtest_semantics_by_core":True,"temporal_leakage_guardrails_by_core":True,"backtest_fold_provenance_by_core":True,
       "prediction_actual_pair_recording_by_core":True,"descriptive_backtest_evaluation_by_core":True,"reproducible_backtest_packages_by_core":True,
+      "probabilistic_forecast_registry_by_core":True,"uncertainty_distribution_registry_by_core":True,"calibration_study_registry_by_core":True,
+      "calibration_bin_evidence_by_core":True,"external_calibration_mapping_registry_by_core":True,"proper_scoring_evidence_registry_by_core":True,
+      "reproducible_calibration_packages_by_core":True,
       "model_fitting_by_core":False,"forecast_inference_execution_by_core":False,"backtest_execution_by_core":False,"metric_computation_by_core":False,
       "time_series_resampling_by_core":False,"probabilistic_calibration_by_core":False,"ensemble_selection_by_core":False,
+      "probabilistic_inference_execution_by_core":False,"calibration_mapping_fitting_by_core":False,"calibration_mapping_application_by_core":False,
+      "proper_scoring_rule_computation_by_core":False,"calibration_metric_computation_by_core":False,"probabilistic_model_ranking_by_core":False,
       "automatic_model_ranking_by_core":False,"automatic_truth_promotion":False,
     }
 
 def readiness(db:Session):
     def count(m): return int(db.scalar(select(func.count()).select_from(m)) or 0)
-    return {"migration_0056_applied":True,"migration_0057_applied":True,"contract":"sc.predictive.model.v1","forecast_contract":"sc.predictive.forecast-provenance.v1","handoff_contract":"sc.predictive.runtime-handoff.v1","backtest_contract":"sc.predictive.backtest-plan.v1","backtest_package_contract":"sc.predictive.backtest-package.v1","counts":{
+    return {"migration_0056_applied":True,"migration_0057_applied":True,"migration_0058_applied":True,"contract":"sc.predictive.model.v1","forecast_contract":"sc.predictive.forecast-provenance.v1","handoff_contract":"sc.predictive.runtime-handoff.v1","backtest_contract":"sc.predictive.backtest-plan.v1","backtest_package_contract":"sc.predictive.backtest-package.v1","probabilistic_forecast_contract":"sc.predictive.probabilistic-forecast.v1","calibration_study_contract":"sc.predictive.calibration-study.v1","calibration_package_contract":"sc.predictive.calibration-package.v1","counts":{
       "models":count(PredictiveModelRecord),"targets":count(PredictiveTargetRecord),"features":count(PredictiveFeatureRecord),"training_windows":count(PredictiveTrainingWindowRecord),
       "forecast_runs":count(PredictiveForecastRunRecord),"forecast_observations":count(PredictiveForecastObservationRecord),"evaluations":count(PredictiveEvaluationRecord),"handoffs":count(PredictiveRuntimeHandoffRecord),"snapshots":count(PredictiveForecastSnapshotRecord),
       "time_series_datasets":count(PredictiveTimeSeriesDatasetRecord),"forecast_windows":count(PredictiveForecastWindowRecord),"baseline_models":count(PredictiveBaselineModelRecord),"backtest_plans":count(PredictiveBacktestPlanRecord),
-      "backtest_folds":count(PredictiveBacktestFoldRecord),"backtest_observations":count(PredictiveBacktestObservationRecord),"backtest_evaluations":count(PredictiveBacktestEvaluationRecord),"backtest_packages":count(PredictiveBacktestPackageRecord)},**boundaries()}
+      "backtest_folds":count(PredictiveBacktestFoldRecord),"backtest_observations":count(PredictiveBacktestObservationRecord),"backtest_evaluations":count(PredictiveBacktestEvaluationRecord),"backtest_packages":count(PredictiveBacktestPackageRecord),
+      "probabilistic_forecasts":count(PredictiveProbabilisticForecastRecord),"calibration_studies":count(PredictiveCalibrationStudyRecord),"calibration_bins":count(PredictiveCalibrationBinRecord),
+      "calibration_mappings":count(PredictiveCalibrationMappingRecord),"probabilistic_evaluations":count(PredictiveProbabilisticEvaluationRecord),"calibration_packages":count(PredictiveCalibrationPackageRecord)},**boundaries()}
 
 def create_model(db:Session,payload:dict):
     _reject(payload); project=str(payload.get("project_entity_id") or "").strip(); ent=db.get(Entity,project)
@@ -272,11 +285,139 @@ def bundle(db:Session,model_id:str,public_only=False):
     q=lambda m: [_ser(x) for x in db.scalars(select(m).where(m.model_id==model_id).order_by(m.created_at.asc())).all()]
     targets=q(PredictiveTargetRecord); features=q(PredictiveFeatureRecord); windows=q(PredictiveTrainingWindowRecord); runs=q(PredictiveForecastRunRecord); evals=q(PredictiveEvaluationRecord); handoffs=q(PredictiveRuntimeHandoffRecord); snaps=q(PredictiveForecastSnapshotRecord)
     ts_datasets=q(PredictiveTimeSeriesDatasetRecord); forecast_windows=q(PredictiveForecastWindowRecord); baselines=q(PredictiveBaselineModelRecord); backtest_plans=q(PredictiveBacktestPlanRecord)
+    probabilistic_forecasts=q(PredictiveProbabilisticForecastRecord); calibration_studies=q(PredictiveCalibrationStudyRecord); probabilistic_evaluations=q(PredictiveProbabilisticEvaluationRecord)
     observations=[]
     runids=[r["id"] for r in runs]
     if runids: observations=[_ser(x) for x in db.scalars(select(PredictiveForecastObservationRecord).where(PredictiveForecastObservationRecord.forecast_run_id.in_(runids)).order_by(PredictiveForecastObservationRecord.created_at.asc())).all()]
-    return {"contract":"sc.predictive.forecast-provenance.v1","model":_ser(model),"targets":targets,"features":features,"training_windows":windows,"forecast_runs":runs,"forecast_observations":observations,"evaluations":evals,"handoffs":handoffs,"snapshots":snaps,"time_series_datasets":ts_datasets,"forecast_windows":forecast_windows,"baseline_models":baselines,"backtest_plans":backtest_plans,"boundaries":boundaries()}
+    return {"contract":"sc.predictive.forecast-provenance.v1","model":_ser(model),"targets":targets,"features":features,"training_windows":windows,"forecast_runs":runs,"forecast_observations":observations,"evaluations":evals,"handoffs":handoffs,"snapshots":snaps,"time_series_datasets":ts_datasets,"forecast_windows":forecast_windows,"baseline_models":baselines,"backtest_plans":backtest_plans,"probabilistic_forecasts":probabilistic_forecasts,"calibration_studies":calibration_studies,"probabilistic_evaluations":probabilistic_evaluations,"boundaries":boundaries()}
 
 def create_snapshot(db:Session,model_id:str,payload:dict):
     _reject(payload); state=bundle(db,model_id); state.pop("snapshots",None); digest=_sha256(state); last=db.scalar(select(PredictiveForecastSnapshotRecord).where(PredictiveForecastSnapshotRecord.model_id==model_id).order_by(PredictiveForecastSnapshotRecord.revision.desc()))
     rev=(last.revision+1) if last else 1; row=PredictiveForecastSnapshotRecord(model_id=model_id,revision=rev,content_hash=digest,previous_snapshot_hash=(last.content_hash if last else None),state_json=state,provenance_json=dict(payload.get("provenance") or {}),created_by=str(payload.get("created_by") or "operator")); db.add(row); db.commit(); db.refresh(row); return _ser(row)
+
+def _probability(value,name="probability"):
+    try: v=float(value)
+    except (TypeError,ValueError) as exc: raise ValueError(f"{name} must be numeric") from exc
+    if not 0.0<=v<=1.0: raise ValueError(f"{name} must be between 0 and 1")
+    return v
+
+def _validate_probabilistic_payload(representation:str, forecast:dict):
+    if representation=="binary-event":
+        if "probability" not in forecast: raise ValueError("binary-event forecast requires probability")
+        _probability(forecast["probability"])
+    elif representation=="categorical":
+        probs=forecast.get("probabilities")
+        if not isinstance(probs,dict) or not probs: raise ValueError("categorical forecast requires non-empty probabilities object")
+        vals=[_probability(v,f"probability[{k}]") for k,v in probs.items()]
+        if abs(sum(vals)-1.0)>1e-6: raise ValueError("categorical probabilities must sum to 1")
+    elif representation=="quantile":
+        qs=forecast.get("quantiles")
+        if not isinstance(qs,dict) or not qs: raise ValueError("quantile forecast requires non-empty quantiles object")
+        pairs=[]
+        for q,v in qs.items():
+            qq=_probability(q,f"quantile[{q}]"); pairs.append((qq,float(v)))
+        pairs.sort()
+        if any(pairs[i][1]>pairs[i+1][1] for i in range(len(pairs)-1)): raise ValueError("quantile forecast values must be nondecreasing with quantile")
+    elif representation=="interval":
+        intervals=forecast.get("intervals")
+        if not isinstance(intervals,list) or not intervals: raise ValueError("interval forecast requires non-empty intervals array")
+        for item in intervals:
+            level=_probability(item.get("level"),"interval level")
+            if level in (0.0,1.0): raise ValueError("interval level must be strictly between 0 and 1")
+            lo=float(item.get("lower")); hi=float(item.get("upper"))
+            if lo>hi: raise ValueError("interval lower must not exceed upper")
+    elif representation in {"parametric-distribution","ensemble-distribution"}:
+        if not str(forecast.get("family") or "").strip(): raise ValueError("distribution forecast requires family")
+        if not isinstance(forecast.get("parameters"),dict): raise ValueError("distribution forecast requires parameters object")
+    elif representation=="empirical-samples":
+        if not str(forecast.get("sample_ref") or "").strip(): raise ValueError("empirical-samples forecast requires sample_ref")
+    return forecast
+
+def add_probabilistic_forecast(db:Session,model_id:str,payload:dict):
+    _reject(payload); _model(db,model_id)
+    target=db.get(PredictiveTargetRecord,str(payload.get("target_id") or ""))
+    if target is None or target.model_id!=model_id: raise ValueError("target_id must belong to model_id")
+    run_id=payload.get("forecast_run_id"); fold_id=payload.get("backtest_fold_id")
+    if bool(run_id)==bool(fold_id): raise ValueError("exactly one of forecast_run_id or backtest_fold_id is required")
+    if run_id:
+        run=db.get(PredictiveForecastRunRecord,run_id)
+        if run is None or run.model_id!=model_id: raise ValueError("forecast_run_id must belong to model_id")
+    if fold_id:
+        fold=db.get(PredictiveBacktestFoldRecord,fold_id)
+        if fold is None: raise ValueError("backtest_fold_id is invalid")
+        plan=db.get(PredictiveBacktestPlanRecord,fold.backtest_plan_id)
+        if plan is None or plan.model_id!=model_id: raise ValueError("backtest_fold_id must belong to model_id")
+    rep=str(payload.get("representation") or "").strip()
+    if rep not in PROBABILISTIC_REPRESENTATIONS: raise ValueError(f"representation must be one of {sorted(PROBABILISTIC_REPRESENTATIONS)}")
+    forecast=payload.get("forecast")
+    if not isinstance(forecast,dict): raise ValueError("forecast must be an object")
+    _validate_probabilistic_payload(rep,forecast)
+    mapping_id=payload.get("calibration_mapping_id")
+    if mapping_id:
+        mapping=db.get(PredictiveCalibrationMappingRecord,mapping_id)
+        if mapping is None: raise ValueError("calibration_mapping_id is invalid")
+        study=db.get(PredictiveCalibrationStudyRecord,mapping.calibration_study_id)
+        if study is None or study.model_id!=model_id: raise ValueError("calibration_mapping_id must belong to model_id")
+    row=PredictiveProbabilisticForecastRecord(model_id=model_id,target_id=target.id,forecast_run_id=run_id,backtest_fold_id=fold_id,valid_time=_parse_dt(payload.get("valid_time")),representation=rep,forecast_json=forecast,calibration_mapping_id=mapping_id,source_ref=payload.get("source_ref"),externally_generated=True,provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {}))
+    db.add(row); db.commit(); db.refresh(row); return _ser(row)
+
+def create_calibration_study(db:Session,model_id:str,payload:dict):
+    _reject(payload); _model(db,model_id)
+    target=db.get(PredictiveTargetRecord,str(payload.get("target_id") or ""))
+    if target is None or target.model_id!=model_id: raise ValueError("target_id must belong to model_id")
+    key=str(payload.get("study_key") or "").strip(); kind=str(payload.get("assessment_kind") or "reliability")
+    if not key: raise ValueError("study_key is required")
+    if kind not in CALIBRATION_ASSESSMENTS: raise ValueError(f"assessment_kind must be one of {sorted(CALIBRATION_ASSESSMENTS)}")
+    row=PredictiveCalibrationStudyRecord(model_id=model_id,target_id=target.id,study_key=key,assessment_kind=kind,scope_json=dict(payload.get("scope") or {}),expected_calibration_json=dict(payload.get("expected_calibration") or {}),actual_outcome_source_ref=payload.get("actual_outcome_source_ref"),status=str(payload.get("status") or "recorded"),externally_computed=True,provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {}))
+    db.add(row)
+    try: db.commit()
+    except IntegrityError as exc: db.rollback(); raise ValueError("study_key must be unique within model_id") from exc
+    db.refresh(row); return _ser(row)
+
+def _study(db:Session,model_id:str,study_id:str)->PredictiveCalibrationStudyRecord:
+    row=db.get(PredictiveCalibrationStudyRecord,study_id)
+    if row is None or row.model_id!=model_id: raise ValueError("calibration_study_id must belong to model_id")
+    return row
+
+def add_calibration_bin(db:Session,model_id:str,study_id:str,payload:dict):
+    _reject(payload); _study(db,model_id,study_id); idx=int(payload.get("bin_index",0))
+    if idx<0: raise ValueError("bin_index must be >= 0")
+    vals={k:(None if payload.get(k) is None else _probability(payload.get(k),k)) for k in ("lower_bound","upper_bound","mean_forecast","observed_frequency")}
+    if vals["lower_bound"] is not None and vals["upper_bound"] is not None and vals["lower_bound"]>vals["upper_bound"]: raise ValueError("lower_bound must not exceed upper_bound")
+    n=int(payload.get("sample_count",0))
+    if n<0: raise ValueError("sample_count must be >= 0")
+    row=PredictiveCalibrationBinRecord(calibration_study_id=study_id,bin_index=idx,lower_bound=vals["lower_bound"],upper_bound=vals["upper_bound"],mean_forecast=vals["mean_forecast"],observed_frequency=vals["observed_frequency"],sample_count=n,expected_json=dict(payload.get("expected") or {}),metadata_json=dict(payload.get("metadata") or {}),provenance_json=dict(payload.get("provenance") or {}))
+    db.add(row); db.commit(); db.refresh(row); return _ser(row)
+
+def add_calibration_mapping(db:Session,model_id:str,study_id:str,payload:dict):
+    _reject(payload); _study(db,model_id,study_id); key=str(payload.get("mapping_key") or "").strip(); method=str(payload.get("method") or "external")
+    if not key: raise ValueError("mapping_key is required")
+    if method not in CALIBRATION_METHODS: raise ValueError(f"method must be one of {sorted(CALIBRATION_METHODS)}")
+    row=PredictiveCalibrationMappingRecord(calibration_study_id=study_id,mapping_key=key,method=method,parameters_json=dict(payload.get("parameters") or {}),fit_evidence_ref=payload.get("fit_evidence_ref"),source_forecast_contract=str(payload.get("source_forecast_contract") or "sc.predictive.probabilistic-forecast.v1"),output_contract=str(payload.get("output_contract") or "sc.predictive.probabilistic-forecast.v1"),externally_fitted=True,provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {}))
+    db.add(row); db.commit(); db.refresh(row); return _ser(row)
+
+def add_probabilistic_evaluation(db:Session,model_id:str,payload:dict):
+    _reject(payload); _model(db,model_id); study_id=payload.get("calibration_study_id"); forecast_id=payload.get("probabilistic_forecast_id")
+    if study_id: _study(db,model_id,study_id)
+    if forecast_id:
+        f=db.get(PredictiveProbabilisticForecastRecord,forecast_id)
+        if f is None or f.model_id!=model_id: raise ValueError("probabilistic_forecast_id must belong to model_id")
+    family=str(payload.get("metric_family") or "other"); key=str(payload.get("evaluation_key") or "").strip(); metric=str(payload.get("metric_name") or "").strip(); mv=payload.get("metric_value")
+    if family not in PROBABILISTIC_METRIC_FAMILIES: raise ValueError(f"metric_family must be one of {sorted(PROBABILISTIC_METRIC_FAMILIES)}")
+    if not key or not metric or mv is None: raise ValueError("evaluation_key, metric_name, and metric_value are required")
+    row=PredictiveProbabilisticEvaluationRecord(model_id=model_id,calibration_study_id=study_id,probabilistic_forecast_id=forecast_id,evaluation_key=key,metric_family=family,metric_name=metric,metric_value_json=mv if isinstance(mv,dict) else {"value":mv},aggregation_json=dict(payload.get("aggregation") or {}),evidence_ref=payload.get("evidence_ref"),externally_computed=True,provenance_json=dict(payload.get("provenance") or {}))
+    db.add(row); db.commit(); db.refresh(row); return _ser(row)
+
+def calibration_bundle(db:Session,model_id:str,study_id:str):
+    study=_study(db,model_id,study_id); target=db.get(PredictiveTargetRecord,study.target_id)
+    bins=[_ser(x) for x in db.scalars(select(PredictiveCalibrationBinRecord).where(PredictiveCalibrationBinRecord.calibration_study_id==study_id).order_by(PredictiveCalibrationBinRecord.bin_index.asc())).all()]
+    mappings=[_ser(x) for x in db.scalars(select(PredictiveCalibrationMappingRecord).where(PredictiveCalibrationMappingRecord.calibration_study_id==study_id).order_by(PredictiveCalibrationMappingRecord.created_at.asc())).all()]
+    evaluations=[_ser(x) for x in db.scalars(select(PredictiveProbabilisticEvaluationRecord).where(PredictiveProbabilisticEvaluationRecord.calibration_study_id==study_id).order_by(PredictiveProbabilisticEvaluationRecord.created_at.asc())).all()]
+    packages=[_ser(x) for x in db.scalars(select(PredictiveCalibrationPackageRecord).where(PredictiveCalibrationPackageRecord.calibration_study_id==study_id).order_by(PredictiveCalibrationPackageRecord.revision.asc())).all()]
+    return {"contract":"sc.predictive.calibration-package.v1","study":_ser(study),"target":_ser(target),"bins":bins,"mappings":mappings,"evaluations":evaluations,"packages":packages,"boundaries":boundaries()}
+
+def create_calibration_package(db:Session,model_id:str,study_id:str,payload:dict):
+    _reject(payload); state=calibration_bundle(db,model_id,study_id); state.pop("packages",None); digest=_sha256(state)
+    last=db.scalar(select(PredictiveCalibrationPackageRecord).where(PredictiveCalibrationPackageRecord.calibration_study_id==study_id).order_by(PredictiveCalibrationPackageRecord.revision.desc())); rev=(last.revision+1) if last else 1
+    row=PredictiveCalibrationPackageRecord(calibration_study_id=study_id,revision=rev,content_hash=digest,previous_package_hash=(last.content_hash if last else None),state_json=state,environment_json=dict(payload.get("environment") or {}),provenance_json=dict(payload.get("provenance") or {}),created_by=str(payload.get("created_by") or "operator"))
+    db.add(row); db.commit(); db.refresh(row); return _ser(row)

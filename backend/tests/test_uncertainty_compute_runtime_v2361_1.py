@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 def test_health_migration_and_readiness(client):
-    h=client.get('/health').json(); assert h['version']=='2.53.0' and h['uncertainty_compute_runtime_integration'] is True
+    h=client.get('/health').json(); assert h['version']=='2.54.0' and h['uncertainty_compute_runtime_integration'] is True
     d=client.get('/v1/uncertainty-compute/readiness').json(); assert d['migration_0040_applied'] is True
     assert d['monte_carlo_sampling'] and d['sobol_index_analysis'] and d['ensemble_weight_normalization']
     assert d['model_execution_by_core'] is False and d['automatic_truth_promotion'] is False
