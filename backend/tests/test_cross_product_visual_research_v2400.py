@@ -7,7 +7,7 @@ from app.models import Entity
 
 
 def app_client(tmp_path):
-    app = create_app(Settings(database_url=f"sqlite:///{tmp_path/'v2400.db'}", version="2.43.0"))
+    app = create_app(Settings(database_url=f"sqlite:///{tmp_path/'v2400.db'}", version="2.44.0"))
     return app, TestClient(app)
 
 
@@ -29,9 +29,9 @@ def create_object(client, visibility="public"):
 def test_readiness_health_and_migration_0044(tmp_path):
     app, client = app_client(tmp_path); seed_project(app)
     health = client.get("/health").json()
-    assert health["version"] == "2.43.0" and health["cross_product_visual_research_objects"] is True
+    assert health["version"] == "2.44.0" and health["cross_product_visual_research_objects"] is True
     ready = client.get("/v1/cross-product-visual-research/readiness").json()
-    assert ready["release"] == "2.43.0" and ready["migration_0044_applied"] is True
+    assert ready["release"] == "2.44.0" and ready["migration_0044_applied"] is True
     assert ready["reference_first_cross_product"] is True and ready["remote_product_fetch_by_core"] is False
     assert ready["model_execution_by_core"] is False and ready["analysis_execution_by_core"] is False
     assert ready["cross_product_truth_merging_by_core"] is False and ready["renderer_execution_by_core"] is False

@@ -1,3 +1,7 @@
+## v2.44.0 — Claims, Contradictions & Competing Hypotheses
+
+Structured forensic claims, explicit contradictions, evidence-position assessments, competing hypotheses, descriptive comparison matrices, and immutable reasoning snapshots with no automated verdict/ranking/truth promotion.
+
 ## v2.43.0 — Evidence Integrity & Chain of Custody
 
 Open Forensics custody/integrity layer: tamper-evident custody event chains, custodians, seals, hash verification, continuity assessment, external attestations, and immutable custody snapshots.

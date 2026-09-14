@@ -482,3 +482,9 @@ PublicApiClient.prototype.openForensicsInvestigationBundle = function (investiga
 
 PublicApiClient.prototype.openForensicsCustodyChain = function (investigationId, evidenceId) { return this.request(`/open-forensics/investigations/${encodeURIComponent(investigationId)}/evidence/${encodeURIComponent(evidenceId)}/custody-chain`); };
 PublicApiClient.prototype.openForensicsCustodyBundle = function (investigationId) { return this.request(`/open-forensics/investigations/${encodeURIComponent(investigationId)}/custody-bundle`); };
+
+
+// v2.44.0 Open Forensics — Claims, Contradictions & Competing Hypotheses.
+PublicApiClient.prototype.openForensicsClaimMap = function (investigationId) { return this.request(`/open-forensics/investigations/${encodeURIComponent(investigationId)}/claim-map`); };
+PublicApiClient.prototype.openForensicsHypothesisMatrix = function (investigationId) { return this.request(`/open-forensics/investigations/${encodeURIComponent(investigationId)}/hypothesis-matrix`); };
+PublicApiClient.prototype.openForensicsReasoningBundle = function (investigationId) { return this.request(`/open-forensics/investigations/${encodeURIComponent(investigationId)}/reasoning-bundle`); };

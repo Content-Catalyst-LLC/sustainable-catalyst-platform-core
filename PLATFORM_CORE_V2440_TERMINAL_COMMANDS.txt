@@ -1,0 +1,3 @@
+cd ~/Downloads
+SC_CORE_BUNDLE_ONLY=1 ./deploy_and_validate_platform_core_v2_44_0_macos.sh "$HOME/Downloads/sustainable-catalyst-platform-core-v2.44.0-release-bundle.zip"
+./deploy_and_validate_platform_core_v2_44_0_macos.sh "$HOME/Downloads/sustainable-catalyst-platform-core-v2.44.0-release-bundle.zip"

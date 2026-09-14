@@ -33,5 +33,5 @@ def test_partial_0041_table_state_recovers_by_recording_short_metadata(tmp_path)
 
     status = migration_status(db)
     assert status["pending"] == []
-    assert status["applied"][-1] == "0047"
+    assert status["applied"][-1] == "0048"
     assert CAUSAL_TABLES <= set(inspect(db.engine).get_table_names())

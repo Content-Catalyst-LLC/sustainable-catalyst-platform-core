@@ -681,3 +681,15 @@ def _open_forensics_custody_bundle(self, investigation_id: str):
     return self.request("GET", f"/open-forensics/investigations/{investigation_id}/custody-bundle")
 PublicApiClient.open_forensics_custody_chain = _open_forensics_custody_chain
 PublicApiClient.open_forensics_custody_bundle = _open_forensics_custody_bundle
+
+
+# v2.44.0 Open Forensics — Claims, Contradictions & Competing Hypotheses.
+def _open_forensics_claim_map(self, investigation_id: str):
+    return self.request(f"/open-forensics/investigations/{investigation_id}/claim-map")
+def _open_forensics_hypothesis_matrix(self, investigation_id: str):
+    return self.request(f"/open-forensics/investigations/{investigation_id}/hypothesis-matrix")
+def _open_forensics_reasoning_bundle(self, investigation_id: str):
+    return self.request(f"/open-forensics/investigations/{investigation_id}/reasoning-bundle")
+PublicApiClient.open_forensics_claim_map = _open_forensics_claim_map
+PublicApiClient.open_forensics_hypothesis_matrix = _open_forensics_hypothesis_matrix
+PublicApiClient.open_forensics_reasoning_bundle = _open_forensics_reasoning_bundle

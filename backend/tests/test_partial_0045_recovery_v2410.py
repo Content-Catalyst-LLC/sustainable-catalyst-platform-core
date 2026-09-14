@@ -15,10 +15,10 @@ def test_partial_0045_table_state_recovers_by_recording_metadata(tmp_path):
             if version=='0045': break
             session.add(SchemaMigration(version=version,description=description))
         session.commit(); assert session.get(SchemaMigration,'0045') is None
-    assert run_migrations(db)==['0045','0046','0047']
+    assert run_migrations(db)==['0045','0046','0047','0048']
     with db.session_factory() as session:
         row=session.get(SchemaMigration,'0045'); assert row and len(row.description)<=300
-    status=migration_status(db); assert status['pending']==[] and status['applied'][-1]=='0047'
+    status=migration_status(db); assert status['pending']==[] and status['applied'][-1]=='0048'
 
 
 def test_pristine_pre_0045_schema_upgrades_additively(tmp_path):
@@ -30,4 +30,4 @@ def test_pristine_pre_0045_schema_upgrades_additively(tmp_path):
             if version=='0045': break
             session.add(SchemaMigration(version=version,description=description))
         session.commit()
-    assert run_migrations(db)==['0045','0046','0047']; status=migration_status(db); assert status['pending']==[] and status['applied'][-1]=='0047'; assert TABLES <= set(inspect(db.engine).get_table_names())
+    assert run_migrations(db)==['0045','0046','0047','0048']; status=migration_status(db); assert status['pending']==[] and status['applied'][-1]=='0048'; assert TABLES <= set(inspect(db.engine).get_table_names())

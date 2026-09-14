@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Sustainable Catalyst Platform Core
  * Description: WordPress connector for Sustainable Catalyst Platform Core registry, graph, evidence, developer, gateway, free live-data, international-law, scientific-data, official-statistics, geospatial, time-series, STAC, map-layer, streaming, alerts, source-reliability, and operational-facility, humanitarian-access, essential-services, and country-evidence federation and reconciliation, and Earth/Ocean/Space scientific-service routing, cross-product exchange, distributed scale-control services, and governance/access/audit, production-certification/recovery, and observability/SLO production-operations services, plus incident-response, change-control, rollback-coordination, continuity, backup-verification, disaster-recovery, and multi-region resilience/failover-coordination, and data-lifecycle/archival-integrity/preservation services, plus Federated Core trusted-node exchange services and capacity forecasting/resource-governance services, plus identity/credential/cryptographic-key lifecycle governance, distributed workload governance, and scientific object storage/processing adapter services, research object/model services, renderer-neutral visual reasoning object services, and visualization specification/renderer registry services, and governed System Maps and Flow Maps services.
- * Version: 2.43.0
+ * Version: 2.44.0
  * Author: Content Catalyst LLC
  * License: MIT
  */
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('SCPC_VERSION', '2.43.0');
+define('SCPC_VERSION', '2.44.0');
 define('SCPC_OPTION_BACKEND_URL', 'scpc_backend_url');
 define('SCPC_OPTION_READ_KEY', 'scpc_read_key');
 
@@ -1331,12 +1331,12 @@ function scpc_open_forensics_status_shortcode() {
     $status = scpc_api_get('/v1/open-forensics/readiness');
     if (!is_array($status)) { return '<div class="scpc-status"><strong>Open Forensics</strong><br /><span class="scpc-meta">Status unavailable.</span></div>'; }
     $counts = $status['counts'] ?? array(); $release = $status['release'] ?? SCPC_VERSION;
-    return '<div class="scpc-status"><strong>Open Forensics — Evidence Provenance</strong><br />' . intval($counts['investigations'] ?? 0) . ' investigations · ' . intval($counts['objects'] ?? 0) . ' forensic objects · ' . intval($counts['evidence_items'] ?? 0) . ' evidence items · ' . intval($counts['provenance_activities'] ?? 0) . ' provenance activities<br /><span class="scpc-meta">Core ' . esc_html($release) . ' · governed forensic objects, source/evidence bindings, hashes, provenance activities, semantic relations, and immutable snapshots. Chain of custody, authenticity determination, attribution, causal/legal conclusions, and automatic truth promotion remain outside this release.</span></div>';
+    return '<div class="scpc-status"><strong>Open Forensics — Evidence Provenance</strong><br />' . intval($counts['investigations'] ?? 0) . ' investigations · ' . intval($counts['objects'] ?? 0) . ' forensic objects · ' . intval($counts['evidence_items'] ?? 0) . ' evidence items · ' . intval($counts['provenance_activities'] ?? 0) . ' provenance activities<br /><span class="scpc-meta">Core ' . esc_html($release) . ' · governed forensic objects, source/evidence bindings, provenance, custody integrity, claims, contradictions, competing hypotheses, and immutable snapshots. Authenticity, identity attribution, automated truth determination, hypothesis ranking, verdicts, and legal conclusions remain outside Core.</span></div>';
 }
 add_shortcode('sc_platform_core_open_forensics_status', 'scpc_open_forensics_status_shortcode');
 
 
-// v2.43.0 Open Forensics — Evidence Integrity & Chain of Custody
+// v2.44.0 Open Forensics — Evidence Integrity & Chain of Custody
 function scpc_custody_integrity_status_shortcode() {
     $url = rtrim(SCPC_CORE_BASE, '/') . '/v1/open-forensics/readiness';
     $response = wp_remote_get($url, array('timeout' => 8));
@@ -1347,3 +1347,14 @@ function scpc_custody_integrity_status_shortcode() {
     return '<div class="scpc-status"><strong>Evidence Integrity &amp; Chain of Custody:</strong> ' . ($ready ? 'Ready' : 'Not ready') . ' · Core ' . esc_html($data['release'] ?? 'unknown') . '</div>';
 }
 add_shortcode('sc_platform_core_custody_integrity_status', 'scpc_custody_integrity_status_shortcode');
+
+
+// v2.44.0 Open Forensics — Claims, Contradictions & Competing Hypotheses
+function scpc_forensic_hypothesis_status_shortcode() {
+    $status = scpc_api_get('/v1/open-forensics/readiness');
+    if (!is_array($status)) return '<div class="scpc-status scpc-status-error">Open Forensics reasoning status unavailable.</div>';
+    $counts = $status['counts'] ?? array(); $release = $status['release'] ?? SCPC_VERSION;
+    $ready = !empty($status['migration_0048_applied']) && !empty($status['structured_claim_registry_by_core']) && !empty($status['competing_hypothesis_registry_by_core']);
+    return '<div class="scpc-status"><strong>Claims, Contradictions &amp; Competing Hypotheses:</strong> ' . ($ready ? 'Ready' : 'Not ready') . ' · ' . intval($counts['claims'] ?? 0) . ' claims · ' . intval($counts['contradictions'] ?? 0) . ' contradictions · ' . intval($counts['hypotheses'] ?? 0) . ' hypotheses · Core ' . esc_html($release) . '</div>';
+}
+add_shortcode('sc_platform_core_forensic_hypothesis_status', 'scpc_forensic_hypothesis_status_shortcode');

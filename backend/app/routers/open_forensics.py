@@ -137,6 +137,63 @@ def custody_snapshot(request:Request, investigation_id:str, payload:Payload, db:
     try: return svc.create_custody_snapshot(db,investigation_id,payload.data)
     except Exception as exc: raise bad(exc)
 
+
+
+# v2.44.0 — Claims, Contradictions & Competing Hypotheses
+@router.post("/investigations/{investigation_id}/claims", dependencies=[Depends(require_write)])
+def add_claim(request:Request, investigation_id:str, payload:Payload, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.add_claim(db,investigation_id,payload.data)
+    except Exception as exc: raise bad(exc)
+
+@router.post("/investigations/{investigation_id}/claims/{claim_id}/evidence-assessments", dependencies=[Depends(require_write)])
+def assess_claim_evidence(request:Request, investigation_id:str, claim_id:str, payload:Payload, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.assess_claim_evidence(db,investigation_id,claim_id,payload.data)
+    except Exception as exc: raise bad(exc)
+
+@router.post("/investigations/{investigation_id}/contradictions", dependencies=[Depends(require_write)])
+def add_contradiction(request:Request, investigation_id:str, payload:Payload, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.add_contradiction(db,investigation_id,payload.data)
+    except Exception as exc: raise bad(exc)
+
+@router.post("/investigations/{investigation_id}/hypotheses", dependencies=[Depends(require_write)])
+def add_hypothesis(request:Request, investigation_id:str, payload:Payload, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.add_hypothesis(db,investigation_id,payload.data)
+    except Exception as exc: raise bad(exc)
+
+@router.post("/investigations/{investigation_id}/hypotheses/{hypothesis_id}/evidence-assessments", dependencies=[Depends(require_write)])
+def assess_hypothesis_evidence(request:Request, investigation_id:str, hypothesis_id:str, payload:Payload, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.assess_hypothesis_evidence(db,investigation_id,hypothesis_id,payload.data)
+    except Exception as exc: raise bad(exc)
+
+@router.post("/investigations/{investigation_id}/hypothesis-relations", dependencies=[Depends(require_write)])
+def add_hypothesis_relation(request:Request, investigation_id:str, payload:Payload, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.add_hypothesis_relation(db,investigation_id,payload.data)
+    except Exception as exc: raise bad(exc)
+
+@router.get("/investigations/{investigation_id}/claim-map", dependencies=[Depends(require_read)])
+def claim_map(request:Request, investigation_id:str, db:Session=Depends(get_session)):
+    enabled(request); return svc.claim_map(db,investigation_id)
+
+@router.get("/investigations/{investigation_id}/hypothesis-matrix", dependencies=[Depends(require_read)])
+def hypothesis_matrix(request:Request, investigation_id:str, db:Session=Depends(get_session)):
+    enabled(request); return svc.hypothesis_matrix(db,investigation_id)
+
+@router.get("/investigations/{investigation_id}/reasoning-bundle", dependencies=[Depends(require_read)])
+def reasoning_bundle(request:Request, investigation_id:str, db:Session=Depends(get_session)):
+    enabled(request); return svc.reasoning_bundle(db,investigation_id)
+
+@router.post("/investigations/{investigation_id}/reasoning-snapshots", dependencies=[Depends(require_write)])
+def reasoning_snapshot(request:Request, investigation_id:str, payload:Payload, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.create_reasoning_snapshot(db,investigation_id,payload.data)
+    except Exception as exc: raise bad(exc)
+
 @public_router.get("/readiness", response_model=PublicEnvelope)
 def public_readiness(request:Request, db:Session=Depends(get_session), _ctx:PublicApiContext=Depends(require_public_scope("data:read"))):
     public_enabled(request); data=svc.readiness(db); data.update({"release":request.app.state.settings.version,"enabled":True}); return PublicEnvelope(data=data,meta={"api_version":"v1","request_id":request.state.request_id})

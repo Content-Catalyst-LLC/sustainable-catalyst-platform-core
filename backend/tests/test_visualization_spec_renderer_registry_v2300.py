@@ -57,10 +57,10 @@ def _public_key(client, write_headers):
 def test_v2300_migration_health_readiness_and_seeded_registry(client):
     assert any(version == '0033' for version, _ in MIGRATIONS)
     health = client.get('/health').json()
-    assert health['version'] == '2.43.0'
+    assert health['version'] == '2.44.0'
     assert health['visualization_specification_renderer_registry'] is True
     ready = client.get('/v1/visualization/readiness').json()
-    assert ready['release'] == '2.43.0'
+    assert ready['release'] == '2.44.0'
     assert ready['migration_0033_applied'] is True
     assert ready['renderer_registry'] is True
     assert ready['renderer_execution_by_core'] is False

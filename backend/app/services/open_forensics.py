@@ -17,6 +17,8 @@ from ..models import (
     ForensicObjectRelationRecord, ForensicSnapshotRecord,
     ForensicCustodianRecord, ForensicCustodyEventRecord, ForensicEvidenceSealRecord,
     ForensicIntegrityCheckRecord, ForensicCustodyContinuityAssessmentRecord, ForensicCustodySnapshotRecord,
+    ForensicClaimRecord, ForensicClaimEvidenceAssessmentRecord, ForensicContradictionRecord,
+    ForensicHypothesisRecord, ForensicHypothesisEvidenceAssessmentRecord, ForensicHypothesisRelationRecord, ForensicReasoningSnapshotRecord,
 )
 
 OBJECT_KINDS = {
@@ -39,6 +41,13 @@ RELATION_KINDS = {
 }
 FORBIDDEN_ACTIVITY_TERMS = set()
 FORBIDDEN_RELATION_KINDS = {"causes", "authored-by", "committed-by", "guilty-of", "responsible-for", "proves"}
+
+CLAIM_KINDS = {"factual", "interpretive", "temporal", "quantitative", "identity", "attribution", "causal", "procedural", "other"}
+CLAIM_EVIDENCE_STANCES = {"supports", "inconsistent", "qualifies", "neutral", "unknown"}
+CONTRADICTION_KINDS = {"direct", "temporal", "quantitative", "source", "definition", "contextual", "other"}
+HYPOTHESIS_EVIDENCE_CONSISTENCY = {"supports", "inconsistent", "neutral", "unknown"}
+HYPOTHESIS_RELATION_KINDS = {"competes-with", "compatible-with", "subsumes", "distinct-from", "depends-on"}
+FORBIDDEN_REASONING_FIELDS = {"truth_value", "truth", "verdict", "guilt", "responsibility", "probability", "posterior", "rank", "winner"}
 
 
 def _ser(row):
@@ -105,6 +114,18 @@ def _boundaries():
         "seal_state_recording_by_core": True,
         "custody_continuity_analysis_by_core": True,
         "external_custody_attestation_binding_by_core": True,
+        "structured_claim_registry_by_core": True,
+        "claim_evidence_position_mapping_by_core": True,
+        "explicit_contradiction_registry_by_core": True,
+        "competing_hypothesis_registry_by_core": True,
+        "descriptive_hypothesis_comparison_matrix_by_core": True,
+        "immutable_reasoning_snapshots_by_core": True,
+        "automatic_contradiction_detection_by_core": False,
+        "claim_truth_determination_by_core": False,
+        "contradiction_resolution_by_core": False,
+        "hypothesis_probability_assignment_by_core": False,
+        "hypothesis_ranking_by_core": False,
+        "verdict_generation_by_core": False,
         "custody_transfer_attestation_by_core": False,
         "physical_transfer_verification_by_core": False,
         "identity_verification_by_core": False,
@@ -124,6 +145,7 @@ def readiness(db: Session) -> dict[str, Any]:
     return {
         "migration_0046_applied": True,
         "migration_0047_applied": True,
+        "migration_0048_applied": True,
         "forensic_contract": "sc.open-forensics.investigation.v1",
         "counts": {
             "investigations": count(ForensicInvestigationRecord),
@@ -139,6 +161,13 @@ def readiness(db: Session) -> dict[str, Any]:
             "integrity_checks": count(ForensicIntegrityCheckRecord),
             "custody_continuity_assessments": count(ForensicCustodyContinuityAssessmentRecord),
             "custody_snapshots": count(ForensicCustodySnapshotRecord),
+            "claims": count(ForensicClaimRecord),
+            "claim_evidence_assessments": count(ForensicClaimEvidenceAssessmentRecord),
+            "contradictions": count(ForensicContradictionRecord),
+            "hypotheses": count(ForensicHypothesisRecord),
+            "hypothesis_evidence_assessments": count(ForensicHypothesisEvidenceAssessmentRecord),
+            "hypothesis_relations": count(ForensicHypothesisRelationRecord),
+            "reasoning_snapshots": count(ForensicReasoningSnapshotRecord),
         },
         **_boundaries(),
     }
@@ -565,3 +594,151 @@ def create_custody_snapshot(db: Session, investigation_id: str, payload: dict[st
     state=custody_bundle(db,investigation_id); canonical=json.dumps(state,sort_keys=True,separators=(",",":"),default=str).encode("utf-8"); digest=hashlib.sha256(canonical).hexdigest()
     last=db.scalar(select(ForensicCustodySnapshotRecord).where(ForensicCustodySnapshotRecord.investigation_id==investigation_id).order_by(ForensicCustodySnapshotRecord.revision.desc()).limit(1)); revision=(last.revision+1) if last else 1
     row=ForensicCustodySnapshotRecord(investigation_id=investigation_id,revision=revision,content_hash=digest,previous_snapshot_hash=last.content_hash if last else None,state_json=state,provenance_json=dict(payload.get("provenance") or {}),created_by=str(payload.get("created_by") or "operator")); db.add(row); db.commit(); db.refresh(row); return _ser(row)
+
+
+# v2.44.0 — Claims, Contradictions & Competing Hypotheses
+
+def _reject_forbidden_reasoning_fields(payload: dict[str, Any]):
+    found = sorted(k for k in FORBIDDEN_REASONING_FIELDS if k in payload)
+    if found:
+        raise ValueError("Core does not accept verdict/ranking/probability fields in v2.44 reasoning records: " + ", ".join(found))
+
+
+def _claim(db: Session, investigation_id: str, claim_id: str) -> ForensicClaimRecord:
+    row = db.get(ForensicClaimRecord, claim_id)
+    if row is None or row.investigation_id != investigation_id:
+        raise ValueError("forensic claim must belong to this investigation.")
+    return row
+
+
+def _hypothesis(db: Session, investigation_id: str, hypothesis_id: str) -> ForensicHypothesisRecord:
+    row = db.get(ForensicHypothesisRecord, hypothesis_id)
+    if row is None or row.investigation_id != investigation_id:
+        raise ValueError("forensic hypothesis must belong to this investigation.")
+    return row
+
+
+def _bounded_score(value, field):
+    if value is None:
+        return None
+    score=float(value)
+    if score < 0 or score > 1:
+        raise ValueError(f"{field} must be between 0 and 1.")
+    return score
+
+
+def add_claim(db: Session, investigation_id: str, payload: dict[str, Any]):
+    _investigation(db, investigation_id); _reject_forbidden_reasoning_fields(payload)
+    key=str(payload.get("claim_key") or "").strip(); statement=str(payload.get("statement") or "").strip(); kind=str(payload.get("claim_kind") or "factual").lower()
+    if not key or not statement: raise ValueError("claim_key and statement are required.")
+    if kind not in CLAIM_KINDS: raise ValueError("unsupported claim_kind.")
+    confidence=_bounded_score(payload.get("asserted_confidence"),"asserted_confidence")
+    row=ForensicClaimRecord(investigation_id=investigation_id,claim_key=key,claim_kind=kind,statement=statement,subject_ref=payload.get("subject_ref"),asserted_by_ref=payload.get("asserted_by_ref"),source_ref=payload.get("source_ref"),asserted_at=_dt(payload.get("asserted_at")),asserted_confidence=confidence,review_state=str(payload.get("review_state") or "unassessed"),provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {}))
+    db.add(row)
+    try: db.commit(); db.refresh(row)
+    except IntegrityError as exc: db.rollback(); raise HTTPException(status_code=409,detail="Claim key already exists in this investigation.") from exc
+    return _ser(row)
+
+
+def assess_claim_evidence(db: Session, investigation_id: str, claim_id: str, payload: dict[str, Any]):
+    _claim(db,investigation_id,claim_id); _reject_forbidden_reasoning_fields(payload)
+    evidence_id=str(payload.get("evidence_item_id") or ""); _evidence(db,investigation_id,evidence_id)
+    key=str(payload.get("assessment_key") or "").strip(); stance=str(payload.get("stance") or "").lower()
+    if not key: raise ValueError("assessment_key is required.")
+    if stance not in CLAIM_EVIDENCE_STANCES: raise ValueError("stance must be supports, inconsistent, qualifies, neutral, or unknown.")
+    row=ForensicClaimEvidenceAssessmentRecord(claim_id=claim_id,evidence_item_id=evidence_id,assessment_key=key,stance=stance,diagnosticity=_bounded_score(payload.get("diagnosticity"),"diagnosticity"),rationale=payload.get("rationale"),reliability_note=payload.get("reliability_note"),analyst_ref=payload.get("analyst_ref"),external_assessment_ref=payload.get("external_assessment_ref"),provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {}))
+    db.add(row)
+    try: db.commit(); db.refresh(row)
+    except IntegrityError as exc: db.rollback(); raise HTTPException(status_code=409,detail="Claim evidence assessment key already exists for this claim.") from exc
+    return _ser(row)
+
+
+def add_contradiction(db: Session, investigation_id: str, payload: dict[str, Any]):
+    _investigation(db,investigation_id); _reject_forbidden_reasoning_fields(payload)
+    key=str(payload.get("contradiction_key") or "").strip(); left=str(payload.get("left_claim_id") or ""); right=str(payload.get("right_claim_id") or ""); kind=str(payload.get("contradiction_kind") or "direct").lower()
+    if not key: raise ValueError("contradiction_key is required.")
+    if left == right: raise ValueError("a contradiction must reference two distinct claims.")
+    _claim(db,investigation_id,left); _claim(db,investigation_id,right)
+    if kind not in CONTRADICTION_KINDS: raise ValueError("unsupported contradiction_kind.")
+    basis=[str(x) for x in (payload.get("basis_evidence_ids") or [])]
+    for eid in basis: _evidence(db,investigation_id,eid)
+    row=ForensicContradictionRecord(investigation_id=investigation_id,contradiction_key=key,left_claim_id=left,right_claim_id=right,contradiction_kind=kind,severity=str(payload.get("severity") or "unspecified"),status=str(payload.get("status") or "open"),rationale=payload.get("rationale"),basis_evidence_ids_json=basis,external_assessment_ref=payload.get("external_assessment_ref"),provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {}))
+    db.add(row)
+    try: db.commit(); db.refresh(row)
+    except IntegrityError as exc: db.rollback(); raise HTTPException(status_code=409,detail="Contradiction key already exists in this investigation.") from exc
+    return _ser(row)
+
+
+def add_hypothesis(db: Session, investigation_id: str, payload: dict[str, Any]):
+    _investigation(db,investigation_id); _reject_forbidden_reasoning_fields(payload)
+    key=str(payload.get("hypothesis_key") or "").strip(); label=str(payload.get("label") or "").strip(); statement=str(payload.get("statement") or "").strip(); focal=payload.get("focal_claim_id")
+    if not key or not label or not statement: raise ValueError("hypothesis_key, label, and statement are required.")
+    if focal: _claim(db,investigation_id,str(focal))
+    row=ForensicHypothesisRecord(investigation_id=investigation_id,hypothesis_key=key,label=label,statement=statement,focal_claim_id=str(focal) if focal else None,status=str(payload.get("status") or "active"),assumptions_json=list(payload.get("assumptions") or []),predicted_observations_json=list(payload.get("predicted_observations") or []),disconfirming_conditions_json=list(payload.get("disconfirming_conditions") or []),provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {}))
+    db.add(row)
+    try: db.commit(); db.refresh(row)
+    except IntegrityError as exc: db.rollback(); raise HTTPException(status_code=409,detail="Hypothesis key already exists in this investigation.") from exc
+    return _ser(row)
+
+
+def assess_hypothesis_evidence(db: Session, investigation_id: str, hypothesis_id: str, payload: dict[str, Any]):
+    _hypothesis(db,investigation_id,hypothesis_id); _reject_forbidden_reasoning_fields(payload)
+    evidence_id=str(payload.get("evidence_item_id") or ""); _evidence(db,investigation_id,evidence_id)
+    key=str(payload.get("assessment_key") or "").strip(); consistency=str(payload.get("consistency") or "").lower()
+    if not key: raise ValueError("assessment_key is required.")
+    if consistency not in HYPOTHESIS_EVIDENCE_CONSISTENCY: raise ValueError("consistency must be supports, inconsistent, neutral, or unknown.")
+    row=ForensicHypothesisEvidenceAssessmentRecord(hypothesis_id=hypothesis_id,evidence_item_id=evidence_id,assessment_key=key,consistency=consistency,diagnosticity=_bounded_score(payload.get("diagnosticity"),"diagnosticity"),rationale=payload.get("rationale"),reliability_note=payload.get("reliability_note"),analyst_ref=payload.get("analyst_ref"),external_assessment_ref=payload.get("external_assessment_ref"),provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {}))
+    db.add(row)
+    try: db.commit(); db.refresh(row)
+    except IntegrityError as exc: db.rollback(); raise HTTPException(status_code=409,detail="Hypothesis evidence assessment key already exists for this hypothesis.") from exc
+    return _ser(row)
+
+
+def add_hypothesis_relation(db: Session, investigation_id: str, payload: dict[str, Any]):
+    _investigation(db,investigation_id); _reject_forbidden_reasoning_fields(payload)
+    key=str(payload.get("relation_key") or "").strip(); source=str(payload.get("source_hypothesis_id") or ""); target=str(payload.get("target_hypothesis_id") or ""); kind=str(payload.get("relation_kind") or "competes-with").lower()
+    if not key: raise ValueError("relation_key is required.")
+    if source == target: raise ValueError("hypothesis relation requires two distinct hypotheses.")
+    _hypothesis(db,investigation_id,source); _hypothesis(db,investigation_id,target)
+    if kind not in HYPOTHESIS_RELATION_KINDS: raise ValueError("unsupported hypothesis relation_kind.")
+    row=ForensicHypothesisRelationRecord(investigation_id=investigation_id,relation_key=key,source_hypothesis_id=source,target_hypothesis_id=target,relation_kind=kind,rationale=payload.get("rationale"),provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {}))
+    db.add(row)
+    try: db.commit(); db.refresh(row)
+    except IntegrityError as exc: db.rollback(); raise HTTPException(status_code=409,detail="Hypothesis relation key already exists in this investigation.") from exc
+    return _ser(row)
+
+
+def claim_map(db: Session, investigation_id: str):
+    _investigation(db,investigation_id)
+    claims=db.scalars(select(ForensicClaimRecord).where(ForensicClaimRecord.investigation_id==investigation_id).order_by(ForensicClaimRecord.created_at)).all(); ids=[x.id for x in claims]
+    assessments=db.scalars(select(ForensicClaimEvidenceAssessmentRecord).where(ForensicClaimEvidenceAssessmentRecord.claim_id.in_(ids)).order_by(ForensicClaimEvidenceAssessmentRecord.created_at)).all() if ids else []
+    contradictions=db.scalars(select(ForensicContradictionRecord).where(ForensicContradictionRecord.investigation_id==investigation_id).order_by(ForensicContradictionRecord.created_at)).all()
+    return {"contract":"sc.open-forensics.claim-map.v1","investigation_id":investigation_id,"claims":[_ser(x) for x in claims],"evidence_assessments":[_ser(x) for x in assessments],"contradictions":[_ser(x) for x in contradictions],"automatic_contradiction_detection":False,"truth_determination":False,"boundaries":_boundaries()}
+
+
+def hypothesis_matrix(db: Session, investigation_id: str):
+    _investigation(db,investigation_id)
+    hypotheses=db.scalars(select(ForensicHypothesisRecord).where(ForensicHypothesisRecord.investigation_id==investigation_id).order_by(ForensicHypothesisRecord.created_at)).all(); hids=[h.id for h in hypotheses]
+    assessments=db.scalars(select(ForensicHypothesisEvidenceAssessmentRecord).where(ForensicHypothesisEvidenceAssessmentRecord.hypothesis_id.in_(hids)).order_by(ForensicHypothesisEvidenceAssessmentRecord.created_at)).all() if hids else []
+    relations=db.scalars(select(ForensicHypothesisRelationRecord).where(ForensicHypothesisRelationRecord.investigation_id==investigation_id).order_by(ForensicHypothesisRelationRecord.created_at)).all()
+    evidence_ids=sorted({a.evidence_item_id for a in assessments})
+    by_pair={(a.evidence_item_id,a.hypothesis_id):a for a in assessments}
+    rows=[]
+    for eid in evidence_ids:
+        rows.append({"evidence_item_id":eid,"cells":[{"hypothesis_id":h.id,"consistency":(by_pair[(eid,h.id)].consistency if (eid,h.id) in by_pair else "unassessed"),"diagnosticity":(by_pair[(eid,h.id)].diagnosticity if (eid,h.id) in by_pair else None),"assessment_id":(by_pair[(eid,h.id)].id if (eid,h.id) in by_pair else None)} for h in hypotheses]})
+    summaries=[]
+    for h in hypotheses:
+        vals=[a for a in assessments if a.hypothesis_id==h.id]
+        counts={k:len([a for a in vals if a.consistency==k]) for k in sorted(HYPOTHESIS_EVIDENCE_CONSISTENCY)}
+        summaries.append({"hypothesis_id":h.id,"counts":counts,"assessed_evidence_count":len(vals)})
+    return {"contract":"sc.open-forensics.competing-hypothesis-matrix.v1","investigation_id":investigation_id,"hypotheses":[_ser(x) for x in hypotheses],"rows":rows,"relations":[_ser(x) for x in relations],"summaries":summaries,"descriptive_only":True,"ranked":False,"probabilities_assigned":False,"verdict":None,"boundaries":_boundaries()}
+
+
+def reasoning_bundle(db: Session, investigation_id: str):
+    return {"contract":"sc.open-forensics.reasoning-bundle.v1","investigation_id":investigation_id,"claim_map":claim_map(db,investigation_id),"hypothesis_matrix":hypothesis_matrix(db,investigation_id),"boundaries":_boundaries()}
+
+
+def create_reasoning_snapshot(db: Session, investigation_id: str, payload: dict[str, Any]):
+    state=reasoning_bundle(db,investigation_id); canonical=json.dumps(state,sort_keys=True,separators=(",",":"),default=str).encode("utf-8"); digest=hashlib.sha256(canonical).hexdigest()
+    last=db.scalar(select(ForensicReasoningSnapshotRecord).where(ForensicReasoningSnapshotRecord.investigation_id==investigation_id).order_by(ForensicReasoningSnapshotRecord.revision.desc()).limit(1)); revision=(last.revision+1) if last else 1
+    row=ForensicReasoningSnapshotRecord(investigation_id=investigation_id,revision=revision,content_hash=digest,previous_snapshot_hash=last.content_hash if last else None,state_json=state,provenance_json=dict(payload.get("provenance") or {}),created_by=str(payload.get("created_by") or "operator")); db.add(row); db.commit(); db.refresh(row); return _ser(row)

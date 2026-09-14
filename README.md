@@ -1,3 +1,7 @@
+## v2.44.0 — Claims, Contradictions & Competing Hypotheses
+
+Structured forensic claims, explicit contradictions, evidence-position assessments, competing hypotheses, descriptive comparison matrices, and immutable reasoning snapshots with no automated verdict/ranking/truth promotion.
+
 ## v2.43.0 — Evidence Integrity & Chain of Custody
 
 Adds hash-chained custody events, governed custodians, seal/unseal state, evidence integrity checks, custody continuity assessments, immutable custody snapshots, external attestation bindings, and explicit non-authenticity/non-admissibility boundaries.

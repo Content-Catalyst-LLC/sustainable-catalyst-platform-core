@@ -1,4 +1,4 @@
-# Sustainable Catalyst Public API Python Client v2.43.0
+# Sustainable Catalyst Public API Python Client v2.44.0
 
 ```python
 from sc_platform_core_public import PublicApiClient
@@ -164,8 +164,12 @@ Public readiness, graph discovery, and public causal-system bundle helpers.
 Runtime/API surface unchanged from v2.37.0; release metadata and promotion/deployment integrity repaired.
 
 
-## v2.43.0 — Research Librarian Visual Explanation
+## v2.44.0 — Research Librarian Visual Explanation
 Adds public readiness, explanation listing, and public visual-explanation bundle helpers.
 
-## v2.43.0 — Open Forensics
+## v2.44.0 — Open Forensics
 Adds public readiness, investigation listing, and investigation-bundle helpers for the Forensic Object Model & Evidence Provenance layer.
+
+
+## v2.44.0 — Claims, Contradictions & Competing Hypotheses
+Adds public read helpers for forensic claim maps, competing-hypothesis matrices, and reasoning bundles. Matrices are descriptive only; Core does not rank hypotheses or assign probabilities.
