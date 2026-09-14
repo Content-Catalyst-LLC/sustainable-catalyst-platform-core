@@ -13,7 +13,7 @@ def tables(path):
 
 def test_pristine_upgrade_to_0054(tmp_path):
     db_path=tmp_path/'pristine.db'; db=Database(f'sqlite:///{db_path}'); applied=run_migrations(db)
-    assert '0054' in applied and '0055' in applied and '0056' in applied and migration_status(db)['pending']==[] and V250_TABLES.issubset(tables(db_path))
+    assert '0054' in applied and '0055' in applied and '0056' in applied and '0057' in applied and migration_status(db)['pending']==[] and V250_TABLES.issubset(tables(db_path))
 
 def test_safe_partial_0054_tables_then_ledger_repair(tmp_path):
     db_path=tmp_path/'partial.db'; db=Database(f'sqlite:///{db_path}'); run_migrations(db)

@@ -50,3 +50,7 @@ Citation-aware visual research explanations with immutable snapshots and rendere
 - v2.51.0 — Reproducible Investigation Packages: frozen cross-forensics manifests, artifact/environment records, integrity verification, independent review records, immutable snapshots, and portable review bundles.
 
 - v2.52.0 — Predictive Model Object Model & Forecast Provenance: first Predictive Intelligence release; Core governs identity/provenance and specialist runtimes execute models.
+
+
+### Predictive Intelligence v2.53.0
+Time-Series Forecasting & Backtesting adds governed datasets, rolling/expanding backtest semantics, temporal leakage guardrails, external baseline references, prediction-vs-actual evidence, and reproducible backtest packages while specialist runtimes retain execution.

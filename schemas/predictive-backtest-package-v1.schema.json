@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "sc.predictive.backtest-package.v1",
+  "title": "Predictive Backtest Package",
+  "type": "object",
+  "required": [
+    "plan",
+    "folds",
+    "observations",
+    "evaluations"
+  ],
+  "properties": {
+    "plan": {
+      "type": "object"
+    },
+    "folds": {
+      "type": "array"
+    },
+    "observations": {
+      "type": "array"
+    },
+    "evaluations": {
+      "type": "array"
+    },
+    "boundaries": {
+      "type": "object"
+    }
+  }
+}

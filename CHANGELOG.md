@@ -1,3 +1,6 @@
+## 2.53.0 — Time-Series Forecasting & Backtesting
+- Added governed time-series datasets, forecast windows, baselines, leakage-aware backtesting, prediction/actual evidence, and reproducible backtest packages.
+
 - v2.52.0 — Predictive Model Object Model & Forecast Provenance: governed models, targets, feature provenance, training windows, forecast runs/observations, descriptive evaluation evidence, specialist-runtime handoffs, and immutable snapshots.
 
 - v2.51.0 — Reproducible Investigation Packages: frozen cross-forensics manifests, artifact/environment records, integrity verification, independent review records, immutable snapshots, and portable review bundles.

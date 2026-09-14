@@ -5,14 +5,14 @@ from app.migrations import migration_status
 from app.models import Entity
 
 def app_client(tmp_path):
-    app=create_app(Settings(database_url=f"sqlite:///{tmp_path/'v2520.db'}",version='2.52.0')); return app,TestClient(app)
+    app=create_app(Settings(database_url=f"sqlite:///{tmp_path/'v2520.db'}",version='2.53.0')); return app,TestClient(app)
 def seed(app):
     with app.state.database.session_factory() as db:
         db.add(Entity(id='project:pred-v2520',entity_type='research-project',slug='pred-v2520',name='Predictive Project',visibility='public')); db.commit()
 def model(c):
     r=c.post('/v1/predictive-intelligence/models',json={'data':{'project_entity_id':'project:pred-v2520','model_key':'demand','name':'Demand forecast','model_kind':'statistical','runtime_product':'lab','runtime_model_ref':'lab://models/demand','model_version_ref':'v1','visibility':'public'}}); assert r.status_code==200,r.text; return r.json()['id']
 def test_v2520_readiness_and_boundaries(tmp_path):
-    app,c=app_client(tmp_path); seed(app); r=c.get('/v1/predictive-intelligence/readiness'); assert r.status_code==200,r.text; d=r.json(); assert d['release']=='2.52.0' and d['migration_0056_applied'] is True
+    app,c=app_client(tmp_path); seed(app); r=c.get('/v1/predictive-intelligence/readiness'); assert r.status_code==200,r.text; d=r.json(); assert d['release']=='2.53.0' and d['migration_0056_applied'] is True
     for k in ('predictive_model_registry_by_core','prediction_target_registry_by_core','feature_provenance_registry_by_core','training_window_manifest_by_core','forecast_provenance_capture_by_core','forecast_observation_binding_by_core','descriptive_evaluation_evidence_by_core','specialist_runtime_handoffs_by_core','immutable_forecast_snapshots_by_core'): assert d[k] is True,k
     for k in ('model_fitting_by_core','forecast_inference_execution_by_core','probabilistic_calibration_by_core','ensemble_selection_by_core','automatic_model_ranking_by_core','automatic_truth_promotion'): assert d[k] is False,k
     assert migration_status(app.state.database)['pending']==[]

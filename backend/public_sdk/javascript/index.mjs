@@ -529,7 +529,8 @@ PublicApiClient.prototype.openForensicsReproducibleInvestigationPackage = functi
 };
 
 
-// v2.52.0 Predictive Intelligence — Model Object Model & Forecast Provenance.
+// v2.53.0 Predictive Intelligence — Time-Series Forecasting & Backtesting.
 PublicApiClient.prototype.predictiveIntelligenceReadiness=function(){return this.request("/predictive-intelligence/readiness");};
 PublicApiClient.prototype.predictiveModels=function(params={}){const q=new URLSearchParams(params);return this.request(`/predictive-intelligence/models?${q}`);};
 PublicApiClient.prototype.predictiveModelBundle=function(modelId){return this.request(`/predictive-intelligence/models/${encodeURIComponent(modelId)}/bundle`);};
+PublicApiClient.prototype.predictiveBacktestBundle=function(modelId,planId){return this.request(`/predictive-intelligence/models/${encodeURIComponent(modelId)}/backtest-plans/${encodeURIComponent(planId)}/bundle`);};

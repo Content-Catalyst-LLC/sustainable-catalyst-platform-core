@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "sc.predictive.backtest-plan.v1",
+  "title": "Predictive Backtest Plan",
+  "type": "object",
+  "required": [
+    "plan_key",
+    "dataset_id",
+    "target_id",
+    "strategy"
+  ],
+  "properties": {
+    "plan_key": {
+      "type": "string"
+    },
+    "dataset_id": {
+      "type": "string"
+    },
+    "target_id": {
+      "type": "string"
+    },
+    "strategy": {
+      "enum": [
+        "fixed",
+        "rolling",
+        "expanding"
+      ]
+    },
+    "leakage_controls": {
+      "type": "object"
+    }
+  }
+}

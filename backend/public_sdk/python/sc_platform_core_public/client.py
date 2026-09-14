@@ -752,10 +752,12 @@ def _open_forensics_reproducible_investigation_package(self, investigation_id: s
 PublicApiClient.open_forensics_reproducible_investigation_package = _open_forensics_reproducible_investigation_package
 
 
-# v2.52.0 Predictive Intelligence — Model Object Model & Forecast Provenance.
+# v2.53.0 Predictive Intelligence — Time-Series Forecasting & Backtesting.
 def _predictive_intelligence_readiness(self): return self.request("GET", "/predictive-intelligence/readiness")
 def _predictive_models(self, **params): return self.request("GET", "/predictive-intelligence/models", params=params)
 def _predictive_model_bundle(self, model_id: str): return self.request("GET", f"/predictive-intelligence/models/{model_id}/bundle")
 PublicApiClient.predictive_intelligence_readiness=_predictive_intelligence_readiness
 PublicApiClient.predictive_models=_predictive_models
 PublicApiClient.predictive_model_bundle=_predictive_model_bundle
+def _predictive_backtest_bundle(self, model_id: str, plan_id: str): return self.request("GET", f"/predictive-intelligence/models/{model_id}/backtest-plans/{plan_id}/bundle")
+PublicApiClient.predictive_backtest_bundle=_predictive_backtest_bundle

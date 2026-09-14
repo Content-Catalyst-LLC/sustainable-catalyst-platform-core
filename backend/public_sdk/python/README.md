@@ -1,4 +1,4 @@
-## v2.52.0 — Predictive Model Object Model & Forecast Provenance
+## v2.53.0 — Time-Series Forecasting & Backtesting
 
 Adds public Predictive Intelligence readiness, model discovery, and forecast-provenance bundle helpers. Core preserves provenance and handoff contracts; specialist runtimes perform fitting/inference.
 

@@ -1,0 +1,2 @@
+cd ~/Downloads
+./deploy_and_validate_platform_core_v2_53_0_macos.sh "$HOME/Downloads/sustainable-catalyst-platform-core-v2.53.0-release-bundle.zip"

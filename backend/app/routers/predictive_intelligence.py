@@ -69,6 +69,51 @@ def snapshot(model_id:str,request:Request,payload:Payload,db:Session=Depends(get
     enabled(request)
     try:return svc.create_snapshot(db,model_id,payload.data)
     except Exception as exc:raise bad(exc)
+@router.post("/models/{model_id}/time-series-datasets",dependencies=[Depends(require_write)])
+def time_series_dataset(model_id:str,request:Request,payload:Payload,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.add_time_series_dataset(db,model_id,payload.data)
+    except Exception as exc:raise bad(exc)
+@router.post("/models/{model_id}/forecast-windows",dependencies=[Depends(require_write)])
+def forecast_window(model_id:str,request:Request,payload:Payload,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.add_forecast_window(db,model_id,payload.data)
+    except Exception as exc:raise bad(exc)
+@router.post("/models/{model_id}/baselines",dependencies=[Depends(require_write)])
+def baseline(model_id:str,request:Request,payload:Payload,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.add_baseline_model(db,model_id,payload.data)
+    except Exception as exc:raise bad(exc)
+@router.post("/models/{model_id}/backtest-plans",dependencies=[Depends(require_write)])
+def backtest_plan(model_id:str,request:Request,payload:Payload,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.create_backtest_plan(db,model_id,payload.data)
+    except Exception as exc:raise bad(exc)
+@router.post("/models/{model_id}/backtest-plans/{plan_id}/folds",dependencies=[Depends(require_write)])
+def backtest_fold(model_id:str,plan_id:str,request:Request,payload:Payload,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.add_backtest_fold(db,model_id,plan_id,payload.data)
+    except Exception as exc:raise bad(exc)
+@router.post("/models/{model_id}/backtest-plans/{plan_id}/folds/{fold_id}/observations",dependencies=[Depends(require_write)])
+def backtest_observation(model_id:str,plan_id:str,fold_id:str,request:Request,payload:Payload,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.add_backtest_observation(db,model_id,plan_id,fold_id,payload.data)
+    except Exception as exc:raise bad(exc)
+@router.post("/models/{model_id}/backtest-plans/{plan_id}/evaluations",dependencies=[Depends(require_write)])
+def backtest_evaluation(model_id:str,plan_id:str,request:Request,payload:Payload,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.add_backtest_evaluation(db,model_id,plan_id,payload.data)
+    except Exception as exc:raise bad(exc)
+@router.get("/models/{model_id}/backtest-plans/{plan_id}/bundle",dependencies=[Depends(require_read)])
+def backtest_bundle(model_id:str,plan_id:str,request:Request,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.backtest_bundle(db,model_id,plan_id)
+    except Exception as exc:raise bad(exc)
+@router.post("/models/{model_id}/backtest-plans/{plan_id}/packages",dependencies=[Depends(require_write)])
+def backtest_package(model_id:str,plan_id:str,request:Request,payload:Payload,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.create_backtest_package(db,model_id,plan_id,payload.data)
+    except Exception as exc:raise bad(exc)
 @public_router.get("/readiness",response_model=PublicEnvelope)
 def public_readiness(request:Request,db:Session=Depends(get_session),_ctx:PublicApiContext=Depends(require_public_scope("data:read"))):
     public_enabled(request); data=svc.readiness(db); data.update({"release":request.app.state.settings.version,"enabled":True}); return PublicEnvelope(data=data,meta={"api_version":"v1","request_id":request.state.request_id})

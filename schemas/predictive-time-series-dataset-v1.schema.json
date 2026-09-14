@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "sc.predictive.time-series-dataset.v1",
+  "title": "Predictive Time-Series Dataset",
+  "type": "object",
+  "required": [
+    "dataset_key",
+    "source_ref",
+    "time_field"
+  ],
+  "properties": {
+    "dataset_key": {
+      "type": "string"
+    },
+    "source_ref": {
+      "type": "string"
+    },
+    "time_field": {
+      "type": "string"
+    },
+    "frequency": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "timezone": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "manifest_hash": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

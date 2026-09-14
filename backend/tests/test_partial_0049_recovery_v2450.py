@@ -14,9 +14,9 @@ def _ledger_to(db, stop):
 
 def test_partial_0049_table_state_recovers_by_recording_metadata(tmp_path):
     db=Database(f"sqlite:///{tmp_path/'partial0049.db'}"); Base.metadata.create_all(db.engine); assert TABLES <= set(inspect(db.engine).get_table_names()); _ledger_to(db,'0049')
-    assert run_migrations(db)==['0049','0050','0051','0052','0053','0054','0055','0056']; status=migration_status(db); assert status['pending']==[] and status['applied'][-1]=='0056'
+    assert run_migrations(db)==['0049','0050','0051','0052','0053','0054','0055','0056','0057']; status=migration_status(db); assert status['pending']==[] and status['applied'][-1]=='0057'
 
 def test_pristine_pre_0049_schema_upgrades_additively(tmp_path):
     db=Database(f"sqlite:///{tmp_path/'pre0049.db'}"); Base.metadata.create_all(db.engine)
     for name in sorted(TABLES,reverse=True): Base.metadata.tables[name].drop(db.engine,checkfirst=True)
-    _ledger_to(db,'0049'); assert run_migrations(db)==['0049','0050','0051','0052','0053','0054','0055','0056']; status=migration_status(db); assert status['pending']==[] and status['applied'][-1]=='0056'; assert TABLES <= set(inspect(db.engine).get_table_names())
+    _ledger_to(db,'0049'); assert run_migrations(db)==['0049','0050','0051','0052','0053','0054','0055','0056','0057']; status=migration_status(db); assert status['pending']==[] and status['applied'][-1]=='0057'; assert TABLES <= set(inspect(db.engine).get_table_names())
