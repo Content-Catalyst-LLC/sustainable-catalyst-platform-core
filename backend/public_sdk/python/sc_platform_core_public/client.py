@@ -745,3 +745,8 @@ def _open_forensics_research_graph_visual_spec(self, investigation_id: str, grap
     return self.get(f"/api/v1/open-forensics/investigations/{investigation_id}/research-graphs/{graph_id}/visual-spec")
 PublicApiClient.open_forensics_research_graph = _open_forensics_research_graph
 PublicApiClient.open_forensics_research_graph_visual_spec = _open_forensics_research_graph_visual_spec
+
+
+def _open_forensics_reproducible_investigation_package(self, investigation_id: str, package_id: str):
+    return self.get(f"/api/v1/open-forensics/investigations/{investigation_id}/reproducible-packages/{package_id}")
+PublicApiClient.open_forensics_reproducible_investigation_package = _open_forensics_reproducible_investigation_package

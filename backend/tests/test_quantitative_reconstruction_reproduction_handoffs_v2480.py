@@ -6,7 +6,7 @@ from app.models import Entity
 
 
 def app_client(tmp_path):
-    app=create_app(Settings(database_url=f"sqlite:///{tmp_path/'v2480.db'}",version='2.50.0'))
+    app=create_app(Settings(database_url=f"sqlite:///{tmp_path/'v2480.db'}",version='2.51.0'))
     return app,TestClient(app)
 
 
@@ -24,8 +24,8 @@ def case(c):
 
 def test_v2480_readiness_boundaries_and_migration(tmp_path):
     app,c=app_client(tmp_path); seed(app)
-    h=c.get('/health').json(); assert h['version']=='2.50.0' and h['forensic_quantitative_reconstruction_reproduction_handoffs'] is True
-    r=c.get('/v1/open-forensics/readiness').json(); assert r['release']=='2.50.0' and r['migration_0052_applied'] is True
+    h=c.get('/health').json(); assert h['version']=='2.51.0' and h['forensic_quantitative_reconstruction_reproduction_handoffs'] is True
+    r=c.get('/v1/open-forensics/readiness').json(); assert r['release']=='2.51.0' and r['migration_0052_applied'] is True
     for key in ('quantitative_reconstruction_registry_by_core','measurement_and_uncertainty_capture_by_core','assumption_parameter_registry_by_core','scenario_manifest_registry_by_core','workbench_lab_handoff_contracts_by_core','external_result_binding_by_core','reproducible_quantitative_packages_by_core'): assert r[key] is True,key
     for key in ('quantitative_model_execution_by_core','numerical_solution_by_core','statistical_inference_execution_by_core','uncertainty_propagation_execution_by_core','sensitivity_execution_by_core','parameter_optimization_by_core','automatic_truth_promotion'): assert r[key] is False,key
     assert migration_status(app.state.database)['pending']==[]

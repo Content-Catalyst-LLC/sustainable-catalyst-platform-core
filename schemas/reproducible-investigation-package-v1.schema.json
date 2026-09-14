@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Reproducible Investigation Package",
+  "type": "object",
+  "required": [
+    "contract",
+    "package",
+    "components"
+  ],
+  "properties": {
+    "contract": {
+      "const": "sc.open-forensics.reproducible-investigation-package.v1"
+    },
+    "package": {
+      "type": "object"
+    },
+    "components": {
+      "type": "array"
+    }
+  }
+}

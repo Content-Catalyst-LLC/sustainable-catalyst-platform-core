@@ -6,7 +6,7 @@ from app.models import Entity
 
 
 def app_client(tmp_path):
-    app=create_app(Settings(database_url=f"sqlite:///{tmp_path/'v2500.db'}",version='2.50.0'))
+    app=create_app(Settings(database_url=f"sqlite:///{tmp_path/'v2500.db'}",version='2.51.0'))
     return app,TestClient(app)
 
 
@@ -26,8 +26,8 @@ def case(c):
 
 def test_v2500_readiness_boundaries_and_migration(tmp_path):
     app,c=app_client(tmp_path); seed(app)
-    h=c.get('/health').json(); assert h['version']=='2.50.0' and h['forensic_research_graph'] is True
-    r=c.get('/v1/open-forensics/readiness').json(); assert r['release']=='2.50.0' and r['migration_0054_applied'] is True
+    h=c.get('/health').json(); assert h['version']=='2.51.0' and h['forensic_research_graph'] is True
+    r=c.get('/v1/open-forensics/readiness').json(); assert r['release']=='2.51.0' and r['migration_0054_applied'] is True
     for key in ('forensic_research_graph_registry_by_core','cross_forensics_node_binding_by_core','explicit_graph_edge_registry_by_core','renderer_neutral_forensic_graph_specification_by_core','cross_product_graph_handoffs_by_core','immutable_forensic_graph_snapshots_by_core','portable_forensic_graph_packages_by_core'): assert r[key] is True,key
     for key in ('automatic_graph_edge_inference_by_core','automatic_entity_resolution_by_core','automatic_identity_resolution_by_core','automatic_causal_inference_by_core','relationship_truth_determination_by_core','graph_analytics_execution_by_core','remote_product_fetch_by_core','automatic_truth_promotion'): assert r[key] is False,key
     assert migration_status(app.state.database)['pending']==[]

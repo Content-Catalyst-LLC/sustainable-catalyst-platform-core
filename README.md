@@ -46,3 +46,5 @@ Renderer-neutral spatial-temporal scenes with explicit Site Intelligence/Lab/Wor
 Citation-aware visual research explanations with immutable snapshots and renderer-neutral contracts.
 
 - **v2.50.0 Forensic Research Graph** — governed cross-forensics semantic graph, explicit evidence-backed edges, cross-product handoffs, renderer-neutral views, immutable snapshots, and portable packages.
+
+- v2.51.0 — Reproducible Investigation Packages: frozen cross-forensics manifests, artifact/environment records, integrity verification, independent review records, immutable snapshots, and portable review bundles.

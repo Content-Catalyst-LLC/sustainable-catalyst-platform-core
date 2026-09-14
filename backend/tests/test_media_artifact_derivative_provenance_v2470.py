@@ -5,7 +5,7 @@ from app.migrations import migration_status
 from app.models import Entity
 
 def app_client(tmp_path):
-    app=create_app(Settings(database_url=f"sqlite:///{tmp_path/'v2470.db'}",version='2.50.0'))
+    app=create_app(Settings(database_url=f"sqlite:///{tmp_path/'v2470.db'}",version='2.51.0'))
     return app,TestClient(app)
 
 def seed(app):
@@ -21,8 +21,8 @@ def case(c):
 
 def test_v2470_readiness_boundaries_and_migration(tmp_path):
     app,c=app_client(tmp_path); seed(app)
-    h=c.get('/health').json(); assert h['version']=='2.50.0' and h['forensic_media_artifact_derivative_provenance'] is True
-    r=c.get('/v1/open-forensics/readiness').json(); assert r['release']=='2.50.0' and r['migration_0051_applied'] is True
+    h=c.get('/health').json(); assert h['version']=='2.51.0' and h['forensic_media_artifact_derivative_provenance'] is True
+    r=c.get('/v1/open-forensics/readiness').json(); assert r['release']=='2.51.0' and r['migration_0051_applied'] is True
     for key in ('media_artifact_registry_by_core','declared_derivative_lineage_by_core','media_metadata_preservation_by_core','cryptographic_fingerprint_recording_by_core','perceptual_fingerprint_recording_by_core','frame_segment_reference_registry_by_core','provenance_aware_media_comparisons_by_core','immutable_media_provenance_snapshots_by_core'): assert r[key] is True,key
     for key in ('media_decoding_by_core','perceptual_fingerprint_computation_by_core','media_similarity_execution_by_core','derivative_detection_by_core','authenticity_determination_from_media_by_core','manipulation_intent_determination_by_core','media_authorship_attribution_by_core','automatic_truth_promotion'): assert r[key] is False,key
     assert migration_status(app.state.database)['pending']==[]

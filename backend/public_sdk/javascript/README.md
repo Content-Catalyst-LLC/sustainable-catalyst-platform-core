@@ -1,4 +1,4 @@
-## v2.50.0 — Forensic Research Graph
+## v2.51.0 — Reproducible Investigation Packages
 
 Adds public helpers for Open Forensics media provenance, derivative-lineage graphs, and descriptive comparison bundles.
 
@@ -6,7 +6,7 @@ Adds public helpers for Open Forensics media provenance, derivative-lineage grap
 
 Adds public helpers for spatial-temporal forensic evidence, linked forensic scene specifications, and Site Intelligence handoffs.
 
-# Sustainable Catalyst Public API JavaScript Client v2.50.0
+# Sustainable Catalyst Public API JavaScript Client v2.51.0
 
 ```javascript
 import { PublicApiClient } from "./index.mjs";
@@ -187,3 +187,7 @@ Adds public helpers for evidence-linked forensic timelines and renderer-neutral 
 
 ### v2.50.0 Forensic Research Graph
 Public clients can retrieve a public forensic research graph and its renderer-neutral visual specification. Graph relationships are explicit source/analyst declarations; the API does not infer identity, causation, proof, authenticity, or truth from graph topology.
+
+### v2.51.0 Reproducible Investigation Packages
+
+Read portable, integrity-verifiable Open Forensics investigation packages assembled from frozen cross-forensics component manifests. Reproducibility does not establish authenticity, admissibility, causation, or truth.

@@ -1,3 +1,5 @@
+
+- v2.51.0 — Reproducible Investigation Packages: frozen cross-forensics manifests, artifact/environment records, integrity verification, independent review records, immutable snapshots, and portable review bundles.
 ## v2.49.0 — Quantitative Reconstruction & Reproduction Handoffs
 Status: Completed
 

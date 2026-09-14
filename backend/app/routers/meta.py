@@ -192,6 +192,7 @@ def health(request: Request):
         "forensic_quantitative_reconstruction_reproduction_handoffs": request.app.state.settings.open_forensics_enabled,
         "forensic_testimony_statements_documentary_evidence": request.app.state.settings.open_forensics_enabled,
         "forensic_research_graph": request.app.state.settings.open_forensics_enabled,
+        "reproducible_investigation_packages": request.app.state.settings.open_forensics_enabled,
     }
 
 
@@ -295,6 +296,7 @@ async def ready(request: Request, db: Session = Depends(get_session)):
         "forensic_quantitative_reconstruction_reproduction_handoffs": "ready" if settings.open_forensics_enabled else "disabled",
         "forensic_testimony_statements_documentary_evidence": "ready" if settings.open_forensics_enabled else "disabled",
         "forensic_research_graph": "ready" if settings.open_forensics_enabled else "disabled",
+        "reproducible_investigation_packages": "ready" if settings.open_forensics_enabled else "disabled",
         "external_provider_health_release_blocking": False,
         "services": [
             {

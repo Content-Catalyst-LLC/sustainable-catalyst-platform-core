@@ -6056,3 +6056,107 @@ class ForensicResearchGraphPackageRecord(Base):
     provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
     created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+# v2.51.0 — Reproducible Investigation Packages
+class ForensicInvestigationPackageRecord(Base):
+    __tablename__ = "forensic_investigation_packages"
+    __table_args__ = (UniqueConstraint("investigation_id", "package_key", "revision", name="uq_forensic_investigation_package_revision"), Index("ix_forensic_investigation_package_investigation", "investigation_id"), Index("ix_forensic_investigation_package_hash", "manifest_hash"))
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    investigation_id: Mapped[str] = mapped_column(ForeignKey("forensic_investigations.id", ondelete="CASCADE"), nullable=False)
+    package_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    revision: Mapped[int] = mapped_column(Integer, nullable=False)
+    label: Mapped[str] = mapped_column(String(500), nullable=False)
+    status: Mapped[str] = mapped_column(String(60), nullable=False, default="frozen")
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="private")
+    package_contract: Mapped[str] = mapped_column(String(140), nullable=False, default="sc.open-forensics.reproducible-investigation-package.v1")
+    manifest_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    manifest_json: Mapped[dict] = mapped_column(JSON, nullable=False)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ForensicInvestigationPackageComponentRecord(Base):
+    __tablename__ = "forensic_investigation_package_components"
+    __table_args__ = (UniqueConstraint("package_id", "component_key", name="uq_forensic_investigation_package_component"), Index("ix_forensic_investigation_component_package", "package_id"), Index("ix_forensic_investigation_component_hash", "content_hash"))
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    package_id: Mapped[str] = mapped_column(ForeignKey("forensic_investigation_packages.id", ondelete="CASCADE"), nullable=False)
+    component_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    component_kind: Mapped[str] = mapped_column(String(120), nullable=False)
+    source_contract: Mapped[str | None] = mapped_column(String(180), nullable=True)
+    content_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    state_json: Mapped[dict] = mapped_column(JSON, nullable=False)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ForensicInvestigationPackageArtifactRecord(Base):
+    __tablename__ = "forensic_investigation_package_artifacts"
+    __table_args__ = (UniqueConstraint("package_id", "artifact_key", name="uq_forensic_investigation_package_artifact"), Index("ix_forensic_investigation_artifact_package", "package_id"), Index("ix_forensic_investigation_artifact_hash", "content_hash"))
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    package_id: Mapped[str] = mapped_column(ForeignKey("forensic_investigation_packages.id", ondelete="CASCADE"), nullable=False)
+    artifact_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    artifact_kind: Mapped[str] = mapped_column(String(120), nullable=False, default="file-reference")
+    source_ref: Mapped[str] = mapped_column(String(2000), nullable=False)
+    media_type: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    byte_size: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    content_hash: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    hash_algorithm: Mapped[str] = mapped_column(String(40), nullable=False, default="sha256")
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ForensicInvestigationPackageEnvironmentRecord(Base):
+    __tablename__ = "forensic_investigation_package_environments"
+    __table_args__ = (UniqueConstraint("package_id", "environment_key", name="uq_forensic_investigation_package_environment"), Index("ix_forensic_investigation_environment_package", "package_id"))
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    package_id: Mapped[str] = mapped_column(ForeignKey("forensic_investigation_packages.id", ondelete="CASCADE"), nullable=False)
+    environment_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    platform_core_release: Mapped[str] = mapped_column(String(80), nullable=False)
+    schema_migration_head: Mapped[str] = mapped_column(String(20), nullable=False)
+    manifest_json: Mapped[dict] = mapped_column(JSON, nullable=False)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ForensicInvestigationPackageVerificationRecord(Base):
+    __tablename__ = "forensic_investigation_package_verifications"
+    __table_args__ = (Index("ix_forensic_investigation_verification_package", "package_id"), Index("ix_forensic_investigation_verification_result", "result"))
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    package_id: Mapped[str] = mapped_column(ForeignKey("forensic_investigation_packages.id", ondelete="CASCADE"), nullable=False)
+    verification_kind: Mapped[str] = mapped_column(String(100), nullable=False, default="integrity")
+    result: Mapped[str] = mapped_column(String(60), nullable=False)
+    detail_json: Mapped[dict] = mapped_column(JSON, nullable=False)
+    verified_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    verified_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ForensicInvestigationPackageReviewRecord(Base):
+    __tablename__ = "forensic_investigation_package_reviews"
+    __table_args__ = (Index("ix_forensic_investigation_review_package", "package_id"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    package_id: Mapped[str] = mapped_column(ForeignKey("forensic_investigation_packages.id", ondelete="CASCADE"), nullable=False)
+    reviewer_ref: Mapped[str] = mapped_column(String(500), nullable=False)
+    review_status: Mapped[str] = mapped_column(String(80), nullable=False, default="reviewed")
+    scope_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    limitations_json: Mapped[list] = mapped_column(JSON, default=list)
+    notes: Mapped[str | None] = mapped_column(Text, nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ForensicInvestigationPackageSnapshotRecord(Base):
+    __tablename__ = "forensic_investigation_package_snapshots"
+    __table_args__ = (UniqueConstraint("package_id", "revision", name="uq_forensic_investigation_package_snapshot_revision"), Index("ix_forensic_investigation_package_snapshot_hash", "content_hash"))
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    package_id: Mapped[str] = mapped_column(ForeignKey("forensic_investigation_packages.id", ondelete="CASCADE"), nullable=False)
+    revision: Mapped[int] = mapped_column(Integer, nullable=False)
+    content_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    previous_snapshot_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    state_json: Mapped[dict] = mapped_column(JSON, nullable=False)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)

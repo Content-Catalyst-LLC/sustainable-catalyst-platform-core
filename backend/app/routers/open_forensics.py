@@ -545,6 +545,57 @@ def research_graph_package(request:Request, investigation_id:str, graph_id:str, 
     except Exception as exc: raise bad(exc)
 
 
+
+
+# v2.51.0 — Reproducible Investigation Packages
+@router.post("/investigations/{investigation_id}/reproducible-packages", dependencies=[Depends(require_write)])
+def create_reproducible_package(request:Request, investigation_id:str, payload:Payload, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.create_reproducible_investigation_package(db,investigation_id,payload.data)
+    except Exception as exc: raise bad(exc)
+
+@router.get("/investigations/{investigation_id}/reproducible-packages", dependencies=[Depends(require_read)])
+def list_reproducible_packages(request:Request, investigation_id:str, db:Session=Depends(get_session)):
+    enabled(request); return svc.list_reproducible_investigation_packages(db,investigation_id)
+
+@router.get("/investigations/{investigation_id}/reproducible-packages/{package_id}", dependencies=[Depends(require_read)])
+def reproducible_package(request:Request, investigation_id:str, package_id:str, db:Session=Depends(get_session)):
+    enabled(request); return svc.reproducible_investigation_package_bundle(db,investigation_id,package_id)
+
+@router.get("/investigations/{investigation_id}/reproducible-packages/{package_id}/portable", dependencies=[Depends(require_read)])
+def portable_reproducible_package(request:Request, investigation_id:str, package_id:str, db:Session=Depends(get_session)):
+    enabled(request); return svc.portable_reproducible_investigation_package(db,investigation_id,package_id)
+
+@router.post("/investigations/{investigation_id}/reproducible-packages/{package_id}/artifacts", dependencies=[Depends(require_write)])
+def reproducible_package_artifact(request:Request, investigation_id:str, package_id:str, payload:Payload, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.add_investigation_package_artifact(db,investigation_id,package_id,payload.data)
+    except Exception as exc: raise bad(exc)
+
+@router.post("/investigations/{investigation_id}/reproducible-packages/{package_id}/environments", dependencies=[Depends(require_write)])
+def reproducible_package_environment(request:Request, investigation_id:str, package_id:str, payload:Payload, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.add_investigation_package_environment(db,investigation_id,package_id,payload.data)
+    except Exception as exc: raise bad(exc)
+
+@router.post("/investigations/{investigation_id}/reproducible-packages/{package_id}/verify", dependencies=[Depends(require_write)])
+def verify_reproducible_package(request:Request, investigation_id:str, package_id:str, payload:Payload, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.verify_reproducible_investigation_package(db,investigation_id,package_id,payload.data)
+    except Exception as exc: raise bad(exc)
+
+@router.post("/investigations/{investigation_id}/reproducible-packages/{package_id}/reviews", dependencies=[Depends(require_write)])
+def review_reproducible_package(request:Request, investigation_id:str, package_id:str, payload:Payload, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.add_investigation_package_review(db,investigation_id,package_id,payload.data)
+    except Exception as exc: raise bad(exc)
+
+@router.post("/investigations/{investigation_id}/reproducible-packages/{package_id}/snapshots", dependencies=[Depends(require_write)])
+def snapshot_reproducible_package(request:Request, investigation_id:str, package_id:str, payload:Payload, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.create_investigation_package_snapshot(db,investigation_id,package_id,payload.data)
+    except Exception as exc: raise bad(exc)
+
 @public_router.get("/readiness", response_model=PublicEnvelope)
 def public_readiness(request:Request, db:Session=Depends(get_session), _ctx:PublicApiContext=Depends(require_public_scope("data:read"))):
     public_enabled(request); data=svc.readiness(db); data.update({"release":request.app.state.settings.version,"enabled":True}); return PublicEnvelope(data=data,meta={"api_version":"v1","request_id":request.state.request_id})
@@ -625,3 +676,12 @@ def public_research_graph_visual_spec(investigation_id:str, graph_id:str, reques
     graph=svc._research_graph(db,investigation_id,graph_id)
     if graph.visibility != "public": raise HTTPException(status_code=404,detail="Forensic research graph not found.")
     return PublicEnvelope(data=svc.forensic_research_graph_visual_spec(db,investigation_id,graph_id),meta={"api_version":"v1","request_id":request.state.request_id})
+
+
+@public_router.get("/investigations/{investigation_id}/reproducible-packages/{package_id}", response_model=PublicEnvelope)
+def public_reproducible_package(investigation_id:str, package_id:str, request:Request, db:Session=Depends(get_session), _ctx:PublicApiContext=Depends(require_public_scope("data:read"))):
+    public_enabled(request); inv=svc._investigation(db,investigation_id)
+    if inv.visibility != "public": raise HTTPException(status_code=404,detail="Forensic investigation not found.")
+    pkg=svc._investigation_package(db,investigation_id,package_id)
+    if pkg.visibility != "public": raise HTTPException(status_code=404,detail="Reproducible investigation package not found.")
+    return PublicEnvelope(data=svc.portable_reproducible_investigation_package(db,investigation_id,package_id),meta={"api_version":"v1","request_id":request.state.request_id})

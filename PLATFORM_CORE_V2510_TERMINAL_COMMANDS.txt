@@ -1,0 +1,1 @@
+SC_CORE_BUNDLE_ONLY=1 ./deploy_and_validate_platform_core_v2_51_0_macos.sh ~/Downloads/sustainable-catalyst-platform-core-v2.51.0-release-bundle.zip

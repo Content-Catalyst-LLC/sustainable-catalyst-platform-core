@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Sustainable Catalyst Platform Core
  * Description: WordPress connector for Sustainable Catalyst Platform Core registry, graph, evidence, developer, gateway, free live-data, international-law, scientific-data, official-statistics, geospatial, time-series, STAC, map-layer, streaming, alerts, source-reliability, and operational-facility, humanitarian-access, essential-services, and country-evidence federation and reconciliation, and Earth/Ocean/Space scientific-service routing, cross-product exchange, distributed scale-control services, and governance/access/audit, production-certification/recovery, and observability/SLO production-operations services, plus incident-response, change-control, rollback-coordination, continuity, backup-verification, disaster-recovery, and multi-region resilience/failover-coordination, and data-lifecycle/archival-integrity/preservation services, plus Federated Core trusted-node exchange services and capacity forecasting/resource-governance services, plus identity/credential/cryptographic-key lifecycle governance, distributed workload governance, and scientific object storage/processing adapter services, research object/model services, renderer-neutral visual reasoning object services, and visualization specification/renderer registry services, and governed System Maps and Flow Maps services.
- * Version: 2.50.0
+ * Version: 2.51.0
  * Author: Content Catalyst LLC
  * License: MIT
  */
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('SCPC_VERSION', '2.50.0');
+define('SCPC_VERSION', '2.51.0');
 define('SCPC_OPTION_BACKEND_URL', 'scpc_backend_url');
 define('SCPC_OPTION_READ_KEY', 'scpc_read_key');
 
@@ -1435,3 +1435,15 @@ function scpc_forensic_research_graph_status_shortcode() {
     return '<div class="scpc-status"><strong>Forensic Research Graph ' . ($ready ? 'Ready' : 'Not Ready') . '</strong><br />' . intval($counts['research_graphs'] ?? 0) . ' graphs · ' . intval($counts['research_graph_nodes'] ?? 0) . ' nodes · ' . intval($counts['research_graph_edges'] ?? 0) . ' explicit edges<br /><span class="scpc-meta">Core ' . esc_html($data['release'] ?? SCPC_VERSION) . ' · cross-forensics references and explicit relations only; Core does not infer identity, causation, proof, or truth from graph topology.</span></div>';
 }
 add_shortcode('sc_platform_core_forensic_research_graph_status', 'scpc_forensic_research_graph_status_shortcode');
+
+
+function scpc_reproducible_investigation_packages_status_shortcode() {
+    $response = wp_remote_get(scpc_core_base_url() . '/v1/open-forensics/readiness', array('timeout' => 10));
+    if (is_wp_error($response)) return '<div class="scpc-status scpc-status-error">Reproducible Investigation Packages status unavailable.</div>';
+    $data = json_decode(wp_remote_retrieve_body($response), true);
+    if (!is_array($data)) return '<div class="scpc-status scpc-status-error">Reproducible Investigation Packages status unavailable.</div>';
+    $counts = is_array($data['counts'] ?? null) ? $data['counts'] : array();
+    $ready = !empty($data['migration_0055_applied']) && !empty($data['reproducible_investigation_packages_by_core']);
+    return '<div class="scpc-status"><strong>Reproducible Investigation Packages ' . ($ready ? 'Ready' : 'Not Ready') . '</strong><br />' . intval($counts['investigation_packages'] ?? 0) . ' packages · ' . intval($counts['investigation_package_components'] ?? 0) . ' frozen components · ' . intval($counts['investigation_package_verifications'] ?? 0) . ' verifications<br /><span class="scpc-meta">Core ' . esc_html($data['release'] ?? SCPC_VERSION) . ' · reproducibility and integrity verification do not determine authenticity, admissibility, causation, or truth.</span></div>';
+}
+add_shortcode('sc_platform_core_reproducible_investigation_packages_status', 'scpc_reproducible_investigation_packages_status_shortcode');

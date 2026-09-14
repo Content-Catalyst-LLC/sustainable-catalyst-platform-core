@@ -522,3 +522,8 @@ PublicApiClient.prototype.openForensicsResearchGraph = function (investigationId
 PublicApiClient.prototype.openForensicsResearchGraphVisualSpec = function (investigationId, graphId) {
   return this.get(`/api/v1/open-forensics/investigations/${encodeURIComponent(investigationId)}/research-graphs/${encodeURIComponent(graphId)}/visual-spec`);
 };
+
+
+PublicApiClient.prototype.openForensicsReproducibleInvestigationPackage = function (investigationId, packageId) {
+  return this.get(`/api/v1/open-forensics/investigations/${encodeURIComponent(investigationId)}/reproducible-packages/${encodeURIComponent(packageId)}`);
+};

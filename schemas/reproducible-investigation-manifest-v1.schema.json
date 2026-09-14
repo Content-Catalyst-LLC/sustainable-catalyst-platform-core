@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Reproducible Investigation Manifest",
+  "type": "object",
+  "required": [
+    "contract",
+    "investigation_id",
+    "components",
+    "frozen"
+  ],
+  "properties": {
+    "contract": {
+      "const": "sc.open-forensics.reproducible-investigation-manifest.v1"
+    },
+    "investigation_id": {
+      "type": "string"
+    },
+    "components": {
+      "type": "array"
+    },
+    "frozen": {
+      "const": true
+    }
+  }
+}

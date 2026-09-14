@@ -32,6 +32,9 @@ from ..models import (
     ForensicStatementClaimBindingRecord, ForensicStatementRelationRecord, ForensicTemporalConsistencyRecord, ForensicDocumentarySnapshotRecord,
     ForensicResearchGraphRecord, ForensicResearchGraphNodeRecord, ForensicResearchGraphEdgeRecord, ForensicResearchGraphViewRecord,
     ForensicResearchGraphHandoffRecord, ForensicResearchGraphSnapshotRecord, ForensicResearchGraphPackageRecord,
+    ForensicInvestigationPackageRecord, ForensicInvestigationPackageComponentRecord, ForensicInvestigationPackageArtifactRecord,
+    ForensicInvestigationPackageEnvironmentRecord, ForensicInvestigationPackageVerificationRecord, ForensicInvestigationPackageReviewRecord,
+    ForensicInvestigationPackageSnapshotRecord,
     ResearchModelRecord, ResearchResultRecord,
 )
 
@@ -105,6 +108,9 @@ RESEARCH_GRAPH_RELATION_KINDS = {"references", "supports", "inconsistent-with", 
 RESEARCH_GRAPH_TARGET_PRODUCTS = {"research-librarian", "site-intelligence", "lab", "workbench", "decision-studio", "catalyst-data", "core", "external"}
 FORBIDDEN_GRAPH_RELATIONS = {"causes", "proves", "authored-by", "same-person-as", "verified-identity-of", "authenticates", "guilty-of", "responsible-for"}
 FORBIDDEN_GRAPH_DETERMINATION_FIELDS = {"truth_value", "truth", "verdict", "probability", "posterior", "rank", "winner", "identity_verified", "same_person_confirmed", "causation_confirmed", "proof_confirmed", "authenticity_confirmed", "guilt", "responsibility"}
+
+INVESTIGATION_PACKAGE_COMPONENT_KINDS = {"evidence-provenance", "custody-integrity", "claims-hypotheses", "timeline-reconstruction", "spatial-temporal", "media-provenance", "quantitative-reconstruction", "documentary-evidence", "research-graphs"}
+FORBIDDEN_INVESTIGATION_PACKAGE_FIELDS = {"truth_value", "truth", "verdict", "probability", "posterior", "rank", "winner", "authentic", "authenticity", "admissible", "admissibility", "causation_confirmed", "proof_confirmed", "guilt", "responsibility"}
 
 
 def _ser(row):
@@ -223,6 +229,16 @@ def _boundaries():
         "cross_product_graph_handoffs_by_core": True,
         "immutable_forensic_graph_snapshots_by_core": True,
         "portable_forensic_graph_packages_by_core": True,
+        "reproducible_investigation_packages_by_core": True,
+        "frozen_cross_forensics_component_manifests_by_core": True,
+        "investigation_package_artifact_registry_by_core": True,
+        "investigation_environment_manifest_capture_by_core": True,
+        "investigation_package_integrity_verification_by_core": True,
+        "independent_review_recording_by_core": True,
+        "portable_investigation_review_bundles_by_core": True,
+        "reproducibility_equals_truth_by_core": False,
+        "automatic_package_authenticity_determination_by_core": False,
+        "automatic_package_admissibility_determination_by_core": False,
         "automatic_graph_edge_inference_by_core": False,
         "automatic_entity_resolution_by_core": False,
         "automatic_identity_resolution_by_core": False,
@@ -290,6 +306,7 @@ def readiness(db: Session) -> dict[str, Any]:
         "migration_0052_applied": True,
         "migration_0053_applied": True,
         "migration_0054_applied": True,
+        "migration_0055_applied": True,
         "forensic_contract": "sc.open-forensics.investigation.v1",
         "counts": {
             "investigations": count(ForensicInvestigationRecord),
@@ -357,6 +374,13 @@ def readiness(db: Session) -> dict[str, Any]:
             "research_graph_handoffs": count(ForensicResearchGraphHandoffRecord),
             "research_graph_snapshots": count(ForensicResearchGraphSnapshotRecord),
             "research_graph_packages": count(ForensicResearchGraphPackageRecord),
+            "investigation_packages": count(ForensicInvestigationPackageRecord),
+            "investigation_package_components": count(ForensicInvestigationPackageComponentRecord),
+            "investigation_package_artifacts": count(ForensicInvestigationPackageArtifactRecord),
+            "investigation_package_environments": count(ForensicInvestigationPackageEnvironmentRecord),
+            "investigation_package_verifications": count(ForensicInvestigationPackageVerificationRecord),
+            "investigation_package_reviews": count(ForensicInvestigationPackageReviewRecord),
+            "investigation_package_snapshots": count(ForensicInvestigationPackageSnapshotRecord),
         },
         **_boundaries(),
     }
@@ -1717,3 +1741,122 @@ def research_graph_source_inventory(db: Session, investigation_id: str):
         if hasattr(model,"investigation_id"): q=q.where(model.investigation_id==investigation_id)
         return int(db.scalar(q) or 0)
     return {"contract":"sc.open-forensics.research-graph-source-inventory.v1","investigation_id":investigation_id,"eligible_node_kinds":sorted(RESEARCH_GRAPH_NODE_KINDS),"cross_product_targets":sorted(RESEARCH_GRAPH_TARGET_PRODUCTS),"counts":{"forensic_objects":count(ForensicObjectRecord),"evidence_items":count(ForensicEvidenceItemRecord),"custodians":count(ForensicCustodianRecord),"claims":count(ForensicClaimRecord),"hypotheses":count(ForensicHypothesisRecord),"events":count(ForensicEventRecord),"places":count(ForensicPlaceRecord),"trajectories":count(ForensicTrajectoryEvidenceRecord),"media_artifacts":count(ForensicMediaArtifactRecord),"quantitative_reconstructions":count(ForensicQuantitativeReconstructionRecord),"statements":count(ForensicStatementRecord),"documents":count(ForensicDocumentRecord)},"automatic_node_creation_by_core":False,"automatic_graph_edge_inference_by_core":False}
+
+
+# v2.51.0 — Reproducible Investigation Packages
+def _reject_investigation_package_fields(payload: dict[str, Any]):
+    bad=sorted(FORBIDDEN_INVESTIGATION_PACKAGE_FIELDS.intersection(payload))
+    if bad:
+        raise ValueError("Reproducible packaging preserves and verifies declared investigation state but does not determine truth, authenticity, admissibility, causation, proof, guilt, or responsibility: " + ", ".join(bad))
+
+
+def _investigation_package(db: Session, investigation_id: str, package_id: str) -> ForensicInvestigationPackageRecord:
+    row=db.get(ForensicInvestigationPackageRecord,package_id)
+    if row is None or row.investigation_id!=investigation_id: raise ValueError("package must belong to this investigation.")
+    return row
+
+
+def _component_state_map(db: Session, investigation_id: str) -> dict[str, dict[str, Any]]:
+    graphs=db.scalars(select(ForensicResearchGraphRecord).where(ForensicResearchGraphRecord.investigation_id==investigation_id).order_by(ForensicResearchGraphRecord.created_at,ForensicResearchGraphRecord.graph_key)).all()
+    return {
+        "evidence-provenance": bundle(db,investigation_id),
+        "custody-integrity": custody_bundle(db,investigation_id),
+        "claims-hypotheses": reasoning_bundle(db,investigation_id),
+        "timeline-reconstruction": timeline_bundle(db,investigation_id),
+        "spatial-temporal": spatial_temporal_evidence_bundle(db,investigation_id),
+        "media-provenance": media_provenance_bundle(db,investigation_id),
+        "quantitative-reconstruction": quantitative_reconstruction_bundle(db,investigation_id),
+        "documentary-evidence": documentary_evidence_bundle(db,investigation_id),
+        "research-graphs": {"contract":"sc.open-forensics.research-graph-collection.v1","investigation_id":investigation_id,"graphs":[forensic_research_graph_bundle(db,investigation_id,g.id) for g in graphs],"descriptive_only":True,"automatic_graph_edge_inference_by_core":False},
+    }
+
+
+def _canonical_hash(value: Any) -> str:
+    return hashlib.sha256(json.dumps(value,sort_keys=True,separators=(",",":"),default=str).encode("utf-8")).hexdigest()
+
+
+def create_reproducible_investigation_package(db: Session, investigation_id: str, payload: dict[str, Any]):
+    _investigation(db,investigation_id); _reject_investigation_package_fields(payload)
+    key=str(payload.get("package_key") or "").strip(); label=str(payload.get("label") or "").strip()
+    if not key or not label: raise ValueError("package_key and label are required.")
+    states=_component_state_map(db,investigation_id)
+    components=[]
+    for kind,state in states.items():
+        components.append({"component_key":kind,"component_kind":kind,"source_contract":state.get("contract"),"content_hash":_canonical_hash(state)})
+    last=db.scalar(select(ForensicInvestigationPackageRecord).where(ForensicInvestigationPackageRecord.investigation_id==investigation_id,ForensicInvestigationPackageRecord.package_key==key).order_by(ForensicInvestigationPackageRecord.revision.desc()).limit(1))
+    revision=(last.revision+1) if last else 1
+    manifest={"contract":"sc.open-forensics.reproducible-investigation-manifest.v1","investigation_id":investigation_id,"package_key":key,"revision":revision,"platform_core_release":"2.51.0","schema_migration_head":"0055","components":components,"component_count":len(components),"hash_algorithm":"sha256","frozen":True,"independently_reviewable":True,"reproducibility_equals_truth":False,"authenticity_determined":False,"admissibility_determined":False,"automatic_truth_promotion":False}
+    digest=_canonical_hash(manifest)
+    row=ForensicInvestigationPackageRecord(investigation_id=investigation_id,package_key=key,revision=revision,label=label,status=str(payload.get("status") or "frozen"),visibility=str(payload.get("visibility") or "private"),manifest_hash=digest,manifest_json=manifest,provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {}),created_by=str(payload.get("created_by") or "operator")); db.add(row); db.commit(); db.refresh(row)
+    for item in components:
+        state=states[item["component_key"]]
+        db.add(ForensicInvestigationPackageComponentRecord(package_id=row.id,component_key=item["component_key"],component_kind=item["component_kind"],source_contract=item.get("source_contract"),content_hash=item["content_hash"],state_json=state,provenance_json={"captured_by":"platform-core-v2.51.0"}))
+    env={"contract":"sc.open-forensics.investigation-environment.v1","platform_core_release":"2.51.0","schema_migration_head":"0055","component_contracts":{k:v.get("contract") for k,v in states.items()},"specialist_execution_embedded":False,"credentials_embedded":False}
+    db.add(ForensicInvestigationPackageEnvironmentRecord(package_id=row.id,environment_key="platform-core",platform_core_release="2.51.0",schema_migration_head="0055",manifest_json=env,provenance_json={"captured_by":"platform-core-v2.51.0"}))
+    db.commit()
+    return reproducible_investigation_package_bundle(db,investigation_id,row.id)
+
+
+def list_reproducible_investigation_packages(db: Session, investigation_id: str):
+    _investigation(db,investigation_id)
+    rows=db.scalars(select(ForensicInvestigationPackageRecord).where(ForensicInvestigationPackageRecord.investigation_id==investigation_id).order_by(ForensicInvestigationPackageRecord.package_key,ForensicInvestigationPackageRecord.revision)).all()
+    return [_ser(x) for x in rows]
+
+
+def reproducible_investigation_package_bundle(db: Session, investigation_id: str, package_id: str):
+    row=_investigation_package(db,investigation_id,package_id)
+    components=db.scalars(select(ForensicInvestigationPackageComponentRecord).where(ForensicInvestigationPackageComponentRecord.package_id==package_id).order_by(ForensicInvestigationPackageComponentRecord.component_key)).all()
+    artifacts=db.scalars(select(ForensicInvestigationPackageArtifactRecord).where(ForensicInvestigationPackageArtifactRecord.package_id==package_id).order_by(ForensicInvestigationPackageArtifactRecord.artifact_key)).all()
+    environments=db.scalars(select(ForensicInvestigationPackageEnvironmentRecord).where(ForensicInvestigationPackageEnvironmentRecord.package_id==package_id).order_by(ForensicInvestigationPackageEnvironmentRecord.environment_key)).all()
+    verifications=db.scalars(select(ForensicInvestigationPackageVerificationRecord).where(ForensicInvestigationPackageVerificationRecord.package_id==package_id).order_by(ForensicInvestigationPackageVerificationRecord.verified_at)).all()
+    reviews=db.scalars(select(ForensicInvestigationPackageReviewRecord).where(ForensicInvestigationPackageReviewRecord.package_id==package_id).order_by(ForensicInvestigationPackageReviewRecord.created_at)).all()
+    snapshots=db.scalars(select(ForensicInvestigationPackageSnapshotRecord).where(ForensicInvestigationPackageSnapshotRecord.package_id==package_id).order_by(ForensicInvestigationPackageSnapshotRecord.revision)).all()
+    return {"contract":"sc.open-forensics.reproducible-investigation-package.v1","package":_ser(row),"components":[_ser(x) for x in components],"artifacts":[_ser(x) for x in artifacts],"environments":[_ser(x) for x in environments],"verifications":[_ser(x) for x in verifications],"reviews":[_ser(x) for x in reviews],"snapshots":[_ser(x) for x in snapshots],"portable":True,"independently_reviewable":True,"boundaries":_boundaries()}
+
+
+def add_investigation_package_artifact(db: Session, investigation_id: str, package_id: str, payload: dict[str, Any]):
+    _investigation_package(db,investigation_id,package_id); _reject_investigation_package_fields(payload)
+    key=str(payload.get("artifact_key") or "").strip(); ref=str(payload.get("source_ref") or "").strip()
+    if not key or not ref: raise ValueError("artifact_key and source_ref are required.")
+    _validate_hash(payload.get("content_hash"),payload.get("hash_algorithm"))
+    row=ForensicInvestigationPackageArtifactRecord(package_id=package_id,artifact_key=key,artifact_kind=str(payload.get("artifact_kind") or "file-reference"),source_ref=ref,media_type=payload.get("media_type"),byte_size=payload.get("byte_size"),content_hash=payload.get("content_hash"),hash_algorithm=str(payload.get("hash_algorithm") or "sha256"),provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {})); db.add(row); db.commit(); db.refresh(row); return _ser(row)
+
+
+def add_investigation_package_environment(db: Session, investigation_id: str, package_id: str, payload: dict[str, Any]):
+    _investigation_package(db,investigation_id,package_id); _reject_investigation_package_fields(payload)
+    key=str(payload.get("environment_key") or "").strip()
+    if not key: raise ValueError("environment_key is required.")
+    manifest=dict(payload.get("manifest") or {})
+    if any(x.lower() in {"password","secret","token","api_key","apikey"} for x in manifest): raise ValueError("environment manifest must not embed credentials or secrets.")
+    row=ForensicInvestigationPackageEnvironmentRecord(package_id=package_id,environment_key=key,platform_core_release=str(payload.get("platform_core_release") or "2.51.0"),schema_migration_head=str(payload.get("schema_migration_head") or "0055"),manifest_json=manifest,provenance_json=dict(payload.get("provenance") or {})); db.add(row); db.commit(); db.refresh(row); return _ser(row)
+
+
+def verify_reproducible_investigation_package(db: Session, investigation_id: str, package_id: str, payload: dict[str, Any]):
+    row=_investigation_package(db,investigation_id,package_id); _reject_investigation_package_fields(payload)
+    components=db.scalars(select(ForensicInvestigationPackageComponentRecord).where(ForensicInvestigationPackageComponentRecord.package_id==package_id).order_by(ForensicInvestigationPackageComponentRecord.component_key)).all()
+    component_checks=[{"component_key":c.component_key,"stored_hash":c.content_hash,"observed_hash":_canonical_hash(c.state_json),"valid":c.content_hash==_canonical_hash(c.state_json)} for c in components]
+    manifest_valid=row.manifest_hash==_canonical_hash(row.manifest_json)
+    current_matches=None
+    if bool(payload.get("compare_current_state",False)):
+        current=_component_state_map(db,investigation_id); current_matches={c.component_key:(_canonical_hash(current.get(c.component_key,{}))==c.content_hash) for c in components}
+    valid=manifest_valid and all(x["valid"] for x in component_checks)
+    detail={"manifest_valid":manifest_valid,"component_checks":component_checks,"current_state_matches_package":current_matches,"verification_does_not_establish_authenticity":True,"verification_does_not_establish_admissibility":True,"verification_does_not_establish_truth":True}
+    rec=ForensicInvestigationPackageVerificationRecord(package_id=package_id,verification_kind=str(payload.get("verification_kind") or "integrity"),result="verified" if valid else "mismatch",detail_json=detail,verified_by=str(payload.get("verified_by") or "operator")); db.add(rec); db.commit(); db.refresh(rec); return _ser(rec)
+
+
+def add_investigation_package_review(db: Session, investigation_id: str, package_id: str, payload: dict[str, Any]):
+    _investigation_package(db,investigation_id,package_id); _reject_investigation_package_fields(payload)
+    reviewer=str(payload.get("reviewer_ref") or "").strip()
+    if not reviewer: raise ValueError("reviewer_ref is required.")
+    row=ForensicInvestigationPackageReviewRecord(package_id=package_id,reviewer_ref=reviewer,review_status=str(payload.get("review_status") or "reviewed"),scope_json=dict(payload.get("scope") or {}),limitations_json=list(payload.get("limitations") or []),notes=payload.get("notes"),provenance_json=dict(payload.get("provenance") or {})); db.add(row); db.commit(); db.refresh(row); return _ser(row)
+
+
+def create_investigation_package_snapshot(db: Session, investigation_id: str, package_id: str, payload: dict[str, Any]):
+    _reject_investigation_package_fields(payload); state=reproducible_investigation_package_bundle(db,investigation_id,package_id); state["snapshots"]=[]
+    digest=_canonical_hash(state); last=db.scalar(select(ForensicInvestigationPackageSnapshotRecord).where(ForensicInvestigationPackageSnapshotRecord.package_id==package_id).order_by(ForensicInvestigationPackageSnapshotRecord.revision.desc()).limit(1)); revision=(last.revision+1) if last else 1
+    row=ForensicInvestigationPackageSnapshotRecord(package_id=package_id,revision=revision,content_hash=digest,previous_snapshot_hash=last.content_hash if last else None,state_json=state,provenance_json=dict(payload.get("provenance") or {}),created_by=str(payload.get("created_by") or "operator")); db.add(row); db.commit(); db.refresh(row); return _ser(row)
+
+
+def portable_reproducible_investigation_package(db: Session, investigation_id: str, package_id: str):
+    state=reproducible_investigation_package_bundle(db,investigation_id,package_id)
+    return {"contract":"sc.open-forensics.portable-reproducible-investigation.v1","package_id":package_id,"content_hash":_canonical_hash(state),"hash_algorithm":"sha256","state":state,"replay_execution_by_core":False,"reproducibility_equals_truth":False,"authenticity_determined":False,"admissibility_determined":False,"automatic_truth_promotion":False}
