@@ -14,4 +14,4 @@ def test_v2370_additive_schema_preserves_v236_contracts(client):
     assert {'id','sensitivity_study_id','ensemble_id'} <= cols('uncertainty_compute_runs')
     assert {'causal_graphs','causal_variables','causal_edges','causal_interventions','causal_identifications','causal_estimates','causal_diagnostics'} <= tables
     status=migration_status(client.app.state.database)
-    assert status['pending']==[] and status['applied'][-1]=='0050'
+    assert status['pending']==[] and status['applied'][-1]=='0051'

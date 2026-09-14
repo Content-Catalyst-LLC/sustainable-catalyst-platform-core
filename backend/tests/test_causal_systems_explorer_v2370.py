@@ -6,7 +6,7 @@ from app.main import create_app
 from app.models import Entity, ResearchProjectRecord
 
 def app_client(tmp_path):
-    return TestClient(create_app(Settings(database_url='sqlite:///'+str(tmp_path/'v237.db'),version='2.46.0')))
+    return TestClient(create_app(Settings(database_url='sqlite:///'+str(tmp_path/'v237.db'),version='2.47.0')))
 
 def project(client):
     db=client.app.state.database.session_factory()
@@ -15,7 +15,7 @@ def project(client):
     finally:db.close()
 
 def test_readiness_and_migration(tmp_path):
-    c=app_client(tmp_path); h=c.get('/health').json(); assert h['version']=='2.46.0' and h['causal_systems_explorer'] is True
+    c=app_client(tmp_path); h=c.get('/health').json(); assert h['version']=='2.47.0' and h['causal_systems_explorer'] is True
     r=c.get('/v1/causal-systems/readiness'); assert r.status_code==200; b=r.json(); assert b['migration_0041_applied'] is True and b['automatic_causal_identification'] is False and b['automatic_effect_estimation'] is False
     m=migration_status(c.app.state.database); assert '0041' in m['applied'] and m['pending']==[]
 

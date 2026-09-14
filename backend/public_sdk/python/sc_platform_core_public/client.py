@@ -714,3 +714,14 @@ def _open_forensics_site_intelligence_handoff(self, investigation_id: str):
 PublicApiClient.open_forensics_spatial_temporal_evidence = _open_forensics_spatial_temporal_evidence
 PublicApiClient.open_forensics_forensic_scene_specification = _open_forensics_forensic_scene_specification
 PublicApiClient.open_forensics_site_intelligence_handoff = _open_forensics_site_intelligence_handoff
+
+# v2.47.0 Open Forensics — Media Artifact & Derivative Provenance.
+def _open_forensics_media_provenance(self, investigation_id: str):
+    return self.request("GET", f"/open-forensics/investigations/{investigation_id}/media-provenance")
+def _open_forensics_media_lineage_graph(self, investigation_id: str):
+    return self.request("GET", f"/open-forensics/investigations/{investigation_id}/media-lineage-graph")
+def _open_forensics_media_comparison_bundle(self, investigation_id: str):
+    return self.request("GET", f"/open-forensics/investigations/{investigation_id}/media-comparison-bundle")
+PublicApiClient.open_forensics_media_provenance = _open_forensics_media_provenance
+PublicApiClient.open_forensics_media_lineage_graph = _open_forensics_media_lineage_graph
+PublicApiClient.open_forensics_media_comparison_bundle = _open_forensics_media_comparison_bundle

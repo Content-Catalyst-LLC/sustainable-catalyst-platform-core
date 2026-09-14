@@ -5482,3 +5482,171 @@ class ForensicSpatialTemporalSnapshotRecord(Base):
     provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
     created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+# v2.47.0 — Media Artifact & Derivative Provenance
+class ForensicMediaArtifactRecord(Base):
+    __tablename__ = "forensic_media_artifacts"
+    __table_args__ = (
+        UniqueConstraint("investigation_id", "artifact_key", name="uq_forensic_media_artifact_key"),
+        Index("ix_forensic_media_artifact_investigation", "investigation_id"),
+        Index("ix_forensic_media_artifact_evidence", "evidence_item_id"),
+        Index("ix_forensic_media_artifact_object", "forensic_object_id"),
+        Index("ix_forensic_media_artifact_hash", "content_hash"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    investigation_id: Mapped[str] = mapped_column(ForeignKey("forensic_investigations.id", ondelete="CASCADE"), nullable=False)
+    artifact_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    label: Mapped[str] = mapped_column(String(500), nullable=False)
+    media_kind: Mapped[str] = mapped_column(String(60), nullable=False)
+    provenance_role: Mapped[str] = mapped_column(String(60), nullable=False, default="unknown")
+    evidence_item_id: Mapped[str | None] = mapped_column(ForeignKey("forensic_evidence_items.id", ondelete="SET NULL"), nullable=True)
+    forensic_object_id: Mapped[str | None] = mapped_column(ForeignKey("forensic_objects.id", ondelete="SET NULL"), nullable=True)
+    source_ref: Mapped[str | None] = mapped_column(String(2000), nullable=True)
+    mime_type: Mapped[str | None] = mapped_column(String(180), nullable=True)
+    byte_size: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    content_hash: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    hash_algorithm: Mapped[str | None] = mapped_column(String(40), nullable=True, default="sha256")
+    duration_seconds: Mapped[float | None] = mapped_column(Float, nullable=True)
+    width: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    height: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    frame_rate: Mapped[float | None] = mapped_column(Float, nullable=True)
+    sample_rate_hz: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    channels: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class ForensicMediaDerivativeRecord(Base):
+    __tablename__ = "forensic_media_derivations"
+    __table_args__ = (
+        UniqueConstraint("investigation_id", "derivation_key", name="uq_forensic_media_derivation_key"),
+        Index("ix_forensic_media_derivation_parent", "parent_artifact_id"),
+        Index("ix_forensic_media_derivation_child", "child_artifact_id"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    investigation_id: Mapped[str] = mapped_column(ForeignKey("forensic_investigations.id", ondelete="CASCADE"), nullable=False)
+    derivation_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    parent_artifact_id: Mapped[str] = mapped_column(ForeignKey("forensic_media_artifacts.id", ondelete="CASCADE"), nullable=False)
+    child_artifact_id: Mapped[str] = mapped_column(ForeignKey("forensic_media_artifacts.id", ondelete="CASCADE"), nullable=False)
+    transformation_kind: Mapped[str] = mapped_column(String(80), nullable=False)
+    tool_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    tool_version: Mapped[str | None] = mapped_column(String(300), nullable=True)
+    parameters_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    transformation_notes: Mapped[str | None] = mapped_column(Text, nullable=True)
+    source_ref: Mapped[str | None] = mapped_column(String(2000), nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ForensicMediaMetadataRecord(Base):
+    __tablename__ = "forensic_media_metadata_records"
+    __table_args__ = (
+        UniqueConstraint("artifact_id", "record_key", name="uq_forensic_media_metadata_key"),
+        Index("ix_forensic_media_metadata_artifact", "artifact_id"),
+        Index("ix_forensic_media_metadata_namespace", "namespace"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    artifact_id: Mapped[str] = mapped_column(ForeignKey("forensic_media_artifacts.id", ondelete="CASCADE"), nullable=False)
+    record_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    namespace: Mapped[str] = mapped_column(String(80), nullable=False)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    extraction_method: Mapped[str] = mapped_column(String(80), nullable=False, default="external")
+    extraction_tool_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    source_ref: Mapped[str | None] = mapped_column(String(2000), nullable=True)
+    observed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    preserved: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ForensicMediaFingerprintRecord(Base):
+    __tablename__ = "forensic_media_fingerprints"
+    __table_args__ = (
+        UniqueConstraint("artifact_id", "fingerprint_key", name="uq_forensic_media_fingerprint_key"),
+        Index("ix_forensic_media_fingerprint_artifact", "artifact_id"),
+        Index("ix_forensic_media_fingerprint_kind", "fingerprint_kind"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    artifact_id: Mapped[str] = mapped_column(ForeignKey("forensic_media_artifacts.id", ondelete="CASCADE"), nullable=False)
+    fingerprint_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    fingerprint_kind: Mapped[str] = mapped_column(String(80), nullable=False)
+    algorithm: Mapped[str] = mapped_column(String(120), nullable=False)
+    algorithm_version: Mapped[str | None] = mapped_column(String(200), nullable=True)
+    fingerprint_value: Mapped[str] = mapped_column(Text, nullable=False)
+    scope_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    producer_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    source_ref: Mapped[str | None] = mapped_column(String(2000), nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ForensicMediaSegmentRecord(Base):
+    __tablename__ = "forensic_media_segments"
+    __table_args__ = (
+        UniqueConstraint("artifact_id", "segment_key", name="uq_forensic_media_segment_key"),
+        Index("ix_forensic_media_segment_artifact", "artifact_id"),
+        Index("ix_forensic_media_segment_evidence", "evidence_item_id"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    artifact_id: Mapped[str] = mapped_column(ForeignKey("forensic_media_artifacts.id", ondelete="CASCADE"), nullable=False)
+    segment_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    segment_kind: Mapped[str] = mapped_column(String(80), nullable=False)
+    label: Mapped[str] = mapped_column(String(500), nullable=False)
+    locator_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    start_time_ms: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    end_time_ms: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    frame_index: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    frame_end_index: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    region_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    evidence_item_id: Mapped[str | None] = mapped_column(ForeignKey("forensic_evidence_items.id", ondelete="SET NULL"), nullable=True)
+    content_hash: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    hash_algorithm: Mapped[str | None] = mapped_column(String(40), nullable=True, default="sha256")
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ForensicMediaComparisonRecord(Base):
+    __tablename__ = "forensic_media_comparisons"
+    __table_args__ = (
+        UniqueConstraint("investigation_id", "comparison_key", name="uq_forensic_media_comparison_key"),
+        Index("ix_forensic_media_comparison_left", "left_artifact_id"),
+        Index("ix_forensic_media_comparison_right", "right_artifact_id"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    investigation_id: Mapped[str] = mapped_column(ForeignKey("forensic_investigations.id", ondelete="CASCADE"), nullable=False)
+    comparison_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    comparison_kind: Mapped[str] = mapped_column(String(80), nullable=False)
+    left_artifact_id: Mapped[str] = mapped_column(ForeignKey("forensic_media_artifacts.id", ondelete="CASCADE"), nullable=False)
+    right_artifact_id: Mapped[str] = mapped_column(ForeignKey("forensic_media_artifacts.id", ondelete="CASCADE"), nullable=False)
+    left_segment_id: Mapped[str | None] = mapped_column(ForeignKey("forensic_media_segments.id", ondelete="SET NULL"), nullable=True)
+    right_segment_id: Mapped[str | None] = mapped_column(ForeignKey("forensic_media_segments.id", ondelete="SET NULL"), nullable=True)
+    method_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    findings_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metrics_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    basis_evidence_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ForensicMediaProvenanceSnapshotRecord(Base):
+    __tablename__ = "forensic_media_provenance_snapshots"
+    __table_args__ = (
+        UniqueConstraint("investigation_id", "revision", name="uq_forensic_media_snapshot_revision"),
+        Index("ix_forensic_media_snapshot_hash", "content_hash"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    investigation_id: Mapped[str] = mapped_column(ForeignKey("forensic_investigations.id", ondelete="CASCADE"), nullable=False)
+    revision: Mapped[int] = mapped_column(Integer, nullable=False)
+    content_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    previous_snapshot_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    state_json: Mapped[dict] = mapped_column(JSON, nullable=False)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)

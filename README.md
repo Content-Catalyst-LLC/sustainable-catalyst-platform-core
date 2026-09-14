@@ -1,3 +1,7 @@
+## v2.47.0 — Media Artifact & Derivative Provenance
+
+Adds governed media artifacts, declared derivative lineage, preserved metadata observations, cryptographic and externally produced perceptual fingerprint records, frame/segment references, provenance-aware comparison records, lineage graphs, and immutable media-provenance snapshots. Core records provenance; it does not infer authenticity, manipulation intent, authorship, or derivative identity.
+
 ## v2.46.0 — Forensic Spatial/Temporal Evidence Integration
 
 Adds governed forensic places, evidence/location and event/place bindings, spatial uncertainty envelopes, trajectory evidence, explicit space-time intersections, linked map-timeline specifications, Site Intelligence handoffs, and immutable snapshots while keeping spatial analysis outside Core.

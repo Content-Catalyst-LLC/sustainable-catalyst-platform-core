@@ -1,3 +1,8 @@
+## 2.47.0 — Media Artifact & Derivative Provenance
+- Adds migration 0051 and seven additive media-provenance tables.
+- Adds typed media artifacts, explicit parent/child derivations, metadata records, fingerprints, segment/frame references, comparisons, lineage graphs, and immutable snapshots.
+- Preserves non-determinative boundaries: no media decoding, perceptual-fingerprint computation, similarity execution, automatic derivative detection, authenticity determination, intent inference, or authorship attribution by Core.
+
 ## v2.46.0 — Forensic Spatial/Temporal Evidence Integration
 
 Adds governed forensic places, evidence/location and event/place bindings, spatial uncertainty envelopes, trajectory evidence, explicit space-time intersections, linked map-timeline specifications, Site Intelligence handoffs, and immutable snapshots while keeping spatial analysis outside Core.

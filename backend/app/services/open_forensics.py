@@ -23,6 +23,8 @@ from ..models import (
     ForensicEventReconstructionRecord, ForensicTimelineViewRecord, ForensicTimelineSnapshotRecord,
     ForensicPlaceRecord, ForensicEvidenceSpatialBindingRecord, ForensicEventPlaceBindingRecord, ForensicSpatialUncertaintyEnvelopeRecord,
     ForensicTrajectoryEvidenceRecord, ForensicSpatialTemporalIntersectionRecord, ForensicSpatialTemporalViewRecord, ForensicSpatialTemporalSnapshotRecord,
+    ForensicMediaArtifactRecord, ForensicMediaDerivativeRecord, ForensicMediaMetadataRecord, ForensicMediaFingerprintRecord,
+    ForensicMediaSegmentRecord, ForensicMediaComparisonRecord, ForensicMediaProvenanceSnapshotRecord,
 )
 
 OBJECT_KINDS = {
@@ -66,6 +68,15 @@ EVENT_PLACE_ROLES = {"occurred-at","origin","destination","passed-through","near
 SPATIAL_SUBJECT_KINDS = {"event","evidence","place","trajectory","forensic-object"}
 SPATIAL_TEMPORAL_RELATIONS = {"co-located","intersects-window","passes-through","near","overlaps-region","within-region","asserted"}
 FORBIDDEN_SPATIAL_FIELDS = {"probability","posterior","rank","winner","verdict","confirmed_location","confirmed_path","truth_value"}
+
+MEDIA_KINDS = {"image", "video", "audio", "multimedia", "document-media", "other"}
+MEDIA_PROVENANCE_ROLES = {"original", "derivative", "reference", "unknown"}
+MEDIA_TRANSFORMATION_KINDS = {"transcode", "crop", "resize", "frame-extract", "audio-extract", "normalize", "color-adjust", "metadata-copy", "metadata-strip", "re-encode", "container-remux", "trim", "concat", "composite", "annotate", "other"}
+MEDIA_METADATA_NAMESPACES = {"exif", "xmp", "iptc", "quicktime", "id3", "container", "codec", "filesystem", "custom"}
+MEDIA_FINGERPRINT_KINDS = {"cryptographic", "perceptual-image", "perceptual-audio", "frame-hash", "segment-hash", "external"}
+MEDIA_SEGMENT_KINDS = {"frame", "time-range", "audio-range", "region", "page", "chapter", "other"}
+MEDIA_COMPARISON_KINDS = {"exact-hash", "perceptual-similarity", "metadata-difference", "visual-difference", "audio-difference", "segment-alignment", "external-analysis", "other"}
+FORBIDDEN_MEDIA_DETERMINATION_FIELDS = {"authentic", "authenticity", "inauthentic", "fake", "deepfake", "manipulated", "manipulation_intent", "author", "author_identity", "creator_identity", "originality_determination", "probability", "posterior", "rank", "winner", "verdict", "truth_value", "guilt", "responsibility"}
 
 
 def _ser(row):
@@ -154,6 +165,21 @@ def _boundaries():
         "linked_map_timeline_specification_by_core": True,
         "site_intelligence_handoffs_by_core": True,
         "immutable_spatial_temporal_snapshots_by_core": True,
+        "media_artifact_registry_by_core": True,
+        "declared_derivative_lineage_by_core": True,
+        "media_metadata_preservation_by_core": True,
+        "cryptographic_fingerprint_recording_by_core": True,
+        "perceptual_fingerprint_recording_by_core": True,
+        "frame_segment_reference_registry_by_core": True,
+        "provenance_aware_media_comparisons_by_core": True,
+        "immutable_media_provenance_snapshots_by_core": True,
+        "media_decoding_by_core": False,
+        "perceptual_fingerprint_computation_by_core": False,
+        "media_similarity_execution_by_core": False,
+        "derivative_detection_by_core": False,
+        "authenticity_determination_from_media_by_core": False,
+        "manipulation_intent_determination_by_core": False,
+        "media_authorship_attribution_by_core": False,
         "automatic_event_inference_by_core": False,
         "automatic_timestamp_inference_by_core": False,
         "automatic_sequence_truth_determination_by_core": False,
@@ -192,6 +218,7 @@ def readiness(db: Session) -> dict[str, Any]:
         "migration_0048_applied": True,
         "migration_0049_applied": True,
         "migration_0050_applied": True,
+        "migration_0051_applied": True,
         "forensic_contract": "sc.open-forensics.investigation.v1",
         "counts": {
             "investigations": count(ForensicInvestigationRecord),
@@ -229,6 +256,13 @@ def readiness(db: Session) -> dict[str, Any]:
             "spatial_temporal_intersections": count(ForensicSpatialTemporalIntersectionRecord),
             "spatial_temporal_views": count(ForensicSpatialTemporalViewRecord),
             "spatial_temporal_snapshots": count(ForensicSpatialTemporalSnapshotRecord),
+            "media_artifacts": count(ForensicMediaArtifactRecord),
+            "media_derivations": count(ForensicMediaDerivativeRecord),
+            "media_metadata_records": count(ForensicMediaMetadataRecord),
+            "media_fingerprints": count(ForensicMediaFingerprintRecord),
+            "media_segments": count(ForensicMediaSegmentRecord),
+            "media_comparisons": count(ForensicMediaComparisonRecord),
+            "media_provenance_snapshots": count(ForensicMediaProvenanceSnapshotRecord),
         },
         **_boundaries(),
     }
@@ -1068,3 +1102,131 @@ def create_spatial_temporal_snapshot(db: Session, investigation_id: str, payload
     state=spatial_temporal_evidence_bundle(db,investigation_id); canonical=json.dumps(state,sort_keys=True,separators=(",",":"),default=str).encode("utf-8"); digest=hashlib.sha256(canonical).hexdigest()
     last=db.scalar(select(ForensicSpatialTemporalSnapshotRecord).where(ForensicSpatialTemporalSnapshotRecord.investigation_id==investigation_id).order_by(ForensicSpatialTemporalSnapshotRecord.revision.desc()).limit(1)); revision=(last.revision+1) if last else 1
     row=ForensicSpatialTemporalSnapshotRecord(investigation_id=investigation_id,revision=revision,content_hash=digest,previous_snapshot_hash=last.content_hash if last else None,state_json=state,provenance_json=dict(payload.get("provenance") or {}),created_by=str(payload.get("created_by") or "operator")); db.add(row); db.commit(); db.refresh(row); return _ser(row)
+
+# v2.47.0 — Media Artifact & Derivative Provenance
+
+def _reject_media_determination_fields(payload: dict[str, Any]):
+    bad=sorted(FORBIDDEN_MEDIA_DETERMINATION_FIELDS.intersection(payload))
+    if bad:
+        raise ValueError("Core records media provenance and externally supplied analysis but does not determine authenticity, manipulation intent, authorship, probability, or verdict: " + ", ".join(bad))
+
+
+def _media_artifact(db: Session, investigation_id: str, artifact_id: str) -> ForensicMediaArtifactRecord:
+    row=db.get(ForensicMediaArtifactRecord, artifact_id)
+    if row is None or row.investigation_id != investigation_id:
+        raise ValueError("media artifact must belong to this investigation.")
+    return row
+
+
+def _media_segment(db: Session, investigation_id: str, segment_id: str | None) -> ForensicMediaSegmentRecord | None:
+    if not segment_id: return None
+    row=db.get(ForensicMediaSegmentRecord, segment_id)
+    if row is None:
+        raise ValueError("media segment not found.")
+    artifact=db.get(ForensicMediaArtifactRecord,row.artifact_id)
+    if artifact is None or artifact.investigation_id != investigation_id:
+        raise ValueError("media segment must belong to this investigation.")
+    return row
+
+
+def add_media_artifact(db: Session, investigation_id: str, payload: dict[str, Any]):
+    _investigation(db,investigation_id); _reject_media_determination_fields(payload)
+    key=str(payload.get("artifact_key") or "").strip(); label=str(payload.get("label") or "").strip(); kind=str(payload.get("media_kind") or "other").lower(); role=str(payload.get("provenance_role") or "unknown").lower()
+    if not key or not label: raise ValueError("artifact_key and label are required.")
+    if kind not in MEDIA_KINDS: raise ValueError("unsupported media_kind.")
+    if role not in MEDIA_PROVENANCE_ROLES: raise ValueError("unsupported provenance_role.")
+    evidence_id=payload.get("evidence_item_id"); object_id=payload.get("forensic_object_id"); source_ref=str(payload.get("source_ref") or "").strip() or None
+    if evidence_id: _evidence(db,investigation_id,str(evidence_id))
+    if object_id: _object(db,investigation_id,str(object_id))
+    if not evidence_id and not object_id and not source_ref: raise ValueError("media artifact requires evidence_item_id, forensic_object_id, or source_ref.")
+    content_hash=str(payload.get("content_hash") or "").strip() or None; algo=str(payload.get("hash_algorithm") or "sha256").lower() if content_hash else None; _validate_hash(content_hash,algo)
+    row=ForensicMediaArtifactRecord(investigation_id=investigation_id,artifact_key=key,label=label,media_kind=kind,provenance_role=role,evidence_item_id=str(evidence_id) if evidence_id else None,forensic_object_id=str(object_id) if object_id else None,source_ref=source_ref,mime_type=payload.get("mime_type"),byte_size=payload.get("byte_size"),content_hash=content_hash,hash_algorithm=algo,duration_seconds=payload.get("duration_seconds"),width=payload.get("width"),height=payload.get("height"),frame_rate=payload.get("frame_rate"),sample_rate_hz=payload.get("sample_rate_hz"),channels=payload.get("channels"),description=payload.get("description"),provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {}))
+    db.add(row); db.commit(); db.refresh(row); return _ser(row)
+
+
+def add_media_derivation(db: Session, investigation_id: str, payload: dict[str, Any]):
+    _investigation(db,investigation_id); _reject_media_determination_fields(payload)
+    key=str(payload.get("derivation_key") or "").strip(); kind=str(payload.get("transformation_kind") or "other").lower(); parent=str(payload.get("parent_artifact_id") or ""); child=str(payload.get("child_artifact_id") or "")
+    if not key or not parent or not child: raise ValueError("derivation_key, parent_artifact_id, and child_artifact_id are required.")
+    if parent==child: raise ValueError("parent and child media artifacts must differ.")
+    _media_artifact(db,investigation_id,parent); _media_artifact(db,investigation_id,child)
+    if kind not in MEDIA_TRANSFORMATION_KINDS: raise ValueError("unsupported transformation_kind.")
+    row=ForensicMediaDerivativeRecord(investigation_id=investigation_id,derivation_key=key,parent_artifact_id=parent,child_artifact_id=child,transformation_kind=kind,tool_ref=payload.get("tool_ref"),tool_version=payload.get("tool_version"),parameters_json=dict(payload.get("parameters") or {}),transformation_notes=payload.get("transformation_notes"),source_ref=payload.get("source_ref"),provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {}))
+    db.add(row); db.commit(); db.refresh(row); return _ser(row)
+
+
+def add_media_metadata(db: Session, investigation_id: str, artifact_id: str, payload: dict[str, Any]):
+    _reject_media_determination_fields(payload); _media_artifact(db,investigation_id,artifact_id)
+    key=str(payload.get("record_key") or "").strip(); namespace=str(payload.get("namespace") or "custom").lower()
+    if not key: raise ValueError("record_key is required.")
+    if namespace not in MEDIA_METADATA_NAMESPACES: raise ValueError("unsupported metadata namespace.")
+    row=ForensicMediaMetadataRecord(artifact_id=artifact_id,record_key=key,namespace=namespace,metadata_json=dict(payload.get("metadata") or {}),extraction_method=str(payload.get("extraction_method") or "external"),extraction_tool_ref=payload.get("extraction_tool_ref"),source_ref=payload.get("source_ref"),observed_at=_dt(payload.get("observed_at")),preserved=bool(payload.get("preserved",True)),provenance_json=dict(payload.get("provenance") or {}))
+    db.add(row); db.commit(); db.refresh(row); return _ser(row)
+
+
+def add_media_fingerprint(db: Session, investigation_id: str, artifact_id: str, payload: dict[str, Any]):
+    _reject_media_determination_fields(payload); _media_artifact(db,investigation_id,artifact_id)
+    key=str(payload.get("fingerprint_key") or "").strip(); kind=str(payload.get("fingerprint_kind") or "external").lower(); algorithm=str(payload.get("algorithm") or "").strip(); value=str(payload.get("fingerprint_value") or "").strip()
+    if not key or not algorithm or not value: raise ValueError("fingerprint_key, algorithm, and fingerprint_value are required.")
+    if kind not in MEDIA_FINGERPRINT_KINDS: raise ValueError("unsupported fingerprint_kind.")
+    if kind=="cryptographic" and algorithm.lower()=="sha256": _validate_hash(value,"sha256")
+    row=ForensicMediaFingerprintRecord(artifact_id=artifact_id,fingerprint_key=key,fingerprint_kind=kind,algorithm=algorithm,algorithm_version=payload.get("algorithm_version"),fingerprint_value=value,scope_json=dict(payload.get("scope") or {}),producer_ref=payload.get("producer_ref"),source_ref=payload.get("source_ref"),provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {}))
+    db.add(row); db.commit(); db.refresh(row); return _ser(row)
+
+
+def add_media_segment(db: Session, investigation_id: str, artifact_id: str, payload: dict[str, Any]):
+    _reject_media_determination_fields(payload); _media_artifact(db,investigation_id,artifact_id)
+    key=str(payload.get("segment_key") or "").strip(); kind=str(payload.get("segment_kind") or "other").lower(); label=str(payload.get("label") or "").strip()
+    if not key or not label: raise ValueError("segment_key and label are required.")
+    if kind not in MEDIA_SEGMENT_KINDS: raise ValueError("unsupported segment_kind.")
+    evidence_id=payload.get("evidence_item_id")
+    if evidence_id: _evidence(db,investigation_id,str(evidence_id))
+    start=payload.get("start_time_ms"); end=payload.get("end_time_ms"); frame=payload.get("frame_index"); fend=payload.get("frame_end_index")
+    if start is not None and end is not None and int(end)<int(start): raise ValueError("end_time_ms must be >= start_time_ms.")
+    if frame is not None and fend is not None and int(fend)<int(frame): raise ValueError("frame_end_index must be >= frame_index.")
+    content_hash=str(payload.get("content_hash") or "").strip() or None; algo=str(payload.get("hash_algorithm") or "sha256").lower() if content_hash else None; _validate_hash(content_hash,algo)
+    row=ForensicMediaSegmentRecord(artifact_id=artifact_id,segment_key=key,segment_kind=kind,label=label,locator_json=dict(payload.get("locator") or {}),start_time_ms=int(start) if start is not None else None,end_time_ms=int(end) if end is not None else None,frame_index=int(frame) if frame is not None else None,frame_end_index=int(fend) if fend is not None else None,region_json=dict(payload.get("region") or {}),evidence_item_id=str(evidence_id) if evidence_id else None,content_hash=content_hash,hash_algorithm=algo,provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {}))
+    db.add(row); db.commit(); db.refresh(row); return _ser(row)
+
+
+def add_media_comparison(db: Session, investigation_id: str, payload: dict[str, Any]):
+    _investigation(db,investigation_id); _reject_media_determination_fields(payload)
+    key=str(payload.get("comparison_key") or "").strip(); kind=str(payload.get("comparison_kind") or "other").lower(); left=str(payload.get("left_artifact_id") or ""); right=str(payload.get("right_artifact_id") or "")
+    if not key or not left or not right: raise ValueError("comparison_key, left_artifact_id, and right_artifact_id are required.")
+    if kind not in MEDIA_COMPARISON_KINDS: raise ValueError("unsupported comparison_kind.")
+    _media_artifact(db,investigation_id,left); _media_artifact(db,investigation_id,right)
+    ls=_media_segment(db,investigation_id,payload.get("left_segment_id")); rs=_media_segment(db,investigation_id,payload.get("right_segment_id"))
+    if ls and ls.artifact_id!=left: raise ValueError("left_segment_id must belong to left_artifact_id.")
+    if rs and rs.artifact_id!=right: raise ValueError("right_segment_id must belong to right_artifact_id.")
+    evidence_ids=[str(x) for x in payload.get("basis_evidence_ids") or []]
+    for eid in evidence_ids: _evidence(db,investigation_id,eid)
+    row=ForensicMediaComparisonRecord(investigation_id=investigation_id,comparison_key=key,comparison_kind=kind,left_artifact_id=left,right_artifact_id=right,left_segment_id=ls.id if ls else None,right_segment_id=rs.id if rs else None,method_ref=payload.get("method_ref"),findings_json=dict(payload.get("findings") or {}),metrics_json=dict(payload.get("metrics") or {}),basis_evidence_ids_json=evidence_ids,provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {}))
+    db.add(row); db.commit(); db.refresh(row); return _ser(row)
+
+
+def media_provenance_bundle(db: Session, investigation_id: str):
+    _investigation(db,investigation_id)
+    artifacts=db.scalars(select(ForensicMediaArtifactRecord).where(ForensicMediaArtifactRecord.investigation_id==investigation_id).order_by(ForensicMediaArtifactRecord.created_at)).all()
+    ids=[x.id for x in artifacts]
+    derivations=db.scalars(select(ForensicMediaDerivativeRecord).where(ForensicMediaDerivativeRecord.investigation_id==investigation_id).order_by(ForensicMediaDerivativeRecord.created_at)).all()
+    metadata=db.scalars(select(ForensicMediaMetadataRecord).where(ForensicMediaMetadataRecord.artifact_id.in_(ids)).order_by(ForensicMediaMetadataRecord.created_at)).all() if ids else []
+    fingerprints=db.scalars(select(ForensicMediaFingerprintRecord).where(ForensicMediaFingerprintRecord.artifact_id.in_(ids)).order_by(ForensicMediaFingerprintRecord.created_at)).all() if ids else []
+    segments=db.scalars(select(ForensicMediaSegmentRecord).where(ForensicMediaSegmentRecord.artifact_id.in_(ids)).order_by(ForensicMediaSegmentRecord.created_at)).all() if ids else []
+    comparisons=db.scalars(select(ForensicMediaComparisonRecord).where(ForensicMediaComparisonRecord.investigation_id==investigation_id).order_by(ForensicMediaComparisonRecord.created_at)).all()
+    return {"contract":"sc.open-forensics.media-provenance.v1","investigation_id":investigation_id,"artifacts":[_ser(x) for x in artifacts],"derivations":[_ser(x) for x in derivations],"metadata_records":[_ser(x) for x in metadata],"fingerprints":[_ser(x) for x in fingerprints],"segments":[_ser(x) for x in segments],"comparisons":[_ser(x) for x in comparisons],"derivative_relations_are_declared_provenance_not_automated_detection":True,"comparisons_are_recorded_observations_not_authenticity_verdicts":True,"boundaries":_boundaries()}
+
+
+def media_lineage_graph(db: Session, investigation_id: str):
+    state=media_provenance_bundle(db,investigation_id)
+    return {"contract":"sc.open-forensics.media-lineage-graph.v1","investigation_id":investigation_id,"nodes":state["artifacts"],"edges":state["derivations"],"directed":True,"derivative_detection_by_core":False,"authenticity_determination_by_core":False}
+
+
+def media_comparison_bundle(db: Session, investigation_id: str):
+    state=media_provenance_bundle(db,investigation_id)
+    return {"contract":"sc.open-forensics.media-comparison-bundle.v1","investigation_id":investigation_id,"comparisons":state["comparisons"],"segments":state["segments"],"fingerprints":state["fingerprints"],"descriptive_only":True,"media_similarity_execution_by_core":False,"authenticity_determination_from_media_by_core":False,"media_authorship_attribution_by_core":False}
+
+
+def create_media_provenance_snapshot(db: Session, investigation_id: str, payload: dict[str, Any]):
+    state=media_provenance_bundle(db,investigation_id); canonical=json.dumps(state,sort_keys=True,separators=(",",":"),default=str).encode("utf-8"); digest=hashlib.sha256(canonical).hexdigest()
+    last=db.scalar(select(ForensicMediaProvenanceSnapshotRecord).where(ForensicMediaProvenanceSnapshotRecord.investigation_id==investigation_id).order_by(ForensicMediaProvenanceSnapshotRecord.revision.desc()).limit(1)); revision=(last.revision+1) if last else 1
+    row=ForensicMediaProvenanceSnapshotRecord(investigation_id=investigation_id,revision=revision,content_hash=digest,previous_snapshot_hash=last.content_hash if last else None,state_json=state,provenance_json=dict(payload.get("provenance") or {}),created_by=str(payload.get("created_by") or "operator")); db.add(row); db.commit(); db.refresh(row); return _ser(row)

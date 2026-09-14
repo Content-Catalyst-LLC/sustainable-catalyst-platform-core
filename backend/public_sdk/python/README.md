@@ -1,8 +1,12 @@
+## v2.47.0 — Media Artifact & Derivative Provenance
+
+Adds public helpers for Open Forensics media provenance, derivative-lineage graphs, and descriptive comparison bundles.
+
 ## v2.46.0 — Forensic Spatial/Temporal Evidence Integration
 
 Adds public helpers for spatial-temporal forensic evidence, linked forensic scene specifications, and Site Intelligence handoffs.
 
-# Sustainable Catalyst Public API Python Client v2.46.0
+# Sustainable Catalyst Public API Python Client v2.47.0
 
 ```python
 from sc_platform_core_public import PublicApiClient

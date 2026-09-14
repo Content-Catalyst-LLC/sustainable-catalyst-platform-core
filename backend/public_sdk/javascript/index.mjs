@@ -499,3 +499,8 @@ PublicApiClient.prototype.openForensicsTimelineSpecification = function (investi
 PublicApiClient.prototype.openForensicsSpatialTemporalEvidence = function (investigationId) { return this.request(`/open-forensics/investigations/${encodeURIComponent(investigationId)}/spatial-temporal-evidence`); };
 PublicApiClient.prototype.openForensicsForensicSceneSpecification = function (investigationId) { return this.request(`/open-forensics/investigations/${encodeURIComponent(investigationId)}/forensic-scene-specification`); };
 PublicApiClient.prototype.openForensicsSiteIntelligenceHandoff = function (investigationId) { return this.request(`/open-forensics/investigations/${encodeURIComponent(investigationId)}/site-intelligence-handoff`); };
+
+// v2.47.0 Open Forensics — Media Artifact & Derivative Provenance.
+PublicApiClient.prototype.openForensicsMediaProvenance = function (investigationId) { return this.request(`/open-forensics/investigations/${encodeURIComponent(investigationId)}/media-provenance`); };
+PublicApiClient.prototype.openForensicsMediaLineageGraph = function (investigationId) { return this.request(`/open-forensics/investigations/${encodeURIComponent(investigationId)}/media-lineage-graph`); };
+PublicApiClient.prototype.openForensicsMediaComparisonBundle = function (investigationId) { return this.request(`/open-forensics/investigations/${encodeURIComponent(investigationId)}/media-comparison-bundle`); };

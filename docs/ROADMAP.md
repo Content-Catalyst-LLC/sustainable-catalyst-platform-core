@@ -1,3 +1,6 @@
+## v2.47.0 — Media Artifact & Derivative Provenance
+Completed. Adds governed media artifacts, declared derivative lineage, metadata/fingerprint/segment records, descriptive comparisons, derivative-lineage graphs, and immutable provenance snapshots with explicit non-authenticity/non-attribution boundaries.
+
 ## v2.46.0 — Forensic Spatial/Temporal Evidence Integration
 
 Adds governed forensic places, evidence/location and event/place bindings, spatial uncertainty envelopes, trajectory evidence, explicit space-time intersections, linked map-timeline specifications, Site Intelligence handoffs, and immutable snapshots while keeping spatial analysis outside Core.
@@ -10,7 +13,7 @@ Structured forensic claims, explicit contradictions, evidence-position assessmen
 
 Open Forensics custody/integrity layer: tamper-evident custody event chains, custodians, seals, hash verification, continuity assessment, external attestations, and immutable custody snapshots.
 
-Next planned: **v2.46.0 — Forensic Spatial/Temporal Evidence Integration**.
+Next planned: **v2.48.0 — Quantitative Reconstruction & Reproduction Handoffs**.
 
 # Platform Core Roadmap
 ## v2.42.0 — Forensic Object Model & Evidence Provenance
@@ -293,7 +296,7 @@ Planned.
 ## v2.51.0 — Reproducible Investigation Packages
 Planned.
 
-Next planned: **v2.46.0 — Forensic Spatial/Temporal Evidence Integration**.
+Next planned: **v2.48.0 — Quantitative Reconstruction & Reproduction Handoffs**.
 
 - v2.38.0 Spatial & Temporal Visual Reasoning ✓
 - v2.39.0 Research Librarian Visual Explanation ✓

@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Sustainable Catalyst Platform Core
  * Description: WordPress connector for Sustainable Catalyst Platform Core registry, graph, evidence, developer, gateway, free live-data, international-law, scientific-data, official-statistics, geospatial, time-series, STAC, map-layer, streaming, alerts, source-reliability, and operational-facility, humanitarian-access, essential-services, and country-evidence federation and reconciliation, and Earth/Ocean/Space scientific-service routing, cross-product exchange, distributed scale-control services, and governance/access/audit, production-certification/recovery, and observability/SLO production-operations services, plus incident-response, change-control, rollback-coordination, continuity, backup-verification, disaster-recovery, and multi-region resilience/failover-coordination, and data-lifecycle/archival-integrity/preservation services, plus Federated Core trusted-node exchange services and capacity forecasting/resource-governance services, plus identity/credential/cryptographic-key lifecycle governance, distributed workload governance, and scientific object storage/processing adapter services, research object/model services, renderer-neutral visual reasoning object services, and visualization specification/renderer registry services, and governed System Maps and Flow Maps services.
- * Version: 2.46.0
+ * Version: 2.47.0
  * Author: Content Catalyst LLC
  * License: MIT
  */
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('SCPC_VERSION', '2.46.0');
+define('SCPC_VERSION', '2.47.0');
 define('SCPC_OPTION_BACKEND_URL', 'scpc_backend_url');
 define('SCPC_OPTION_READ_KEY', 'scpc_read_key');
 
@@ -1384,3 +1384,15 @@ function scpc_forensic_spatial_temporal_status_shortcode() {
     return '<div class="scpc-status"><strong>Forensic Spatial/Temporal Evidence Integration ' . ($ready ? 'Ready' : 'Not Ready') . '</strong><br />' . intval($counts['places'] ?? 0) . ' places · ' . intval($counts['trajectory_evidence'] ?? 0) . ' trajectories · ' . intval($counts['spatial_temporal_intersections'] ?? 0) . ' explicit intersections<br /><span class="scpc-meta">Core ' . esc_html($data['release'] ?? SCPC_VERSION) . ' · linked map/timeline evidence with Site Intelligence handoffs; Core does not perform spatial joins, reprojection, routing, or remote sensing.</span></div>';
 }
 add_shortcode('sc_platform_core_forensic_spatial_temporal_status', 'scpc_forensic_spatial_temporal_status_shortcode');
+
+// v2.47.0 Open Forensics — Media Artifact & Derivative Provenance
+function scpc_forensic_media_provenance_status_shortcode() {
+    $response = wp_remote_get(rtrim(SCPC_CORE_BASE, '/') . '/v1/open-forensics/readiness', array('timeout' => 10));
+    if (is_wp_error($response)) return '<div class="scpc-status scpc-status-error">Open Forensics media provenance status unavailable.</div>';
+    $data = json_decode(wp_remote_retrieve_body($response), true);
+    if (!is_array($data)) return '<div class="scpc-status scpc-status-error">Open Forensics media provenance status unavailable.</div>';
+    $ready = !empty($data['migration_0051_applied']) && !empty($data['media_artifact_registry_by_core']) && !empty($data['declared_derivative_lineage_by_core']);
+    $counts = isset($data['counts']) && is_array($data['counts']) ? $data['counts'] : array();
+    return '<div class="scpc-status"><strong>Media Artifact &amp; Derivative Provenance ' . ($ready ? 'Ready' : 'Not Ready') . '</strong><br />' . intval($counts['media_artifacts'] ?? 0) . ' media artifacts · ' . intval($counts['media_derivations'] ?? 0) . ' declared derivations · ' . intval($counts['media_comparisons'] ?? 0) . ' comparison records<br /><span class="scpc-meta">Core ' . esc_html($data['release'] ?? SCPC_VERSION) . ' · provenance and fingerprint records only; Core does not infer authenticity, manipulation intent, authorship, or derivative identity.</span></div>';
+}
+add_shortcode('sc_platform_core_forensic_media_provenance_status', 'scpc_forensic_media_provenance_status_shortcode');

@@ -310,6 +310,69 @@ def spatial_temporal_snapshot(request:Request, investigation_id:str, payload:Pay
     try: return svc.create_spatial_temporal_snapshot(db,investigation_id,payload.data)
     except Exception as exc: raise bad(exc)
 
+
+# v2.47.0 — Media Artifact & Derivative Provenance
+@router.post("/investigations/{investigation_id}/media-artifacts", dependencies=[Depends(require_write)])
+def add_media_artifact(request:Request, investigation_id:str, payload:Payload, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.add_media_artifact(db,investigation_id,payload.data)
+    except Exception as exc: raise bad(exc)
+
+@router.post("/investigations/{investigation_id}/media-derivations", dependencies=[Depends(require_write)])
+def add_media_derivation(request:Request, investigation_id:str, payload:Payload, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.add_media_derivation(db,investigation_id,payload.data)
+    except Exception as exc: raise bad(exc)
+
+@router.post("/investigations/{investigation_id}/media-artifacts/{artifact_id}/metadata", dependencies=[Depends(require_write)])
+def add_media_metadata(request:Request, investigation_id:str, artifact_id:str, payload:Payload, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.add_media_metadata(db,investigation_id,artifact_id,payload.data)
+    except Exception as exc: raise bad(exc)
+
+@router.post("/investigations/{investigation_id}/media-artifacts/{artifact_id}/fingerprints", dependencies=[Depends(require_write)])
+def add_media_fingerprint(request:Request, investigation_id:str, artifact_id:str, payload:Payload, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.add_media_fingerprint(db,investigation_id,artifact_id,payload.data)
+    except Exception as exc: raise bad(exc)
+
+@router.post("/investigations/{investigation_id}/media-artifacts/{artifact_id}/segments", dependencies=[Depends(require_write)])
+def add_media_segment(request:Request, investigation_id:str, artifact_id:str, payload:Payload, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.add_media_segment(db,investigation_id,artifact_id,payload.data)
+    except Exception as exc: raise bad(exc)
+
+@router.post("/investigations/{investigation_id}/media-comparisons", dependencies=[Depends(require_write)])
+def add_media_comparison(request:Request, investigation_id:str, payload:Payload, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.add_media_comparison(db,investigation_id,payload.data)
+    except Exception as exc: raise bad(exc)
+
+@router.get("/investigations/{investigation_id}/media-provenance", dependencies=[Depends(require_read)])
+def media_provenance(request:Request, investigation_id:str, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.media_provenance_bundle(db,investigation_id)
+    except Exception as exc: raise bad(exc)
+
+@router.get("/investigations/{investigation_id}/media-lineage-graph", dependencies=[Depends(require_read)])
+def media_lineage_graph(request:Request, investigation_id:str, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.media_lineage_graph(db,investigation_id)
+    except Exception as exc: raise bad(exc)
+
+@router.get("/investigations/{investigation_id}/media-comparison-bundle", dependencies=[Depends(require_read)])
+def media_comparison_bundle(request:Request, investigation_id:str, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.media_comparison_bundle(db,investigation_id)
+    except Exception as exc: raise bad(exc)
+
+@router.post("/investigations/{investigation_id}/media-provenance-snapshots", dependencies=[Depends(require_write)])
+def media_provenance_snapshot(request:Request, investigation_id:str, payload:Payload, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.create_media_provenance_snapshot(db,investigation_id,payload.data)
+    except Exception as exc: raise bad(exc)
+
+
 @public_router.get("/readiness", response_model=PublicEnvelope)
 def public_readiness(request:Request, db:Session=Depends(get_session), _ctx:PublicApiContext=Depends(require_public_scope("data:read"))):
     public_enabled(request); data=svc.readiness(db); data.update({"release":request.app.state.settings.version,"enabled":True}); return PublicEnvelope(data=data,meta={"api_version":"v1","request_id":request.state.request_id})
@@ -335,3 +398,27 @@ def public_spatial_temporal_evidence(investigation_id:str, request:Request, db:S
     public_enabled(request); inv=svc._investigation(db,investigation_id)
     if inv.visibility != "public": raise HTTPException(status_code=404,detail="Forensic investigation not found.")
     return PublicEnvelope(data=svc.spatial_temporal_evidence_bundle(db,investigation_id),meta={"api_version":"v1","request_id":request.state.request_id})
+
+@public_router.get("/investigations/{investigation_id}/media-provenance", response_model=PublicEnvelope)
+def public_media_provenance(investigation_id:str, request:Request, db:Session=Depends(get_session), _ctx:PublicApiContext=Depends(require_public_scope("data:read"))):
+    public_enabled(request); inv=svc._investigation(db,investigation_id)
+    if inv.visibility != "public": raise HTTPException(status_code=404,detail="Forensic investigation not found.")
+    return PublicEnvelope(data=svc.media_provenance_bundle(db,investigation_id),meta={"api_version":"v1","request_id":request.state.request_id})
+
+@public_router.get("/investigations/{investigation_id}/media-provenance", response_model=PublicEnvelope)
+def public_media_provenance(investigation_id:str, request:Request, db:Session=Depends(get_session), _ctx:PublicApiContext=Depends(require_public_scope("data:read"))):
+    public_enabled(request); inv=svc._investigation(db,investigation_id)
+    if inv.visibility != "public": raise HTTPException(status_code=404,detail="Forensic investigation not found.")
+    return PublicEnvelope(data=svc.media_provenance_bundle(db,investigation_id),meta={"api_version":"v1","request_id":request.state.request_id})
+
+@public_router.get("/investigations/{investigation_id}/media-lineage-graph", response_model=PublicEnvelope)
+def public_media_lineage_graph(investigation_id:str, request:Request, db:Session=Depends(get_session), _ctx:PublicApiContext=Depends(require_public_scope("data:read"))):
+    public_enabled(request); inv=svc._investigation(db,investigation_id)
+    if inv.visibility != "public": raise HTTPException(status_code=404,detail="Forensic investigation not found.")
+    return PublicEnvelope(data=svc.media_lineage_graph(db,investigation_id),meta={"api_version":"v1","request_id":request.state.request_id})
+
+@public_router.get("/investigations/{investigation_id}/media-comparison-bundle", response_model=PublicEnvelope)
+def public_media_comparison_bundle(investigation_id:str, request:Request, db:Session=Depends(get_session), _ctx:PublicApiContext=Depends(require_public_scope("data:read"))):
+    public_enabled(request); inv=svc._investigation(db,investigation_id)
+    if inv.visibility != "public": raise HTTPException(status_code=404,detail="Forensic investigation not found.")
+    return PublicEnvelope(data=svc.media_comparison_bundle(db,investigation_id),meta={"api_version":"v1","request_id":request.state.request_id})

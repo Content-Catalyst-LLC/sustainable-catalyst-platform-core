@@ -64,6 +64,8 @@ from ..models import (
     ForensicHypothesisEvidenceAssessmentRecord, ForensicHypothesisRelationRecord, ForensicReasoningSnapshotRecord,
     ForensicEventRecord, ForensicEventEvidenceBindingRecord, ForensicEventParticipantRecord, ForensicEventRelationRecord,
     ForensicEventReconstructionRecord, ForensicTimelineViewRecord, ForensicTimelineSnapshotRecord,
+    ForensicMediaArtifactRecord, ForensicMediaDerivativeRecord, ForensicMediaMetadataRecord, ForensicMediaFingerprintRecord,
+    ForensicMediaSegmentRecord, ForensicMediaComparisonRecord, ForensicMediaProvenanceSnapshotRecord,
     VisualizationSpecificationRecord,
     RendererDefinitionRecord,
     RendererVersionRecord,
@@ -186,6 +188,7 @@ def health(request: Request):
         "open_forensics": request.app.state.settings.open_forensics_enabled,
         "forensic_timeline_event_reconstruction": request.app.state.settings.open_forensics_enabled,
         "forensic_spatial_temporal_evidence_integration": request.app.state.settings.open_forensics_enabled,
+        "forensic_media_artifact_derivative_provenance": request.app.state.settings.open_forensics_enabled,
     }
 
 
@@ -285,6 +288,7 @@ async def ready(request: Request, db: Session = Depends(get_session)):
         "open_forensics": "ready" if settings.open_forensics_enabled else "disabled",
         "forensic_timeline_event_reconstruction": "ready" if settings.open_forensics_enabled else "disabled",
         "forensic_spatial_temporal_evidence_integration": "ready" if settings.open_forensics_enabled else "disabled",
+        "forensic_media_artifact_derivative_provenance": "ready" if settings.open_forensics_enabled else "disabled",
         "external_provider_health_release_blocking": False,
         "services": [
             {
@@ -793,6 +797,13 @@ def stats(db: Session = Depends(get_session)):
         forensic_event_reconstructions=count(ForensicEventReconstructionRecord),
         forensic_timeline_views=count(ForensicTimelineViewRecord),
         forensic_timeline_snapshots=count(ForensicTimelineSnapshotRecord),
+        forensic_media_artifacts=count(ForensicMediaArtifactRecord),
+        forensic_media_derivations=count(ForensicMediaDerivativeRecord),
+        forensic_media_metadata_records=count(ForensicMediaMetadataRecord),
+        forensic_media_fingerprints=count(ForensicMediaFingerprintRecord),
+        forensic_media_segments=count(ForensicMediaSegmentRecord),
+        forensic_media_comparisons=count(ForensicMediaComparisonRecord),
+        forensic_media_provenance_snapshots=count(ForensicMediaProvenanceSnapshotRecord),
         visualization_specifications=count(VisualizationSpecificationRecord),
         renderer_definitions=count(RendererDefinitionRecord),
         renderer_versions=count(RendererVersionRecord),
