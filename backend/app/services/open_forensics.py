@@ -21,6 +21,8 @@ from ..models import (
     ForensicHypothesisRecord, ForensicHypothesisEvidenceAssessmentRecord, ForensicHypothesisRelationRecord, ForensicReasoningSnapshotRecord,
     ForensicEventRecord, ForensicEventEvidenceBindingRecord, ForensicEventParticipantRecord, ForensicEventRelationRecord,
     ForensicEventReconstructionRecord, ForensicTimelineViewRecord, ForensicTimelineSnapshotRecord,
+    ForensicPlaceRecord, ForensicEvidenceSpatialBindingRecord, ForensicEventPlaceBindingRecord, ForensicSpatialUncertaintyEnvelopeRecord,
+    ForensicTrajectoryEvidenceRecord, ForensicSpatialTemporalIntersectionRecord, ForensicSpatialTemporalViewRecord, ForensicSpatialTemporalSnapshotRecord,
 )
 
 OBJECT_KINDS = {
@@ -57,6 +59,13 @@ TIME_PRECISIONS = {"exact", "second", "minute", "hour", "day", "month", "year", 
 EVENT_EVIDENCE_ROLES = {"supports-occurrence", "supports-time", "supports-location", "supports-participant", "contradicts", "qualifies", "context"}
 EVENT_RELATION_KINDS = {"before", "after", "overlaps", "contains", "contained-by", "simultaneous", "possibly-before", "possibly-after", "related-to"}
 FORBIDDEN_RECONSTRUCTION_FIELDS = {"truth_value", "truth", "verdict", "guilt", "responsibility", "probability", "posterior", "rank", "winner", "confirmed_sequence"}
+
+FORENSIC_GEOMETRY_TYPES = {"Point","MultiPoint","LineString","MultiLineString","Polygon","MultiPolygon","GeometryCollection"}
+SPATIAL_BINDING_ROLES = {"supports-location","depicts-location","derived-location","context","contradicts-location","qualifies-location"}
+EVENT_PLACE_ROLES = {"occurred-at","origin","destination","passed-through","near","associated","asserted-location"}
+SPATIAL_SUBJECT_KINDS = {"event","evidence","place","trajectory","forensic-object"}
+SPATIAL_TEMPORAL_RELATIONS = {"co-located","intersects-window","passes-through","near","overlaps-region","within-region","asserted"}
+FORBIDDEN_SPATIAL_FIELDS = {"probability","posterior","rank","winner","verdict","confirmed_location","confirmed_path","truth_value"}
 
 
 def _ser(row):
@@ -136,10 +145,25 @@ def _boundaries():
         "reconstruction_hypothesis_registry_by_core": True,
         "renderer_neutral_timeline_specification_by_core": True,
         "immutable_timeline_snapshots_by_core": True,
+        "forensic_place_registry_by_core": True,
+        "evidence_spatial_binding_by_core": True,
+        "event_place_binding_by_core": True,
+        "spatial_uncertainty_envelopes_by_core": True,
+        "trajectory_evidence_registry_by_core": True,
+        "explicit_spatial_temporal_intersections_by_core": True,
+        "linked_map_timeline_specification_by_core": True,
+        "site_intelligence_handoffs_by_core": True,
+        "immutable_spatial_temporal_snapshots_by_core": True,
         "automatic_event_inference_by_core": False,
         "automatic_timestamp_inference_by_core": False,
         "automatic_sequence_truth_determination_by_core": False,
         "automatic_participant_identity_resolution_by_core": False,
+        "crs_reprojection_by_core": False,
+        "spatial_join_by_core": False,
+        "routing_by_core": False,
+        "remote_sensing_by_core": False,
+        "trajectory_interpolation_execution_by_core": False,
+        "automatic_location_truth_determination_by_core": False,
         "automatic_contradiction_detection_by_core": False,
         "claim_truth_determination_by_core": False,
         "contradiction_resolution_by_core": False,
@@ -167,6 +191,7 @@ def readiness(db: Session) -> dict[str, Any]:
         "migration_0047_applied": True,
         "migration_0048_applied": True,
         "migration_0049_applied": True,
+        "migration_0050_applied": True,
         "forensic_contract": "sc.open-forensics.investigation.v1",
         "counts": {
             "investigations": count(ForensicInvestigationRecord),
@@ -196,6 +221,14 @@ def readiness(db: Session) -> dict[str, Any]:
             "event_reconstructions": count(ForensicEventReconstructionRecord),
             "timeline_views": count(ForensicTimelineViewRecord),
             "timeline_snapshots": count(ForensicTimelineSnapshotRecord),
+            "places": count(ForensicPlaceRecord),
+            "evidence_spatial_bindings": count(ForensicEvidenceSpatialBindingRecord),
+            "event_place_bindings": count(ForensicEventPlaceBindingRecord),
+            "spatial_uncertainty_envelopes": count(ForensicSpatialUncertaintyEnvelopeRecord),
+            "trajectory_evidence": count(ForensicTrajectoryEvidenceRecord),
+            "spatial_temporal_intersections": count(ForensicSpatialTemporalIntersectionRecord),
+            "spatial_temporal_views": count(ForensicSpatialTemporalViewRecord),
+            "spatial_temporal_snapshots": count(ForensicSpatialTemporalSnapshotRecord),
         },
         **_boundaries(),
     }
@@ -903,3 +936,135 @@ def create_timeline_snapshot(db: Session, investigation_id: str, payload: dict[s
     last=db.scalar(select(ForensicTimelineSnapshotRecord).where(ForensicTimelineSnapshotRecord.investigation_id==investigation_id).order_by(ForensicTimelineSnapshotRecord.revision.desc()).limit(1)); revision=(last.revision+1) if last else 1
     row=ForensicTimelineSnapshotRecord(investigation_id=investigation_id,revision=revision,content_hash=digest,previous_snapshot_hash=last.content_hash if last else None,state_json=state,provenance_json=dict(payload.get("provenance") or {}),created_by=str(payload.get("created_by") or "operator")); db.add(row); db.commit(); db.refresh(row); return _ser(row)
 
+
+
+# v2.46.0 — Forensic Spatial/Temporal Evidence Integration
+def _forensic_geometry(value: Any, *, point_only: bool = False):
+    if not isinstance(value, dict): raise ValueError("geometry must be a GeoJSON object.")
+    typ=str(value.get("type") or "")
+    if typ not in FORENSIC_GEOMETRY_TYPES: raise ValueError("Unsupported GeoJSON geometry type.")
+    if point_only and typ != "Point": raise ValueError("Trajectory evidence points require GeoJSON Point geometry.")
+    if typ == "GeometryCollection":
+        if not isinstance(value.get("geometries"), list): raise ValueError("GeometryCollection requires geometries[].")
+    elif "coordinates" not in value: raise ValueError("GeoJSON geometry requires coordinates.")
+    return typ, dict(value)
+
+def _reject_spatial_determination_fields(payload: dict[str, Any]):
+    bad=sorted(FORBIDDEN_SPATIAL_FIELDS.intersection(payload))
+    if bad: raise ValueError("Core records spatial evidence and uncertainty but does not determine location/path truth or probability: " + ", ".join(bad))
+
+def _place(db: Session, investigation_id: str, place_id: str):
+    row=db.get(ForensicPlaceRecord, place_id)
+    if row is None or row.investigation_id != investigation_id: raise ValueError("place_id must belong to this investigation.")
+    return row
+
+def add_place(db: Session, investigation_id: str, payload: dict[str, Any]):
+    _investigation(db,investigation_id); _reject_spatial_determination_fields(payload)
+    key=str(payload.get("place_key") or "").strip(); label=str(payload.get("label") or "").strip()
+    if not key or not label: raise ValueError("place_key and label are required.")
+    typ,geom=_forensic_geometry(payload.get("geometry"))
+    srid=int(payload.get("srid") or 4326)
+    row=ForensicPlaceRecord(investigation_id=investigation_id,place_key=key,label=label,place_kind=str(payload.get("place_kind") or "location"),geometry_type=typ,geometry_json=geom,srid=srid,crs=str(payload.get("crs") or f"EPSG:{srid}"),site_intelligence_ref=payload.get("site_intelligence_ref"),spatial_feature_ref=payload.get("spatial_feature_ref"),properties_json=dict(payload.get("properties") or {}),provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {}))
+    db.add(row)
+    try: db.commit(); db.refresh(row)
+    except IntegrityError as exc: db.rollback(); raise HTTPException(status_code=409,detail="Place key already exists in this investigation.") from exc
+    return _ser(row)
+
+def bind_evidence_spatial(db: Session, investigation_id: str, evidence_id: str, payload: dict[str, Any]):
+    _investigation(db,investigation_id); _evidence(db,investigation_id,evidence_id); _reject_spatial_determination_fields(payload)
+    key=str(payload.get("binding_key") or "").strip(); role=str(payload.get("spatial_role") or "supports-location")
+    if not key: raise ValueError("binding_key is required.")
+    if role not in SPATIAL_BINDING_ROLES: raise ValueError("Unsupported spatial_role.")
+    place_id=payload.get("place_id"); geom={}; typ=None
+    if place_id: _place(db,investigation_id,str(place_id))
+    if payload.get("geometry") is not None: typ,geom=_forensic_geometry(payload.get("geometry"))
+    if not place_id and not geom and not payload.get("site_intelligence_ref"): raise ValueError("A place_id, geometry, or site_intelligence_ref is required.")
+    row=ForensicEvidenceSpatialBindingRecord(investigation_id=investigation_id,binding_key=key,evidence_item_id=evidence_id,place_id=str(place_id) if place_id else None,geometry_type=typ,geometry_json=geom,spatial_role=role,site_intelligence_ref=payload.get("site_intelligence_ref"),rationale=payload.get("rationale"),provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {}))
+    db.add(row); db.commit(); db.refresh(row); return _ser(row)
+
+def bind_event_place(db: Session, investigation_id: str, event_id: str, payload: dict[str, Any]):
+    _investigation(db,investigation_id); _event(db,investigation_id,event_id); _reject_spatial_determination_fields(payload)
+    place_id=str(payload.get("place_id") or ""); _place(db,investigation_id,place_id)
+    key=str(payload.get("binding_key") or "").strip(); role=str(payload.get("role") or "occurred-at")
+    if not key: raise ValueError("binding_key is required.")
+    if role not in EVENT_PLACE_ROLES: raise ValueError("Unsupported event-place role.")
+    evidence_ids=[str(x) for x in (payload.get("basis_evidence_ids") or [])]
+    for eid in evidence_ids: _evidence(db,investigation_id,eid)
+    row=ForensicEventPlaceBindingRecord(event_id=event_id,place_id=place_id,binding_key=key,role=role,temporal_alignment_json=dict(payload.get("temporal_alignment") or {}),basis_evidence_ids_json=evidence_ids,rationale=payload.get("rationale"),provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {}))
+    db.add(row); db.commit(); db.refresh(row); return _ser(row)
+
+def add_spatial_uncertainty_envelope(db: Session, investigation_id: str, payload: dict[str, Any]):
+    _investigation(db,investigation_id); _reject_spatial_determination_fields(payload)
+    key=str(payload.get("envelope_key") or "").strip(); subject_kind=str(payload.get("subject_kind") or ""); subject_ref=str(payload.get("subject_ref") or "").strip()
+    if not key or subject_kind not in SPATIAL_SUBJECT_KINDS or not subject_ref: raise ValueError("envelope_key, supported subject_kind, and subject_ref are required.")
+    typ,geom=_forensic_geometry(payload.get("geometry")); evidence_ids=[str(x) for x in (payload.get("basis_evidence_ids") or [])]
+    for eid in evidence_ids: _evidence(db,investigation_id,eid)
+    srid=int(payload.get("srid") or 4326)
+    row=ForensicSpatialUncertaintyEnvelopeRecord(investigation_id=investigation_id,envelope_key=key,subject_kind=subject_kind,subject_ref=subject_ref,uncertainty_kind=str(payload.get("uncertainty_kind") or "bounded-region"),geometry_type=typ,geometry_json=geom,srid=srid,crs=str(payload.get("crs") or f"EPSG:{srid}"),basis_evidence_ids_json=evidence_ids,coverage_label=payload.get("coverage_label"),provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {}))
+    db.add(row); db.commit(); db.refresh(row); return _ser(row)
+
+def add_trajectory_evidence(db: Session, investigation_id: str, payload: dict[str, Any]):
+    _investigation(db,investigation_id); _reject_spatial_determination_fields(payload)
+    key=str(payload.get("trajectory_key") or "").strip(); label=str(payload.get("label") or "").strip(); subject_ref=str(payload.get("subject_ref") or "").strip()
+    if not key or not label or not subject_ref: raise ValueError("trajectory_key, label, and subject_ref are required.")
+    points=list(payload.get("ordered_points") or [])
+    prev=None; normalized=[]
+    for i,pt in enumerate(points):
+        if not isinstance(pt,dict): raise ValueError("ordered_points must contain objects.")
+        _,geom=_forensic_geometry(pt.get("geometry"),point_only=True); at=_dt(pt.get("observed_at"))
+        if at is None: raise ValueError("Each trajectory point requires observed_at.")
+        if prev is not None and at < prev: raise ValueError("Trajectory evidence points must be time ordered.")
+        prev=at; normalized.append({"sequence":i,"observed_at":at.isoformat(),"geometry":geom,"uncertainty":dict(pt.get("uncertainty") or {})})
+    evidence_ids=[str(x) for x in (payload.get("basis_evidence_ids") or [])]
+    for eid in evidence_ids: _evidence(db,investigation_id,eid)
+    row=ForensicTrajectoryEvidenceRecord(investigation_id=investigation_id,trajectory_key=key,label=label,subject_ref=subject_ref,trajectory_kind=str(payload.get("trajectory_kind") or "observed-path"),ordered_points_json=normalized,basis_evidence_ids_json=evidence_ids,site_intelligence_ref=payload.get("site_intelligence_ref"),interpolation=str(payload.get("interpolation") or "none"),provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {}))
+    db.add(row); db.commit(); db.refresh(row); return _ser(row)
+
+def add_spatial_temporal_intersection(db: Session, investigation_id: str, payload: dict[str, Any]):
+    _investigation(db,investigation_id); _reject_spatial_determination_fields(payload)
+    key=str(payload.get("intersection_key") or "").strip(); event_id=str(payload.get("event_id") or ""); relation=str(payload.get("relation_kind") or "")
+    if not key or relation not in SPATIAL_TEMPORAL_RELATIONS: raise ValueError("intersection_key and supported relation_kind are required.")
+    _event(db,investigation_id,event_id)
+    place_id=payload.get("place_id"); trajectory_id=payload.get("trajectory_id")
+    if place_id: _place(db,investigation_id,str(place_id))
+    if trajectory_id:
+        t=db.get(ForensicTrajectoryEvidenceRecord,str(trajectory_id))
+        if t is None or t.investigation_id!=investigation_id: raise ValueError("trajectory_id must belong to this investigation.")
+    if not place_id and not trajectory_id: raise ValueError("place_id or trajectory_id is required.")
+    evidence_ids=[str(x) for x in (payload.get("basis_evidence_ids") or [])]
+    for eid in evidence_ids: _evidence(db,investigation_id,eid)
+    row=ForensicSpatialTemporalIntersectionRecord(investigation_id=investigation_id,intersection_key=key,event_id=event_id,place_id=str(place_id) if place_id else None,trajectory_id=str(trajectory_id) if trajectory_id else None,relation_kind=relation,temporal_window_json=dict(payload.get("temporal_window") or {}),basis_evidence_ids_json=evidence_ids,rationale=payload.get("rationale"),provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {}))
+    db.add(row); db.commit(); db.refresh(row); return _ser(row)
+
+def add_spatial_temporal_view(db: Session, investigation_id: str, payload: dict[str, Any]):
+    _investigation(db,investigation_id); _reject_spatial_determination_fields(payload)
+    key=str(payload.get("view_key") or "").strip(); label=str(payload.get("label") or "").strip()
+    if not key or not label: raise ValueError("view_key and label are required.")
+    row=ForensicSpatialTemporalViewRecord(investigation_id=investigation_id,view_key=key,label=label,event_ids_json=[str(x) for x in payload.get("event_ids") or []],place_ids_json=[str(x) for x in payload.get("place_ids") or []],trajectory_ids_json=[str(x) for x in payload.get("trajectory_ids") or []],reconstruction_ids_json=[str(x) for x in payload.get("reconstruction_ids") or []],filters_json=dict(payload.get("filters") or {}),display_json=dict(payload.get("display") or {}),provenance_json=dict(payload.get("provenance") or {}))
+    db.add(row); db.commit(); db.refresh(row); return _ser(row)
+
+def spatial_temporal_evidence_bundle(db: Session, investigation_id: str):
+    _investigation(db,investigation_id)
+    places=db.scalars(select(ForensicPlaceRecord).where(ForensicPlaceRecord.investigation_id==investigation_id).order_by(ForensicPlaceRecord.created_at)).all()
+    evidence_bindings=db.scalars(select(ForensicEvidenceSpatialBindingRecord).where(ForensicEvidenceSpatialBindingRecord.investigation_id==investigation_id).order_by(ForensicEvidenceSpatialBindingRecord.created_at)).all()
+    event_ids=[e.id for e in db.scalars(select(ForensicEventRecord).where(ForensicEventRecord.investigation_id==investigation_id)).all()]
+    event_places=db.scalars(select(ForensicEventPlaceBindingRecord).where(ForensicEventPlaceBindingRecord.event_id.in_(event_ids)).order_by(ForensicEventPlaceBindingRecord.created_at)).all() if event_ids else []
+    envelopes=db.scalars(select(ForensicSpatialUncertaintyEnvelopeRecord).where(ForensicSpatialUncertaintyEnvelopeRecord.investigation_id==investigation_id).order_by(ForensicSpatialUncertaintyEnvelopeRecord.created_at)).all()
+    trajectories=db.scalars(select(ForensicTrajectoryEvidenceRecord).where(ForensicTrajectoryEvidenceRecord.investigation_id==investigation_id).order_by(ForensicTrajectoryEvidenceRecord.created_at)).all()
+    intersections=db.scalars(select(ForensicSpatialTemporalIntersectionRecord).where(ForensicSpatialTemporalIntersectionRecord.investigation_id==investigation_id).order_by(ForensicSpatialTemporalIntersectionRecord.created_at)).all()
+    views=db.scalars(select(ForensicSpatialTemporalViewRecord).where(ForensicSpatialTemporalViewRecord.investigation_id==investigation_id).order_by(ForensicSpatialTemporalViewRecord.created_at)).all()
+    return {"contract":"sc.open-forensics.spatial-temporal-evidence.v1","investigation_id":investigation_id,"places":[_ser(x) for x in places],"evidence_spatial_bindings":[_ser(x) for x in evidence_bindings],"event_place_bindings":[_ser(x) for x in event_places],"uncertainty_envelopes":[_ser(x) for x in envelopes],"trajectory_evidence":[_ser(x) for x in trajectories],"intersections":[_ser(x) for x in intersections],"views":[_ser(x) for x in views],"spatial_relations_are_explicit_assertions_not_computed_truth":True,"boundaries":_boundaries()}
+
+def forensic_scene_specification(db: Session, investigation_id: str):
+    state=spatial_temporal_evidence_bundle(db,investigation_id); timeline=timeline_bundle(db,investigation_id)
+    return {"contract":"sc.visual-spec.forensic-spatial-temporal.v1","visual_kind":"forensic-linked-map-timeline","renderer_neutral":True,"investigation_id":investigation_id,"map":{"places":state["places"],"evidence_bindings":state["evidence_spatial_bindings"],"uncertainty_envelopes":state["uncertainty_envelopes"],"trajectories":state["trajectory_evidence"]},"timeline":{"events":timeline["events"],"relations":timeline["relations"],"reconstructions":timeline["reconstructions"]},"links":{"event_place_bindings":state["event_place_bindings"],"intersections":state["intersections"]},"views":state["views"],"execution":{"layout_by_core":False,"rendering_by_core":False,"spatial_join_by_core":False,"crs_reprojection_by_core":False,"routing_by_core":False,"remote_sensing_by_core":False,"trajectory_interpolation_execution_by_core":False},"boundaries":_boundaries()}
+
+def site_intelligence_handoff(db: Session, investigation_id: str):
+    state=spatial_temporal_evidence_bundle(db,investigation_id)
+    refs=sorted({x.get("site_intelligence_ref") for x in state["places"]+state["evidence_spatial_bindings"]+state["trajectory_evidence"] if x.get("site_intelligence_ref")})
+    return {"contract":"sc.handoff.open-forensics.site-intelligence.v1","target_product":"site-intelligence","investigation_id":investigation_id,"reference_first":True,"site_intelligence_refs":refs,"forensic_scene":forensic_scene_specification(db,investigation_id),"requested_capabilities":["map-rendering","spatial-analysis","crs-reprojection","trajectory-analysis","remote-sensing-when-explicitly-requested"],"execution_by_core":False,"automatic_truth_promotion":False}
+
+def create_spatial_temporal_snapshot(db: Session, investigation_id: str, payload: dict[str, Any]):
+    state=spatial_temporal_evidence_bundle(db,investigation_id); canonical=json.dumps(state,sort_keys=True,separators=(",",":"),default=str).encode("utf-8"); digest=hashlib.sha256(canonical).hexdigest()
+    last=db.scalar(select(ForensicSpatialTemporalSnapshotRecord).where(ForensicSpatialTemporalSnapshotRecord.investigation_id==investigation_id).order_by(ForensicSpatialTemporalSnapshotRecord.revision.desc()).limit(1)); revision=(last.revision+1) if last else 1
+    row=ForensicSpatialTemporalSnapshotRecord(investigation_id=investigation_id,revision=revision,content_hash=digest,previous_snapshot_hash=last.content_hash if last else None,state_json=state,provenance_json=dict(payload.get("provenance") or {}),created_by=str(payload.get("created_by") or "operator")); db.add(row); db.commit(); db.refresh(row); return _ser(row)

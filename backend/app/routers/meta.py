@@ -185,6 +185,7 @@ def health(request: Request):
         "reproducible_visual_knowledge_layer": request.app.state.settings.reproducible_visual_knowledge_enabled,
         "open_forensics": request.app.state.settings.open_forensics_enabled,
         "forensic_timeline_event_reconstruction": request.app.state.settings.open_forensics_enabled,
+        "forensic_spatial_temporal_evidence_integration": request.app.state.settings.open_forensics_enabled,
     }
 
 
@@ -283,6 +284,7 @@ async def ready(request: Request, db: Session = Depends(get_session)):
         "reproducible_visual_knowledge_layer": "ready" if settings.reproducible_visual_knowledge_enabled else "disabled",
         "open_forensics": "ready" if settings.open_forensics_enabled else "disabled",
         "forensic_timeline_event_reconstruction": "ready" if settings.open_forensics_enabled else "disabled",
+        "forensic_spatial_temporal_evidence_integration": "ready" if settings.open_forensics_enabled else "disabled",
         "external_provider_health_release_blocking": False,
         "services": [
             {

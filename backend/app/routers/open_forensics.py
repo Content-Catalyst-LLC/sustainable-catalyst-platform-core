@@ -247,6 +247,69 @@ def timeline_snapshot(request:Request, investigation_id:str, payload:Payload, db
     try: return svc.create_timeline_snapshot(db,investigation_id,payload.data)
     except Exception as exc: raise bad(exc)
 
+
+
+# v2.46.0 — Forensic Spatial/Temporal Evidence Integration
+@router.post("/investigations/{investigation_id}/places", dependencies=[Depends(require_write)])
+def add_place(request:Request, investigation_id:str, payload:Payload, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.add_place(db,investigation_id,payload.data)
+    except Exception as exc: raise bad(exc)
+
+@router.post("/investigations/{investigation_id}/evidence/{evidence_id}/spatial-bindings", dependencies=[Depends(require_write)])
+def bind_evidence_spatial(request:Request, investigation_id:str, evidence_id:str, payload:Payload, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.bind_evidence_spatial(db,investigation_id,evidence_id,payload.data)
+    except Exception as exc: raise bad(exc)
+
+@router.post("/investigations/{investigation_id}/events/{event_id}/place-bindings", dependencies=[Depends(require_write)])
+def bind_event_place(request:Request, investigation_id:str, event_id:str, payload:Payload, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.bind_event_place(db,investigation_id,event_id,payload.data)
+    except Exception as exc: raise bad(exc)
+
+@router.post("/investigations/{investigation_id}/spatial-uncertainty-envelopes", dependencies=[Depends(require_write)])
+def add_spatial_uncertainty(request:Request, investigation_id:str, payload:Payload, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.add_spatial_uncertainty_envelope(db,investigation_id,payload.data)
+    except Exception as exc: raise bad(exc)
+
+@router.post("/investigations/{investigation_id}/trajectory-evidence", dependencies=[Depends(require_write)])
+def add_trajectory_evidence(request:Request, investigation_id:str, payload:Payload, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.add_trajectory_evidence(db,investigation_id,payload.data)
+    except Exception as exc: raise bad(exc)
+
+@router.post("/investigations/{investigation_id}/spatial-temporal-intersections", dependencies=[Depends(require_write)])
+def add_spatial_temporal_intersection(request:Request, investigation_id:str, payload:Payload, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.add_spatial_temporal_intersection(db,investigation_id,payload.data)
+    except Exception as exc: raise bad(exc)
+
+@router.post("/investigations/{investigation_id}/spatial-temporal-views", dependencies=[Depends(require_write)])
+def add_spatial_temporal_view(request:Request, investigation_id:str, payload:Payload, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.add_spatial_temporal_view(db,investigation_id,payload.data)
+    except Exception as exc: raise bad(exc)
+
+@router.get("/investigations/{investigation_id}/spatial-temporal-evidence", dependencies=[Depends(require_read)])
+def spatial_temporal_evidence(request:Request, investigation_id:str, db:Session=Depends(get_session)):
+    enabled(request); return svc.spatial_temporal_evidence_bundle(db,investigation_id)
+
+@router.get("/investigations/{investigation_id}/forensic-scene-specification", dependencies=[Depends(require_read)])
+def forensic_scene_specification(request:Request, investigation_id:str, db:Session=Depends(get_session)):
+    enabled(request); return svc.forensic_scene_specification(db,investigation_id)
+
+@router.get("/investigations/{investigation_id}/site-intelligence-handoff", dependencies=[Depends(require_read)])
+def site_intelligence_handoff(request:Request, investigation_id:str, db:Session=Depends(get_session)):
+    enabled(request); return svc.site_intelligence_handoff(db,investigation_id)
+
+@router.post("/investigations/{investigation_id}/spatial-temporal-snapshots", dependencies=[Depends(require_write)])
+def spatial_temporal_snapshot(request:Request, investigation_id:str, payload:Payload, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.create_spatial_temporal_snapshot(db,investigation_id,payload.data)
+    except Exception as exc: raise bad(exc)
+
 @public_router.get("/readiness", response_model=PublicEnvelope)
 def public_readiness(request:Request, db:Session=Depends(get_session), _ctx:PublicApiContext=Depends(require_public_scope("data:read"))):
     public_enabled(request); data=svc.readiness(db); data.update({"release":request.app.state.settings.version,"enabled":True}); return PublicEnvelope(data=data,meta={"api_version":"v1","request_id":request.state.request_id})
@@ -265,3 +328,10 @@ def public_timeline(investigation_id:str, request:Request, db:Session=Depends(ge
     public_enabled(request); inv=svc._investigation(db,investigation_id)
     if inv.visibility != "public": raise HTTPException(status_code=404,detail="Forensic investigation not found.")
     return PublicEnvelope(data=svc.timeline_bundle(db,investigation_id),meta={"api_version":"v1","request_id":request.state.request_id})
+
+
+@public_router.get("/investigations/{investigation_id}/spatial-temporal-evidence", response_model=PublicEnvelope)
+def public_spatial_temporal_evidence(investigation_id:str, request:Request, db:Session=Depends(get_session), _ctx:PublicApiContext=Depends(require_public_scope("data:read"))):
+    public_enabled(request); inv=svc._investigation(db,investigation_id)
+    if inv.visibility != "public": raise HTTPException(status_code=404,detail="Forensic investigation not found.")
+    return PublicEnvelope(data=svc.spatial_temporal_evidence_bundle(db,investigation_id),meta={"api_version":"v1","request_id":request.state.request_id})

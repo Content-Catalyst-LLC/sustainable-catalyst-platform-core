@@ -5318,3 +5318,167 @@ class ForensicTimelineSnapshotRecord(Base):
     created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
 
+
+
+# v2.46.0 — Forensic Spatial/Temporal Evidence Integration
+class ForensicPlaceRecord(Base):
+    __tablename__ = "forensic_places"
+    __table_args__ = (
+        UniqueConstraint("investigation_id", "place_key", name="uq_forensic_place_key"),
+        Index("ix_forensic_place_investigation", "investigation_id"),
+        Index("ix_forensic_place_kind", "place_kind"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    investigation_id: Mapped[str] = mapped_column(ForeignKey("forensic_investigations.id", ondelete="CASCADE"), nullable=False)
+    place_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    label: Mapped[str] = mapped_column(String(500), nullable=False)
+    place_kind: Mapped[str] = mapped_column(String(80), nullable=False, default="location")
+    geometry_type: Mapped[str] = mapped_column(String(40), nullable=False)
+    geometry_json: Mapped[dict] = mapped_column(JSON, nullable=False)
+    srid: Mapped[int] = mapped_column(Integer, nullable=False, default=4326)
+    crs: Mapped[str] = mapped_column(String(120), nullable=False, default="EPSG:4326")
+    site_intelligence_ref: Mapped[str | None] = mapped_column(String(2000), nullable=True)
+    spatial_feature_ref: Mapped[str | None] = mapped_column(String(2000), nullable=True)
+    properties_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class ForensicEvidenceSpatialBindingRecord(Base):
+    __tablename__ = "forensic_evidence_spatial_bindings"
+    __table_args__ = (
+        UniqueConstraint("investigation_id", "binding_key", name="uq_forensic_evidence_spatial_binding_key"),
+        Index("ix_forensic_evidence_spatial_evidence", "evidence_item_id"),
+        Index("ix_forensic_evidence_spatial_place", "place_id"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    investigation_id: Mapped[str] = mapped_column(ForeignKey("forensic_investigations.id", ondelete="CASCADE"), nullable=False)
+    binding_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    evidence_item_id: Mapped[str] = mapped_column(ForeignKey("forensic_evidence_items.id", ondelete="CASCADE"), nullable=False)
+    place_id: Mapped[str | None] = mapped_column(ForeignKey("forensic_places.id", ondelete="SET NULL"), nullable=True)
+    geometry_type: Mapped[str | None] = mapped_column(String(40), nullable=True)
+    geometry_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    spatial_role: Mapped[str] = mapped_column(String(80), nullable=False, default="supports-location")
+    site_intelligence_ref: Mapped[str | None] = mapped_column(String(2000), nullable=True)
+    rationale: Mapped[str | None] = mapped_column(Text, nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ForensicEventPlaceBindingRecord(Base):
+    __tablename__ = "forensic_event_place_bindings"
+    __table_args__ = (
+        UniqueConstraint("event_id", "binding_key", name="uq_forensic_event_place_binding_key"),
+        Index("ix_forensic_event_place_event", "event_id"),
+        Index("ix_forensic_event_place_place", "place_id"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    event_id: Mapped[str] = mapped_column(ForeignKey("forensic_events.id", ondelete="CASCADE"), nullable=False)
+    place_id: Mapped[str] = mapped_column(ForeignKey("forensic_places.id", ondelete="CASCADE"), nullable=False)
+    binding_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    role: Mapped[str] = mapped_column(String(80), nullable=False, default="occurred-at")
+    temporal_alignment_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    basis_evidence_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    rationale: Mapped[str | None] = mapped_column(Text, nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ForensicSpatialUncertaintyEnvelopeRecord(Base):
+    __tablename__ = "forensic_spatial_uncertainty_envelopes"
+    __table_args__ = (
+        UniqueConstraint("investigation_id", "envelope_key", name="uq_forensic_spatial_uncertainty_key"),
+        Index("ix_forensic_spatial_uncertainty_subject", "subject_kind", "subject_ref"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    investigation_id: Mapped[str] = mapped_column(ForeignKey("forensic_investigations.id", ondelete="CASCADE"), nullable=False)
+    envelope_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    subject_kind: Mapped[str] = mapped_column(String(60), nullable=False)
+    subject_ref: Mapped[str] = mapped_column(String(2000), nullable=False)
+    uncertainty_kind: Mapped[str] = mapped_column(String(80), nullable=False, default="bounded-region")
+    geometry_type: Mapped[str] = mapped_column(String(40), nullable=False)
+    geometry_json: Mapped[dict] = mapped_column(JSON, nullable=False)
+    srid: Mapped[int] = mapped_column(Integer, nullable=False, default=4326)
+    crs: Mapped[str] = mapped_column(String(120), nullable=False, default="EPSG:4326")
+    basis_evidence_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    coverage_label: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ForensicTrajectoryEvidenceRecord(Base):
+    __tablename__ = "forensic_trajectory_evidence"
+    __table_args__ = (
+        UniqueConstraint("investigation_id", "trajectory_key", name="uq_forensic_trajectory_evidence_key"),
+        Index("ix_forensic_trajectory_investigation", "investigation_id"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    investigation_id: Mapped[str] = mapped_column(ForeignKey("forensic_investigations.id", ondelete="CASCADE"), nullable=False)
+    trajectory_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    label: Mapped[str] = mapped_column(String(500), nullable=False)
+    subject_ref: Mapped[str] = mapped_column(String(2000), nullable=False)
+    trajectory_kind: Mapped[str] = mapped_column(String(80), nullable=False, default="observed-path")
+    ordered_points_json: Mapped[list] = mapped_column(JSON, default=list)
+    basis_evidence_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    site_intelligence_ref: Mapped[str | None] = mapped_column(String(2000), nullable=True)
+    interpolation: Mapped[str] = mapped_column(String(60), nullable=False, default="none")
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ForensicSpatialTemporalIntersectionRecord(Base):
+    __tablename__ = "forensic_spatial_temporal_intersections"
+    __table_args__ = (
+        UniqueConstraint("investigation_id", "intersection_key", name="uq_forensic_spatial_temporal_intersection_key"),
+        Index("ix_forensic_spatial_temporal_intersection_event", "event_id"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    investigation_id: Mapped[str] = mapped_column(ForeignKey("forensic_investigations.id", ondelete="CASCADE"), nullable=False)
+    intersection_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    event_id: Mapped[str] = mapped_column(ForeignKey("forensic_events.id", ondelete="CASCADE"), nullable=False)
+    place_id: Mapped[str | None] = mapped_column(ForeignKey("forensic_places.id", ondelete="SET NULL"), nullable=True)
+    trajectory_id: Mapped[str | None] = mapped_column(ForeignKey("forensic_trajectory_evidence.id", ondelete="SET NULL"), nullable=True)
+    relation_kind: Mapped[str] = mapped_column(String(80), nullable=False)
+    temporal_window_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    basis_evidence_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    rationale: Mapped[str | None] = mapped_column(Text, nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ForensicSpatialTemporalViewRecord(Base):
+    __tablename__ = "forensic_spatial_temporal_views"
+    __table_args__ = (UniqueConstraint("investigation_id", "view_key", name="uq_forensic_spatial_temporal_view_key"), Index("ix_forensic_spatial_temporal_view_investigation", "investigation_id"))
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    investigation_id: Mapped[str] = mapped_column(ForeignKey("forensic_investigations.id", ondelete="CASCADE"), nullable=False)
+    view_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    label: Mapped[str] = mapped_column(String(500), nullable=False)
+    event_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    place_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    trajectory_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    reconstruction_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    filters_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    display_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ForensicSpatialTemporalSnapshotRecord(Base):
+    __tablename__ = "forensic_spatial_temporal_snapshots"
+    __table_args__ = (UniqueConstraint("investigation_id", "revision", name="uq_forensic_spatial_temporal_snapshot_revision"), Index("ix_forensic_spatial_temporal_snapshot_hash", "content_hash"))
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    investigation_id: Mapped[str] = mapped_column(ForeignKey("forensic_investigations.id", ondelete="CASCADE"), nullable=False)
+    revision: Mapped[int] = mapped_column(Integer, nullable=False)
+    content_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    previous_snapshot_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    state_json: Mapped[dict] = mapped_column(JSON, nullable=False)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)

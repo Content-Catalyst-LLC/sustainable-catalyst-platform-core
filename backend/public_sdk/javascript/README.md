@@ -1,4 +1,8 @@
-# Sustainable Catalyst Public API JavaScript Client v2.45.0
+## v2.46.0 — Forensic Spatial/Temporal Evidence Integration
+
+Adds public helpers for spatial-temporal forensic evidence, linked forensic scene specifications, and Site Intelligence handoffs.
+
+# Sustainable Catalyst Public API JavaScript Client v2.46.0
 
 ```javascript
 import { PublicApiClient } from "./index.mjs";

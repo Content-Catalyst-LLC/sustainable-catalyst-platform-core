@@ -28,7 +28,7 @@ def _ensemble(c,h,p,m,v,visibility='public'):
     assert r.status_code==200,r.text;return r.json()
 
 def test_health_migration_and_readiness(client):
-    h=client.get('/health').json();assert h['version']=='2.45.0' and h['uncertainty_sensitivity_ensemble_reasoning'] is True
+    h=client.get('/health').json();assert h['version']=='2.46.0' and h['uncertainty_sensitivity_ensemble_reasoning'] is True
     r=client.get('/v1/uncertainty-reasoning/readiness');assert r.status_code==200,r.text;d=r.json();assert d['migration_0039_applied'] is True
     assert d['sampling_by_core'] is False and d['sensitivity_algorithm_execution_by_core'] is False and d['ensemble_aggregation_by_core'] is False and d['model_execution_by_core'] is False
 

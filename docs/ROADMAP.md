@@ -1,3 +1,7 @@
+## v2.46.0 — Forensic Spatial/Temporal Evidence Integration
+
+Adds governed forensic places, evidence/location and event/place bindings, spatial uncertainty envelopes, trajectory evidence, explicit space-time intersections, linked map-timeline specifications, Site Intelligence handoffs, and immutable snapshots while keeping spatial analysis outside Core.
+
 ## v2.44.0 — Claims, Contradictions & Competing Hypotheses
 
 Structured forensic claims, explicit contradictions, evidence-position assessments, competing hypotheses, descriptive comparison matrices, and immutable reasoning snapshots with no automated verdict/ranking/truth promotion.

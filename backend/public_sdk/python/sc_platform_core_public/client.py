@@ -702,3 +702,15 @@ def _open_forensics_timeline_specification(self, investigation_id: str):
     return self.request("GET", f"/open-forensics/investigations/{investigation_id}/timeline-specification")
 PublicApiClient.open_forensics_timeline = _open_forensics_timeline
 PublicApiClient.open_forensics_timeline_specification = _open_forensics_timeline_specification
+
+
+# v2.46.0 Open Forensics — Forensic Spatial/Temporal Evidence Integration.
+def _open_forensics_spatial_temporal_evidence(self, investigation_id: str):
+    return self.request("GET", f"/open-forensics/investigations/{investigation_id}/spatial-temporal-evidence")
+def _open_forensics_forensic_scene_specification(self, investigation_id: str):
+    return self.request("GET", f"/open-forensics/investigations/{investigation_id}/forensic-scene-specification")
+def _open_forensics_site_intelligence_handoff(self, investigation_id: str):
+    return self.request("GET", f"/open-forensics/investigations/{investigation_id}/site-intelligence-handoff")
+PublicApiClient.open_forensics_spatial_temporal_evidence = _open_forensics_spatial_temporal_evidence
+PublicApiClient.open_forensics_forensic_scene_specification = _open_forensics_forensic_scene_specification
+PublicApiClient.open_forensics_site_intelligence_handoff = _open_forensics_site_intelligence_handoff

@@ -493,3 +493,9 @@ PublicApiClient.prototype.openForensicsReasoningBundle = function (investigation
 // v2.45.0 Open Forensics — Forensic Timeline & Event Reconstruction.
 PublicApiClient.prototype.openForensicsTimeline = function (investigationId) { return this.request(`/open-forensics/investigations/${encodeURIComponent(investigationId)}/timeline`); };
 PublicApiClient.prototype.openForensicsTimelineSpecification = function (investigationId) { return this.request(`/open-forensics/investigations/${encodeURIComponent(investigationId)}/timeline-specification`); };
+
+
+// v2.46.0 Open Forensics — Forensic Spatial/Temporal Evidence Integration.
+PublicApiClient.prototype.openForensicsSpatialTemporalEvidence = function (investigationId) { return this.request(`/open-forensics/investigations/${encodeURIComponent(investigationId)}/spatial-temporal-evidence`); };
+PublicApiClient.prototype.openForensicsForensicSceneSpecification = function (investigationId) { return this.request(`/open-forensics/investigations/${encodeURIComponent(investigationId)}/forensic-scene-specification`); };
+PublicApiClient.prototype.openForensicsSiteIntelligenceHandoff = function (investigationId) { return this.request(`/open-forensics/investigations/${encodeURIComponent(investigationId)}/site-intelligence-handoff`); };

@@ -1,3 +1,7 @@
+## v2.46.0 — Forensic Spatial/Temporal Evidence Integration
+
+Adds governed forensic places, evidence/location and event/place bindings, spatial uncertainty envelopes, trajectory evidence, explicit space-time intersections, linked map-timeline specifications, Site Intelligence handoffs, and immutable snapshots while keeping spatial analysis outside Core.
+
 ## v2.45.0 — Forensic Timeline & Event Reconstruction
 
 Adds evidence-linked forensic events, bounded temporal assertions, participant references, explicit temporal relations, reconstruction hypotheses, saved timeline views, renderer-neutral timeline specifications, and immutable snapshots. Reconstructed sequences remain governed hypotheses; Core does not infer missing events/timestamps, resolve identity, rank reconstructions, or determine sequence truth.

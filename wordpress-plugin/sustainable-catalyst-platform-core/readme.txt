@@ -1,10 +1,13 @@
+== 2.46.0 ==
+Forensic Spatial/Temporal Evidence Integration status surface and Core 2.46.0 compatibility.
+
 === Sustainable Catalyst Platform Core ===
 Contributors: content-catalyst
 Tags: knowledge graph, entity registry, provenance, live data, sustainable catalyst
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.0
-Stable tag: 2.45.0
+Stable tag: 2.46.0
 License: MIT
 
 WordPress status, live-data gateway, and entity lookup client for Sustainable Catalyst Platform Core.
