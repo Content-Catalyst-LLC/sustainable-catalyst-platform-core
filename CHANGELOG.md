@@ -1,3 +1,8 @@
+## 2.48.0 — Quantitative Reconstruction & Reproduction Handoffs
+- Adds migration 0052 and eight additive quantitative-forensics tables.
+- Adds evidence-linked measurements, assumptions, parameters, scenarios, external Workbench/Lab handoffs, result bindings, and reproducible quantitative packages.
+- Core remains non-executing: numerical solving, statistical inference, uncertainty propagation, sensitivity analysis, and parameter optimization stay in specialist runtimes.
+
 ## 2.47.0 — Media Artifact & Derivative Provenance
 - Adds migration 0051 and seven additive media-provenance tables.
 - Adds typed media artifacts, explicit parent/child derivations, metadata records, fingerprints, segment/frame references, comparisons, lineage graphs, and immutable snapshots.

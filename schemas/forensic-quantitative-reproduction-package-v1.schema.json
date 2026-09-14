@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/forensic-quantitative-reproduction-package-v1.schema.json",
+  "title": "Forensic Quantitative Reproduction Package",
+  "type": "object",
+  "required": ["package_key"],
+  "properties": {
+    "package_key": {"type": "string", "minLength": 1},
+    "created_by": {"type": "string"},
+    "provenance": {"type": "object"}
+  },
+  "additionalProperties": true
+}

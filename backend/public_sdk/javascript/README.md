@@ -1,4 +1,4 @@
-## v2.47.0 — Media Artifact & Derivative Provenance
+## v2.48.0 — Quantitative Reconstruction & Reproduction Handoffs
 
 Adds public helpers for Open Forensics media provenance, derivative-lineage graphs, and descriptive comparison bundles.
 
@@ -6,7 +6,7 @@ Adds public helpers for Open Forensics media provenance, derivative-lineage grap
 
 Adds public helpers for spatial-temporal forensic evidence, linked forensic scene specifications, and Site Intelligence handoffs.
 
-# Sustainable Catalyst Public API JavaScript Client v2.47.0
+# Sustainable Catalyst Public API JavaScript Client v2.48.0
 
 ```javascript
 import { PublicApiClient } from "./index.mjs";

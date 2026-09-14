@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/forensic-quantitative-reconstruction-v1.schema.json",
+  "title": "Forensic Quantitative Reconstruction",
+  "type": "object",
+  "required": ["reconstruction_key", "label", "reconstruction_kind"],
+  "properties": {
+    "reconstruction_key": {"type": "string", "minLength": 1},
+    "label": {"type": "string", "minLength": 1},
+    "reconstruction_kind": {"enum": ["kinematic", "energetic", "statistical", "physical", "financial", "engineering", "environmental", "other"]},
+    "question": {"type": ["string", "null"]},
+    "model_ref": {"type": ["string", "null"]},
+    "model_version_ref": {"type": ["string", "null"]},
+    "preferred_runtime": {"enum": ["workbench", "lab", "external"]},
+    "basis_evidence_ids": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": true
+}

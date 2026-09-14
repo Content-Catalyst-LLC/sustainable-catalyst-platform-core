@@ -5650,3 +5650,156 @@ class ForensicMediaProvenanceSnapshotRecord(Base):
     provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
     created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+# v2.48.0 — Quantitative Reconstruction & Reproduction Handoffs
+class ForensicQuantitativeReconstructionRecord(Base):
+    __tablename__ = "forensic_quantitative_reconstructions"
+    __table_args__ = (
+        UniqueConstraint("investigation_id", "reconstruction_key", name="uq_forensic_quant_reconstruction_key"),
+        Index("ix_forensic_quant_reconstruction_investigation", "investigation_id"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    investigation_id: Mapped[str] = mapped_column(ForeignKey("forensic_investigations.id", ondelete="CASCADE"), nullable=False)
+    reconstruction_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    label: Mapped[str] = mapped_column(String(500), nullable=False)
+    reconstruction_kind: Mapped[str] = mapped_column(String(80), nullable=False, default="quantitative")
+    question: Mapped[str | None] = mapped_column(Text, nullable=True)
+    model_ref: Mapped[str | None] = mapped_column(String(2000), nullable=True)
+    model_version_ref: Mapped[str | None] = mapped_column(String(2000), nullable=True)
+    method_ref: Mapped[str | None] = mapped_column(String(2000), nullable=True)
+    preferred_runtime: Mapped[str] = mapped_column(String(80), nullable=False, default="workbench")
+    unit_system: Mapped[str | None] = mapped_column(String(80), nullable=True)
+    status: Mapped[str] = mapped_column(String(50), nullable=False, default="draft")
+    basis_evidence_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class ForensicQuantitativeMeasurementRecord(Base):
+    __tablename__ = "forensic_quantitative_measurements"
+    __table_args__ = (
+        UniqueConstraint("reconstruction_id", "measurement_key", name="uq_forensic_quant_measurement_key"),
+        Index("ix_forensic_quant_measurement_reconstruction", "reconstruction_id"),
+        Index("ix_forensic_quant_measurement_evidence", "evidence_item_id"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    reconstruction_id: Mapped[str] = mapped_column(ForeignKey("forensic_quantitative_reconstructions.id", ondelete="CASCADE"), nullable=False)
+    measurement_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    label: Mapped[str] = mapped_column(String(500), nullable=False)
+    value_json: Mapped[dict] = mapped_column(JSON, nullable=False)
+    unit: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    uncertainty_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    evidence_item_id: Mapped[str | None] = mapped_column(ForeignKey("forensic_evidence_items.id", ondelete="SET NULL"), nullable=True)
+    source_ref: Mapped[str | None] = mapped_column(String(2000), nullable=True)
+    observed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ForensicQuantitativeAssumptionRecord(Base):
+    __tablename__ = "forensic_quantitative_assumptions"
+    __table_args__ = (UniqueConstraint("reconstruction_id", "assumption_key", name="uq_forensic_quant_assumption_key"), Index("ix_forensic_quant_assumption_reconstruction", "reconstruction_id"))
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    reconstruction_id: Mapped[str] = mapped_column(ForeignKey("forensic_quantitative_reconstructions.id", ondelete="CASCADE"), nullable=False)
+    assumption_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    statement: Mapped[str] = mapped_column(Text, nullable=False)
+    assumption_kind: Mapped[str] = mapped_column(String(80), nullable=False, default="model")
+    status: Mapped[str] = mapped_column(String(50), nullable=False, default="declared")
+    basis_evidence_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    source_ref: Mapped[str | None] = mapped_column(String(2000), nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ForensicQuantitativeParameterRecord(Base):
+    __tablename__ = "forensic_quantitative_parameters"
+    __table_args__ = (UniqueConstraint("reconstruction_id", "parameter_key", name="uq_forensic_quant_parameter_key"), Index("ix_forensic_quant_parameter_reconstruction", "reconstruction_id"))
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    reconstruction_id: Mapped[str] = mapped_column(ForeignKey("forensic_quantitative_reconstructions.id", ondelete="CASCADE"), nullable=False)
+    parameter_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    label: Mapped[str] = mapped_column(String(500), nullable=False)
+    symbol: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    value_json: Mapped[dict] = mapped_column(JSON, nullable=False)
+    unit: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    bounds_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    uncertainty_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    parameter_role: Mapped[str] = mapped_column(String(80), nullable=False, default="declared")
+    evidence_item_id: Mapped[str | None] = mapped_column(ForeignKey("forensic_evidence_items.id", ondelete="SET NULL"), nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ForensicQuantitativeScenarioRecord(Base):
+    __tablename__ = "forensic_quantitative_scenarios"
+    __table_args__ = (UniqueConstraint("reconstruction_id", "scenario_key", name="uq_forensic_quant_scenario_key"), Index("ix_forensic_quant_scenario_reconstruction", "reconstruction_id"))
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    reconstruction_id: Mapped[str] = mapped_column(ForeignKey("forensic_quantitative_reconstructions.id", ondelete="CASCADE"), nullable=False)
+    scenario_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    label: Mapped[str] = mapped_column(String(500), nullable=False)
+    parameter_overrides_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    assumption_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    measurement_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    requested_analyses_json: Mapped[list] = mapped_column(JSON, default=list)
+    uncertainty_plan_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ForensicQuantitativeHandoffRecord(Base):
+    __tablename__ = "forensic_quantitative_handoffs"
+    __table_args__ = (UniqueConstraint("investigation_id", "handoff_key", name="uq_forensic_quant_handoff_key"), Index("ix_forensic_quant_handoff_reconstruction", "reconstruction_id"))
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    investigation_id: Mapped[str] = mapped_column(ForeignKey("forensic_investigations.id", ondelete="CASCADE"), nullable=False)
+    reconstruction_id: Mapped[str] = mapped_column(ForeignKey("forensic_quantitative_reconstructions.id", ondelete="CASCADE"), nullable=False)
+    scenario_id: Mapped[str | None] = mapped_column(ForeignKey("forensic_quantitative_scenarios.id", ondelete="SET NULL"), nullable=True)
+    handoff_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    target_product: Mapped[str] = mapped_column(String(80), nullable=False)
+    contract_version: Mapped[str] = mapped_column(String(120), nullable=False, default="sc.forensic-quantitative-handoff.v1")
+    input_manifest_json: Mapped[dict] = mapped_column(JSON, nullable=False)
+    execution_request_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    external_run_ref: Mapped[str | None] = mapped_column(String(2000), nullable=True)
+    status: Mapped[str] = mapped_column(String(60), nullable=False, default="prepared")
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ForensicQuantitativeResultBindingRecord(Base):
+    __tablename__ = "forensic_quantitative_result_bindings"
+    __table_args__ = (UniqueConstraint("handoff_id", "result_key", name="uq_forensic_quant_result_key"), Index("ix_forensic_quant_result_handoff", "handoff_id"))
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    handoff_id: Mapped[str] = mapped_column(ForeignKey("forensic_quantitative_handoffs.id", ondelete="CASCADE"), nullable=False)
+    result_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    result_kind: Mapped[str] = mapped_column(String(100), nullable=False)
+    external_result_ref: Mapped[str] = mapped_column(String(2000), nullable=False)
+    output_manifest_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metrics_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    content_hash: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    hash_algorithm: Mapped[str | None] = mapped_column(String(40), nullable=True, default="sha256")
+    evidence_item_id: Mapped[str | None] = mapped_column(ForeignKey("forensic_evidence_items.id", ondelete="SET NULL"), nullable=True)
+    produced_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ForensicQuantitativeReproductionPackageRecord(Base):
+    __tablename__ = "forensic_quantitative_reproduction_packages"
+    __table_args__ = (UniqueConstraint("investigation_id", "package_key", name="uq_forensic_quant_package_key"), Index("ix_forensic_quant_package_hash", "manifest_hash"))
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    investigation_id: Mapped[str] = mapped_column(ForeignKey("forensic_investigations.id", ondelete="CASCADE"), nullable=False)
+    reconstruction_id: Mapped[str] = mapped_column(ForeignKey("forensic_quantitative_reconstructions.id", ondelete="CASCADE"), nullable=False)
+    package_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    revision: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
+    manifest_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    manifest_json: Mapped[dict] = mapped_column(JSON, nullable=False)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)

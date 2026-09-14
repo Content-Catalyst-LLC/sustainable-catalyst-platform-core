@@ -235,7 +235,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(cross_product_visual_research.public_router)
     app.include_router(reproducible_visual_knowledge.router)
     app.include_router(reproducible_visual_knowledge.public_router)
-    # Open Forensics includes v2.47.0 media artifact & derivative provenance.
+    # Open Forensics includes v2.48.0 quantitative reconstruction & reproduction handoffs.
     app.include_router(open_forensics.router)
     app.include_router(open_forensics.public_router)
     app.include_router(economic_data.router)

@@ -1,0 +1,15 @@
+# Bundle-only validation
+cd ~/Downloads
+chmod +x deploy_and_validate_platform_core_v2_48_0_macos.sh
+SC_CORE_BUNDLE_ONLY=1 ./deploy_and_validate_platform_core_v2_48_0_macos.sh "$HOME/Downloads/sustainable-catalyst-platform-core-v2.48.0-release-bundle.zip"
+
+# Full validation + GitHub promotion
+./deploy_and_validate_platform_core_v2_48_0_macos.sh "$HOME/Downloads/sustainable-catalyst-platform-core-v2.48.0-release-bundle.zip"
+
+# Copy production deployer
+scp -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes DEPLOY_PLATFORM_CORE_V2480_CONTABO.sh catalystadmin@94.72.113.77:/tmp/
+ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes catalystadmin@94.72.113.77
+
+# On Contabo
+chmod +x /tmp/DEPLOY_PLATFORM_CORE_V2480_CONTABO.sh
+/tmp/DEPLOY_PLATFORM_CORE_V2480_CONTABO.sh

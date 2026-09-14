@@ -725,3 +725,9 @@ def _open_forensics_media_comparison_bundle(self, investigation_id: str):
 PublicApiClient.open_forensics_media_provenance = _open_forensics_media_provenance
 PublicApiClient.open_forensics_media_lineage_graph = _open_forensics_media_lineage_graph
 PublicApiClient.open_forensics_media_comparison_bundle = _open_forensics_media_comparison_bundle
+
+
+# v2.48.0 Open Forensics — Quantitative Reconstruction & Reproduction Handoffs.
+def _open_forensics_quantitative_reconstructions(self, investigation_id: str):
+    return self.request("GET", f"/open-forensics/investigations/{investigation_id}/quantitative-reconstructions")
+PublicApiClient.open_forensics_quantitative_reconstructions = _open_forensics_quantitative_reconstructions

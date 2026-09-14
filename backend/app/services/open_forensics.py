@@ -25,6 +25,9 @@ from ..models import (
     ForensicTrajectoryEvidenceRecord, ForensicSpatialTemporalIntersectionRecord, ForensicSpatialTemporalViewRecord, ForensicSpatialTemporalSnapshotRecord,
     ForensicMediaArtifactRecord, ForensicMediaDerivativeRecord, ForensicMediaMetadataRecord, ForensicMediaFingerprintRecord,
     ForensicMediaSegmentRecord, ForensicMediaComparisonRecord, ForensicMediaProvenanceSnapshotRecord,
+    ForensicQuantitativeReconstructionRecord, ForensicQuantitativeMeasurementRecord, ForensicQuantitativeAssumptionRecord,
+    ForensicQuantitativeParameterRecord, ForensicQuantitativeScenarioRecord, ForensicQuantitativeHandoffRecord,
+    ForensicQuantitativeResultBindingRecord, ForensicQuantitativeReproductionPackageRecord,
 )
 
 OBJECT_KINDS = {
@@ -76,6 +79,12 @@ MEDIA_METADATA_NAMESPACES = {"exif", "xmp", "iptc", "quicktime", "id3", "contain
 MEDIA_FINGERPRINT_KINDS = {"cryptographic", "perceptual-image", "perceptual-audio", "frame-hash", "segment-hash", "external"}
 MEDIA_SEGMENT_KINDS = {"frame", "time-range", "audio-range", "region", "page", "chapter", "other"}
 MEDIA_COMPARISON_KINDS = {"exact-hash", "perceptual-similarity", "metadata-difference", "visual-difference", "audio-difference", "segment-alignment", "external-analysis", "other"}
+
+QUANT_RECONSTRUCTION_KINDS = {"kinematic", "energetic", "statistical", "physical", "financial", "engineering", "environmental", "other"}
+QUANT_RUNTIME_TARGETS = {"workbench", "lab", "external"}
+QUANT_PARAMETER_ROLES = {"observed", "assumed", "calibrated", "derived-external", "declared"}
+FORBIDDEN_QUANT_FIELDS = {"execute_by_core", "core_execute", "computed_by_core", "solved_by_core", "probability", "posterior", "rank", "winner", "verdict", "truth_value", "guilt", "responsibility"}
+
 FORBIDDEN_MEDIA_DETERMINATION_FIELDS = {"authentic", "authenticity", "inauthentic", "fake", "deepfake", "manipulated", "manipulation_intent", "author", "author_identity", "creator_identity", "originality_determination", "probability", "posterior", "rank", "winner", "verdict", "truth_value", "guilt", "responsibility"}
 
 
@@ -173,6 +182,19 @@ def _boundaries():
         "frame_segment_reference_registry_by_core": True,
         "provenance_aware_media_comparisons_by_core": True,
         "immutable_media_provenance_snapshots_by_core": True,
+        "quantitative_reconstruction_registry_by_core": True,
+        "measurement_and_uncertainty_capture_by_core": True,
+        "assumption_parameter_registry_by_core": True,
+        "scenario_manifest_registry_by_core": True,
+        "workbench_lab_handoff_contracts_by_core": True,
+        "external_result_binding_by_core": True,
+        "reproducible_quantitative_packages_by_core": True,
+        "quantitative_model_execution_by_core": False,
+        "numerical_solution_by_core": False,
+        "statistical_inference_execution_by_core": False,
+        "uncertainty_propagation_execution_by_core": False,
+        "sensitivity_execution_by_core": False,
+        "parameter_optimization_by_core": False,
         "media_decoding_by_core": False,
         "perceptual_fingerprint_computation_by_core": False,
         "media_similarity_execution_by_core": False,
@@ -219,6 +241,7 @@ def readiness(db: Session) -> dict[str, Any]:
         "migration_0049_applied": True,
         "migration_0050_applied": True,
         "migration_0051_applied": True,
+        "migration_0052_applied": True,
         "forensic_contract": "sc.open-forensics.investigation.v1",
         "counts": {
             "investigations": count(ForensicInvestigationRecord),
@@ -263,6 +286,14 @@ def readiness(db: Session) -> dict[str, Any]:
             "media_segments": count(ForensicMediaSegmentRecord),
             "media_comparisons": count(ForensicMediaComparisonRecord),
             "media_provenance_snapshots": count(ForensicMediaProvenanceSnapshotRecord),
+            "quantitative_reconstructions": count(ForensicQuantitativeReconstructionRecord),
+            "quantitative_measurements": count(ForensicQuantitativeMeasurementRecord),
+            "quantitative_assumptions": count(ForensicQuantitativeAssumptionRecord),
+            "quantitative_parameters": count(ForensicQuantitativeParameterRecord),
+            "quantitative_scenarios": count(ForensicQuantitativeScenarioRecord),
+            "quantitative_handoffs": count(ForensicQuantitativeHandoffRecord),
+            "quantitative_result_bindings": count(ForensicQuantitativeResultBindingRecord),
+            "quantitative_reproduction_packages": count(ForensicQuantitativeReproductionPackageRecord),
         },
         **_boundaries(),
     }
@@ -1230,3 +1261,123 @@ def create_media_provenance_snapshot(db: Session, investigation_id: str, payload
     state=media_provenance_bundle(db,investigation_id); canonical=json.dumps(state,sort_keys=True,separators=(",",":"),default=str).encode("utf-8"); digest=hashlib.sha256(canonical).hexdigest()
     last=db.scalar(select(ForensicMediaProvenanceSnapshotRecord).where(ForensicMediaProvenanceSnapshotRecord.investigation_id==investigation_id).order_by(ForensicMediaProvenanceSnapshotRecord.revision.desc()).limit(1)); revision=(last.revision+1) if last else 1
     row=ForensicMediaProvenanceSnapshotRecord(investigation_id=investigation_id,revision=revision,content_hash=digest,previous_snapshot_hash=last.content_hash if last else None,state_json=state,provenance_json=dict(payload.get("provenance") or {}),created_by=str(payload.get("created_by") or "operator")); db.add(row); db.commit(); db.refresh(row); return _ser(row)
+
+
+# v2.48.0 — Quantitative Reconstruction & Reproduction Handoffs
+def _reject_quant_fields(payload: dict[str, Any]):
+    bad=sorted(FORBIDDEN_QUANT_FIELDS.intersection(payload))
+    if bad:
+        raise ValueError("Core records quantitative reconstruction inputs and external-runtime handoffs but does not execute models, assign probabilities, rank hypotheses, or produce verdicts: " + ", ".join(bad))
+
+
+def _quant_reconstruction(db: Session, investigation_id: str, reconstruction_id: str) -> ForensicQuantitativeReconstructionRecord:
+    row=db.get(ForensicQuantitativeReconstructionRecord,reconstruction_id)
+    if row is None or row.investigation_id!=investigation_id: raise ValueError("quantitative reconstruction must belong to this investigation.")
+    return row
+
+
+def add_quantitative_reconstruction(db: Session, investigation_id: str, payload: dict[str, Any]):
+    _investigation(db,investigation_id); _reject_quant_fields(payload)
+    key=str(payload.get("reconstruction_key") or "").strip(); label=str(payload.get("label") or "").strip(); kind=str(payload.get("reconstruction_kind") or "other").lower(); runtime=str(payload.get("preferred_runtime") or "workbench").lower()
+    if not key or not label: raise ValueError("reconstruction_key and label are required.")
+    if kind not in QUANT_RECONSTRUCTION_KINDS: raise ValueError("unsupported reconstruction_kind.")
+    if runtime not in QUANT_RUNTIME_TARGETS: raise ValueError("unsupported preferred_runtime.")
+    evidence_ids=[str(x) for x in payload.get("basis_evidence_ids") or []]
+    for eid in evidence_ids: _evidence(db,investigation_id,eid)
+    row=ForensicQuantitativeReconstructionRecord(investigation_id=investigation_id,reconstruction_key=key,label=label,reconstruction_kind=kind,question=payload.get("question"),model_ref=payload.get("model_ref"),model_version_ref=payload.get("model_version_ref"),method_ref=payload.get("method_ref"),preferred_runtime=runtime,unit_system=payload.get("unit_system"),status=str(payload.get("status") or "draft"),basis_evidence_ids_json=evidence_ids,provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {}))
+    db.add(row); db.commit(); db.refresh(row); return _ser(row)
+
+
+def add_quantitative_measurement(db: Session, investigation_id: str, reconstruction_id: str, payload: dict[str, Any]):
+    _reject_quant_fields(payload); _quant_reconstruction(db,investigation_id,reconstruction_id)
+    key=str(payload.get("measurement_key") or "").strip(); label=str(payload.get("label") or "").strip(); value=payload.get("value")
+    if not key or not label or not isinstance(value,dict): raise ValueError("measurement_key, label, and object-valued value are required.")
+    eid=payload.get("evidence_item_id"); source_ref=str(payload.get("source_ref") or "").strip() or None
+    if eid: _evidence(db,investigation_id,str(eid))
+    if not eid and not source_ref: raise ValueError("measurement requires evidence_item_id or source_ref.")
+    row=ForensicQuantitativeMeasurementRecord(reconstruction_id=reconstruction_id,measurement_key=key,label=label,value_json=value,unit=payload.get("unit"),uncertainty_json=dict(payload.get("uncertainty") or {}),evidence_item_id=str(eid) if eid else None,source_ref=source_ref,observed_at=_dt(payload.get("observed_at")),provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {})); db.add(row); db.commit(); db.refresh(row); return _ser(row)
+
+
+def add_quantitative_assumption(db: Session, investigation_id: str, reconstruction_id: str, payload: dict[str, Any]):
+    _reject_quant_fields(payload); _quant_reconstruction(db,investigation_id,reconstruction_id)
+    key=str(payload.get("assumption_key") or "").strip(); statement=str(payload.get("statement") or "").strip()
+    if not key or not statement: raise ValueError("assumption_key and statement are required.")
+    evidence_ids=[str(x) for x in payload.get("basis_evidence_ids") or []]
+    for eid in evidence_ids: _evidence(db,investigation_id,eid)
+    row=ForensicQuantitativeAssumptionRecord(reconstruction_id=reconstruction_id,assumption_key=key,statement=statement,assumption_kind=str(payload.get("assumption_kind") or "model"),status=str(payload.get("status") or "declared"),basis_evidence_ids_json=evidence_ids,source_ref=payload.get("source_ref"),provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {})); db.add(row); db.commit(); db.refresh(row); return _ser(row)
+
+
+def add_quantitative_parameter(db: Session, investigation_id: str, reconstruction_id: str, payload: dict[str, Any]):
+    _reject_quant_fields(payload); _quant_reconstruction(db,investigation_id,reconstruction_id)
+    key=str(payload.get("parameter_key") or "").strip(); label=str(payload.get("label") or "").strip(); value=payload.get("value"); role=str(payload.get("parameter_role") or "declared").lower()
+    if not key or not label or not isinstance(value,dict): raise ValueError("parameter_key, label, and object-valued value are required.")
+    if role not in QUANT_PARAMETER_ROLES: raise ValueError("unsupported parameter_role.")
+    eid=payload.get("evidence_item_id");
+    if eid: _evidence(db,investigation_id,str(eid))
+    row=ForensicQuantitativeParameterRecord(reconstruction_id=reconstruction_id,parameter_key=key,label=label,symbol=payload.get("symbol"),value_json=value,unit=payload.get("unit"),bounds_json=dict(payload.get("bounds") or {}),uncertainty_json=dict(payload.get("uncertainty") or {}),parameter_role=role,evidence_item_id=str(eid) if eid else None,provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {})); db.add(row); db.commit(); db.refresh(row); return _ser(row)
+
+
+def add_quantitative_scenario(db: Session, investigation_id: str, reconstruction_id: str, payload: dict[str, Any]):
+    _reject_quant_fields(payload); _quant_reconstruction(db,investigation_id,reconstruction_id)
+    key=str(payload.get("scenario_key") or "").strip(); label=str(payload.get("label") or "").strip()
+    if not key or not label: raise ValueError("scenario_key and label are required.")
+    aids=[str(x) for x in payload.get("assumption_ids") or []]; mids=[str(x) for x in payload.get("measurement_ids") or []]
+    for aid in aids:
+        r=db.get(ForensicQuantitativeAssumptionRecord,aid);
+        if r is None or r.reconstruction_id!=reconstruction_id: raise ValueError("assumption_ids must belong to this reconstruction.")
+    for mid in mids:
+        r=db.get(ForensicQuantitativeMeasurementRecord,mid);
+        if r is None or r.reconstruction_id!=reconstruction_id: raise ValueError("measurement_ids must belong to this reconstruction.")
+    row=ForensicQuantitativeScenarioRecord(reconstruction_id=reconstruction_id,scenario_key=key,label=label,parameter_overrides_json=dict(payload.get("parameter_overrides") or {}),assumption_ids_json=aids,measurement_ids_json=mids,requested_analyses_json=list(payload.get("requested_analyses") or []),uncertainty_plan_json=dict(payload.get("uncertainty_plan") or {}),provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {})); db.add(row); db.commit(); db.refresh(row); return _ser(row)
+
+
+def quantitative_reconstruction_bundle(db: Session, investigation_id: str, reconstruction_id: str | None=None):
+    _investigation(db,investigation_id)
+    q=select(ForensicQuantitativeReconstructionRecord).where(ForensicQuantitativeReconstructionRecord.investigation_id==investigation_id)
+    if reconstruction_id: q=q.where(ForensicQuantitativeReconstructionRecord.id==reconstruction_id)
+    recon=db.scalars(q.order_by(ForensicQuantitativeReconstructionRecord.created_at)).all(); ids=[x.id for x in recon]
+    def rows(model,col): return db.scalars(select(model).where(col.in_(ids)).order_by(model.created_at)).all() if ids else []
+    measurements=rows(ForensicQuantitativeMeasurementRecord,ForensicQuantitativeMeasurementRecord.reconstruction_id); assumptions=rows(ForensicQuantitativeAssumptionRecord,ForensicQuantitativeAssumptionRecord.reconstruction_id); parameters=rows(ForensicQuantitativeParameterRecord,ForensicQuantitativeParameterRecord.reconstruction_id); scenarios=rows(ForensicQuantitativeScenarioRecord,ForensicQuantitativeScenarioRecord.reconstruction_id); handoffs=rows(ForensicQuantitativeHandoffRecord,ForensicQuantitativeHandoffRecord.reconstruction_id)
+    hids=[x.id for x in handoffs]; results=db.scalars(select(ForensicQuantitativeResultBindingRecord).where(ForensicQuantitativeResultBindingRecord.handoff_id.in_(hids)).order_by(ForensicQuantitativeResultBindingRecord.created_at)).all() if hids else []
+    packages=db.scalars(select(ForensicQuantitativeReproductionPackageRecord).where(ForensicQuantitativeReproductionPackageRecord.reconstruction_id.in_(ids)).order_by(ForensicQuantitativeReproductionPackageRecord.created_at)).all() if ids else []
+    return {"contract":"sc.open-forensics.quantitative-reconstruction.v1","investigation_id":investigation_id,"reconstructions":[_ser(x) for x in recon],"measurements":[_ser(x) for x in measurements],"assumptions":[_ser(x) for x in assumptions],"parameters":[_ser(x) for x in parameters],"scenarios":[_ser(x) for x in scenarios],"handoffs":[_ser(x) for x in handoffs],"result_bindings":[_ser(x) for x in results],"reproduction_packages":[_ser(x) for x in packages],"execution_by_core":False,"boundaries":_boundaries()}
+
+
+def create_quantitative_handoff(db: Session, investigation_id: str, reconstruction_id: str, payload: dict[str, Any]):
+    _reject_quant_fields(payload); rec=_quant_reconstruction(db,investigation_id,reconstruction_id)
+    key=str(payload.get("handoff_key") or "").strip(); target=str(payload.get("target_product") or rec.preferred_runtime).lower()
+    if not key: raise ValueError("handoff_key is required.")
+    if target not in QUANT_RUNTIME_TARGETS: raise ValueError("target_product must be workbench, lab, or external.")
+    sid=payload.get("scenario_id")
+    if sid:
+        sr=db.get(ForensicQuantitativeScenarioRecord,str(sid));
+        if sr is None or sr.reconstruction_id!=reconstruction_id: raise ValueError("scenario_id must belong to this reconstruction.")
+    manifest=quantitative_reconstruction_bundle(db,investigation_id,reconstruction_id)
+    row=ForensicQuantitativeHandoffRecord(investigation_id=investigation_id,reconstruction_id=reconstruction_id,scenario_id=str(sid) if sid else None,handoff_key=key,target_product=target,contract_version="sc.forensic-quantitative-handoff.v1",input_manifest_json=manifest,execution_request_json=dict(payload.get("execution_request") or {}),external_run_ref=payload.get("external_run_ref"),status=str(payload.get("status") or "prepared"),provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {})); db.add(row); db.commit(); db.refresh(row); return _ser(row)
+
+
+def add_quantitative_result_binding(db: Session, investigation_id: str, handoff_id: str, payload: dict[str, Any]):
+    _reject_quant_fields(payload); handoff=db.get(ForensicQuantitativeHandoffRecord,handoff_id)
+    if handoff is None or handoff.investigation_id!=investigation_id: raise ValueError("handoff must belong to this investigation.")
+    key=str(payload.get("result_key") or "").strip(); kind=str(payload.get("result_kind") or "result"); ref=str(payload.get("external_result_ref") or "").strip()
+    if not key or not ref: raise ValueError("result_key and external_result_ref are required.")
+    eid=payload.get("evidence_item_id");
+    if eid: _evidence(db,investigation_id,str(eid))
+    content_hash=str(payload.get("content_hash") or "").strip() or None; algo=str(payload.get("hash_algorithm") or "sha256").lower() if content_hash else None; _validate_hash(content_hash,algo)
+    row=ForensicQuantitativeResultBindingRecord(handoff_id=handoff_id,result_key=key,result_kind=kind,external_result_ref=ref,output_manifest_json=dict(payload.get("output_manifest") or {}),metrics_json=dict(payload.get("metrics") or {}),content_hash=content_hash,hash_algorithm=algo,evidence_item_id=str(eid) if eid else None,produced_at=_dt(payload.get("produced_at")),provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {})); db.add(row); db.commit(); db.refresh(row); return _ser(row)
+
+
+def quantitative_handoff_contract(db: Session, investigation_id: str, reconstruction_id: str, target_product: str):
+    rec=_quant_reconstruction(db,investigation_id,reconstruction_id); target=str(target_product).lower()
+    if target not in QUANT_RUNTIME_TARGETS: raise ValueError("target_product must be workbench, lab, or external.")
+    return {"contract":"sc.forensic-quantitative-handoff.v1","investigation_id":investigation_id,"reconstruction_id":reconstruction_id,"target_product":target,"input_manifest":quantitative_reconstruction_bundle(db,investigation_id,reconstruction_id),"model_ref":rec.model_ref,"model_version_ref":rec.model_version_ref,"execute_by_core":False,"specialist_runtime_required":True,"automatic_truth_promotion":False}
+
+
+def create_quantitative_reproduction_package(db: Session, investigation_id: str, reconstruction_id: str, payload: dict[str, Any]):
+    _reject_quant_fields(payload); _quant_reconstruction(db,investigation_id,reconstruction_id)
+    key=str(payload.get("package_key") or "").strip()
+    if not key: raise ValueError("package_key is required.")
+    state=quantitative_reconstruction_bundle(db,investigation_id,reconstruction_id); state["reproduction_packages"]=[]; canonical=json.dumps(state,sort_keys=True,separators=(",",":"),default=str).encode("utf-8"); digest=hashlib.sha256(canonical).hexdigest()
+    last=db.scalar(select(ForensicQuantitativeReproductionPackageRecord).where(ForensicQuantitativeReproductionPackageRecord.investigation_id==investigation_id,ForensicQuantitativeReproductionPackageRecord.package_key==key).order_by(ForensicQuantitativeReproductionPackageRecord.revision.desc()).limit(1)); revision=(last.revision+1) if last else 1
+    manifest={"contract":"sc.open-forensics.quantitative-reproduction-package.v1","manifest_hash":digest,"state":state,"specialist_execution_required":True,"quantitative_model_execution_by_core":False}
+    row=ForensicQuantitativeReproductionPackageRecord(investigation_id=investigation_id,reconstruction_id=reconstruction_id,package_key=key,revision=revision,manifest_hash=digest,manifest_json=manifest,provenance_json=dict(payload.get("provenance") or {}),created_by=str(payload.get("created_by") or "operator")); db.add(row); db.commit(); db.refresh(row); return _ser(row)

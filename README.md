@@ -1,3 +1,6 @@
+## v2.48.0 — Quantitative Reconstruction & Reproduction Handoffs
+Platform Core now provides a governed quantitative reconstruction layer for Open Forensics with evidence-linked inputs, explicit uncertainty, external specialist-runtime handoffs, result bindings, and reproducible quantitative packages. Core does not execute or solve quantitative models.
+
 ## v2.47.0 — Media Artifact & Derivative Provenance
 
 Adds governed media artifacts, declared derivative lineage, preserved metadata observations, cryptographic and externally produced perceptual fingerprint records, frame/segment references, provenance-aware comparison records, lineage graphs, and immutable media-provenance snapshots. Core records provenance; it does not infer authenticity, manipulation intent, authorship, or derivative identity.

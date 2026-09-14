@@ -373,6 +373,66 @@ def media_provenance_snapshot(request:Request, investigation_id:str, payload:Pay
     except Exception as exc: raise bad(exc)
 
 
+# v2.48.0 — Quantitative Reconstruction & Reproduction Handoffs
+@router.post("/investigations/{investigation_id}/quantitative-reconstructions", dependencies=[Depends(require_write)])
+def add_quantitative_reconstruction(request:Request, investigation_id:str, payload:Payload, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.add_quantitative_reconstruction(db,investigation_id,payload.data)
+    except Exception as exc: raise bad(exc)
+
+@router.post("/investigations/{investigation_id}/quantitative-reconstructions/{reconstruction_id}/measurements", dependencies=[Depends(require_write)])
+def add_quantitative_measurement(request:Request, investigation_id:str, reconstruction_id:str, payload:Payload, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.add_quantitative_measurement(db,investigation_id,reconstruction_id,payload.data)
+    except Exception as exc: raise bad(exc)
+
+@router.post("/investigations/{investigation_id}/quantitative-reconstructions/{reconstruction_id}/assumptions", dependencies=[Depends(require_write)])
+def add_quantitative_assumption(request:Request, investigation_id:str, reconstruction_id:str, payload:Payload, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.add_quantitative_assumption(db,investigation_id,reconstruction_id,payload.data)
+    except Exception as exc: raise bad(exc)
+
+@router.post("/investigations/{investigation_id}/quantitative-reconstructions/{reconstruction_id}/parameters", dependencies=[Depends(require_write)])
+def add_quantitative_parameter(request:Request, investigation_id:str, reconstruction_id:str, payload:Payload, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.add_quantitative_parameter(db,investigation_id,reconstruction_id,payload.data)
+    except Exception as exc: raise bad(exc)
+
+@router.post("/investigations/{investigation_id}/quantitative-reconstructions/{reconstruction_id}/scenarios", dependencies=[Depends(require_write)])
+def add_quantitative_scenario(request:Request, investigation_id:str, reconstruction_id:str, payload:Payload, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.add_quantitative_scenario(db,investigation_id,reconstruction_id,payload.data)
+    except Exception as exc: raise bad(exc)
+
+@router.get("/investigations/{investigation_id}/quantitative-reconstructions", dependencies=[Depends(require_read)])
+def quantitative_reconstructions(request:Request, investigation_id:str, db:Session=Depends(get_session)):
+    enabled(request); return svc.quantitative_reconstruction_bundle(db,investigation_id)
+
+@router.post("/investigations/{investigation_id}/quantitative-reconstructions/{reconstruction_id}/handoffs", dependencies=[Depends(require_write)])
+def quantitative_handoff(request:Request, investigation_id:str, reconstruction_id:str, payload:Payload, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.create_quantitative_handoff(db,investigation_id,reconstruction_id,payload.data)
+    except Exception as exc: raise bad(exc)
+
+@router.get("/investigations/{investigation_id}/quantitative-reconstructions/{reconstruction_id}/handoff/{target_product}", dependencies=[Depends(require_read)])
+def quantitative_handoff_contract(request:Request, investigation_id:str, reconstruction_id:str, target_product:str, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.quantitative_handoff_contract(db,investigation_id,reconstruction_id,target_product)
+    except Exception as exc: raise bad(exc)
+
+@router.post("/investigations/{investigation_id}/quantitative-handoffs/{handoff_id}/results", dependencies=[Depends(require_write)])
+def quantitative_result_binding(request:Request, investigation_id:str, handoff_id:str, payload:Payload, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.add_quantitative_result_binding(db,investigation_id,handoff_id,payload.data)
+    except Exception as exc: raise bad(exc)
+
+@router.post("/investigations/{investigation_id}/quantitative-reconstructions/{reconstruction_id}/reproduction-packages", dependencies=[Depends(require_write)])
+def quantitative_reproduction_package(request:Request, investigation_id:str, reconstruction_id:str, payload:Payload, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.create_quantitative_reproduction_package(db,investigation_id,reconstruction_id,payload.data)
+    except Exception as exc: raise bad(exc)
+
+
 @public_router.get("/readiness", response_model=PublicEnvelope)
 def public_readiness(request:Request, db:Session=Depends(get_session), _ctx:PublicApiContext=Depends(require_public_scope("data:read"))):
     public_enabled(request); data=svc.readiness(db); data.update({"release":request.app.state.settings.version,"enabled":True}); return PublicEnvelope(data=data,meta={"api_version":"v1","request_id":request.state.request_id})
@@ -422,3 +482,10 @@ def public_media_comparison_bundle(investigation_id:str, request:Request, db:Ses
     public_enabled(request); inv=svc._investigation(db,investigation_id)
     if inv.visibility != "public": raise HTTPException(status_code=404,detail="Forensic investigation not found.")
     return PublicEnvelope(data=svc.media_comparison_bundle(db,investigation_id),meta={"api_version":"v1","request_id":request.state.request_id})
+
+
+@public_router.get("/investigations/{investigation_id}/quantitative-reconstructions", response_model=PublicEnvelope)
+def public_quantitative_reconstructions(investigation_id:str, request:Request, db:Session=Depends(get_session), _ctx:PublicApiContext=Depends(require_public_scope("data:read"))):
+    public_enabled(request); inv=svc._investigation(db,investigation_id)
+    if inv.visibility != "public": raise HTTPException(status_code=404,detail="Forensic investigation not found.")
+    return PublicEnvelope(data=svc.quantitative_reconstruction_bundle(db,investigation_id),meta={"api_version":"v1","request_id":request.state.request_id})

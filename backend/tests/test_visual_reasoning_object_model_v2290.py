@@ -57,7 +57,7 @@ def _child(client, write_headers, visual_id, child, data):
 def test_v2290_migration_health_meta_and_readiness(client):
     assert any(version == '0032' for version, _ in MIGRATIONS)
     health = client.get('/health').json()
-    assert health['version'] == '2.47.0'
+    assert health['version'] == '2.48.0'
     assert health['visual_reasoning_object_model'] is True
     meta = client.get('/v1/meta').json()
     for capability in {

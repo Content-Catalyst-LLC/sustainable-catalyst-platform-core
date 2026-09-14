@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/forensic-quantitative-handoff-v1.schema.json",
+  "title": "Forensic Quantitative Handoff",
+  "type": "object",
+  "required": ["handoff_key", "target_product"],
+  "properties": {
+    "handoff_key": {"type": "string", "minLength": 1},
+    "target_product": {"enum": ["workbench", "lab", "external"]},
+    "scenario_id": {"type": ["string", "null"]},
+    "execution_request": {"type": "object"},
+    "external_run_ref": {"type": ["string", "null"]}
+  },
+  "not": {"required": ["execute_by_core"]},
+  "additionalProperties": true
+}

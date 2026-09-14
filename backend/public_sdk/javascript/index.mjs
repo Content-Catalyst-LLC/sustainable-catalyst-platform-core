@@ -504,3 +504,7 @@ PublicApiClient.prototype.openForensicsSiteIntelligenceHandoff = function (inves
 PublicApiClient.prototype.openForensicsMediaProvenance = function (investigationId) { return this.request(`/open-forensics/investigations/${encodeURIComponent(investigationId)}/media-provenance`); };
 PublicApiClient.prototype.openForensicsMediaLineageGraph = function (investigationId) { return this.request(`/open-forensics/investigations/${encodeURIComponent(investigationId)}/media-lineage-graph`); };
 PublicApiClient.prototype.openForensicsMediaComparisonBundle = function (investigationId) { return this.request(`/open-forensics/investigations/${encodeURIComponent(investigationId)}/media-comparison-bundle`); };
+
+
+// v2.48.0 Open Forensics — Quantitative Reconstruction & Reproduction Handoffs.
+PublicApiClient.prototype.openForensicsQuantitativeReconstructions = function (investigationId) { return this.request(`/open-forensics/investigations/${encodeURIComponent(investigationId)}/quantitative-reconstructions`); };

@@ -189,6 +189,7 @@ def health(request: Request):
         "forensic_timeline_event_reconstruction": request.app.state.settings.open_forensics_enabled,
         "forensic_spatial_temporal_evidence_integration": request.app.state.settings.open_forensics_enabled,
         "forensic_media_artifact_derivative_provenance": request.app.state.settings.open_forensics_enabled,
+        "forensic_quantitative_reconstruction_reproduction_handoffs": request.app.state.settings.open_forensics_enabled,
     }
 
 
@@ -289,6 +290,7 @@ async def ready(request: Request, db: Session = Depends(get_session)):
         "forensic_timeline_event_reconstruction": "ready" if settings.open_forensics_enabled else "disabled",
         "forensic_spatial_temporal_evidence_integration": "ready" if settings.open_forensics_enabled else "disabled",
         "forensic_media_artifact_derivative_provenance": "ready" if settings.open_forensics_enabled else "disabled",
+        "forensic_quantitative_reconstruction_reproduction_handoffs": "ready" if settings.open_forensics_enabled else "disabled",
         "external_provider_health_release_blocking": False,
         "services": [
             {

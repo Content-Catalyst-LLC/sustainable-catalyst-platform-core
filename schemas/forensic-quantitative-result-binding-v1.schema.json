@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/forensic-quantitative-result-binding-v1.schema.json",
+  "title": "Forensic Quantitative Result Binding",
+  "type": "object",
+  "required": ["result_key", "external_result_ref"],
+  "properties": {
+    "result_key": {"type": "string", "minLength": 1},
+    "result_kind": {"type": "string"},
+    "external_result_ref": {"type": "string", "minLength": 1},
+    "output_manifest": {"type": "object"},
+    "metrics": {"type": "object"},
+    "content_hash": {"type": ["string", "null"]}
+  },
+  "additionalProperties": true
+}

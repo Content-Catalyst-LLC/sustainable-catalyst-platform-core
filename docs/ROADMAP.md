@@ -1,3 +1,8 @@
+## v2.48.0 — Quantitative Reconstruction & Reproduction Handoffs
+Status: Completed
+
+Next: v2.49.0 — Testimony, Statements & Documentary Evidence
+
 ## v2.47.0 — Media Artifact & Derivative Provenance
 Completed. Adds governed media artifacts, declared derivative lineage, metadata/fingerprint/segment records, descriptive comparisons, derivative-lineage graphs, and immutable provenance snapshots with explicit non-authenticity/non-attribution boundaries.
 
