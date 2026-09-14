@@ -736,3 +736,12 @@ PublicApiClient.open_forensics_quantitative_reconstructions = _open_forensics_qu
 def _open_forensics_documentary_evidence(self, investigation_id: str):
     return self.get(f"/api/v1/open-forensics/investigations/{investigation_id}/documentary-evidence")
 PublicApiClient.open_forensics_documentary_evidence = _open_forensics_documentary_evidence
+
+
+# v2.50.0 Open Forensics — Forensic Research Graph.
+def _open_forensics_research_graph(self, investigation_id: str, graph_id: str):
+    return self.get(f"/api/v1/open-forensics/investigations/{investigation_id}/research-graphs/{graph_id}")
+def _open_forensics_research_graph_visual_spec(self, investigation_id: str, graph_id: str):
+    return self.get(f"/api/v1/open-forensics/investigations/{investigation_id}/research-graphs/{graph_id}/visual-spec")
+PublicApiClient.open_forensics_research_graph = _open_forensics_research_graph
+PublicApiClient.open_forensics_research_graph_visual_spec = _open_forensics_research_graph_visual_spec

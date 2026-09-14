@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Forensic Research Graph Edge",
+  "type": "object",
+  "required": [
+    "edge_key",
+    "source_node_id",
+    "target_node_id",
+    "relation_kind"
+  ],
+  "properties": {
+    "edge_key": {
+      "type": "string"
+    },
+    "source_node_id": {
+      "type": "string"
+    },
+    "target_node_id": {
+      "type": "string"
+    },
+    "relation_kind": {
+      "type": "string"
+    },
+    "evidence_basis_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

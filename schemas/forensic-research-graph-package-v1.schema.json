@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Forensic Research Graph Package",
+  "type": "object",
+  "required": [
+    "contract",
+    "manifest_hash",
+    "state"
+  ],
+  "properties": {
+    "contract": {
+      "const": "sc.open-forensics.research-graph-package.v1"
+    },
+    "manifest_hash": {
+      "type": "string"
+    },
+    "state": {
+      "type": "object"
+    }
+  }
+}

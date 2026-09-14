@@ -44,3 +44,5 @@ Renderer-neutral spatial-temporal scenes with explicit Site Intelligence/Lab/Wor
 
 ### v2.39.0 Research Librarian Visual Explanation
 Citation-aware visual research explanations with immutable snapshots and renderer-neutral contracts.
+
+- **v2.50.0 Forensic Research Graph** — governed cross-forensics semantic graph, explicit evidence-backed edges, cross-product handoffs, renderer-neutral views, immutable snapshots, and portable packages.

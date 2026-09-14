@@ -30,6 +30,9 @@ from ..models import (
     ForensicQuantitativeResultBindingRecord, ForensicQuantitativeReproductionPackageRecord,
     ForensicStatementRecord, ForensicStatementSourceContextRecord, ForensicDocumentRecord, ForensicDocumentAssertionRecord,
     ForensicStatementClaimBindingRecord, ForensicStatementRelationRecord, ForensicTemporalConsistencyRecord, ForensicDocumentarySnapshotRecord,
+    ForensicResearchGraphRecord, ForensicResearchGraphNodeRecord, ForensicResearchGraphEdgeRecord, ForensicResearchGraphViewRecord,
+    ForensicResearchGraphHandoffRecord, ForensicResearchGraphSnapshotRecord, ForensicResearchGraphPackageRecord,
+    ResearchModelRecord, ResearchResultRecord,
 )
 
 OBJECT_KINDS = {
@@ -96,6 +99,12 @@ STATEMENT_RELATION_KINDS = {"corroborates", "contradicts", "qualifies", "repeats
 TEMPORAL_CONSISTENCY_ASSESSMENTS = {"consistent", "inconsistent", "uncertain", "not-comparable", "unknown"}
 DOCUMENTARY_SUBJECT_KINDS = {"statement", "document-assertion", "event", "claim"}
 FORBIDDEN_DOCUMENTARY_FIELDS = {"credibility_score", "reliability_score", "truth_value", "truth", "verdict", "probability", "posterior", "rank", "winner", "verified_speaker", "verified_author", "authorship_determined", "speaker_identity_verified", "guilt", "responsibility"}
+
+RESEARCH_GRAPH_NODE_KINDS = {"forensic-object", "evidence", "custodian", "custody-event", "claim", "contradiction", "hypothesis", "event", "place", "trajectory", "media-artifact", "quantitative-reconstruction", "statement", "document", "document-assertion", "research-model", "research-result", "core-entity", "person-reference", "organization-reference", "external-reference"}
+RESEARCH_GRAPH_RELATION_KINDS = {"references", "supports", "inconsistent-with", "qualifies", "corroborates", "contradicts", "derived-from", "associated-with", "occurred-at", "located-at", "part-of", "version-of", "depicts", "contains", "relates-to", "custody-of", "evidence-for", "statement-of", "hypothesis-about", "analysis-of", "result-of", "temporal-relation", "spatial-relation", "same-source-as"}
+RESEARCH_GRAPH_TARGET_PRODUCTS = {"research-librarian", "site-intelligence", "lab", "workbench", "decision-studio", "catalyst-data", "core", "external"}
+FORBIDDEN_GRAPH_RELATIONS = {"causes", "proves", "authored-by", "same-person-as", "verified-identity-of", "authenticates", "guilty-of", "responsible-for"}
+FORBIDDEN_GRAPH_DETERMINATION_FIELDS = {"truth_value", "truth", "verdict", "probability", "posterior", "rank", "winner", "identity_verified", "same_person_confirmed", "causation_confirmed", "proof_confirmed", "authenticity_confirmed", "guilt", "responsibility"}
 
 
 def _ser(row):
@@ -207,6 +216,20 @@ def _boundaries():
         "explicit_corroboration_contradiction_relations_by_core": True,
         "temporal_consistency_recording_by_core": True,
         "immutable_documentary_snapshots_by_core": True,
+        "forensic_research_graph_registry_by_core": True,
+        "cross_forensics_node_binding_by_core": True,
+        "explicit_graph_edge_registry_by_core": True,
+        "renderer_neutral_forensic_graph_specification_by_core": True,
+        "cross_product_graph_handoffs_by_core": True,
+        "immutable_forensic_graph_snapshots_by_core": True,
+        "portable_forensic_graph_packages_by_core": True,
+        "automatic_graph_edge_inference_by_core": False,
+        "automatic_entity_resolution_by_core": False,
+        "automatic_identity_resolution_by_core": False,
+        "automatic_causal_inference_by_core": False,
+        "relationship_truth_determination_by_core": False,
+        "graph_analytics_execution_by_core": False,
+        "remote_product_fetch_by_core": False,
         "automatic_claim_extraction_by_core": False,
         "automatic_speaker_identity_resolution_by_core": False,
         "automatic_authorship_attribution_by_core": False,
@@ -266,6 +289,7 @@ def readiness(db: Session) -> dict[str, Any]:
         "migration_0051_applied": True,
         "migration_0052_applied": True,
         "migration_0053_applied": True,
+        "migration_0054_applied": True,
         "forensic_contract": "sc.open-forensics.investigation.v1",
         "counts": {
             "investigations": count(ForensicInvestigationRecord),
@@ -326,6 +350,13 @@ def readiness(db: Session) -> dict[str, Any]:
             "statement_relations": count(ForensicStatementRelationRecord),
             "temporal_consistency_assessments": count(ForensicTemporalConsistencyRecord),
             "documentary_snapshots": count(ForensicDocumentarySnapshotRecord),
+            "research_graphs": count(ForensicResearchGraphRecord),
+            "research_graph_nodes": count(ForensicResearchGraphNodeRecord),
+            "research_graph_edges": count(ForensicResearchGraphEdgeRecord),
+            "research_graph_views": count(ForensicResearchGraphViewRecord),
+            "research_graph_handoffs": count(ForensicResearchGraphHandoffRecord),
+            "research_graph_snapshots": count(ForensicResearchGraphSnapshotRecord),
+            "research_graph_packages": count(ForensicResearchGraphPackageRecord),
         },
         **_boundaries(),
     }
@@ -1531,3 +1562,158 @@ def create_documentary_snapshot(db: Session, investigation_id: str, payload: dic
     canonical=json.dumps(state,sort_keys=True,separators=(",",":"),default=str).encode("utf-8"); digest=hashlib.sha256(canonical).hexdigest()
     last=db.scalar(select(ForensicDocumentarySnapshotRecord).where(ForensicDocumentarySnapshotRecord.investigation_id==investigation_id).order_by(ForensicDocumentarySnapshotRecord.revision.desc()).limit(1)); revision=(last.revision+1) if last else 1
     row=ForensicDocumentarySnapshotRecord(investigation_id=investigation_id,revision=revision,content_hash=digest,previous_snapshot_hash=last.content_hash if last else None,state_json=state,provenance_json=dict(payload.get("provenance") or {}),created_by=str(payload.get("created_by") or "operator")); db.add(row); db.commit(); db.refresh(row); return _ser(row)
+
+
+# v2.50.0 — Forensic Research Graph
+def _reject_graph_determination_fields(payload: dict[str, Any]):
+    bad=sorted(FORBIDDEN_GRAPH_DETERMINATION_FIELDS.intersection(payload))
+    if bad:
+        raise ValueError("Core records explicit cross-forensics graph structure but does not determine identity, causation, proof, authenticity, probability, ranking, verdict, guilt, or responsibility: " + ", ".join(bad))
+
+
+def _research_graph(db: Session, investigation_id: str, graph_id: str) -> ForensicResearchGraphRecord:
+    row=db.get(ForensicResearchGraphRecord,graph_id)
+    if row is None or row.investigation_id!=investigation_id: raise ValueError("research graph must belong to this investigation.")
+    return row
+
+
+def _research_graph_node(db: Session, graph_id: str, node_id: str) -> ForensicResearchGraphNodeRecord:
+    row=db.get(ForensicResearchGraphNodeRecord,node_id)
+    if row is None or row.graph_id!=graph_id: raise ValueError("graph node must belong to this graph.")
+    return row
+
+
+def _graph_internal_record(db: Session, investigation_id: str, kind: str, record_id: str):
+    mapping={
+        "forensic-object": ForensicObjectRecord, "evidence": ForensicEvidenceItemRecord, "custodian": ForensicCustodianRecord,
+        "custody-event": ForensicCustodyEventRecord, "claim": ForensicClaimRecord, "contradiction": ForensicContradictionRecord,
+        "hypothesis": ForensicHypothesisRecord, "event": ForensicEventRecord, "place": ForensicPlaceRecord,
+        "trajectory": ForensicTrajectoryEvidenceRecord, "media-artifact": ForensicMediaArtifactRecord,
+        "quantitative-reconstruction": ForensicQuantitativeReconstructionRecord, "statement": ForensicStatementRecord,
+        "document": ForensicDocumentRecord, "document-assertion": ForensicDocumentAssertionRecord,
+    }
+    if kind in mapping:
+        row=db.get(mapping[kind],record_id)
+        if row is None: raise ValueError(f"record_id does not reference an existing {kind} record.")
+        if kind=="document-assertion":
+            doc=db.get(ForensicDocumentRecord,row.document_id)
+            if doc is None or doc.investigation_id!=investigation_id: raise ValueError("document assertion must belong to this investigation.")
+        elif kind=="custody-event":
+            evidence=db.get(ForensicEvidenceItemRecord,row.evidence_item_id)
+            if evidence is None or evidence.investigation_id!=investigation_id: raise ValueError("custody event must belong to this investigation.")
+        elif getattr(row,"investigation_id",investigation_id)!=investigation_id:
+            raise ValueError(f"{kind} must belong to this investigation.")
+        return row
+    if kind=="research-model":
+        row=db.get(ResearchModelRecord,record_id)
+        if row is None: raise ValueError("record_id does not reference an existing research model.")
+        return row
+    if kind=="research-result":
+        row=db.get(ResearchResultRecord,record_id)
+        if row is None: raise ValueError("record_id does not reference an existing research result.")
+        return row
+    return None
+
+
+def create_research_graph(db: Session, investigation_id: str, payload: dict[str, Any]):
+    _investigation(db,investigation_id); _reject_graph_determination_fields(payload)
+    key=str(payload.get("graph_key") or "").strip(); label=str(payload.get("label") or "").strip()
+    if not key or not label: raise ValueError("graph_key and label are required.")
+    row=ForensicResearchGraphRecord(investigation_id=investigation_id,graph_key=key,label=label,description=payload.get("description"),status=str(payload.get("status") or "working"),visibility=str(payload.get("visibility") or "private"),provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {}),created_by=str(payload.get("created_by") or "operator"))
+    db.add(row)
+    try: db.commit(); db.refresh(row)
+    except IntegrityError as exc: db.rollback(); raise HTTPException(status_code=409,detail="Research graph key already exists in this investigation.") from exc
+    return _ser(row)
+
+
+def add_research_graph_node(db: Session, investigation_id: str, graph_id: str, payload: dict[str, Any]):
+    _research_graph(db,investigation_id,graph_id); _reject_graph_determination_fields(payload)
+    key=str(payload.get("node_key") or "").strip(); kind=str(payload.get("node_kind") or "").strip(); label=str(payload.get("label") or "").strip()
+    if not key or not kind or not label: raise ValueError("node_key, node_kind, and label are required.")
+    if kind not in RESEARCH_GRAPH_NODE_KINDS: raise ValueError("unsupported node_kind.")
+    record_id=str(payload.get("record_id") or "").strip() or None; core_entity_id=str(payload.get("core_entity_id") or "").strip() or None; source_ref=str(payload.get("source_ref") or "").strip() or None
+    internal_kinds=RESEARCH_GRAPH_NODE_KINDS-{"core-entity","person-reference","organization-reference","external-reference"}
+    if kind in internal_kinds:
+        if not record_id: raise ValueError("record_id is required for internal graph node kinds.")
+        _graph_internal_record(db,investigation_id,kind,record_id)
+    elif kind=="core-entity":
+        if not core_entity_id or db.get(Entity,core_entity_id) is None: raise ValueError("core-entity nodes require an existing core_entity_id.")
+    elif not source_ref:
+        raise ValueError("reference nodes require an explicit source_ref.")
+    evidence_ids=[str(x) for x in (payload.get("evidence_basis_ids") or [])]
+    for eid in evidence_ids: _evidence(db,investigation_id,eid)
+    row=ForensicResearchGraphNodeRecord(graph_id=graph_id,node_key=key,node_kind=kind,label=label,record_id=record_id,core_entity_id=core_entity_id,source_product=payload.get("source_product"),source_ref=source_ref,assertion_state=str(payload.get("assertion_state") or "referenced"),evidence_basis_ids_json=evidence_ids,properties_json=dict(payload.get("properties") or {}),provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {}))
+    db.add(row); db.commit(); db.refresh(row); return _ser(row)
+
+
+def add_research_graph_edge(db: Session, investigation_id: str, graph_id: str, payload: dict[str, Any]):
+    _research_graph(db,investigation_id,graph_id); _reject_graph_determination_fields(payload)
+    key=str(payload.get("edge_key") or "").strip(); source=str(payload.get("source_node_id") or ""); target=str(payload.get("target_node_id") or ""); relation=str(payload.get("relation_kind") or "").strip()
+    if not key or not source or not target or not relation: raise ValueError("edge_key, source_node_id, target_node_id, and relation_kind are required.")
+    if source==target: raise ValueError("graph edge endpoints must be distinct.")
+    _research_graph_node(db,graph_id,source); _research_graph_node(db,graph_id,target)
+    if relation in FORBIDDEN_GRAPH_RELATIONS: raise ValueError("relation_kind is determinative and is not permitted in the governed research graph.")
+    if relation not in RESEARCH_GRAPH_RELATION_KINDS: raise ValueError("unsupported relation_kind.")
+    evidence_ids=[str(x) for x in (payload.get("evidence_basis_ids") or [])]
+    for eid in evidence_ids: _evidence(db,investigation_id,eid)
+    row=ForensicResearchGraphEdgeRecord(graph_id=graph_id,edge_key=key,source_node_id=source,target_node_id=target,relation_kind=relation,assertion_state=str(payload.get("assertion_state") or "asserted"),rationale=payload.get("rationale"),evidence_basis_ids_json=evidence_ids,properties_json=dict(payload.get("properties") or {}),provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {})); db.add(row); db.commit(); db.refresh(row); return _ser(row)
+
+
+def add_research_graph_view(db: Session, investigation_id: str, graph_id: str, payload: dict[str, Any]):
+    _research_graph(db,investigation_id,graph_id); _reject_graph_determination_fields(payload)
+    key=str(payload.get("view_key") or "").strip(); name=str(payload.get("name") or "").strip()
+    if not key or not name: raise ValueError("view_key and name are required.")
+    row=ForensicResearchGraphViewRecord(graph_id=graph_id,view_key=key,name=name,filters_json=dict(payload.get("filters") or {}),layout_hints_json=dict(payload.get("layout_hints") or {}),provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {})); db.add(row); db.commit(); db.refresh(row); return _ser(row)
+
+
+def forensic_research_graph_bundle(db: Session, investigation_id: str, graph_id: str):
+    graph=_research_graph(db,investigation_id,graph_id)
+    nodes=db.scalars(select(ForensicResearchGraphNodeRecord).where(ForensicResearchGraphNodeRecord.graph_id==graph_id).order_by(ForensicResearchGraphNodeRecord.created_at,ForensicResearchGraphNodeRecord.node_key)).all()
+    edges=db.scalars(select(ForensicResearchGraphEdgeRecord).where(ForensicResearchGraphEdgeRecord.graph_id==graph_id).order_by(ForensicResearchGraphEdgeRecord.created_at,ForensicResearchGraphEdgeRecord.edge_key)).all()
+    views=db.scalars(select(ForensicResearchGraphViewRecord).where(ForensicResearchGraphViewRecord.graph_id==graph_id).order_by(ForensicResearchGraphViewRecord.created_at)).all()
+    handoffs=db.scalars(select(ForensicResearchGraphHandoffRecord).where(ForensicResearchGraphHandoffRecord.graph_id==graph_id).order_by(ForensicResearchGraphHandoffRecord.created_at)).all()
+    snapshots=db.scalars(select(ForensicResearchGraphSnapshotRecord).where(ForensicResearchGraphSnapshotRecord.graph_id==graph_id).order_by(ForensicResearchGraphSnapshotRecord.revision)).all()
+    packages=db.scalars(select(ForensicResearchGraphPackageRecord).where(ForensicResearchGraphPackageRecord.graph_id==graph_id).order_by(ForensicResearchGraphPackageRecord.package_key,ForensicResearchGraphPackageRecord.revision)).all()
+    return {"contract":"sc.open-forensics.research-graph.v1","investigation_id":investigation_id,"graph":_ser(graph),"nodes":[_ser(x) for x in nodes],"edges":[_ser(x) for x in edges],"views":[_ser(x) for x in views],"handoffs":[_ser(x) for x in handoffs],"snapshots":[_ser(x) for x in snapshots],"packages":[_ser(x) for x in packages],"edges_are_explicit_not_inferred":True,"descriptive_only":True,"boundaries":_boundaries()}
+
+
+def forensic_research_graph_visual_spec(db: Session, investigation_id: str, graph_id: str):
+    state=forensic_research_graph_bundle(db,investigation_id,graph_id)
+    return {"contract":"sc.visual-spec.forensic-research-graph.v1","visual_kind":"forensic-research-graph","renderer_neutral":True,"investigation_id":investigation_id,"graph_id":graph_id,"nodes":state["nodes"],"edges":state["edges"],"views":state["views"],"execution":{"layout_by_core":False,"rendering_by_core":False,"graph_analytics_execution_by_core":False,"automatic_graph_edge_inference_by_core":False,"automatic_entity_resolution_by_core":False},"boundaries":_boundaries()}
+
+
+def create_research_graph_handoff(db: Session, investigation_id: str, graph_id: str, payload: dict[str, Any]):
+    _research_graph(db,investigation_id,graph_id); _reject_graph_determination_fields(payload)
+    key=str(payload.get("handoff_key") or "").strip(); target=str(payload.get("target_product") or "").strip()
+    if not key or not target: raise ValueError("handoff_key and target_product are required.")
+    if target not in RESEARCH_GRAPH_TARGET_PRODUCTS: raise ValueError("unsupported target_product.")
+    state=forensic_research_graph_bundle(db,investigation_id,graph_id); state["handoffs"]=[]; state["snapshots"]=[]; state["packages"]=[]
+    manifest={"contract":"sc.open-forensics.research-graph-handoff.v1","target_product":target,"graph":state,"remote_product_fetch_by_core":False,"specialist_execution_required":target not in {"core","research-librarian"}}
+    row=ForensicResearchGraphHandoffRecord(graph_id=graph_id,handoff_key=key,target_product=target,manifest_json=manifest,external_ref=payload.get("external_ref"),status=str(payload.get("status") or "prepared"),provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {})); db.add(row); db.commit(); db.refresh(row); return _ser(row)
+
+
+def create_research_graph_snapshot(db: Session, investigation_id: str, graph_id: str, payload: dict[str, Any]):
+    _reject_graph_determination_fields(payload); state=forensic_research_graph_bundle(db,investigation_id,graph_id); state["snapshots"]=[]; state["packages"]=[]
+    canonical=json.dumps(state,sort_keys=True,separators=(",",":"),default=str).encode("utf-8"); digest=hashlib.sha256(canonical).hexdigest()
+    last=db.scalar(select(ForensicResearchGraphSnapshotRecord).where(ForensicResearchGraphSnapshotRecord.graph_id==graph_id).order_by(ForensicResearchGraphSnapshotRecord.revision.desc()).limit(1)); revision=(last.revision+1) if last else 1
+    row=ForensicResearchGraphSnapshotRecord(graph_id=graph_id,revision=revision,content_hash=digest,previous_snapshot_hash=last.content_hash if last else None,state_json=state,provenance_json=dict(payload.get("provenance") or {}),created_by=str(payload.get("created_by") or "operator")); db.add(row); db.commit(); db.refresh(row); return _ser(row)
+
+
+def create_research_graph_package(db: Session, investigation_id: str, graph_id: str, payload: dict[str, Any]):
+    _reject_graph_determination_fields(payload); _research_graph(db,investigation_id,graph_id)
+    key=str(payload.get("package_key") or "").strip()
+    if not key: raise ValueError("package_key is required.")
+    state=forensic_research_graph_bundle(db,investigation_id,graph_id); state["packages"]=[]
+    canonical=json.dumps(state,sort_keys=True,separators=(",",":"),default=str).encode("utf-8"); digest=hashlib.sha256(canonical).hexdigest()
+    last=db.scalar(select(ForensicResearchGraphPackageRecord).where(ForensicResearchGraphPackageRecord.graph_id==graph_id,ForensicResearchGraphPackageRecord.package_key==key).order_by(ForensicResearchGraphPackageRecord.revision.desc()).limit(1)); revision=(last.revision+1) if last else 1
+    manifest={"contract":"sc.open-forensics.research-graph-package.v1","manifest_hash":digest,"state":state,"descriptive_only":True,"automatic_truth_promotion":False}
+    row=ForensicResearchGraphPackageRecord(graph_id=graph_id,package_key=key,revision=revision,manifest_hash=digest,manifest_json=manifest,provenance_json=dict(payload.get("provenance") or {}),created_by=str(payload.get("created_by") or "operator")); db.add(row); db.commit(); db.refresh(row); return _ser(row)
+
+
+def research_graph_source_inventory(db: Session, investigation_id: str):
+    _investigation(db,investigation_id)
+    def count(model):
+        q=select(func.count()).select_from(model)
+        if hasattr(model,"investigation_id"): q=q.where(model.investigation_id==investigation_id)
+        return int(db.scalar(q) or 0)
+    return {"contract":"sc.open-forensics.research-graph-source-inventory.v1","investigation_id":investigation_id,"eligible_node_kinds":sorted(RESEARCH_GRAPH_NODE_KINDS),"cross_product_targets":sorted(RESEARCH_GRAPH_TARGET_PRODUCTS),"counts":{"forensic_objects":count(ForensicObjectRecord),"evidence_items":count(ForensicEvidenceItemRecord),"custodians":count(ForensicCustodianRecord),"claims":count(ForensicClaimRecord),"hypotheses":count(ForensicHypothesisRecord),"events":count(ForensicEventRecord),"places":count(ForensicPlaceRecord),"trajectories":count(ForensicTrajectoryEvidenceRecord),"media_artifacts":count(ForensicMediaArtifactRecord),"quantitative_reconstructions":count(ForensicQuantitativeReconstructionRecord),"statements":count(ForensicStatementRecord),"documents":count(ForensicDocumentRecord)},"automatic_node_creation_by_core":False,"automatic_graph_edge_inference_by_core":False}

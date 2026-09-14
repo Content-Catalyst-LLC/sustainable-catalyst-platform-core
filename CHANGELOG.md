@@ -465,3 +465,6 @@ Governed, reference-first cross-product visual research packages with explicit s
 ## 2.38.0
 - Spatial & Temporal Visual Reasoning with governed scenes, features, events, trajectories, changes, views, public metadata, and runtime handoffs.
 
+
+## 2.50.0
+- Added Forensic Research Graph with explicit typed nodes/edges, saved views, cross-product handoffs, immutable snapshots, and portable packages.

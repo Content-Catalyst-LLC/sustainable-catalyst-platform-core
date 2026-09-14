@@ -1,4 +1,4 @@
-## v2.49.0 — Quantitative Reconstruction & Reproduction Handoffs
+## v2.50.0 — Forensic Research Graph
 
 Adds public helpers for Open Forensics media provenance, derivative-lineage graphs, and descriptive comparison bundles.
 
@@ -6,7 +6,7 @@ Adds public helpers for Open Forensics media provenance, derivative-lineage grap
 
 Adds public helpers for spatial-temporal forensic evidence, linked forensic scene specifications, and Site Intelligence handoffs.
 
-# Sustainable Catalyst Public API Python Client v2.49.0
+# Sustainable Catalyst Public API Python Client v2.50.0
 
 ```python
 from sc_platform_core_public import PublicApiClient
@@ -184,3 +184,6 @@ Adds public read helpers for forensic claim maps, competing-hypothesis matrices,
 
 ## v2.45.0 — Forensic Timeline & Event Reconstruction
 Adds public helpers for evidence-linked forensic timelines and renderer-neutral timeline specifications. Reconstruction order is descriptive/hypothetical and is not a Core truth determination.
+
+### v2.50.0 Forensic Research Graph
+Public clients can retrieve a public forensic research graph and its renderer-neutral visual specification. Graph relationships are explicit source/analyst declarations; the API does not infer identity, causation, proof, authenticity, or truth from graph topology.

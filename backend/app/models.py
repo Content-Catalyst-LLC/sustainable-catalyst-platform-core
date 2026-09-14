@@ -5941,3 +5941,118 @@ class ForensicDocumentarySnapshotRecord(Base):
     provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
     created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+# v2.50.0 — Forensic Research Graph
+class ForensicResearchGraphRecord(Base):
+    __tablename__ = "forensic_research_graphs"
+    __table_args__ = (UniqueConstraint("investigation_id", "graph_key", name="uq_forensic_research_graph_key"), Index("ix_forensic_research_graph_investigation", "investigation_id"))
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    investigation_id: Mapped[str] = mapped_column(ForeignKey("forensic_investigations.id", ondelete="CASCADE"), nullable=False)
+    graph_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    label: Mapped[str] = mapped_column(String(500), nullable=False)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    status: Mapped[str] = mapped_column(String(60), nullable=False, default="working")
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="private")
+    graph_contract: Mapped[str] = mapped_column(String(120), nullable=False, default="sc.open-forensics.research-graph.v1")
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ForensicResearchGraphNodeRecord(Base):
+    __tablename__ = "forensic_research_graph_nodes"
+    __table_args__ = (UniqueConstraint("graph_id", "node_key", name="uq_forensic_research_graph_node_key"), Index("ix_forensic_research_graph_node_graph", "graph_id"), Index("ix_forensic_research_graph_node_kind", "node_kind"))
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    graph_id: Mapped[str] = mapped_column(ForeignKey("forensic_research_graphs.id", ondelete="CASCADE"), nullable=False)
+    node_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    node_kind: Mapped[str] = mapped_column(String(100), nullable=False)
+    label: Mapped[str] = mapped_column(String(500), nullable=False)
+    record_id: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    core_entity_id: Mapped[str | None] = mapped_column(ForeignKey("entities.id", ondelete="SET NULL"), nullable=True)
+    source_product: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    source_ref: Mapped[str | None] = mapped_column(String(2000), nullable=True)
+    assertion_state: Mapped[str] = mapped_column(String(60), nullable=False, default="referenced")
+    evidence_basis_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    properties_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ForensicResearchGraphEdgeRecord(Base):
+    __tablename__ = "forensic_research_graph_edges"
+    __table_args__ = (UniqueConstraint("graph_id", "edge_key", name="uq_forensic_research_graph_edge_key"), Index("ix_forensic_research_graph_edge_graph", "graph_id"), Index("ix_forensic_research_graph_edge_source", "source_node_id"), Index("ix_forensic_research_graph_edge_target", "target_node_id"))
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    graph_id: Mapped[str] = mapped_column(ForeignKey("forensic_research_graphs.id", ondelete="CASCADE"), nullable=False)
+    edge_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    source_node_id: Mapped[str] = mapped_column(ForeignKey("forensic_research_graph_nodes.id", ondelete="CASCADE"), nullable=False)
+    target_node_id: Mapped[str] = mapped_column(ForeignKey("forensic_research_graph_nodes.id", ondelete="CASCADE"), nullable=False)
+    relation_kind: Mapped[str] = mapped_column(String(100), nullable=False)
+    assertion_state: Mapped[str] = mapped_column(String(60), nullable=False, default="asserted")
+    rationale: Mapped[str | None] = mapped_column(Text, nullable=True)
+    evidence_basis_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    properties_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ForensicResearchGraphViewRecord(Base):
+    __tablename__ = "forensic_research_graph_views"
+    __table_args__ = (UniqueConstraint("graph_id", "view_key", name="uq_forensic_research_graph_view_key"), Index("ix_forensic_research_graph_view_graph", "graph_id"))
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    graph_id: Mapped[str] = mapped_column(ForeignKey("forensic_research_graphs.id", ondelete="CASCADE"), nullable=False)
+    view_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    name: Mapped[str] = mapped_column(String(500), nullable=False)
+    filters_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    layout_hints_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    visual_contract: Mapped[str] = mapped_column(String(120), nullable=False, default="sc.visual-spec.forensic-research-graph.v1")
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ForensicResearchGraphHandoffRecord(Base):
+    __tablename__ = "forensic_research_graph_handoffs"
+    __table_args__ = (UniqueConstraint("graph_id", "handoff_key", name="uq_forensic_research_graph_handoff_key"), Index("ix_forensic_research_graph_handoff_graph", "graph_id"))
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    graph_id: Mapped[str] = mapped_column(ForeignKey("forensic_research_graphs.id", ondelete="CASCADE"), nullable=False)
+    handoff_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    target_product: Mapped[str] = mapped_column(String(120), nullable=False)
+    contract_version: Mapped[str] = mapped_column(String(120), nullable=False, default="sc.open-forensics.research-graph-handoff.v1")
+    manifest_json: Mapped[dict] = mapped_column(JSON, nullable=False)
+    external_ref: Mapped[str | None] = mapped_column(String(2000), nullable=True)
+    status: Mapped[str] = mapped_column(String(60), nullable=False, default="prepared")
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ForensicResearchGraphSnapshotRecord(Base):
+    __tablename__ = "forensic_research_graph_snapshots"
+    __table_args__ = (UniqueConstraint("graph_id", "revision", name="uq_forensic_research_graph_snapshot_revision"), Index("ix_forensic_research_graph_snapshot_hash", "content_hash"))
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    graph_id: Mapped[str] = mapped_column(ForeignKey("forensic_research_graphs.id", ondelete="CASCADE"), nullable=False)
+    revision: Mapped[int] = mapped_column(Integer, nullable=False)
+    content_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    previous_snapshot_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    state_json: Mapped[dict] = mapped_column(JSON, nullable=False)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ForensicResearchGraphPackageRecord(Base):
+    __tablename__ = "forensic_research_graph_packages"
+    __table_args__ = (UniqueConstraint("graph_id", "package_key", "revision", name="uq_forensic_research_graph_package_revision"), Index("ix_forensic_research_graph_package_hash", "manifest_hash"))
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    graph_id: Mapped[str] = mapped_column(ForeignKey("forensic_research_graphs.id", ondelete="CASCADE"), nullable=False)
+    package_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    revision: Mapped[int] = mapped_column(Integer, nullable=False)
+    manifest_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    manifest_json: Mapped[dict] = mapped_column(JSON, nullable=False)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)

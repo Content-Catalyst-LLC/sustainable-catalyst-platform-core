@@ -7,7 +7,7 @@ from app.models import Entity
 
 
 def app_client(tmp_path):
-    app = create_app(Settings(database_url=f"sqlite:///{tmp_path/'v2390.db'}", version="2.49.0"))
+    app = create_app(Settings(database_url=f"sqlite:///{tmp_path/'v2390.db'}", version="2.50.0"))
     return app, TestClient(app)
 
 
@@ -28,9 +28,9 @@ def make_explanation(client, visibility="public"):
 
 def test_readiness_health_and_migration_0043(tmp_path):
     app, client = app_client(tmp_path); seed_project(app)
-    health = client.get("/health").json(); assert health["version"] == "2.49.0"; assert health["research_librarian_visual_explanation"] is True
+    health = client.get("/health").json(); assert health["version"] == "2.50.0"; assert health["research_librarian_visual_explanation"] is True
     ready = client.get("/v1/research-visual-explanations/readiness").json()
-    assert ready["release"] == "2.49.0"; assert ready["migration_0043_applied"] is True
+    assert ready["release"] == "2.50.0"; assert ready["migration_0043_applied"] is True
     assert ready["source_retrieval_by_core"] is False and ready["natural_language_generation_by_core"] is False
     assert ready["citation_selection_by_core"] is False and ready["source_ranking_by_core"] is False
     assert ready["renderer_execution_by_core"] is False and ready["automatic_truth_promotion"] is False

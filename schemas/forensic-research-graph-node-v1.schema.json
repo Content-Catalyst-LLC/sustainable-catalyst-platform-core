@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Forensic Research Graph Node",
+  "type": "object",
+  "required": [
+    "node_key",
+    "node_kind",
+    "label"
+  ],
+  "properties": {
+    "node_key": {
+      "type": "string"
+    },
+    "node_kind": {
+      "type": "string"
+    },
+    "label": {
+      "type": "string"
+    },
+    "record_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "source_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  }
+}

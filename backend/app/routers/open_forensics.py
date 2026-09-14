@@ -487,6 +487,64 @@ def documentary_snapshot(request:Request, investigation_id:str, payload:Payload,
     try: return svc.create_documentary_snapshot(db,investigation_id,payload.data)
     except Exception as exc: raise bad(exc)
 
+
+
+# v2.50.0 — Forensic Research Graph
+@router.post("/investigations/{investigation_id}/research-graphs", dependencies=[Depends(require_write)])
+def create_research_graph(request:Request, investigation_id:str, payload:Payload, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.create_research_graph(db,investigation_id,payload.data)
+    except Exception as exc: raise bad(exc)
+
+@router.get("/investigations/{investigation_id}/research-graph-inventory", dependencies=[Depends(require_read)])
+def research_graph_inventory(request:Request, investigation_id:str, db:Session=Depends(get_session)):
+    enabled(request); return svc.research_graph_source_inventory(db,investigation_id)
+
+@router.post("/investigations/{investigation_id}/research-graphs/{graph_id}/nodes", dependencies=[Depends(require_write)])
+def add_research_graph_node(request:Request, investigation_id:str, graph_id:str, payload:Payload, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.add_research_graph_node(db,investigation_id,graph_id,payload.data)
+    except Exception as exc: raise bad(exc)
+
+@router.post("/investigations/{investigation_id}/research-graphs/{graph_id}/edges", dependencies=[Depends(require_write)])
+def add_research_graph_edge(request:Request, investigation_id:str, graph_id:str, payload:Payload, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.add_research_graph_edge(db,investigation_id,graph_id,payload.data)
+    except Exception as exc: raise bad(exc)
+
+@router.post("/investigations/{investigation_id}/research-graphs/{graph_id}/views", dependencies=[Depends(require_write)])
+def add_research_graph_view(request:Request, investigation_id:str, graph_id:str, payload:Payload, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.add_research_graph_view(db,investigation_id,graph_id,payload.data)
+    except Exception as exc: raise bad(exc)
+
+@router.get("/investigations/{investigation_id}/research-graphs/{graph_id}", dependencies=[Depends(require_read)])
+def research_graph_bundle(request:Request, investigation_id:str, graph_id:str, db:Session=Depends(get_session)):
+    enabled(request); return svc.forensic_research_graph_bundle(db,investigation_id,graph_id)
+
+@router.get("/investigations/{investigation_id}/research-graphs/{graph_id}/visual-spec", dependencies=[Depends(require_read)])
+def research_graph_visual_spec(request:Request, investigation_id:str, graph_id:str, db:Session=Depends(get_session)):
+    enabled(request); return svc.forensic_research_graph_visual_spec(db,investigation_id,graph_id)
+
+@router.post("/investigations/{investigation_id}/research-graphs/{graph_id}/handoffs", dependencies=[Depends(require_write)])
+def research_graph_handoff(request:Request, investigation_id:str, graph_id:str, payload:Payload, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.create_research_graph_handoff(db,investigation_id,graph_id,payload.data)
+    except Exception as exc: raise bad(exc)
+
+@router.post("/investigations/{investigation_id}/research-graphs/{graph_id}/snapshots", dependencies=[Depends(require_write)])
+def research_graph_snapshot(request:Request, investigation_id:str, graph_id:str, payload:Payload, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.create_research_graph_snapshot(db,investigation_id,graph_id,payload.data)
+    except Exception as exc: raise bad(exc)
+
+@router.post("/investigations/{investigation_id}/research-graphs/{graph_id}/packages", dependencies=[Depends(require_write)])
+def research_graph_package(request:Request, investigation_id:str, graph_id:str, payload:Payload, db:Session=Depends(get_session)):
+    enabled(request)
+    try: return svc.create_research_graph_package(db,investigation_id,graph_id,payload.data)
+    except Exception as exc: raise bad(exc)
+
+
 @public_router.get("/readiness", response_model=PublicEnvelope)
 def public_readiness(request:Request, db:Session=Depends(get_session), _ctx:PublicApiContext=Depends(require_public_scope("data:read"))):
     public_enabled(request); data=svc.readiness(db); data.update({"release":request.app.state.settings.version,"enabled":True}); return PublicEnvelope(data=data,meta={"api_version":"v1","request_id":request.state.request_id})
@@ -550,3 +608,20 @@ def public_documentary_evidence(investigation_id:str, request:Request, db:Sessio
     public_enabled(request); inv=svc._investigation(db,investigation_id)
     if inv.visibility != "public": raise HTTPException(status_code=404,detail="Forensic investigation not found.")
     return PublicEnvelope(data=svc.documentary_evidence_bundle(db,investigation_id),meta={"api_version":"v1","request_id":request.state.request_id})
+
+
+@public_router.get("/investigations/{investigation_id}/research-graphs/{graph_id}", response_model=PublicEnvelope)
+def public_research_graph(investigation_id:str, graph_id:str, request:Request, db:Session=Depends(get_session), _ctx:PublicApiContext=Depends(require_public_scope("data:read"))):
+    public_enabled(request); inv=svc._investigation(db,investigation_id)
+    if inv.visibility != "public": raise HTTPException(status_code=404,detail="Forensic investigation not found.")
+    graph=svc._research_graph(db,investigation_id,graph_id)
+    if graph.visibility != "public": raise HTTPException(status_code=404,detail="Forensic research graph not found.")
+    return PublicEnvelope(data=svc.forensic_research_graph_bundle(db,investigation_id,graph_id),meta={"api_version":"v1","request_id":request.state.request_id})
+
+@public_router.get("/investigations/{investigation_id}/research-graphs/{graph_id}/visual-spec", response_model=PublicEnvelope)
+def public_research_graph_visual_spec(investigation_id:str, graph_id:str, request:Request, db:Session=Depends(get_session), _ctx:PublicApiContext=Depends(require_public_scope("data:read"))):
+    public_enabled(request); inv=svc._investigation(db,investigation_id)
+    if inv.visibility != "public": raise HTTPException(status_code=404,detail="Forensic investigation not found.")
+    graph=svc._research_graph(db,investigation_id,graph_id)
+    if graph.visibility != "public": raise HTTPException(status_code=404,detail="Forensic research graph not found.")
+    return PublicEnvelope(data=svc.forensic_research_graph_visual_spec(db,investigation_id,graph_id),meta={"api_version":"v1","request_id":request.state.request_id})

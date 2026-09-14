@@ -513,3 +513,12 @@ PublicApiClient.prototype.openForensicsQuantitativeReconstructions = function (i
 PublicApiClient.prototype.openForensicsDocumentaryEvidence = function (investigationId) {
   return this.get(`/api/v1/open-forensics/investigations/${encodeURIComponent(investigationId)}/documentary-evidence`);
 };
+
+
+// v2.50.0 Open Forensics — Forensic Research Graph.
+PublicApiClient.prototype.openForensicsResearchGraph = function (investigationId, graphId) {
+  return this.get(`/api/v1/open-forensics/investigations/${encodeURIComponent(investigationId)}/research-graphs/${encodeURIComponent(graphId)}`);
+};
+PublicApiClient.prototype.openForensicsResearchGraphVisualSpec = function (investigationId, graphId) {
+  return this.get(`/api/v1/open-forensics/investigations/${encodeURIComponent(investigationId)}/research-graphs/${encodeURIComponent(graphId)}/visual-spec`);
+};

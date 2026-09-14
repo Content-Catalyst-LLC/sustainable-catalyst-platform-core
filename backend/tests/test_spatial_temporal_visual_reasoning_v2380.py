@@ -6,7 +6,7 @@ from app.migrations import migration_status, run_migrations
 from app.models import Entity
 
 def app_client(tmp_path):
-    app=create_app(Settings(database_url=f"sqlite:///{tmp_path/'v2380.db'}",version='2.49.0'))
+    app=create_app(Settings(database_url=f"sqlite:///{tmp_path/'v2380.db'}",version='2.50.0'))
     return app,TestClient(app)
 
 def seed_project(app):
@@ -15,7 +15,7 @@ def seed_project(app):
 
 def test_readiness_and_migration_0042(tmp_path):
     app,c=app_client(tmp_path); seed_project(app)
-    d=c.get('/v1/spatial-temporal/readiness').json(); assert d['release']=='2.49.0'; assert d['migration_0042_applied'] is True; assert d['spatial_analysis_by_core'] is False; assert d['automatic_truth_promotion'] is False
+    d=c.get('/v1/spatial-temporal/readiness').json(); assert d['release']=='2.50.0'; assert d['migration_0042_applied'] is True; assert d['spatial_analysis_by_core'] is False; assert d['automatic_truth_promotion'] is False
     with app.state.database.session_factory() as db: assert migration_status(app.state.database)['pending']==[]
 
 def test_scene_features_events_trajectory_timeline_and_bundle(tmp_path):
