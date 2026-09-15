@@ -1,14 +1,14 @@
 from __future__ import annotations
 
 from pathlib import Path
-from app.migrations import migration_status
+from app.migrations import MIGRATIONS, migration_status
 
 PROMOTED_IMPLEMENTED = {"distributed_connector_workers", "server_sent_live_data_events"}
 
 
 def test_v2231_capability_truth_remains_inherited(client):
     body = client.get('/v1/meta').json()
-    assert body['version'] == '2.55.0'
+    assert body['version'] == client.app.version
     implemented = body['capabilities']
     deferred = body['deferred_capabilities']
     assert len(implemented) == len(set(implemented))
@@ -32,7 +32,7 @@ def test_v2231_migration_lineage_is_preserved_beneath_v2240(client):
     status = migration_status(client.app.state.database)
     assert status['pending'] == []
     assert '0026' in status['applied']
-    assert status['applied'][-1] == '0059'
+    assert status['applied'][-1] == max(version for version, _ in MIGRATIONS)
 
 
 def test_v2231_historical_release_record_remains_present():

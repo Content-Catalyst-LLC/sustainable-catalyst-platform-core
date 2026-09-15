@@ -195,3 +195,8 @@ Public clients can retrieve a public forensic research graph and its renderer-ne
 ### v2.51.0 Reproducible Investigation Packages
 
 Read portable, integrity-verifiable Open Forensics investigation packages assembled from frozen cross-forensics component manifests. Reproducibility does not establish authenticity, admissibility, causation, or truth.
+
+
+## v2.56.0 — Anomaly, Change-Point & Early-Warning Intelligence
+
+Adds public monitoring-bundle access. Detection, threshold optimization, alerting, causal attribution, and intervention remain external to Platform Core.

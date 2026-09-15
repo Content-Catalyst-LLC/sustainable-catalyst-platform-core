@@ -540,3 +540,6 @@ PublicApiClient.prototype.predictiveCalibrationBundle=function(modelId,studyId){
 
 PublicApiClient.prototype.predictiveEnsembleBundle=function(ensembleId){return this.request(`/predictive-intelligence/ensembles/${encodeURIComponent(ensembleId)}/bundle`);};
 PublicApiClient.prototype.predictiveComparisonBundle=function(studyId){return this.request(`/predictive-intelligence/comparison-studies/${encodeURIComponent(studyId)}/bundle`);};
+
+// v2.56.0 Predictive Monitoring
+PublicApiClient.prototype.predictiveMonitoringBundle=function(studyId){return this.request(`/predictive-intelligence/monitoring-studies/${encodeURIComponent(studyId)}/bundle`);};

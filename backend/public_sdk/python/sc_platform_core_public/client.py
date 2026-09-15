@@ -769,3 +769,7 @@ def _predictive_ensemble_bundle(self, ensemble_id: str): return self.request("GE
 def _predictive_comparison_bundle(self, study_id: str): return self.request("GET", f"/predictive-intelligence/comparison-studies/{study_id}/bundle")
 PublicApiClient.predictive_ensemble_bundle=_predictive_ensemble_bundle
 PublicApiClient.predictive_comparison_bundle=_predictive_comparison_bundle
+
+# v2.56.0 Predictive Monitoring
+def _predictive_monitoring_bundle(self, study_id: str): return self.request("GET", f"/predictive-intelligence/monitoring-studies/{study_id}/bundle")
+PublicApiClient.predictive_monitoring_bundle=_predictive_monitoring_bundle

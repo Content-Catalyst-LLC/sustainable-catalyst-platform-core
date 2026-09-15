@@ -197,6 +197,7 @@ def health(request: Request):
         "predictive_time_series_forecasting_backtesting": request.app.state.settings.predictive_intelligence_enabled,
         "predictive_probabilistic_forecasting_calibration": request.app.state.settings.predictive_intelligence_enabled,
         "predictive_ensembles_model_comparison": request.app.state.settings.predictive_intelligence_enabled,
+        "predictive_anomaly_change_point_early_warning": request.app.state.settings.predictive_intelligence_enabled,
     }
 
 

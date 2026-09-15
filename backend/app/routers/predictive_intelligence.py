@@ -199,6 +199,48 @@ def comparison_package(study_id:str,request:Request,payload:Payload,db:Session=D
     enabled(request)
     try:return svc.create_comparison_package(db,study_id,payload.data)
     except Exception as exc:raise bad(exc)
+
+@router.post("/monitoring-studies",dependencies=[Depends(require_write)])
+def monitoring_study_create(request:Request,payload:Payload,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.create_monitoring_study(db,payload.data)
+    except Exception as exc:raise bad(exc)
+@router.post("/monitoring-studies/{study_id}/rules",dependencies=[Depends(require_write)])
+def monitoring_rule(study_id:str,request:Request,payload:Payload,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.add_detection_rule(db,study_id,payload.data)
+    except Exception as exc:raise bad(exc)
+@router.post("/monitoring-studies/{study_id}/anomalies",dependencies=[Depends(require_write)])
+def monitoring_anomaly(study_id:str,request:Request,payload:Payload,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.add_anomaly_observation(db,study_id,payload.data)
+    except Exception as exc:raise bad(exc)
+@router.post("/monitoring-studies/{study_id}/change-points",dependencies=[Depends(require_write)])
+def monitoring_change_point(study_id:str,request:Request,payload:Payload,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.add_change_point(db,study_id,payload.data)
+    except Exception as exc:raise bad(exc)
+@router.post("/monitoring-studies/{study_id}/early-warning-signals",dependencies=[Depends(require_write)])
+def monitoring_early_warning(study_id:str,request:Request,payload:Payload,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.add_early_warning_signal(db,study_id,payload.data)
+    except Exception as exc:raise bad(exc)
+@router.post("/monitoring-studies/{study_id}/episodes",dependencies=[Depends(require_write)])
+def monitoring_episode(study_id:str,request:Request,payload:Payload,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.add_monitoring_episode(db,study_id,payload.data)
+    except Exception as exc:raise bad(exc)
+@router.get("/monitoring-studies/{study_id}/bundle",dependencies=[Depends(require_read)])
+def monitoring_bundle(study_id:str,request:Request,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.monitoring_bundle(db,study_id)
+    except Exception as exc:raise bad(exc)
+@router.post("/monitoring-studies/{study_id}/packages",dependencies=[Depends(require_write)])
+def monitoring_package(study_id:str,request:Request,payload:Payload,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.create_monitoring_package(db,study_id,payload.data)
+    except Exception as exc:raise bad(exc)
+
 @public_router.get("/readiness",response_model=PublicEnvelope)
 def public_readiness(request:Request,db:Session=Depends(get_session),_ctx:PublicApiContext=Depends(require_public_scope("data:read"))):
     public_enabled(request); data=svc.readiness(db); data.update({"release":request.app.state.settings.version,"enabled":True}); return PublicEnvelope(data=data,meta={"api_version":"v1","request_id":request.state.request_id})
@@ -228,3 +270,10 @@ def public_comparison_bundle(study_id:str,request:Request,db:Session=Depends(get
     public_enabled(request); study=svc._comparison(db,study_id)
     if study.visibility!="public": raise HTTPException(status_code=404,detail="Predictive comparison study not found.")
     return PublicEnvelope(data=svc.comparison_bundle(db,study_id),meta={"api_version":"v1","request_id":request.state.request_id})
+
+
+@public_router.get("/monitoring-studies/{study_id}/bundle",response_model=PublicEnvelope)
+def public_monitoring_bundle(study_id:str,request:Request,db:Session=Depends(get_session),_ctx:PublicApiContext=Depends(require_public_scope("data:read"))):
+    public_enabled(request); study=svc._monitoring_study(db,study_id)
+    if study.visibility!="public": raise HTTPException(status_code=404,detail="Predictive monitoring study not found.")
+    return PublicEnvelope(data=svc.monitoring_bundle(db,study_id),meta={"api_version":"v1","request_id":request.state.request_id})

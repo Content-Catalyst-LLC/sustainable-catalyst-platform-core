@@ -1,0 +1,25 @@
+PLATFORM CORE v2.56.0 — ANOMALY, CHANGE-POINT & EARLY-WARNING INTELLIGENCE
+
+MACOS — VALIDATE + PUSH/TAG
+cd ~/Downloads
+rm -rf sc-platform-core-v2.56.0-release
+mkdir -p sc-platform-core-v2.56.0-release
+unzip -q sustainable-catalyst-platform-core-v2.56.0-release-bundle.zip -d sc-platform-core-v2.56.0-release
+cd sc-platform-core-v2.56.0-release
+chmod +x deploy_and_validate_platform_core_v2_56_0_macos.sh
+./deploy_and_validate_platform_core_v2_56_0_macos.sh "$HOME/Downloads/sustainable-catalyst-platform-core-v2.56.0-release-bundle.zip"
+
+MACOS — VALIDATION ONLY
+SC_CORE_VALIDATE_ONLY=1 ./deploy_and_validate_platform_core_v2_56_0_macos.sh "$HOME/Downloads/sustainable-catalyst-platform-core-v2.56.0-release-bundle.zip"
+
+MACOS — BUNDLE INTEGRITY ONLY
+SC_CORE_BUNDLE_ONLY=1 ./deploy_and_validate_platform_core_v2_56_0_macos.sh "$HOME/Downloads/sustainable-catalyst-platform-core-v2.56.0-release-bundle.zip"
+
+CONTABO — AFTER GITHUB TAG v2.56.0 EXISTS
+ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes catalystadmin@94.72.113.77
+cd /opt/sustainable-catalyst/core
+bash DEPLOY_PLATFORM_CORE_V2560_CONTABO.sh
+
+PUBLIC VERIFICATION
+curl -fsS https://core.sustainablecatalyst.com/health | python3 -m json.tool
+curl -fsS https://core.sustainablecatalyst.com/v1/predictive-intelligence/readiness | python3 -m json.tool

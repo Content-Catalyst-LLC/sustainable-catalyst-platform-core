@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "anomaly_observations": {
+      "type": "array"
+    },
+    "boundaries": {
+      "type": "object"
+    },
+    "change_points": {
+      "type": "array"
+    },
+    "detection_rules": {
+      "type": "array"
+    },
+    "early_warning_signals": {
+      "type": "array"
+    },
+    "monitoring_episodes": {
+      "type": "array"
+    },
+    "packages": {
+      "type": "array"
+    },
+    "study": {
+      "type": "object"
+    }
+  },
+  "required": [
+    "study",
+    "detection_rules",
+    "anomaly_observations",
+    "change_points",
+    "early_warning_signals",
+    "monitoring_episodes",
+    "boundaries"
+  ],
+  "title": "Sustainable Catalyst Predictive Monitoring Package v1",
+  "type": "object"
+}

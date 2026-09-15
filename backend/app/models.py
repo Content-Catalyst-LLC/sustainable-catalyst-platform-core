@@ -6728,3 +6728,156 @@ class PredictiveComparisonPackageRecord(Base):
     created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
 
+
+
+# v2.56.0 — Anomaly, Change-Point & Early-Warning Intelligence
+class PredictiveMonitoringStudyRecord(Base):
+    __tablename__ = "predictive_monitoring_studies"
+    __table_args__ = (
+        UniqueConstraint("project_entity_id", "study_key", name="uq_predictive_monitoring_study_project_key"),
+        Index("ix_predictive_monitoring_study_project", "project_entity_id"),
+        Index("ix_predictive_monitoring_study_model", "model_id"),
+        Index("ix_predictive_monitoring_study_visibility", "visibility"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    project_entity_id: Mapped[str] = mapped_column(ForeignKey("entities.id", ondelete="CASCADE"), nullable=False)
+    model_id: Mapped[str | None] = mapped_column(ForeignKey("predictive_models.id", ondelete="CASCADE"), nullable=True)
+    target_id: Mapped[str | None] = mapped_column(ForeignKey("predictive_targets.id", ondelete="CASCADE"), nullable=True)
+    dataset_id: Mapped[str | None] = mapped_column(ForeignKey("predictive_time_series_datasets.id", ondelete="CASCADE"), nullable=True)
+    study_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    name: Mapped[str] = mapped_column(String(300), nullable=False)
+    monitoring_kind: Mapped[str] = mapped_column(String(80), nullable=False, default="multi-signal")
+    monitoring_scope_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    baseline_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    status: Mapped[str] = mapped_column(String(60), nullable=False, default="recorded")
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="private")
+    externally_computed: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    contract_version: Mapped[str] = mapped_column(String(180), nullable=False, default="sc.predictive.monitoring-study.v1")
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class PredictiveDetectionRuleRecord(Base):
+    __tablename__ = "predictive_detection_rules"
+    __table_args__ = (
+        UniqueConstraint("monitoring_study_id", "rule_key", name="uq_predictive_detection_rule_study_key"),
+        Index("ix_predictive_detection_rule_study", "monitoring_study_id"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    monitoring_study_id: Mapped[str] = mapped_column(ForeignKey("predictive_monitoring_studies.id", ondelete="CASCADE"), nullable=False)
+    rule_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    rule_kind: Mapped[str] = mapped_column(String(80), nullable=False)
+    method: Mapped[str] = mapped_column(String(180), nullable=False)
+    parameters_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    threshold_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    runtime_product: Mapped[str] = mapped_column(String(80), nullable=False, default="external")
+    runtime_ref: Mapped[str | None] = mapped_column(String(2000), nullable=True)
+    externally_defined: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class PredictiveAnomalyObservationRecord(Base):
+    __tablename__ = "predictive_anomaly_observations"
+    __table_args__ = (
+        UniqueConstraint("monitoring_study_id", "observation_key", name="uq_predictive_anomaly_study_key"),
+        Index("ix_predictive_anomaly_study", "monitoring_study_id"),
+        Index("ix_predictive_anomaly_observed_at", "observed_at"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    monitoring_study_id: Mapped[str] = mapped_column(ForeignKey("predictive_monitoring_studies.id", ondelete="CASCADE"), nullable=False)
+    detection_rule_id: Mapped[str | None] = mapped_column(ForeignKey("predictive_detection_rules.id", ondelete="SET NULL"), nullable=True)
+    observation_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    observed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    anomaly_kind: Mapped[str] = mapped_column(String(80), nullable=False, default="point")
+    score_json: Mapped[dict] = mapped_column(JSON, nullable=False)
+    threshold_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    source_observation_ref: Mapped[str | None] = mapped_column(String(2000), nullable=True)
+    evidence_ref: Mapped[str | None] = mapped_column(String(2000), nullable=True)
+    externally_detected: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class PredictiveChangePointRecord(Base):
+    __tablename__ = "predictive_change_points"
+    __table_args__ = (
+        UniqueConstraint("monitoring_study_id", "change_key", name="uq_predictive_change_point_study_key"),
+        Index("ix_predictive_change_point_study", "monitoring_study_id"),
+        Index("ix_predictive_change_point_time", "change_time"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    monitoring_study_id: Mapped[str] = mapped_column(ForeignKey("predictive_monitoring_studies.id", ondelete="CASCADE"), nullable=False)
+    detection_rule_id: Mapped[str | None] = mapped_column(ForeignKey("predictive_detection_rules.id", ondelete="SET NULL"), nullable=True)
+    change_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    change_time: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    interval_start: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    interval_end: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    method: Mapped[str] = mapped_column(String(180), nullable=False)
+    statistic_json: Mapped[dict] = mapped_column(JSON, nullable=False)
+    uncertainty_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    before_state_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    after_state_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    evidence_ref: Mapped[str | None] = mapped_column(String(2000), nullable=True)
+    externally_detected: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class PredictiveEarlyWarningSignalRecord(Base):
+    __tablename__ = "predictive_early_warning_signals"
+    __table_args__ = (
+        UniqueConstraint("monitoring_study_id", "signal_key", name="uq_predictive_early_warning_study_key"),
+        Index("ix_predictive_early_warning_study", "monitoring_study_id"),
+        Index("ix_predictive_early_warning_observed_at", "observed_at"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    monitoring_study_id: Mapped[str] = mapped_column(ForeignKey("predictive_monitoring_studies.id", ondelete="CASCADE"), nullable=False)
+    detection_rule_id: Mapped[str | None] = mapped_column(ForeignKey("predictive_detection_rules.id", ondelete="SET NULL"), nullable=True)
+    signal_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    signal_kind: Mapped[str] = mapped_column(String(80), nullable=False)
+    observed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    indicator_json: Mapped[dict] = mapped_column(JSON, nullable=False)
+    threshold_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    lead_time_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    state: Mapped[str] = mapped_column(String(60), nullable=False, default="observed")
+    evidence_ref: Mapped[str | None] = mapped_column(String(2000), nullable=True)
+    externally_detected: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class PredictiveMonitoringEpisodeRecord(Base):
+    __tablename__ = "predictive_monitoring_episodes"
+    __table_args__ = (
+        UniqueConstraint("monitoring_study_id", "episode_key", name="uq_predictive_monitoring_episode_study_key"),
+        Index("ix_predictive_monitoring_episode_study", "monitoring_study_id"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    monitoring_study_id: Mapped[str] = mapped_column(ForeignKey("predictive_monitoring_studies.id", ondelete="CASCADE"), nullable=False)
+    episode_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    episode_kind: Mapped[str] = mapped_column(String(80), nullable=False, default="monitoring-event")
+    start_time: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    end_time: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    evidence_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    descriptive_summary_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    status: Mapped[str] = mapped_column(String(60), nullable=False, default="recorded")
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class PredictiveMonitoringPackageRecord(Base):
+    __tablename__ = "predictive_monitoring_packages"
+    __table_args__ = (
+        UniqueConstraint("monitoring_study_id", "revision", name="uq_predictive_monitoring_package_revision"),
+        Index("ix_predictive_monitoring_package_hash", "content_hash"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    monitoring_study_id: Mapped[str] = mapped_column(ForeignKey("predictive_monitoring_studies.id", ondelete="CASCADE"), nullable=False)
+    revision: Mapped[int] = mapped_column(Integer, nullable=False)
+    content_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    previous_package_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    state_json: Mapped[dict] = mapped_column(JSON, nullable=False)
+    environment_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)

@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "baseline": {
+      "type": "object"
+    },
+    "dataset_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "model_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "monitoring_kind": {
+      "enum": [
+        "anomaly",
+        "change-point",
+        "early-warning",
+        "multi-signal",
+        "external",
+        "other"
+      ]
+    },
+    "monitoring_scope": {
+      "type": "object"
+    },
+    "name": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "project_entity_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "provenance": {
+      "type": "object"
+    },
+    "study_key": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "target_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "visibility": {
+      "enum": [
+        "private",
+        "public"
+      ]
+    }
+  },
+  "required": [
+    "project_entity_id",
+    "study_key",
+    "name",
+    "monitoring_kind"
+  ],
+  "title": "Sustainable Catalyst Predictive Monitoring Study v1",
+  "type": "object"
+}

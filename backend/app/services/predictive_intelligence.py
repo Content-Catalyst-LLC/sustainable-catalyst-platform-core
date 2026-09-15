@@ -21,6 +21,8 @@ from ..models import (
     PredictiveEnsembleRecord, PredictiveEnsembleMemberRecord, PredictiveEnsembleForecastRecord,
     PredictiveComparisonStudyRecord, PredictiveComparisonCandidateRecord, PredictiveComparisonEvidenceRecord,
     PredictivePairwiseComparisonRecord, PredictiveComparisonPackageRecord,
+    PredictiveMonitoringStudyRecord, PredictiveDetectionRuleRecord, PredictiveAnomalyObservationRecord,
+    PredictiveChangePointRecord, PredictiveEarlyWarningSignalRecord, PredictiveMonitoringEpisodeRecord, PredictiveMonitoringPackageRecord,
 )
 
 MODEL_KINDS={"statistical","machine-learning","simulation","hybrid","rules-based","external","other"}
@@ -38,7 +40,11 @@ ENSEMBLE_MEMBER_ROLES={"member","base-learner","meta-learner","expert","referenc
 COMPARISON_CANDIDATE_KINDS={"model","ensemble","baseline","external"}
 COMPARISON_METRIC_FAMILIES={"point-error","proper-scoring-rule","calibration","coverage","sharpness","classification","ranking-diagnostic","resource","robustness","other"}
 PAIRWISE_COMPARISON_KINDS={"metric-difference","loss-difference","skill-difference","paired-test","bootstrap-contrast","bayesian-contrast","other"}
-FORBIDDEN_FIELDS={"fit_by_core","train_by_core","infer_by_core","execute_by_core","core_execute","probability_calibrated_by_core","winner","rank","verdict","truth_value","automatic_truth_promotion","model_selected_by_core","backtest_execute_by_core","metric_compute_by_core","resample_by_core","probabilistic_infer_by_core","calibration_fit_by_core","recalibration_apply_by_core","scoring_rule_compute_by_core","calibration_metric_compute_by_core","ensemble_construct_by_core","ensemble_execute_by_core","ensemble_weight_optimize_by_core","comparison_metric_compute_by_core","significance_compute_by_core","rank_models_by_core","select_model_by_core","automatic_model_selection"}
+MONITORING_KINDS={"anomaly","change-point","early-warning","multi-signal","external","other"}
+DETECTION_RULE_KINDS={"anomaly-threshold","change-point","early-warning","composite","external","other"}
+ANOMALY_KINDS={"point","contextual","collective","distribution-shift","residual","forecast-error","external","other"}
+EARLY_WARNING_SIGNAL_KINDS={"threshold-proximity","trend-acceleration","variance-change","autocorrelation-change","critical-slowing","forecast-risk","external","other"}
+FORBIDDEN_FIELDS={"fit_by_core","train_by_core","infer_by_core","execute_by_core","core_execute","probability_calibrated_by_core","winner","rank","verdict","truth_value","automatic_truth_promotion","model_selected_by_core","backtest_execute_by_core","metric_compute_by_core","resample_by_core","probabilistic_infer_by_core","calibration_fit_by_core","recalibration_apply_by_core","scoring_rule_compute_by_core","calibration_metric_compute_by_core","ensemble_construct_by_core","ensemble_execute_by_core","ensemble_weight_optimize_by_core","comparison_metric_compute_by_core","significance_compute_by_core","rank_models_by_core","select_model_by_core","automatic_model_selection","anomaly_detect_by_core","change_point_detect_by_core","early_warning_compute_by_core","threshold_optimize_by_core","alert_dispatch_by_core","causal_attribution_by_core","automatic_intervention_by_core"}
 
 def _ser(row):
     out={}
@@ -86,18 +92,22 @@ def boundaries():
       "ensemble_registry_by_core":True,"ensemble_member_registry_by_core":True,"ensemble_forecast_provenance_by_core":True,
       "model_comparison_study_registry_by_core":True,"comparison_candidate_registry_by_core":True,"comparative_metric_evidence_by_core":True,
       "pairwise_comparison_evidence_by_core":True,"reproducible_model_comparison_packages_by_core":True,
+      "monitoring_study_registry_by_core":True,"detection_rule_registry_by_core":True,"anomaly_evidence_registry_by_core":True,
+      "change_point_evidence_registry_by_core":True,"early_warning_signal_registry_by_core":True,"monitoring_episode_registry_by_core":True,"reproducible_monitoring_packages_by_core":True,
       "model_fitting_by_core":False,"forecast_inference_execution_by_core":False,"backtest_execution_by_core":False,"metric_computation_by_core":False,
       "time_series_resampling_by_core":False,"probabilistic_calibration_by_core":False,"ensemble_selection_by_core":False,
       "probabilistic_inference_execution_by_core":False,"calibration_mapping_fitting_by_core":False,"calibration_mapping_application_by_core":False,
       "proper_scoring_rule_computation_by_core":False,"calibration_metric_computation_by_core":False,"probabilistic_model_ranking_by_core":False,
       "ensemble_construction_by_core":False,"ensemble_weight_optimization_by_core":False,"ensemble_forecast_execution_by_core":False,
       "model_comparison_metric_computation_by_core":False,"statistical_significance_computation_by_core":False,"model_ranking_by_core":False,"automatic_model_selection":False,
+      "anomaly_detection_by_core":False,"change_point_detection_by_core":False,"early_warning_computation_by_core":False,"threshold_optimization_by_core":False,
+      "alert_dispatch_by_core":False,"causal_attribution_by_core":False,"automatic_intervention_by_core":False,
       "automatic_model_ranking_by_core":False,"automatic_truth_promotion":False,
     }
 
 def readiness(db:Session):
     def count(m): return int(db.scalar(select(func.count()).select_from(m)) or 0)
-    return {"migration_0056_applied":True,"migration_0057_applied":True,"migration_0058_applied":True,"migration_0059_applied":True,"contract":"sc.predictive.model.v1","forecast_contract":"sc.predictive.forecast-provenance.v1","handoff_contract":"sc.predictive.runtime-handoff.v1","backtest_contract":"sc.predictive.backtest-plan.v1","backtest_package_contract":"sc.predictive.backtest-package.v1","probabilistic_forecast_contract":"sc.predictive.probabilistic-forecast.v1","calibration_study_contract":"sc.predictive.calibration-study.v1","calibration_package_contract":"sc.predictive.calibration-package.v1","ensemble_contract":"sc.predictive.ensemble.v1","model_comparison_contract":"sc.predictive.model-comparison.v1","model_comparison_package_contract":"sc.predictive.model-comparison-package.v1","counts":{
+    return {"migration_0056_applied":True,"migration_0057_applied":True,"migration_0058_applied":True,"migration_0059_applied":True,"migration_0060_applied":True,"contract":"sc.predictive.model.v1","forecast_contract":"sc.predictive.forecast-provenance.v1","handoff_contract":"sc.predictive.runtime-handoff.v1","backtest_contract":"sc.predictive.backtest-plan.v1","backtest_package_contract":"sc.predictive.backtest-package.v1","probabilistic_forecast_contract":"sc.predictive.probabilistic-forecast.v1","calibration_study_contract":"sc.predictive.calibration-study.v1","calibration_package_contract":"sc.predictive.calibration-package.v1","ensemble_contract":"sc.predictive.ensemble.v1","model_comparison_contract":"sc.predictive.model-comparison.v1","model_comparison_package_contract":"sc.predictive.model-comparison-package.v1","monitoring_study_contract":"sc.predictive.monitoring-study.v1","monitoring_package_contract":"sc.predictive.monitoring-package.v1","counts":{
       "models":count(PredictiveModelRecord),"targets":count(PredictiveTargetRecord),"features":count(PredictiveFeatureRecord),"training_windows":count(PredictiveTrainingWindowRecord),
       "forecast_runs":count(PredictiveForecastRunRecord),"forecast_observations":count(PredictiveForecastObservationRecord),"evaluations":count(PredictiveEvaluationRecord),"handoffs":count(PredictiveRuntimeHandoffRecord),"snapshots":count(PredictiveForecastSnapshotRecord),
       "time_series_datasets":count(PredictiveTimeSeriesDatasetRecord),"forecast_windows":count(PredictiveForecastWindowRecord),"baseline_models":count(PredictiveBaselineModelRecord),"backtest_plans":count(PredictiveBacktestPlanRecord),
@@ -105,7 +115,9 @@ def readiness(db:Session):
       "probabilistic_forecasts":count(PredictiveProbabilisticForecastRecord),"calibration_studies":count(PredictiveCalibrationStudyRecord),"calibration_bins":count(PredictiveCalibrationBinRecord),
       "calibration_mappings":count(PredictiveCalibrationMappingRecord),"probabilistic_evaluations":count(PredictiveProbabilisticEvaluationRecord),"calibration_packages":count(PredictiveCalibrationPackageRecord),
       "ensembles":count(PredictiveEnsembleRecord),"ensemble_members":count(PredictiveEnsembleMemberRecord),"ensemble_forecasts":count(PredictiveEnsembleForecastRecord),
-      "comparison_studies":count(PredictiveComparisonStudyRecord),"comparison_candidates":count(PredictiveComparisonCandidateRecord),"comparison_evidence":count(PredictiveComparisonEvidenceRecord),"pairwise_comparisons":count(PredictivePairwiseComparisonRecord),"comparison_packages":count(PredictiveComparisonPackageRecord)},**boundaries()}
+      "comparison_studies":count(PredictiveComparisonStudyRecord),"comparison_candidates":count(PredictiveComparisonCandidateRecord),"comparison_evidence":count(PredictiveComparisonEvidenceRecord),"pairwise_comparisons":count(PredictivePairwiseComparisonRecord),"comparison_packages":count(PredictiveComparisonPackageRecord),
+      "monitoring_studies":count(PredictiveMonitoringStudyRecord),"detection_rules":count(PredictiveDetectionRuleRecord),"anomaly_observations":count(PredictiveAnomalyObservationRecord),
+      "change_points":count(PredictiveChangePointRecord),"early_warning_signals":count(PredictiveEarlyWarningSignalRecord),"monitoring_episodes":count(PredictiveMonitoringEpisodeRecord),"monitoring_packages":count(PredictiveMonitoringPackageRecord)},**boundaries()}
 
 def create_model(db:Session,payload:dict):
     _reject(payload); project=str(payload.get("project_entity_id") or "").strip(); ent=db.get(Entity,project)
@@ -302,10 +314,11 @@ def bundle(db:Session,model_id:str,public_only=False):
     ts_datasets=q(PredictiveTimeSeriesDatasetRecord); forecast_windows=q(PredictiveForecastWindowRecord); baselines=q(PredictiveBaselineModelRecord); backtest_plans=q(PredictiveBacktestPlanRecord)
     probabilistic_forecasts=q(PredictiveProbabilisticForecastRecord); calibration_studies=q(PredictiveCalibrationStudyRecord); probabilistic_evaluations=q(PredictiveProbabilisticEvaluationRecord)
     ensemble_memberships=[_ser(x) for x in db.scalars(select(PredictiveEnsembleMemberRecord).where(PredictiveEnsembleMemberRecord.model_id==model_id).order_by(PredictiveEnsembleMemberRecord.created_at.asc())).all()]
+    monitoring_studies=[_ser(x) for x in db.scalars(select(PredictiveMonitoringStudyRecord).where(PredictiveMonitoringStudyRecord.model_id==model_id).order_by(PredictiveMonitoringStudyRecord.created_at.asc())).all()]
     observations=[]
     runids=[r["id"] for r in runs]
     if runids: observations=[_ser(x) for x in db.scalars(select(PredictiveForecastObservationRecord).where(PredictiveForecastObservationRecord.forecast_run_id.in_(runids)).order_by(PredictiveForecastObservationRecord.created_at.asc())).all()]
-    return {"contract":"sc.predictive.forecast-provenance.v1","model":_ser(model),"targets":targets,"features":features,"training_windows":windows,"forecast_runs":runs,"forecast_observations":observations,"evaluations":evals,"handoffs":handoffs,"snapshots":snaps,"time_series_datasets":ts_datasets,"forecast_windows":forecast_windows,"baseline_models":baselines,"backtest_plans":backtest_plans,"probabilistic_forecasts":probabilistic_forecasts,"calibration_studies":calibration_studies,"probabilistic_evaluations":probabilistic_evaluations,"ensemble_memberships":ensemble_memberships,"boundaries":boundaries()}
+    return {"contract":"sc.predictive.forecast-provenance.v1","model":_ser(model),"targets":targets,"features":features,"training_windows":windows,"forecast_runs":runs,"forecast_observations":observations,"evaluations":evals,"handoffs":handoffs,"snapshots":snaps,"time_series_datasets":ts_datasets,"forecast_windows":forecast_windows,"baseline_models":baselines,"backtest_plans":backtest_plans,"probabilistic_forecasts":probabilistic_forecasts,"calibration_studies":calibration_studies,"probabilistic_evaluations":probabilistic_evaluations,"ensemble_memberships":ensemble_memberships,"monitoring_studies":monitoring_studies,"boundaries":boundaries()}
 
 def create_snapshot(db:Session,model_id:str,payload:dict):
     _reject(payload); state=bundle(db,model_id); state.pop("snapshots",None); digest=_sha256(state); last=db.scalar(select(PredictiveForecastSnapshotRecord).where(PredictiveForecastSnapshotRecord.model_id==model_id).order_by(PredictiveForecastSnapshotRecord.revision.desc()))
@@ -564,3 +577,112 @@ def create_comparison_package(db:Session,study_id:str,payload:dict):
     row=PredictiveComparisonPackageRecord(comparison_study_id=study_id,revision=rev,content_hash=digest,previous_package_hash=(last.content_hash if last else None),state_json=state,environment_json=dict(payload.get("environment") or {}),provenance_json=dict(payload.get("provenance") or {}),created_by=str(payload.get("created_by") or "operator"))
     db.add(row); db.commit(); db.refresh(row); return _ser(row)
 
+
+
+# v2.56.0 — Anomaly, Change-Point & Early-Warning Intelligence
+
+def create_monitoring_study(db:Session,payload:dict):
+    _reject(payload)
+    project=str(payload.get("project_entity_id") or "").strip(); ent=db.get(Entity,project)
+    if ent is None: raise ValueError("project_entity_id must reference an existing Core entity")
+    model_id=payload.get("model_id"); target_id=payload.get("target_id"); dataset_id=payload.get("dataset_id")
+    if model_id:
+        model=db.get(PredictiveModelRecord,str(model_id))
+        if model is None or model.project_entity_id!=project: raise ValueError("model_id must reference a predictive model in project_entity_id")
+    if target_id:
+        target=db.get(PredictiveTargetRecord,str(target_id))
+        if target is None or not model_id or target.model_id!=str(model_id): raise ValueError("target_id must belong to model_id")
+    if dataset_id:
+        dataset=db.get(PredictiveTimeSeriesDatasetRecord,str(dataset_id))
+        if dataset is None or not model_id or dataset.model_id!=str(model_id): raise ValueError("dataset_id must belong to model_id")
+    key=str(payload.get("study_key") or "").strip(); name=str(payload.get("name") or "").strip(); kind=str(payload.get("monitoring_kind") or "multi-signal"); vis=str(payload.get("visibility") or "private")
+    if not key or not name: raise ValueError("study_key and name are required")
+    if kind not in MONITORING_KINDS: raise ValueError(f"monitoring_kind must be one of {sorted(MONITORING_KINDS)}")
+    if vis not in {"private","public"}: raise ValueError("visibility must be private or public")
+    row=PredictiveMonitoringStudyRecord(project_entity_id=project,model_id=str(model_id) if model_id else None,target_id=str(target_id) if target_id else None,dataset_id=str(dataset_id) if dataset_id else None,study_key=key,name=name,monitoring_kind=kind,monitoring_scope_json=dict(payload.get("monitoring_scope") or {}),baseline_json=dict(payload.get("baseline") or {}),status=str(payload.get("status") or "recorded"),visibility=vis,externally_computed=True,provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {}))
+    db.add(row)
+    try: db.commit()
+    except IntegrityError as exc: db.rollback(); raise ValueError("study_key must be unique within project_entity_id") from exc
+    db.refresh(row); return _ser(row)
+
+def _monitoring_study(db:Session,study_id:str)->PredictiveMonitoringStudyRecord:
+    row=db.get(PredictiveMonitoringStudyRecord,study_id)
+    if row is None: raise HTTPException(status_code=404,detail="Predictive monitoring study not found.")
+    return row
+
+def _monitoring_rule(db:Session,study_id:str,rule_id:str|None):
+    if not rule_id: return None
+    row=db.get(PredictiveDetectionRuleRecord,rule_id)
+    if row is None or row.monitoring_study_id!=study_id: raise ValueError("detection_rule_id must belong to monitoring_study_id")
+    return row
+
+def add_detection_rule(db:Session,study_id:str,payload:dict):
+    _reject(payload); _monitoring_study(db,study_id)
+    key=str(payload.get("rule_key") or "").strip(); kind=str(payload.get("rule_kind") or "external"); method=str(payload.get("method") or "").strip(); runtime=str(payload.get("runtime_product") or "external")
+    if not key or not method: raise ValueError("rule_key and method are required")
+    if kind not in DETECTION_RULE_KINDS: raise ValueError(f"rule_kind must be one of {sorted(DETECTION_RULE_KINDS)}")
+    if runtime not in RUNTIME_PRODUCTS: raise ValueError("unsupported runtime_product")
+    row=PredictiveDetectionRuleRecord(monitoring_study_id=study_id,rule_key=key,rule_kind=kind,method=method,parameters_json=dict(payload.get("parameters") or {}),threshold_json=dict(payload.get("threshold") or {}),runtime_product=runtime,runtime_ref=payload.get("runtime_ref"),externally_defined=True,provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {}))
+    db.add(row)
+    try: db.commit()
+    except IntegrityError as exc: db.rollback(); raise ValueError("rule_key must be unique within monitoring_study_id") from exc
+    db.refresh(row); return _ser(row)
+
+def add_anomaly_observation(db:Session,study_id:str,payload:dict):
+    _reject(payload); _monitoring_study(db,study_id); rule=_monitoring_rule(db,study_id,payload.get("detection_rule_id"))
+    key=str(payload.get("observation_key") or "").strip(); kind=str(payload.get("anomaly_kind") or "point"); score=payload.get("score")
+    if not key or not isinstance(score,dict) or not score: raise ValueError("observation_key and non-empty score object are required")
+    if kind not in ANOMALY_KINDS: raise ValueError(f"anomaly_kind must be one of {sorted(ANOMALY_KINDS)}")
+    row=PredictiveAnomalyObservationRecord(monitoring_study_id=study_id,detection_rule_id=(rule.id if rule else None),observation_key=key,observed_at=_parse_dt(payload.get("observed_at")),anomaly_kind=kind,score_json=score,threshold_json=dict(payload.get("threshold") or {}),source_observation_ref=payload.get("source_observation_ref"),evidence_ref=payload.get("evidence_ref"),externally_detected=True,provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {}))
+    db.add(row)
+    try: db.commit()
+    except IntegrityError as exc: db.rollback(); raise ValueError("observation_key must be unique within monitoring_study_id") from exc
+    db.refresh(row); return _ser(row)
+
+def add_change_point(db:Session,study_id:str,payload:dict):
+    _reject(payload); _monitoring_study(db,study_id); rule=_monitoring_rule(db,study_id,payload.get("detection_rule_id"))
+    key=str(payload.get("change_key") or "").strip(); method=str(payload.get("method") or "").strip(); statistic=payload.get("statistic")
+    ct=_parse_dt(payload.get("change_time")); start=_parse_dt(payload.get("interval_start")); end=_parse_dt(payload.get("interval_end"))
+    if not key or not method or not isinstance(statistic,dict) or not statistic: raise ValueError("change_key, method, and non-empty statistic object are required")
+    if ct is None and start is None and end is None: raise ValueError("change_time or an interval bound is required")
+    if start and end and start>end: raise ValueError("interval_start must be <= interval_end")
+    row=PredictiveChangePointRecord(monitoring_study_id=study_id,detection_rule_id=(rule.id if rule else None),change_key=key,change_time=ct,interval_start=start,interval_end=end,method=method,statistic_json=statistic,uncertainty_json=dict(payload.get("uncertainty") or {}),before_state_json=dict(payload.get("before_state") or {}),after_state_json=dict(payload.get("after_state") or {}),evidence_ref=payload.get("evidence_ref"),externally_detected=True,provenance_json=dict(payload.get("provenance") or {}))
+    db.add(row)
+    try: db.commit()
+    except IntegrityError as exc: db.rollback(); raise ValueError("change_key must be unique within monitoring_study_id") from exc
+    db.refresh(row); return _ser(row)
+
+def add_early_warning_signal(db:Session,study_id:str,payload:dict):
+    _reject(payload); _monitoring_study(db,study_id); rule=_monitoring_rule(db,study_id,payload.get("detection_rule_id"))
+    key=str(payload.get("signal_key") or "").strip(); kind=str(payload.get("signal_kind") or "external"); indicator=payload.get("indicator")
+    if not key or not isinstance(indicator,dict) or not indicator: raise ValueError("signal_key and non-empty indicator object are required")
+    if kind not in EARLY_WARNING_SIGNAL_KINDS: raise ValueError(f"signal_kind must be one of {sorted(EARLY_WARNING_SIGNAL_KINDS)}")
+    row=PredictiveEarlyWarningSignalRecord(monitoring_study_id=study_id,detection_rule_id=(rule.id if rule else None),signal_key=key,signal_kind=kind,observed_at=_parse_dt(payload.get("observed_at")),indicator_json=indicator,threshold_json=dict(payload.get("threshold") or {}),lead_time_json=dict(payload.get("lead_time") or {}),state=str(payload.get("state") or "observed"),evidence_ref=payload.get("evidence_ref"),externally_detected=True,provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {}))
+    db.add(row)
+    try: db.commit()
+    except IntegrityError as exc: db.rollback(); raise ValueError("signal_key must be unique within monitoring_study_id") from exc
+    db.refresh(row); return _ser(row)
+
+def add_monitoring_episode(db:Session,study_id:str,payload:dict):
+    _reject(payload); _monitoring_study(db,study_id)
+    key=str(payload.get("episode_key") or "").strip(); refs=payload.get("evidence_refs") or []
+    if not key: raise ValueError("episode_key is required")
+    if not isinstance(refs,list): raise ValueError("evidence_refs must be an array")
+    start=_parse_dt(payload.get("start_time")); end=_parse_dt(payload.get("end_time"))
+    if start and end and start>end: raise ValueError("start_time must be <= end_time")
+    row=PredictiveMonitoringEpisodeRecord(monitoring_study_id=study_id,episode_key=key,episode_kind=str(payload.get("episode_kind") or "monitoring-event"),start_time=start,end_time=end,evidence_refs_json=refs,descriptive_summary_json=dict(payload.get("descriptive_summary") or {}),status=str(payload.get("status") or "recorded"),provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {}))
+    db.add(row)
+    try: db.commit()
+    except IntegrityError as exc: db.rollback(); raise ValueError("episode_key must be unique within monitoring_study_id") from exc
+    db.refresh(row); return _ser(row)
+
+def monitoring_bundle(db:Session,study_id:str):
+    study=_monitoring_study(db,study_id)
+    def rows(model): return [_ser(x) for x in db.scalars(select(model).where(model.monitoring_study_id==study_id).order_by(model.created_at.asc())).all()]
+    return {"contract":"sc.predictive.monitoring-package.v1","study":_ser(study),"detection_rules":rows(PredictiveDetectionRuleRecord),"anomaly_observations":rows(PredictiveAnomalyObservationRecord),"change_points":rows(PredictiveChangePointRecord),"early_warning_signals":rows(PredictiveEarlyWarningSignalRecord),"monitoring_episodes":rows(PredictiveMonitoringEpisodeRecord),"packages":rows(PredictiveMonitoringPackageRecord),"boundaries":boundaries()}
+
+def create_monitoring_package(db:Session,study_id:str,payload:dict):
+    _reject(payload); state=monitoring_bundle(db,study_id); state.pop("packages",None); digest=_sha256(state)
+    last=db.scalar(select(PredictiveMonitoringPackageRecord).where(PredictiveMonitoringPackageRecord.monitoring_study_id==study_id).order_by(PredictiveMonitoringPackageRecord.revision.desc())); rev=(last.revision+1) if last else 1
+    row=PredictiveMonitoringPackageRecord(monitoring_study_id=study_id,revision=rev,content_hash=digest,previous_package_hash=(last.content_hash if last else None),state_json=state,environment_json=dict(payload.get("environment") or {}),provenance_json=dict(payload.get("provenance") or {}),created_by=str(payload.get("created_by") or "operator"))
+    db.add(row); db.commit(); db.refresh(row); return _ser(row)

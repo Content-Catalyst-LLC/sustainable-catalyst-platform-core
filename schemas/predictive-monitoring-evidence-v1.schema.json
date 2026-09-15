@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "evidence": {
+      "minProperties": 1,
+      "type": "object"
+    },
+    "evidence_kind": {
+      "enum": [
+        "anomaly",
+        "change-point",
+        "early-warning",
+        "episode"
+      ]
+    },
+    "evidence_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "externally_computed": {
+      "const": true
+    },
+    "provenance": {
+      "type": "object"
+    }
+  },
+  "required": [
+    "evidence_kind",
+    "evidence"
+  ],
+  "title": "Sustainable Catalyst Predictive Monitoring Evidence v1",
+  "type": "object"
+}
