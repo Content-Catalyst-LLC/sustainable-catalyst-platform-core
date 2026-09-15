@@ -66,3 +66,6 @@ Platform Core records explicit probabilistic forecast objects, calibration studi
 ## Platform Core v2.55.0 — Predictive Ensembles & Model Comparison
 
 Platform Core now governs predictive ensemble definitions, member provenance, externally generated ensemble forecasts, model-comparison studies, comparative metric and pairwise evidence, and reproducible comparison packages. Weight optimization, ensemble execution, metric/significance computation, ranking, and automatic model selection remain specialist-runtime responsibilities.
+
+## v2.60.0
+The predictive intelligence line now culminates in cross-layer reproducibility packages with immutable provenance and explicit non-execution boundaries.

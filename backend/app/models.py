@@ -7366,3 +7366,116 @@ class PredictiveDecisionPackageRecord(Base):
     provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
     created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+# v2.60.0 — Reproducible Predictive Intelligence Packages
+class PredictiveIntelligencePackageRecord(Base):
+    __tablename__ = "predictive_intelligence_packages"
+    __table_args__ = (
+        UniqueConstraint("project_entity_id", "package_key", name="uq_predictive_intelligence_package_project_key"),
+        Index("ix_predictive_intelligence_package_project", "project_entity_id"),
+        Index("ix_predictive_intelligence_package_visibility", "visibility"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    project_entity_id: Mapped[str] = mapped_column(ForeignKey("entities.id", ondelete="CASCADE"), nullable=False)
+    package_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    name: Mapped[str] = mapped_column(String(300), nullable=False)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    scope_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    status: Mapped[str] = mapped_column(String(60), nullable=False, default="draft")
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="private")
+    contract_version: Mapped[str] = mapped_column(String(180), nullable=False, default="sc.predictive.reproducible-package.v1")
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class PredictiveIntelligencePackageComponentRecord(Base):
+    __tablename__ = "predictive_intelligence_package_components"
+    __table_args__ = (
+        UniqueConstraint("package_id", "component_key", name="uq_predictive_intelligence_package_component_key"),
+        Index("ix_predictive_intelligence_package_component_package", "package_id"),
+        Index("ix_predictive_intelligence_package_component_ref", "component_kind", "component_ref"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    package_id: Mapped[str] = mapped_column(ForeignKey("predictive_intelligence_packages.id", ondelete="CASCADE"), nullable=False)
+    component_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    component_kind: Mapped[str] = mapped_column(String(80), nullable=False)
+    component_ref: Mapped[str] = mapped_column(String(2000), nullable=False)
+    required: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    content_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    snapshot_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class PredictiveIntelligencePackageArtifactRecord(Base):
+    __tablename__ = "predictive_intelligence_package_artifacts"
+    __table_args__ = (UniqueConstraint("package_id", "artifact_key", name="uq_predictive_intelligence_package_artifact_key"), Index("ix_predictive_intelligence_package_artifact_package", "package_id"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    package_id: Mapped[str] = mapped_column(ForeignKey("predictive_intelligence_packages.id", ondelete="CASCADE"), nullable=False)
+    artifact_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    artifact_kind: Mapped[str] = mapped_column(String(80), nullable=False, default="external")
+    artifact_ref: Mapped[str] = mapped_column(String(2000), nullable=False)
+    media_type: Mapped[str | None] = mapped_column(String(180), nullable=True)
+    content_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    size_bytes: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class PredictiveIntelligencePackageEnvironmentRecord(Base):
+    __tablename__ = "predictive_intelligence_package_environments"
+    __table_args__ = (UniqueConstraint("package_id", "environment_key", name="uq_predictive_intelligence_package_environment_key"), Index("ix_predictive_intelligence_package_environment_package", "package_id"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    package_id: Mapped[str] = mapped_column(ForeignKey("predictive_intelligence_packages.id", ondelete="CASCADE"), nullable=False)
+    environment_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    runtime_product: Mapped[str] = mapped_column(String(100), nullable=False, default="external")
+    runtime_version: Mapped[str | None] = mapped_column(String(180), nullable=True)
+    environment_json: Mapped[dict] = mapped_column(JSON, nullable=False)
+    lockfile_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    image_digest: Mapped[str | None] = mapped_column(String(200), nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class PredictiveIntelligencePackageVerificationRecord(Base):
+    __tablename__ = "predictive_intelligence_package_verifications"
+    __table_args__ = (UniqueConstraint("package_id", "verification_key", name="uq_predictive_intelligence_package_verification_key"), Index("ix_predictive_intelligence_package_verification_package", "package_id"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    package_id: Mapped[str] = mapped_column(ForeignKey("predictive_intelligence_packages.id", ondelete="CASCADE"), nullable=False)
+    verification_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    verification_kind: Mapped[str] = mapped_column(String(80), nullable=False, default="integrity")
+    status: Mapped[str] = mapped_column(String(60), nullable=False, default="recorded")
+    result_json: Mapped[dict] = mapped_column(JSON, nullable=False)
+    evidence_ref: Mapped[str | None] = mapped_column(String(2000), nullable=True)
+    verifier: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    externally_computed: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class PredictiveIntelligencePackageReviewRecord(Base):
+    __tablename__ = "predictive_intelligence_package_reviews"
+    __table_args__ = (UniqueConstraint("package_id", "review_key", name="uq_predictive_intelligence_package_review_key"), Index("ix_predictive_intelligence_package_review_package", "package_id"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    package_id: Mapped[str] = mapped_column(ForeignKey("predictive_intelligence_packages.id", ondelete="CASCADE"), nullable=False)
+    review_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    review_kind: Mapped[str] = mapped_column(String(80), nullable=False, default="technical")
+    status: Mapped[str] = mapped_column(String(60), nullable=False, default="recorded")
+    reviewer: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    findings_json: Mapped[dict] = mapped_column(JSON, nullable=False)
+    evidence_ref: Mapped[str | None] = mapped_column(String(2000), nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class PredictiveIntelligencePackageSnapshotRecord(Base):
+    __tablename__ = "predictive_intelligence_package_snapshots"
+    __table_args__ = (UniqueConstraint("package_id", "revision", name="uq_predictive_intelligence_package_snapshot_revision"), Index("ix_predictive_intelligence_package_snapshot_hash", "content_hash"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    package_id: Mapped[str] = mapped_column(ForeignKey("predictive_intelligence_packages.id", ondelete="CASCADE"), nullable=False)
+    revision: Mapped[int] = mapped_column(Integer, nullable=False)
+    content_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    previous_snapshot_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    manifest_json: Mapped[dict] = mapped_column(JSON, nullable=False)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)

@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Predictive Package Immutable Snapshot",
+  "type": "object",
+  "required": [
+    "package_id",
+    "revision",
+    "content_hash",
+    "manifest"
+  ],
+  "properties": {
+    "package_id": {
+      "type": "string"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "content_hash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "previous_snapshot_hash": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "manifest": {
+      "type": "object"
+    }
+  }
+}

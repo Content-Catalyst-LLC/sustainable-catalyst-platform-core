@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Reproducible Predictive Intelligence Package",
+  "type": "object",
+  "required": [
+    "project_entity_id",
+    "package_key",
+    "name"
+  ],
+  "properties": {
+    "project_entity_id": {
+      "type": "string"
+    },
+    "package_key": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "scope": {
+      "type": "object"
+    },
+    "visibility": {
+      "enum": [
+        "private",
+        "public"
+      ]
+    },
+    "provenance": {
+      "type": "object"
+    },
+    "metadata": {
+      "type": "object"
+    }
+  }
+}

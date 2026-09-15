@@ -554,3 +554,5 @@ PublicApiClient.prototype.predictiveCausalBundle=function(studyId){return this.r
 
 // v2.59.0 Predictive Decision Intelligence
 PublicApiClient.prototype.predictiveDecisionBundle=function(studyId){return this.request(`/predictive-intelligence/decision-studies/${encodeURIComponent(studyId)}/bundle`);};
+
+PublicApiClient.prototype.reproduciblePredictivePackageBundle=function(packageId){return this.request(`/predictive-intelligence/packages/${encodeURIComponent(packageId)}/bundle`);};

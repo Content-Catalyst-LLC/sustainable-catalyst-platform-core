@@ -1,5 +1,5 @@
 {
-  "file_count": 1344,
+  "file_count": 1366,
   "files": [
     {
       "path": ".github/workflows/test.yml",
@@ -26,8 +26,12 @@
       "sha256": "0bac98540ae28b54f027dfcb29e154c33ff1f7bbaadd5f1d11ca49bd9f935541"
     },
     {
+      "path": "BACKEND_PACKAGE_V2600.md",
+      "sha256": "6919fc38f43a090f8271637e8439aa37e287c01ca8a3bb3bf4e89fbdc9f426f9"
+    },
+    {
       "path": "CHANGELOG.md",
-      "sha256": "17b61ec471bb1e6340fca25330d1ead4fca03b9d4d9515bbb4b28f4b82f4f92c"
+      "sha256": "4da70e5b08d69fb2b53bd60f0f0450ebf19ca455191417ed36d5436330d811e7"
     },
     {
       "path": "DEPLOY_PLATFORM_CORE_V2300_CONTABO.sh",
@@ -164,6 +168,10 @@
     {
       "path": "DEPLOY_PLATFORM_CORE_V2590_CONTABO.sh",
       "sha256": "5cdc3e375636ce920796a7fe53012a181e43fbcee7192f062ef747a3733f0f61"
+    },
+    {
+      "path": "DEPLOY_PLATFORM_CORE_V2600_CONTABO.sh",
+      "sha256": "225b0114c2d2632780d11a89c716bb3fbfadc6b5fcdae70b871427b15fe4f5ef"
     },
     {
       "path": "LICENSE",
@@ -858,6 +866,18 @@
       "sha256": "60755aed186927e6c91550606e9c1fd6861ee1722dedac53b2c6130c1817e988"
     },
     {
+      "path": "PLATFORM_CORE_V2600_INSTALL_AND_TEST.md",
+      "sha256": "77192cc0bbdf20dcb11039df855eb9b224c7db5b35572b1b0b75221faed7b947"
+    },
+    {
+      "path": "PLATFORM_CORE_V2600_REPRODUCIBLE_PREDICTIVE_PACKAGES_AUDIT.md",
+      "sha256": "f83bf5b9170ea7efefb3855f237a2ffe3883b53d68299c5f0bcfe2c8b446a052"
+    },
+    {
+      "path": "PLATFORM_CORE_V2600_TERMINAL_COMMANDS.txt",
+      "sha256": "3440511dd6a19c86357eb292cd965bad15738b8db29b30b7f9e04d4bc7248219"
+    },
+    {
       "path": "PLATFORM_CORE_V270_TERMINAL_COMMANDS.txt",
       "sha256": "7eca0c63228995e3d335503f68110bfa61a2f0d0c1e02eb45ff3c7725224716e"
     },
@@ -1126,6 +1146,10 @@
       "sha256": "76b39201bd5ea02e2e72ea1e6191afaec8d454a3a0c523037a18aa1fe6746f40"
     },
     {
+      "path": "PUSH_PLATFORM_CORE_V2600_FINAL.sh",
+      "sha256": "13cfbce1d941f1a483fbb30e399d616f907d53a4aabcebff0216d0f8817c2446"
+    },
+    {
       "path": "PUSH_PLATFORM_CORE_V270_FINAL.sh",
       "sha256": "0d47f7e47e4a1dd08133e10f5e910d03677a373e2becbf7946c288f04cdb9053"
     },
@@ -1155,7 +1179,7 @@
     },
     {
       "path": "README.md",
-      "sha256": "e848c2c46cd2f55c0612ca394027776564a7f035a9a33ee03ab7d9864638280d"
+      "sha256": "2b8c904fa30b86bdfeee676b933db03d3102105ed22aa79235cb62a821b18809"
     },
     {
       "path": "RELEASE_NOTES_V2100.md",
@@ -1402,6 +1426,10 @@
       "sha256": "345a8a56cfa004d8f5c2c3a3a00a905d9a233f826b18ab4628a9a72d731723e2"
     },
     {
+      "path": "RELEASE_NOTES_V2600.md",
+      "sha256": "6d6ec7c311181eb88cc2a0fe9ebe33bec5ce3a986e1bd9a815cb8bf2a3a568d6"
+    },
+    {
       "path": "RELEASE_NOTES_V270.md",
       "sha256": "bd49510a3d4fd6e2bb6ecca4852a1057fadbd6521922db9eaf33bb3c25b95551"
     },
@@ -1475,7 +1503,7 @@
     },
     {
       "path": "backend/app/config.py",
-      "sha256": "0b3a69f0d50c37fcf3a6e0690f73109b8a1b45e413d70922b440bfcd64d29573"
+      "sha256": "9e2eb0a75ed8424b02a3043dae5eed91fe627e665e0426380448cabc3d0cb56f"
     },
     {
       "path": "backend/app/connectors/__init__.py",
@@ -1515,11 +1543,11 @@
     },
     {
       "path": "backend/app/migrations.py",
-      "sha256": "1626ae3f1e02af045c168eaa356e5e7de7fc931f9d7bcd176ca14393c387b22e"
+      "sha256": "d8bf32d92b395a36e187c175177e35ac2c333c5c41d47d9e3407607140e6e60d"
     },
     {
       "path": "backend/app/models.py",
-      "sha256": "c993e90b79a939f6c77006f0c7ad8eb1a539121771baff2ab24b0dfec9237ad1"
+      "sha256": "101afdc53a77f023182effb98a72b0e3a2cf16cb913f3b4d9142f179c75d70a7"
     },
     {
       "path": "backend/app/predicate_catalog.py",
@@ -1659,7 +1687,7 @@
     },
     {
       "path": "backend/app/routers/meta.py",
-      "sha256": "ec8dde16bf61ecdd8cf1074b9e3aeaee6bc84a6e05c3fddc2203ce360cf27f08"
+      "sha256": "41795f80a92b05ba1133d74b68fc170e5212560862e8d41ec9fed68bf98d7d7b"
     },
     {
       "path": "backend/app/routers/model_canvas.py",
@@ -1683,7 +1711,7 @@
     },
     {
       "path": "backend/app/routers/predictive_intelligence.py",
-      "sha256": "0a54747e316118c9d9d5948e60b473479ea29e1caff2f161e02e154a4940ce39"
+      "sha256": "d62badd95368f4ad2c953f0d82f4a3cae4496ee90e406ab29a50a1771c173062"
     },
     {
       "path": "backend/app/routers/public_api.py",
@@ -1923,7 +1951,7 @@
     },
     {
       "path": "backend/app/services/predictive_intelligence.py",
-      "sha256": "82a06e34e562d996286fb85b5612d4b1d9fe8c79aa6a12c546fbceeb0ca428f0"
+      "sha256": "293a4d42022a8111bb97ab13502dcc98cd2ea54a9c6b52fcd116c5b5039296eb"
     },
     {
       "path": "backend/app/services/relationships.py",
@@ -2242,6 +2270,10 @@
       "sha256": "2e89a423f621a8090bb465eefcf0b26e61adbc29dcc62b1302005f571c7d8f24"
     },
     {
+      "path": "backend/public_sdk/downloads/sc-platform-core-public-javascript-v2.60.0.zip",
+      "sha256": "2c1ec2ed861ed77c1e58bd4cd6981f40291c3bb186c9a8281726d05bc0440471"
+    },
+    {
       "path": "backend/public_sdk/downloads/sc-platform-core-public-javascript-v2.7.0.zip",
       "sha256": "35943af166f5236eef43b78cd116abf8c24b2856fc80cc3ed8312f5b64359172"
     },
@@ -2478,6 +2510,10 @@
       "sha256": "57f4f0d016b9e6a98d13579e942d228c7d752db420b1dcd60579b4b6595f3636"
     },
     {
+      "path": "backend/public_sdk/downloads/sc-platform-core-public-python-v2.60.0.zip",
+      "sha256": "f8a8563fde89014300dad5f7a42587e1e0b7715dee61bd6166c557923d44b162"
+    },
+    {
       "path": "backend/public_sdk/downloads/sc-platform-core-public-python-v2.7.0.zip",
       "sha256": "d89f5449cf7c5b779a9ceb137e681db26866088e49cc2714d7e5cbb5a7a9f9f1"
     },
@@ -2511,11 +2547,11 @@
     },
     {
       "path": "backend/public_sdk/javascript/index.mjs",
-      "sha256": "cbb91f2a84eccceb91a42b4fc051487dc6b645f95405dc8978c7744835b95a81"
+      "sha256": "da746e7b100b554499bd698da62d8d787b84500781cea0b8074747a56fe7abc0"
     },
     {
       "path": "backend/public_sdk/javascript/package.json",
-      "sha256": "b7efb78bbe5c139e93e0993a3ff6d2a3f3e6a5c2534e1fa51272d59aa96838f9"
+      "sha256": "6a08b2c2829d7818ef6e3d61bed76c260370d9034a4a1eda779c0ff828a9b98c"
     },
     {
       "path": "backend/public_sdk/postman/Sustainable_Catalyst_Gateway_API_v1.postman_collection.json",
@@ -2531,7 +2567,7 @@
     },
     {
       "path": "backend/public_sdk/python/pyproject.toml",
-      "sha256": "39483753baf2a254d20d7853ed9e4dca5c45f1b4df2421f2268097db735cdaf3"
+      "sha256": "b72a34c83bd233219c5d1f6632df213a4f026b11646a9666345272d03804523a"
     },
     {
       "path": "backend/public_sdk/python/sc_platform_core_public/__init__.py",
@@ -2539,7 +2575,7 @@
     },
     {
       "path": "backend/public_sdk/python/sc_platform_core_public/client.py",
-      "sha256": "92733218b1ebd19e62c9ae622443f8ea3b1fe0e57ea3115b70f555fa5c3fc205"
+      "sha256": "25da1e75c581478e96a7414452f2a76971d9bb0b081fd05db733b2aa5edc3c10"
     },
     {
       "path": "backend/public_sdk/v260/javascript/README.md",
@@ -2596,6 +2632,10 @@
     {
       "path": "backend/release_v2590_testfiles.txt",
       "sha256": "730cc8235cece92c5115836efb64b7632a6847bc6a4dbeab52f87cc342982c2b"
+    },
+    {
+      "path": "backend/release_v2600_testfiles.txt",
+      "sha256": "21247eb9b92cc42aa68ac4d39c522790fa809f756a06c7c9e76fe235112943b3"
     },
     {
       "path": "backend/requirements.txt",
@@ -2778,6 +2818,10 @@
       "sha256": "5284eb310b2ead90351711967241783b3b07c10c156678c5eda1300c98ddba54"
     },
     {
+      "path": "backend/scripts/validate_reproducible_predictive_intelligence_packages.py",
+      "sha256": "34b0c3050139fd49ea9b6a6618a635e9a12393199884e2605a6a7ac5d8c5d9a7"
+    },
+    {
       "path": "backend/scripts/validate_reproducible_visual_knowledge.py",
       "sha256": "27c82ac4023d44df039bc9ca616dcbe257613392e923412dd5f43d0241e167d9"
     },
@@ -2939,7 +2983,11 @@
     },
     {
       "path": "backend/tests/test_bundle_validator_v2590.py",
-      "sha256": "4fee2eaa46430ecbb2294553418d61d270163d15fc734c51131345f2fb846865"
+      "sha256": "e6d4b84fc5f2babac8cd0b2e72fc326252ca3b8f1eddbc5ecd296935d7a7695b"
+    },
+    {
+      "path": "backend/tests/test_bundle_validator_v2600.py",
+      "sha256": "db748b66fc07dd5f2e0e874a1066ff35014c1991e51afdab95dbcd9f400fc08a"
     },
     {
       "path": "backend/tests/test_capability_metadata_release_lineage_v2231.py",
@@ -3198,6 +3246,10 @@
       "sha256": "74d4deac80150bba72e7b7fd6f5e3bbb93b84601445f2a08cd710893e6ace2ae"
     },
     {
+      "path": "backend/tests/test_partial_0064_recovery_v2600.py",
+      "sha256": "545dee6dfce1667639417becf4bca55a8d6bb597a33f8545ba11f60f4d000fa8"
+    },
+    {
       "path": "backend/tests/test_predicates.py",
       "sha256": "65a4e53c3eb8ecc945af19836f62ae19443910086117868ac7d8035c2040544e"
     },
@@ -3252,6 +3304,10 @@
     {
       "path": "backend/tests/test_reproducible_investigation_packages_v2510.py",
       "sha256": "90456dafd01dbe034606878c27f45fa26f9a3ce6cb90b5d9446fb5867aa78a77"
+    },
+    {
+      "path": "backend/tests/test_reproducible_predictive_intelligence_packages_v2600.py",
+      "sha256": "f3439f7e7a486a6778554e47a9d8457330d26a4532797246b4f4bd867c974d55"
     },
     {
       "path": "backend/tests/test_reproducible_visual_knowledge_v2410.py",
@@ -3558,6 +3614,10 @@
       "sha256": "3827011d8fdd7339c86d9b2117fc3ec2d744b7fb7df88762ee252e7952050d41"
     },
     {
+      "path": "deploy_and_validate_platform_core_v2_60_0_macos.sh",
+      "sha256": "b516d45ee892a86f670e9778881eb79ced3921e8d34adb98b9f72988bd8b1c4a"
+    },
+    {
       "path": "deploy_and_validate_platform_core_v2_8_1_macos.sh",
       "sha256": "4efdb7ab3d6f12de0688d6205d0f5f48aaca9dc76f0abcc590a1a425854950d3"
     },
@@ -3858,6 +3918,10 @@
       "sha256": "c9000c7323d7967719acee52b470a69f6467600b8b4edb3888948231defdc521"
     },
     {
+      "path": "docs/REPRODUCIBLE_PREDICTIVE_INTELLIGENCE_PACKAGES_V2600.md",
+      "sha256": "0dad1547087922d462bea10ec255b5f4465d91ee08f05853d9a199c2824ed24a"
+    },
+    {
       "path": "docs/REPRODUCIBLE_VISUAL_KNOWLEDGE_V2410.md",
       "sha256": "cb21abe9453cb9e87ae39a590bc3276bbc2a579e797fea4101e9fb8a84daedf1"
     },
@@ -4104,6 +4168,10 @@
     {
       "path": "platform-core-v2590.env.example",
       "sha256": "e31834b5a05c232676d45e242ea8f7af504f2a4939106c9c53b47a82f48205cf"
+    },
+    {
+      "path": "platform-core-v2600.env.example",
+      "sha256": "8c7c87f5815a71f1387890a6a98228d7d31defb59c185ea8986b95c86fbe1edb"
     },
     {
       "path": "render.yaml",
@@ -4546,8 +4614,20 @@
       "sha256": "557f98c8ffc420d10f2f43c5bf10e176f2b21e5490a1ffb8a30ca50f955c35c6"
     },
     {
+      "path": "schemas/predictive-package-component-v1.schema.json",
+      "sha256": "8460e1e61b70eca4d250861a6426b708e6505d41af746376bc0f807ded5f8cc7"
+    },
+    {
+      "path": "schemas/predictive-package-snapshot-v1.schema.json",
+      "sha256": "f5a5efb1771724e948539748496507f8ea5581fc382d21037ba41f705fdb4de5"
+    },
+    {
       "path": "schemas/predictive-probabilistic-forecast-v1.schema.json",
       "sha256": "2cd3e2e2138af07cfb55c427e5e294da1f82122eb803ce016e2681379996a76e"
+    },
+    {
+      "path": "schemas/predictive-reproducible-package-v1.schema.json",
+      "sha256": "54b39afd760a4db2899ac6421d46be59ca9172e4f2eddc54b05f8f4d903b782a"
     },
     {
       "path": "schemas/predictive-runtime-handoff-v1.schema.json",
@@ -5106,6 +5186,10 @@
       "sha256": "e2532360c52c259cca471e820a1651f39b6875c7587ba1f58914073cb3b94824"
     },
     {
+      "path": "scripts/build_v2600_manifest.py",
+      "sha256": "a90e1577973ff9b3b281b1d5d4063d648c7cfbe3baf0af3782925cdd634deca9"
+    },
+    {
       "path": "scripts/build_v281_manifest.py",
       "sha256": "54f772fe29c203bbc4a93a7d8346c99ce4e823b3d91c7034346033074418e33f"
     },
@@ -5358,6 +5442,10 @@
       "sha256": "c63de61c971c6af68515f1f4a22ccdc798277d680d3bf5610db79c44afc490b0"
     },
     {
+      "path": "scripts/validate_v2600_release.py",
+      "sha256": "141cc1e17ab2c2743ac5ece4d8a7427df0d4edc58ba6e7a09317afdc44de4c64"
+    },
+    {
       "path": "scripts/validate_v281_release.py",
       "sha256": "fe1049e8db48597a055ea3e4a847c58958dc19be572c5138091445e16b0695d0"
     },
@@ -5375,8 +5463,8 @@
     },
     {
       "path": "wordpress-plugin/sustainable-catalyst-platform-core/sustainable-catalyst-platform-core.php",
-      "sha256": "93e994c0821eef2b2f1a14f955e9dfe008b20b7574bdd0cc9bd77f9d3611ec87"
+      "sha256": "9f5d8652be2ab4ef9ed42cf767affd9adfd501261eab2847e3dd2a0e5319f2d7"
     }
   ],
-  "release": "2.59.0"
+  "release": "2.60.0"
 }

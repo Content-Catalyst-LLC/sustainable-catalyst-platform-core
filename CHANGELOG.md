@@ -507,3 +507,6 @@ Governed, reference-first cross-product visual research packages with explicit s
 
 ## 2.50.0
 - Added Forensic Research Graph with explicit typed nodes/edges, saved views, cross-product handoffs, immutable snapshots, and portable packages.
+
+## v2.60.0 — Reproducible Predictive Intelligence Packages
+Cross-layer predictive reproducibility packages, integrity metadata, environments, verification/review evidence, and immutable snapshots.

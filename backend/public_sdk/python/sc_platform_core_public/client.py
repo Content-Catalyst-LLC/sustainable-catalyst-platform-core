@@ -792,3 +792,8 @@ def _predictive_decision_bundle(self, study_id: str):
     return self.request("GET", f"/predictive-intelligence/decision-studies/{study_id}/bundle")
 
 PublicApiClient.predictive_decision_bundle = _predictive_decision_bundle
+
+def _reproducible_predictive_package_bundle(self, package_id: str):
+    return self.request("GET", f"/predictive-intelligence/packages/{package_id}/bundle")
+
+PublicApiClient.reproducible_predictive_package_bundle = _reproducible_predictive_package_bundle

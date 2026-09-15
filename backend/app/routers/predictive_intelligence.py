@@ -382,6 +382,53 @@ def predictive_decision_package(study_id:str,request:Request,payload:Payload,db:
     try:return svc.create_predictive_decision_package(db,study_id,payload.data)
     except Exception as exc:raise bad(exc)
 
+
+
+# v2.60.0 — Reproducible Predictive Intelligence Packages
+@router.post("/packages",dependencies=[Depends(require_write)])
+def reproducible_package_create(request:Request,payload:Payload,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.create_reproducible_predictive_package(db,payload.data)
+    except Exception as exc:raise bad(exc)
+@router.get("/packages",dependencies=[Depends(require_read)])
+def reproducible_packages(request:Request,project_entity_id:str|None=None,limit:int=Query(100,ge=1,le=1000),offset:int=Query(0,ge=0),db:Session=Depends(get_session)):
+    enabled(request); items,total=svc.list_reproducible_predictive_packages(db,project_entity_id=project_entity_id,limit=limit,offset=offset); return {"items":items,"total":total,"limit":limit,"offset":offset}
+@router.post("/packages/{package_id}/components",dependencies=[Depends(require_write)])
+def reproducible_package_component(package_id:str,request:Request,payload:Payload,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.add_reproducible_predictive_component(db,package_id,payload.data)
+    except Exception as exc:raise bad(exc)
+@router.post("/packages/{package_id}/artifacts",dependencies=[Depends(require_write)])
+def reproducible_package_artifact(package_id:str,request:Request,payload:Payload,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.add_reproducible_predictive_artifact(db,package_id,payload.data)
+    except Exception as exc:raise bad(exc)
+@router.post("/packages/{package_id}/environments",dependencies=[Depends(require_write)])
+def reproducible_package_environment(package_id:str,request:Request,payload:Payload,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.add_reproducible_predictive_environment(db,package_id,payload.data)
+    except Exception as exc:raise bad(exc)
+@router.post("/packages/{package_id}/verifications",dependencies=[Depends(require_write)])
+def reproducible_package_verification(package_id:str,request:Request,payload:Payload,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.add_reproducible_predictive_verification(db,package_id,payload.data)
+    except Exception as exc:raise bad(exc)
+@router.post("/packages/{package_id}/reviews",dependencies=[Depends(require_write)])
+def reproducible_package_review(package_id:str,request:Request,payload:Payload,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.add_reproducible_predictive_review(db,package_id,payload.data)
+    except Exception as exc:raise bad(exc)
+@router.get("/packages/{package_id}/bundle",dependencies=[Depends(require_read)])
+def reproducible_package_bundle(package_id:str,request:Request,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.reproducible_predictive_package_bundle(db,package_id)
+    except Exception as exc:raise bad(exc)
+@router.post("/packages/{package_id}/snapshots",dependencies=[Depends(require_write)])
+def reproducible_package_snapshot(package_id:str,request:Request,payload:Payload,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.create_reproducible_predictive_snapshot(db,package_id,payload.data)
+    except Exception as exc:raise bad(exc)
+
 @public_router.get("/readiness",response_model=PublicEnvelope)
 def public_readiness(request:Request,db:Session=Depends(get_session),_ctx:PublicApiContext=Depends(require_public_scope("data:read"))):
     public_enabled(request); data=svc.readiness(db); data.update({"release":request.app.state.settings.version,"enabled":True}); return PublicEnvelope(data=data,meta={"api_version":"v1","request_id":request.state.request_id})
@@ -439,3 +486,9 @@ def public_predictive_decision_bundle(study_id:str,request:Request,db:Session=De
     public_enabled(request); study=svc._decision_study(db,study_id)
     if study.visibility!="public": raise HTTPException(status_code=404,detail="Predictive decision study not found.")
     return PublicEnvelope(data=svc.predictive_decision_bundle(db,study_id),meta={"api_version":"v1","request_id":request.state.request_id})
+
+
+@public_router.get("/packages/{package_id}/bundle")
+def public_reproducible_predictive_package_bundle(package_id:str,request:Request,db:Session=Depends(get_session),_ctx:PublicApiContext=Depends(require_public_scope("data:read"))):
+    public_enabled(request)
+    return PublicEnvelope(data=svc.reproducible_predictive_package_bundle(db,package_id,public_only=True),meta={"api_version":"v1","request_id":request.state.request_id})

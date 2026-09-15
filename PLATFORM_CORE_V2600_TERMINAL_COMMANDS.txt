@@ -1,0 +1,6 @@
+# macOS
+./deploy_and_validate_platform_core_v2_60_0_macos.sh "$HOME/Downloads/sustainable-catalyst-platform-core-v2.60.0-release-bundle.zip"
+
+# Contabo after GitHub promotion and v2.59 production deployment
+cd /opt/sustainable-catalyst/core
+bash DEPLOY_PLATFORM_CORE_V2600_CONTABO.sh

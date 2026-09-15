@@ -201,7 +201,7 @@ def health(request: Request):
         "predictive_spatial_temporal_intelligence": request.app.state.settings.predictive_intelligence_enabled,
         "predictive_causal_predictive_integration": request.app.state.settings.predictive_intelligence_enabled,
         "predictive_decision_intelligence": request.app.state.settings.predictive_intelligence_enabled,
-        "predictive_decision_intelligence": request.app.state.settings.predictive_intelligence_enabled,
+        "reproducible_predictive_intelligence_packages": request.app.state.settings.predictive_intelligence_enabled,
     }
 
 

@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Predictive Package Component",
+  "type": "object",
+  "required": [
+    "component_key",
+    "component_kind",
+    "component_ref"
+  ],
+  "properties": {
+    "component_key": {
+      "type": "string"
+    },
+    "component_kind": {
+      "enum": [
+        "model",
+        "backtest-plan",
+        "calibration-study",
+        "ensemble",
+        "comparison-study",
+        "monitoring-study",
+        "spatial-temporal-study",
+        "causal-predictive-study",
+        "decision-study",
+        "external"
+      ]
+    },
+    "component_ref": {
+      "type": "string"
+    },
+    "required": {
+      "type": "boolean"
+    },
+    "content_hash": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[0-9a-fA-F]{64}$"
+    },
+    "snapshot": {
+      "type": "object"
+    },
+    "provenance": {
+      "type": "object"
+    }
+  }
+}

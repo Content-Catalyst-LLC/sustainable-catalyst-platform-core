@@ -31,6 +31,9 @@ from ..models import (
     PredictiveCausalHandoffRecord, PredictiveCausalPackageRecord,
     PredictiveDecisionStudyRecord, PredictiveDecisionOptionRecord, PredictiveDecisionCriterionRecord, PredictiveDecisionEvidenceBindingRecord,
     PredictiveDecisionScenarioAssessmentRecord, PredictiveDecisionEvaluationRecord, PredictiveDecisionHandoffRecord, PredictiveDecisionPackageRecord,
+    PredictiveIntelligencePackageRecord, PredictiveIntelligencePackageComponentRecord, PredictiveIntelligencePackageArtifactRecord,
+    PredictiveIntelligencePackageEnvironmentRecord, PredictiveIntelligencePackageVerificationRecord, PredictiveIntelligencePackageReviewRecord,
+    PredictiveIntelligencePackageSnapshotRecord,
 )
 
 MODEL_KINDS={"statistical","machine-learning","simulation","hybrid","rules-based","external","other"}
@@ -58,8 +61,12 @@ CAUSAL_PREDICTIVE_INTEGRATION_KINDS={"causal-forecast","intervention-forecast","
 CAUSAL_BINDING_ROLES={"target","predictor","treatment","outcome","confounder","mediator","effect-modifier","context","other"}
 DECISION_KINDS={"forecast-informed","causal-predictive","risk-aware","multi-criteria","monitoring-informed","spatial-temporal","external","other"}
 DECISION_PREFERENCE_DIRECTIONS={"minimize","maximize","target","constraint","descriptive","other"}
+PREDICTIVE_PACKAGE_COMPONENT_KINDS={"model","backtest-plan","calibration-study","ensemble","comparison-study","monitoring-study","spatial-temporal-study","causal-predictive-study","decision-study","external"}
+PREDICTIVE_PACKAGE_ARTIFACT_KINDS={"dataset","model-artifact","forecast-output","report","notebook","code","environment-lock","container-image","external","other"}
+PREDICTIVE_PACKAGE_VERIFICATION_KINDS={"integrity","reproduction","schema","environment","provenance","external","other"}
+
 DECISION_EVIDENCE_KINDS={"forecast","probabilistic-forecast","early-warning","spatial-temporal-forecast","counterfactual-forecast","causal-effect","external","other"}
-FORBIDDEN_FIELDS={"fit_by_core","train_by_core","infer_by_core","execute_by_core","core_execute","probability_calibrated_by_core","winner","rank","verdict","truth_value","automatic_truth_promotion","model_selected_by_core","backtest_execute_by_core","metric_compute_by_core","resample_by_core","probabilistic_infer_by_core","calibration_fit_by_core","recalibration_apply_by_core","scoring_rule_compute_by_core","calibration_metric_compute_by_core","ensemble_construct_by_core","ensemble_execute_by_core","ensemble_weight_optimize_by_core","comparison_metric_compute_by_core","significance_compute_by_core","rank_models_by_core","select_model_by_core","automatic_model_selection","anomaly_detect_by_core","change_point_detect_by_core","early_warning_compute_by_core","threshold_optimize_by_core","alert_dispatch_by_core","causal_attribution_by_core","automatic_intervention_by_core","spatial_interpolate_by_core","spatial_infer_by_core","trajectory_predict_by_core","propagation_model_by_core","hotspot_detect_by_core","spatial_metric_compute_by_core","causal_structure_learn_by_core","causal_identify_by_core","causal_effect_estimate_by_core","counterfactual_execute_by_core","intervention_simulate_by_core","causal_predictive_metric_compute_by_core","decision_optimize_by_core","decision_rank_by_core","decision_recommend_by_core","utility_compute_by_core","regret_compute_by_core","constraint_solve_by_core","action_execute_by_core","automatic_action_selection"}
+FORBIDDEN_FIELDS={"fit_by_core","train_by_core","infer_by_core","execute_by_core","core_execute","probability_calibrated_by_core","winner","rank","verdict","truth_value","automatic_truth_promotion","model_selected_by_core","backtest_execute_by_core","metric_compute_by_core","resample_by_core","probabilistic_infer_by_core","calibration_fit_by_core","recalibration_apply_by_core","scoring_rule_compute_by_core","calibration_metric_compute_by_core","ensemble_construct_by_core","ensemble_execute_by_core","ensemble_weight_optimize_by_core","comparison_metric_compute_by_core","significance_compute_by_core","rank_models_by_core","select_model_by_core","automatic_model_selection","anomaly_detect_by_core","change_point_detect_by_core","early_warning_compute_by_core","threshold_optimize_by_core","alert_dispatch_by_core","causal_attribution_by_core","automatic_intervention_by_core","spatial_interpolate_by_core","spatial_infer_by_core","trajectory_predict_by_core","propagation_model_by_core","hotspot_detect_by_core","spatial_metric_compute_by_core","causal_structure_learn_by_core","causal_identify_by_core","causal_effect_estimate_by_core","counterfactual_execute_by_core","intervention_simulate_by_core","causal_predictive_metric_compute_by_core","decision_optimize_by_core","decision_rank_by_core","decision_recommend_by_core","utility_compute_by_core","regret_compute_by_core","constraint_solve_by_core","action_execute_by_core","automatic_action_selection","reproduce_by_core","rerun_by_core","regenerate_forecasts_by_core","refit_by_core","automatic_reproduction"}
 
 def _ser(row):
     out={}
@@ -118,6 +125,9 @@ def boundaries():
       "predictive_decision_study_registry_by_core":True,"decision_option_registry_by_core":True,"decision_criterion_registry_by_core":True,
       "decision_evidence_binding_registry_by_core":True,"decision_scenario_assessment_registry_by_core":True,"decision_evaluation_evidence_registry_by_core":True,
       "decision_handoff_registry_by_core":True,"reproducible_predictive_decision_packages_by_core":True,
+      "reproducible_predictive_package_registry_by_core":True,"predictive_package_component_manifest_by_core":True,"predictive_package_artifact_registry_by_core":True,
+      "predictive_package_environment_registry_by_core":True,"predictive_package_verification_registry_by_core":True,"predictive_package_review_registry_by_core":True,
+      "immutable_predictive_package_snapshots_by_core":True,"cross_predictive_layer_packaging_by_core":True,
       "model_fitting_by_core":False,"forecast_inference_execution_by_core":False,"backtest_execution_by_core":False,"metric_computation_by_core":False,
       "time_series_resampling_by_core":False,"probabilistic_calibration_by_core":False,"ensemble_selection_by_core":False,
       "probabilistic_inference_execution_by_core":False,"calibration_mapping_fitting_by_core":False,"calibration_mapping_application_by_core":False,
@@ -132,12 +142,14 @@ def boundaries():
       "counterfactual_execution_by_core":False,"intervention_simulation_by_core":False,"causal_predictive_metric_computation_by_core":False,"decision_optimization_by_core":False,
       "utility_computation_by_core":False,"regret_computation_by_core":False,"decision_ranking_by_core":False,"decision_recommendation_by_core":False,
       "constraint_solving_by_core":False,"decision_action_execution_by_core":False,"automatic_action_selection":False,
+      "predictive_execution_by_core":False,"model_refitting_by_core":False,"forecast_regeneration_by_core":False,"backtest_reexecution_by_core":False,
+      "calibration_reexecution_by_core":False,"causal_estimation_by_core":False,"automatic_reproduction_by_core":False,
       "automatic_model_ranking_by_core":False,"automatic_truth_promotion":False,
     }
 
 def readiness(db:Session):
     def count(m): return int(db.scalar(select(func.count()).select_from(m)) or 0)
-    return {"migration_0056_applied":True,"migration_0057_applied":True,"migration_0058_applied":True,"migration_0059_applied":True,"migration_0060_applied":True,"migration_0061_applied":True,"migration_0062_applied":True,"migration_0063_applied":True,"contract":"sc.predictive.model.v1","forecast_contract":"sc.predictive.forecast-provenance.v1","handoff_contract":"sc.predictive.runtime-handoff.v1","backtest_contract":"sc.predictive.backtest-plan.v1","backtest_package_contract":"sc.predictive.backtest-package.v1","probabilistic_forecast_contract":"sc.predictive.probabilistic-forecast.v1","calibration_study_contract":"sc.predictive.calibration-study.v1","calibration_package_contract":"sc.predictive.calibration-package.v1","ensemble_contract":"sc.predictive.ensemble.v1","model_comparison_contract":"sc.predictive.model-comparison.v1","model_comparison_package_contract":"sc.predictive.model-comparison-package.v1","monitoring_study_contract":"sc.predictive.monitoring-study.v1","monitoring_package_contract":"sc.predictive.monitoring-package.v1","spatial_temporal_study_contract":"sc.predictive.spatial-temporal-study.v1","spatial_temporal_package_contract":"sc.predictive.spatial-temporal-package.v1","causal_predictive_study_contract":"sc.predictive.causal-study.v1","causal_predictive_package_contract":"sc.predictive.causal-package.v1","predictive_decision_study_contract":"sc.predictive.decision-study.v1","predictive_decision_package_contract":"sc.predictive.decision-package.v1","counts":{
+    return {"migration_0056_applied":True,"migration_0057_applied":True,"migration_0058_applied":True,"migration_0059_applied":True,"migration_0060_applied":True,"migration_0061_applied":True,"migration_0062_applied":True,"migration_0063_applied":True,"migration_0064_applied":True,"contract":"sc.predictive.model.v1","forecast_contract":"sc.predictive.forecast-provenance.v1","handoff_contract":"sc.predictive.runtime-handoff.v1","backtest_contract":"sc.predictive.backtest-plan.v1","backtest_package_contract":"sc.predictive.backtest-package.v1","probabilistic_forecast_contract":"sc.predictive.probabilistic-forecast.v1","calibration_study_contract":"sc.predictive.calibration-study.v1","calibration_package_contract":"sc.predictive.calibration-package.v1","ensemble_contract":"sc.predictive.ensemble.v1","model_comparison_contract":"sc.predictive.model-comparison.v1","model_comparison_package_contract":"sc.predictive.model-comparison-package.v1","monitoring_study_contract":"sc.predictive.monitoring-study.v1","monitoring_package_contract":"sc.predictive.monitoring-package.v1","spatial_temporal_study_contract":"sc.predictive.spatial-temporal-study.v1","spatial_temporal_package_contract":"sc.predictive.spatial-temporal-package.v1","causal_predictive_study_contract":"sc.predictive.causal-study.v1","causal_predictive_package_contract":"sc.predictive.causal-package.v1","predictive_decision_study_contract":"sc.predictive.decision-study.v1","predictive_decision_package_contract":"sc.predictive.decision-package.v1","reproducible_predictive_package_contract":"sc.predictive.reproducible-package.v1","counts":{
       "models":count(PredictiveModelRecord),"targets":count(PredictiveTargetRecord),"features":count(PredictiveFeatureRecord),"training_windows":count(PredictiveTrainingWindowRecord),
       "forecast_runs":count(PredictiveForecastRunRecord),"forecast_observations":count(PredictiveForecastObservationRecord),"evaluations":count(PredictiveEvaluationRecord),"handoffs":count(PredictiveRuntimeHandoffRecord),"snapshots":count(PredictiveForecastSnapshotRecord),
       "time_series_datasets":count(PredictiveTimeSeriesDatasetRecord),"forecast_windows":count(PredictiveForecastWindowRecord),"baseline_models":count(PredictiveBaselineModelRecord),"backtest_plans":count(PredictiveBacktestPlanRecord),
@@ -156,7 +168,11 @@ def readiness(db:Session):
       "causal_predictive_handoffs":count(PredictiveCausalHandoffRecord),"causal_predictive_packages":count(PredictiveCausalPackageRecord),
       "decision_studies":count(PredictiveDecisionStudyRecord),"decision_options":count(PredictiveDecisionOptionRecord),"decision_criteria":count(PredictiveDecisionCriterionRecord),
       "decision_evidence_bindings":count(PredictiveDecisionEvidenceBindingRecord),"decision_scenario_assessments":count(PredictiveDecisionScenarioAssessmentRecord),
-      "decision_evaluations":count(PredictiveDecisionEvaluationRecord),"decision_handoffs":count(PredictiveDecisionHandoffRecord),"decision_packages":count(PredictiveDecisionPackageRecord)},**boundaries()}
+      "decision_evaluations":count(PredictiveDecisionEvaluationRecord),"decision_handoffs":count(PredictiveDecisionHandoffRecord),"decision_packages":count(PredictiveDecisionPackageRecord),
+       "reproducible_predictive_packages":count(PredictiveIntelligencePackageRecord),"reproducible_predictive_package_components":count(PredictiveIntelligencePackageComponentRecord),
+       "reproducible_predictive_package_artifacts":count(PredictiveIntelligencePackageArtifactRecord),"reproducible_predictive_package_environments":count(PredictiveIntelligencePackageEnvironmentRecord),
+       "reproducible_predictive_package_verifications":count(PredictiveIntelligencePackageVerificationRecord),"reproducible_predictive_package_reviews":count(PredictiveIntelligencePackageReviewRecord),
+       "reproducible_predictive_package_snapshots":count(PredictiveIntelligencePackageSnapshotRecord)},**boundaries()}
 
 def create_model(db:Session,payload:dict):
     _reject(payload); project=str(payload.get("project_entity_id") or "").strip(); ent=db.get(Entity,project)
@@ -357,10 +373,12 @@ def bundle(db:Session,model_id:str,public_only=False):
     spatial_temporal_studies=[_ser(x) for x in db.scalars(select(PredictiveSpatialTemporalStudyRecord).where(PredictiveSpatialTemporalStudyRecord.model_id==model_id).order_by(PredictiveSpatialTemporalStudyRecord.created_at.asc())).all()]
     causal_predictive_studies=[_ser(x) for x in db.scalars(select(PredictiveCausalStudyRecord).where(PredictiveCausalStudyRecord.predictive_model_id==model_id).order_by(PredictiveCausalStudyRecord.created_at.asc())).all()]
     decision_studies=[_ser(x) for x in db.scalars(select(PredictiveDecisionStudyRecord).where(PredictiveDecisionStudyRecord.predictive_model_id==model_id).order_by(PredictiveDecisionStudyRecord.created_at.asc())).all()]
+    package_components=db.scalars(select(PredictiveIntelligencePackageComponentRecord).where(PredictiveIntelligencePackageComponentRecord.component_kind=="model",PredictiveIntelligencePackageComponentRecord.component_ref==model_id)).all()
+    package_ids=[x.package_id for x in package_components]; reproducible_packages=[_ser(x) for x in db.scalars(select(PredictiveIntelligencePackageRecord).where(PredictiveIntelligencePackageRecord.id.in_(package_ids)).order_by(PredictiveIntelligencePackageRecord.created_at.asc())).all()] if package_ids else []
     observations=[]
     runids=[r["id"] for r in runs]
     if runids: observations=[_ser(x) for x in db.scalars(select(PredictiveForecastObservationRecord).where(PredictiveForecastObservationRecord.forecast_run_id.in_(runids)).order_by(PredictiveForecastObservationRecord.created_at.asc())).all()]
-    return {"contract":"sc.predictive.forecast-provenance.v1","model":_ser(model),"targets":targets,"features":features,"training_windows":windows,"forecast_runs":runs,"forecast_observations":observations,"evaluations":evals,"handoffs":handoffs,"snapshots":snaps,"time_series_datasets":ts_datasets,"forecast_windows":forecast_windows,"baseline_models":baselines,"backtest_plans":backtest_plans,"probabilistic_forecasts":probabilistic_forecasts,"calibration_studies":calibration_studies,"probabilistic_evaluations":probabilistic_evaluations,"ensemble_memberships":ensemble_memberships,"monitoring_studies":monitoring_studies,"spatial_temporal_studies":spatial_temporal_studies,"causal_predictive_studies":causal_predictive_studies,"decision_studies":decision_studies,"boundaries":boundaries()}
+    return {"contract":"sc.predictive.forecast-provenance.v1","model":_ser(model),"targets":targets,"features":features,"training_windows":windows,"forecast_runs":runs,"forecast_observations":observations,"evaluations":evals,"handoffs":handoffs,"snapshots":snaps,"time_series_datasets":ts_datasets,"forecast_windows":forecast_windows,"baseline_models":baselines,"backtest_plans":backtest_plans,"probabilistic_forecasts":probabilistic_forecasts,"calibration_studies":calibration_studies,"probabilistic_evaluations":probabilistic_evaluations,"ensemble_memberships":ensemble_memberships,"monitoring_studies":monitoring_studies,"spatial_temporal_studies":spatial_temporal_studies,"causal_predictive_studies":causal_predictive_studies,"decision_studies":decision_studies,"reproducible_predictive_packages":reproducible_packages,"boundaries":boundaries()}
 
 def create_snapshot(db:Session,model_id:str,payload:dict):
     _reject(payload); state=bundle(db,model_id); state.pop("snapshots",None); digest=_sha256(state); last=db.scalar(select(PredictiveForecastSnapshotRecord).where(PredictiveForecastSnapshotRecord.model_id==model_id).order_by(PredictiveForecastSnapshotRecord.revision.desc()))
@@ -1114,4 +1132,122 @@ def create_predictive_decision_package(db:Session,study_id:str,payload:dict):
     _reject(payload); state=predictive_decision_bundle(db,study_id); state.pop("packages",None); digest=_sha256(state)
     last=db.scalar(select(PredictiveDecisionPackageRecord).where(PredictiveDecisionPackageRecord.decision_study_id==study_id).order_by(PredictiveDecisionPackageRecord.revision.desc())); rev=(last.revision+1) if last else 1
     row=PredictiveDecisionPackageRecord(decision_study_id=study_id,revision=rev,content_hash=digest,previous_package_hash=(last.content_hash if last else None),state_json=state,environment_json=dict(payload.get("environment") or {}),provenance_json=dict(payload.get("provenance") or {}),created_by=str(payload.get("created_by") or "operator"))
+    db.add(row); db.commit(); db.refresh(row); return _ser(row)
+
+
+# v2.60.0 — Reproducible Predictive Intelligence Packages
+def _predictive_package(db:Session, package_id:str)->PredictiveIntelligencePackageRecord:
+    row=db.get(PredictiveIntelligencePackageRecord,package_id)
+    if row is None: raise HTTPException(status_code=404,detail="Reproducible predictive package not found.")
+    return row
+
+def _package_component_project(db:Session,kind:str,ref:str):
+    if kind=="external": return None
+    if kind=="model":
+        r=db.get(PredictiveModelRecord,ref); return r.project_entity_id if r else None
+    if kind=="backtest-plan":
+        r=db.get(PredictiveBacktestPlanRecord,ref); m=db.get(PredictiveModelRecord,r.model_id) if r else None; return m.project_entity_id if m else None
+    if kind=="calibration-study":
+        r=db.get(PredictiveCalibrationStudyRecord,ref); m=db.get(PredictiveModelRecord,r.model_id) if r else None; return m.project_entity_id if m else None
+    if kind=="ensemble":
+        r=db.get(PredictiveEnsembleRecord,ref); return r.project_entity_id if r else None
+    if kind=="comparison-study":
+        r=db.get(PredictiveComparisonStudyRecord,ref); return r.project_entity_id if r else None
+    if kind=="monitoring-study":
+        r=db.get(PredictiveMonitoringStudyRecord,ref); return r.project_entity_id if r else None
+    if kind=="spatial-temporal-study":
+        r=db.get(PredictiveSpatialTemporalStudyRecord,ref); return r.project_entity_id if r else None
+    if kind=="causal-predictive-study":
+        r=db.get(PredictiveCausalStudyRecord,ref); return r.project_entity_id if r else None
+    if kind=="decision-study":
+        r=db.get(PredictiveDecisionStudyRecord,ref); return r.project_entity_id if r else None
+    return None
+
+def create_reproducible_predictive_package(db:Session,payload:dict):
+    _reject(payload); project=str(payload.get("project_entity_id") or "").strip(); ent=db.get(Entity,project)
+    if ent is None: raise ValueError("project_entity_id must reference an existing Core entity")
+    vis=str(payload.get("visibility") or "private")
+    if vis not in {"private","public"}: raise ValueError("visibility must be private or public")
+    row=PredictiveIntelligencePackageRecord(project_entity_id=project,package_key=str(payload.get("package_key") or "").strip(),name=str(payload.get("name") or "").strip(),description=payload.get("description"),scope_json=dict(payload.get("scope") or {}),status=str(payload.get("status") or "draft"),visibility=vis,provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {}),created_by=str(payload.get("created_by") or "operator"))
+    if not row.package_key or not row.name: raise ValueError("package_key and name are required")
+    db.add(row)
+    try: db.commit()
+    except IntegrityError as exc: db.rollback(); raise ValueError("package_key must be unique within project_entity_id") from exc
+    db.refresh(row); return _ser(row)
+
+def list_reproducible_predictive_packages(db:Session,project_entity_id=None,limit=100,offset=0):
+    q=select(PredictiveIntelligencePackageRecord)
+    if project_entity_id: q=q.where(PredictiveIntelligencePackageRecord.project_entity_id==project_entity_id)
+    total=int(db.scalar(select(func.count()).select_from(q.subquery())) or 0)
+    rows=db.scalars(q.order_by(PredictiveIntelligencePackageRecord.created_at.desc()).limit(limit).offset(offset)).all()
+    return [_ser(x) for x in rows],total
+
+def add_reproducible_predictive_component(db:Session,package_id:str,payload:dict):
+    _reject(payload); package=_predictive_package(db,package_id); kind=str(payload.get("component_kind") or "").strip(); ref=str(payload.get("component_ref") or "").strip()
+    if kind not in PREDICTIVE_PACKAGE_COMPONENT_KINDS: raise ValueError(f"component_kind must be one of {sorted(PREDICTIVE_PACKAGE_COMPONENT_KINDS)}")
+    if not ref: raise ValueError("component_ref is required")
+    project=_package_component_project(db,kind,ref)
+    if kind!="external" and project is None: raise ValueError("component_ref does not resolve to the selected governed component kind")
+    if project is not None and project!=package.project_entity_id: raise ValueError("governed component must belong to the package project")
+    row=PredictiveIntelligencePackageComponentRecord(package_id=package_id,component_key=str(payload.get("component_key") or "").strip(),component_kind=kind,component_ref=ref,required=bool(payload.get("required",True)),content_hash=_digest(payload.get("content_hash")),snapshot_json=dict(payload.get("snapshot") or {}),provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {}))
+    if not row.component_key: raise ValueError("component_key is required")
+    db.add(row)
+    try: db.commit()
+    except IntegrityError as exc: db.rollback(); raise ValueError("component_key must be unique within package_id") from exc
+    db.refresh(row); return _ser(row)
+
+def add_reproducible_predictive_artifact(db:Session,package_id:str,payload:dict):
+    _reject(payload); _predictive_package(db,package_id); kind=str(payload.get("artifact_kind") or "external")
+    if kind not in PREDICTIVE_PACKAGE_ARTIFACT_KINDS: raise ValueError(f"artifact_kind must be one of {sorted(PREDICTIVE_PACKAGE_ARTIFACT_KINDS)}")
+    ref=str(payload.get("artifact_ref") or "").strip(); key=str(payload.get("artifact_key") or "").strip()
+    if not key or not ref: raise ValueError("artifact_key and artifact_ref are required")
+    size=payload.get("size_bytes"); size=int(size) if size not in (None,"") else None
+    if size is not None and size<0: raise ValueError("size_bytes must be non-negative")
+    row=PredictiveIntelligencePackageArtifactRecord(package_id=package_id,artifact_key=key,artifact_kind=kind,artifact_ref=ref,media_type=payload.get("media_type"),content_hash=_digest(payload.get("content_hash")),size_bytes=size,provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {}))
+    db.add(row)
+    try: db.commit()
+    except IntegrityError as exc: db.rollback(); raise ValueError("artifact_key must be unique within package_id") from exc
+    db.refresh(row); return _ser(row)
+
+def add_reproducible_predictive_environment(db:Session,package_id:str,payload:dict):
+    _reject(payload); _predictive_package(db,package_id); env=payload.get("environment")
+    if not isinstance(env,dict) or not env: raise ValueError("environment object is required")
+    product=str(payload.get("runtime_product") or "external"); key=str(payload.get("environment_key") or "").strip()
+    if product not in RUNTIME_PRODUCTS: raise ValueError("unsupported runtime_product")
+    if not key: raise ValueError("environment_key is required")
+    row=PredictiveIntelligencePackageEnvironmentRecord(package_id=package_id,environment_key=key,runtime_product=product,runtime_version=payload.get("runtime_version"),environment_json=env,lockfile_hash=_digest(payload.get("lockfile_hash")),image_digest=payload.get("image_digest"),provenance_json=dict(payload.get("provenance") or {}))
+    db.add(row)
+    try: db.commit()
+    except IntegrityError as exc: db.rollback(); raise ValueError("environment_key must be unique within package_id") from exc
+    db.refresh(row); return _ser(row)
+
+def add_reproducible_predictive_verification(db:Session,package_id:str,payload:dict):
+    _reject(payload); _predictive_package(db,package_id); kind=str(payload.get("verification_kind") or "integrity"); result=payload.get("result"); key=str(payload.get("verification_key") or "").strip()
+    if kind not in PREDICTIVE_PACKAGE_VERIFICATION_KINDS: raise ValueError(f"verification_kind must be one of {sorted(PREDICTIVE_PACKAGE_VERIFICATION_KINDS)}")
+    if not key or not isinstance(result,dict) or not result: raise ValueError("verification_key and non-empty result object are required")
+    row=PredictiveIntelligencePackageVerificationRecord(package_id=package_id,verification_key=key,verification_kind=kind,status=str(payload.get("status") or "recorded"),result_json=result,evidence_ref=payload.get("evidence_ref"),verifier=payload.get("verifier"),externally_computed=True,provenance_json=dict(payload.get("provenance") or {}))
+    db.add(row)
+    try: db.commit()
+    except IntegrityError as exc: db.rollback(); raise ValueError("verification_key must be unique within package_id") from exc
+    db.refresh(row); return _ser(row)
+
+def add_reproducible_predictive_review(db:Session,package_id:str,payload:dict):
+    _reject(payload); _predictive_package(db,package_id); findings=payload.get("findings"); key=str(payload.get("review_key") or "").strip()
+    if not key or not isinstance(findings,dict) or not findings: raise ValueError("review_key and non-empty findings object are required")
+    row=PredictiveIntelligencePackageReviewRecord(package_id=package_id,review_key=key,review_kind=str(payload.get("review_kind") or "technical"),status=str(payload.get("status") or "recorded"),reviewer=payload.get("reviewer"),findings_json=findings,evidence_ref=payload.get("evidence_ref"),provenance_json=dict(payload.get("provenance") or {}))
+    db.add(row)
+    try: db.commit()
+    except IntegrityError as exc: db.rollback(); raise ValueError("review_key must be unique within package_id") from exc
+    db.refresh(row); return _ser(row)
+
+def reproducible_predictive_package_bundle(db:Session,package_id:str,public_only=False):
+    package=_predictive_package(db,package_id)
+    if public_only and package.visibility!="public": raise HTTPException(status_code=404,detail="Reproducible predictive package not found.")
+    def rows(model): return [_ser(x) for x in db.scalars(select(model).where(model.package_id==package_id).order_by(model.created_at.asc())).all()]
+    return {"contract":"sc.predictive.reproducible-package.v1","package":_ser(package),"components":rows(PredictiveIntelligencePackageComponentRecord),"artifacts":rows(PredictiveIntelligencePackageArtifactRecord),"environments":rows(PredictiveIntelligencePackageEnvironmentRecord),"verifications":rows(PredictiveIntelligencePackageVerificationRecord),"reviews":rows(PredictiveIntelligencePackageReviewRecord),"snapshots":rows(PredictiveIntelligencePackageSnapshotRecord),"boundaries":boundaries()}
+
+def create_reproducible_predictive_snapshot(db:Session,package_id:str,payload:dict):
+    _reject(payload); state=reproducible_predictive_package_bundle(db,package_id); state.pop("snapshots",None); digest=_sha256(state)
+    last=db.scalar(select(PredictiveIntelligencePackageSnapshotRecord).where(PredictiveIntelligencePackageSnapshotRecord.package_id==package_id).order_by(PredictiveIntelligencePackageSnapshotRecord.revision.desc())); rev=(last.revision+1) if last else 1
+    row=PredictiveIntelligencePackageSnapshotRecord(package_id=package_id,revision=rev,content_hash=digest,previous_snapshot_hash=(last.content_hash if last else None),manifest_json=state,provenance_json=dict(payload.get("provenance") or {}),created_by=str(payload.get("created_by") or "operator"))
     db.add(row); db.commit(); db.refresh(row); return _ser(row)
