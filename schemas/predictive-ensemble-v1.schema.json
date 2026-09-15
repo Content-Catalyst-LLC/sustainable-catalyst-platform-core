@@ -1,0 +1,49 @@
+{
+  "$id": "https://sustainablecatalyst.com/schemas/predictive-ensemble-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "combination_rule": {
+      "type": "object"
+    },
+    "ensemble_key": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "ensemble_kind": {
+      "enum": [
+        "bagging",
+        "boosting",
+        "external",
+        "mixture",
+        "other",
+        "stacking",
+        "voting",
+        "weighted-average"
+      ]
+    },
+    "name": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "project_entity_id": {
+      "type": "string"
+    },
+    "target_semantics": {
+      "type": "object"
+    },
+    "visibility": {
+      "enum": [
+        "private",
+        "public"
+      ]
+    }
+  },
+  "required": [
+    "project_entity_id",
+    "ensemble_key",
+    "name",
+    "ensemble_kind"
+  ],
+  "title": "Predictive Ensemble",
+  "type": "object"
+}

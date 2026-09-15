@@ -57,4 +57,8 @@ Time-Series Forecasting & Backtesting adds governed datasets, rolling/expanding 
 
 ## Platform Core v2.54.0 — Probabilistic Forecasting & Calibration
 
-Platform Core now records explicit probabilistic forecast objects, calibration studies, externally fitted recalibration mappings, proper-scoring and calibration evidence, and reproducible calibration packages while preserving specialist-runtime execution boundaries.
+Platform Core records explicit probabilistic forecast objects, calibration studies, externally fitted recalibration mappings, proper-scoring and calibration evidence, and reproducible calibration packages while preserving specialist-runtime execution boundaries.
+
+## Platform Core v2.55.0 — Predictive Ensembles & Model Comparison
+
+Platform Core now governs predictive ensemble definitions, member provenance, externally generated ensemble forecasts, model-comparison studies, comparative metric and pairwise evidence, and reproducible comparison packages. Weight optimization, ensemble execution, metric/significance computation, ranking, and automatic model selection remain specialist-runtime responsibilities.

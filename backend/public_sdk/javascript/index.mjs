@@ -537,3 +537,6 @@ PublicApiClient.prototype.predictiveBacktestBundle=function(modelId,planId){retu
 
 // v2.54.0 Predictive Intelligence — Probabilistic Forecasting & Calibration.
 PublicApiClient.prototype.predictiveCalibrationBundle=function(modelId,studyId){return this.request(`/predictive-intelligence/models/${encodeURIComponent(modelId)}/calibration-studies/${encodeURIComponent(studyId)}/bundle`);};
+
+PublicApiClient.prototype.predictiveEnsembleBundle=function(ensembleId){return this.request(`/predictive-intelligence/ensembles/${encodeURIComponent(ensembleId)}/bundle`);};
+PublicApiClient.prototype.predictiveComparisonBundle=function(studyId){return this.request(`/predictive-intelligence/comparison-studies/${encodeURIComponent(studyId)}/bundle`);};

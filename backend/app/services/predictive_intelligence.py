@@ -18,6 +18,9 @@ from ..models import (
     PredictiveBacktestFoldRecord, PredictiveBacktestObservationRecord, PredictiveBacktestEvaluationRecord, PredictiveBacktestPackageRecord,
     PredictiveProbabilisticForecastRecord, PredictiveCalibrationStudyRecord, PredictiveCalibrationBinRecord, PredictiveCalibrationMappingRecord,
     PredictiveProbabilisticEvaluationRecord, PredictiveCalibrationPackageRecord,
+    PredictiveEnsembleRecord, PredictiveEnsembleMemberRecord, PredictiveEnsembleForecastRecord,
+    PredictiveComparisonStudyRecord, PredictiveComparisonCandidateRecord, PredictiveComparisonEvidenceRecord,
+    PredictivePairwiseComparisonRecord, PredictiveComparisonPackageRecord,
 )
 
 MODEL_KINDS={"statistical","machine-learning","simulation","hybrid","rules-based","external","other"}
@@ -30,7 +33,12 @@ PROBABILISTIC_REPRESENTATIONS={"binary-event","categorical","quantile","interval
 CALIBRATION_ASSESSMENTS={"reliability","coverage","quantile-coverage","pit","rank-histogram","categorical-reliability","threshold-reliability","other"}
 CALIBRATION_METHODS={"platt","isotonic","temperature","beta","histogram","conformal","external","other"}
 PROBABILISTIC_METRIC_FAMILIES={"proper-scoring-rule","calibration","coverage","sharpness","distribution-diagnostic","other"}
-FORBIDDEN_FIELDS={"fit_by_core","train_by_core","infer_by_core","execute_by_core","core_execute","probability_calibrated_by_core","winner","rank","verdict","truth_value","automatic_truth_promotion","model_selected_by_core","backtest_execute_by_core","metric_compute_by_core","resample_by_core","probabilistic_infer_by_core","calibration_fit_by_core","recalibration_apply_by_core","scoring_rule_compute_by_core","calibration_metric_compute_by_core"}
+ENSEMBLE_KINDS={"weighted-average","stacking","bagging","boosting","mixture","voting","external","other"}
+ENSEMBLE_MEMBER_ROLES={"member","base-learner","meta-learner","expert","reference","other"}
+COMPARISON_CANDIDATE_KINDS={"model","ensemble","baseline","external"}
+COMPARISON_METRIC_FAMILIES={"point-error","proper-scoring-rule","calibration","coverage","sharpness","classification","ranking-diagnostic","resource","robustness","other"}
+PAIRWISE_COMPARISON_KINDS={"metric-difference","loss-difference","skill-difference","paired-test","bootstrap-contrast","bayesian-contrast","other"}
+FORBIDDEN_FIELDS={"fit_by_core","train_by_core","infer_by_core","execute_by_core","core_execute","probability_calibrated_by_core","winner","rank","verdict","truth_value","automatic_truth_promotion","model_selected_by_core","backtest_execute_by_core","metric_compute_by_core","resample_by_core","probabilistic_infer_by_core","calibration_fit_by_core","recalibration_apply_by_core","scoring_rule_compute_by_core","calibration_metric_compute_by_core","ensemble_construct_by_core","ensemble_execute_by_core","ensemble_weight_optimize_by_core","comparison_metric_compute_by_core","significance_compute_by_core","rank_models_by_core","select_model_by_core","automatic_model_selection"}
 
 def _ser(row):
     out={}
@@ -75,22 +83,29 @@ def boundaries():
       "probabilistic_forecast_registry_by_core":True,"uncertainty_distribution_registry_by_core":True,"calibration_study_registry_by_core":True,
       "calibration_bin_evidence_by_core":True,"external_calibration_mapping_registry_by_core":True,"proper_scoring_evidence_registry_by_core":True,
       "reproducible_calibration_packages_by_core":True,
+      "ensemble_registry_by_core":True,"ensemble_member_registry_by_core":True,"ensemble_forecast_provenance_by_core":True,
+      "model_comparison_study_registry_by_core":True,"comparison_candidate_registry_by_core":True,"comparative_metric_evidence_by_core":True,
+      "pairwise_comparison_evidence_by_core":True,"reproducible_model_comparison_packages_by_core":True,
       "model_fitting_by_core":False,"forecast_inference_execution_by_core":False,"backtest_execution_by_core":False,"metric_computation_by_core":False,
       "time_series_resampling_by_core":False,"probabilistic_calibration_by_core":False,"ensemble_selection_by_core":False,
       "probabilistic_inference_execution_by_core":False,"calibration_mapping_fitting_by_core":False,"calibration_mapping_application_by_core":False,
       "proper_scoring_rule_computation_by_core":False,"calibration_metric_computation_by_core":False,"probabilistic_model_ranking_by_core":False,
+      "ensemble_construction_by_core":False,"ensemble_weight_optimization_by_core":False,"ensemble_forecast_execution_by_core":False,
+      "model_comparison_metric_computation_by_core":False,"statistical_significance_computation_by_core":False,"model_ranking_by_core":False,"automatic_model_selection":False,
       "automatic_model_ranking_by_core":False,"automatic_truth_promotion":False,
     }
 
 def readiness(db:Session):
     def count(m): return int(db.scalar(select(func.count()).select_from(m)) or 0)
-    return {"migration_0056_applied":True,"migration_0057_applied":True,"migration_0058_applied":True,"contract":"sc.predictive.model.v1","forecast_contract":"sc.predictive.forecast-provenance.v1","handoff_contract":"sc.predictive.runtime-handoff.v1","backtest_contract":"sc.predictive.backtest-plan.v1","backtest_package_contract":"sc.predictive.backtest-package.v1","probabilistic_forecast_contract":"sc.predictive.probabilistic-forecast.v1","calibration_study_contract":"sc.predictive.calibration-study.v1","calibration_package_contract":"sc.predictive.calibration-package.v1","counts":{
+    return {"migration_0056_applied":True,"migration_0057_applied":True,"migration_0058_applied":True,"migration_0059_applied":True,"contract":"sc.predictive.model.v1","forecast_contract":"sc.predictive.forecast-provenance.v1","handoff_contract":"sc.predictive.runtime-handoff.v1","backtest_contract":"sc.predictive.backtest-plan.v1","backtest_package_contract":"sc.predictive.backtest-package.v1","probabilistic_forecast_contract":"sc.predictive.probabilistic-forecast.v1","calibration_study_contract":"sc.predictive.calibration-study.v1","calibration_package_contract":"sc.predictive.calibration-package.v1","ensemble_contract":"sc.predictive.ensemble.v1","model_comparison_contract":"sc.predictive.model-comparison.v1","model_comparison_package_contract":"sc.predictive.model-comparison-package.v1","counts":{
       "models":count(PredictiveModelRecord),"targets":count(PredictiveTargetRecord),"features":count(PredictiveFeatureRecord),"training_windows":count(PredictiveTrainingWindowRecord),
       "forecast_runs":count(PredictiveForecastRunRecord),"forecast_observations":count(PredictiveForecastObservationRecord),"evaluations":count(PredictiveEvaluationRecord),"handoffs":count(PredictiveRuntimeHandoffRecord),"snapshots":count(PredictiveForecastSnapshotRecord),
       "time_series_datasets":count(PredictiveTimeSeriesDatasetRecord),"forecast_windows":count(PredictiveForecastWindowRecord),"baseline_models":count(PredictiveBaselineModelRecord),"backtest_plans":count(PredictiveBacktestPlanRecord),
       "backtest_folds":count(PredictiveBacktestFoldRecord),"backtest_observations":count(PredictiveBacktestObservationRecord),"backtest_evaluations":count(PredictiveBacktestEvaluationRecord),"backtest_packages":count(PredictiveBacktestPackageRecord),
       "probabilistic_forecasts":count(PredictiveProbabilisticForecastRecord),"calibration_studies":count(PredictiveCalibrationStudyRecord),"calibration_bins":count(PredictiveCalibrationBinRecord),
-      "calibration_mappings":count(PredictiveCalibrationMappingRecord),"probabilistic_evaluations":count(PredictiveProbabilisticEvaluationRecord),"calibration_packages":count(PredictiveCalibrationPackageRecord)},**boundaries()}
+      "calibration_mappings":count(PredictiveCalibrationMappingRecord),"probabilistic_evaluations":count(PredictiveProbabilisticEvaluationRecord),"calibration_packages":count(PredictiveCalibrationPackageRecord),
+      "ensembles":count(PredictiveEnsembleRecord),"ensemble_members":count(PredictiveEnsembleMemberRecord),"ensemble_forecasts":count(PredictiveEnsembleForecastRecord),
+      "comparison_studies":count(PredictiveComparisonStudyRecord),"comparison_candidates":count(PredictiveComparisonCandidateRecord),"comparison_evidence":count(PredictiveComparisonEvidenceRecord),"pairwise_comparisons":count(PredictivePairwiseComparisonRecord),"comparison_packages":count(PredictiveComparisonPackageRecord)},**boundaries()}
 
 def create_model(db:Session,payload:dict):
     _reject(payload); project=str(payload.get("project_entity_id") or "").strip(); ent=db.get(Entity,project)
@@ -286,10 +301,11 @@ def bundle(db:Session,model_id:str,public_only=False):
     targets=q(PredictiveTargetRecord); features=q(PredictiveFeatureRecord); windows=q(PredictiveTrainingWindowRecord); runs=q(PredictiveForecastRunRecord); evals=q(PredictiveEvaluationRecord); handoffs=q(PredictiveRuntimeHandoffRecord); snaps=q(PredictiveForecastSnapshotRecord)
     ts_datasets=q(PredictiveTimeSeriesDatasetRecord); forecast_windows=q(PredictiveForecastWindowRecord); baselines=q(PredictiveBaselineModelRecord); backtest_plans=q(PredictiveBacktestPlanRecord)
     probabilistic_forecasts=q(PredictiveProbabilisticForecastRecord); calibration_studies=q(PredictiveCalibrationStudyRecord); probabilistic_evaluations=q(PredictiveProbabilisticEvaluationRecord)
+    ensemble_memberships=[_ser(x) for x in db.scalars(select(PredictiveEnsembleMemberRecord).where(PredictiveEnsembleMemberRecord.model_id==model_id).order_by(PredictiveEnsembleMemberRecord.created_at.asc())).all()]
     observations=[]
     runids=[r["id"] for r in runs]
     if runids: observations=[_ser(x) for x in db.scalars(select(PredictiveForecastObservationRecord).where(PredictiveForecastObservationRecord.forecast_run_id.in_(runids)).order_by(PredictiveForecastObservationRecord.created_at.asc())).all()]
-    return {"contract":"sc.predictive.forecast-provenance.v1","model":_ser(model),"targets":targets,"features":features,"training_windows":windows,"forecast_runs":runs,"forecast_observations":observations,"evaluations":evals,"handoffs":handoffs,"snapshots":snaps,"time_series_datasets":ts_datasets,"forecast_windows":forecast_windows,"baseline_models":baselines,"backtest_plans":backtest_plans,"probabilistic_forecasts":probabilistic_forecasts,"calibration_studies":calibration_studies,"probabilistic_evaluations":probabilistic_evaluations,"boundaries":boundaries()}
+    return {"contract":"sc.predictive.forecast-provenance.v1","model":_ser(model),"targets":targets,"features":features,"training_windows":windows,"forecast_runs":runs,"forecast_observations":observations,"evaluations":evals,"handoffs":handoffs,"snapshots":snaps,"time_series_datasets":ts_datasets,"forecast_windows":forecast_windows,"baseline_models":baselines,"backtest_plans":backtest_plans,"probabilistic_forecasts":probabilistic_forecasts,"calibration_studies":calibration_studies,"probabilistic_evaluations":probabilistic_evaluations,"ensemble_memberships":ensemble_memberships,"boundaries":boundaries()}
 
 def create_snapshot(db:Session,model_id:str,payload:dict):
     _reject(payload); state=bundle(db,model_id); state.pop("snapshots",None); digest=_sha256(state); last=db.scalar(select(PredictiveForecastSnapshotRecord).where(PredictiveForecastSnapshotRecord.model_id==model_id).order_by(PredictiveForecastSnapshotRecord.revision.desc()))
@@ -421,3 +437,130 @@ def create_calibration_package(db:Session,model_id:str,study_id:str,payload:dict
     last=db.scalar(select(PredictiveCalibrationPackageRecord).where(PredictiveCalibrationPackageRecord.calibration_study_id==study_id).order_by(PredictiveCalibrationPackageRecord.revision.desc())); rev=(last.revision+1) if last else 1
     row=PredictiveCalibrationPackageRecord(calibration_study_id=study_id,revision=rev,content_hash=digest,previous_package_hash=(last.content_hash if last else None),state_json=state,environment_json=dict(payload.get("environment") or {}),provenance_json=dict(payload.get("provenance") or {}),created_by=str(payload.get("created_by") or "operator"))
     db.add(row); db.commit(); db.refresh(row); return _ser(row)
+
+def create_ensemble(db:Session,payload:dict):
+    _reject(payload)
+    project=str(payload.get("project_entity_id") or "").strip(); ent=db.get(Entity,project)
+    if ent is None: raise ValueError("project_entity_id must reference an existing Core entity")
+    key=str(payload.get("ensemble_key") or "").strip(); name=str(payload.get("name") or "").strip(); kind=str(payload.get("ensemble_kind") or "external")
+    if not key or not name: raise ValueError("ensemble_key and name are required")
+    if kind not in ENSEMBLE_KINDS: raise ValueError(f"ensemble_kind must be one of {sorted(ENSEMBLE_KINDS)}")
+    vis=str(payload.get("visibility") or "private")
+    if vis not in {"private","public"}: raise ValueError("visibility must be private or public")
+    row=PredictiveEnsembleRecord(project_entity_id=project,ensemble_key=key,name=name,description=payload.get("description"),ensemble_kind=kind,target_semantics_json=dict(payload.get("target_semantics") or {}),combination_rule_json=dict(payload.get("combination_rule") or {}),status=str(payload.get("status") or "draft"),visibility=vis,externally_defined=True,provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {}))
+    db.add(row)
+    try: db.commit()
+    except IntegrityError as exc: db.rollback(); raise ValueError("ensemble_key must be unique within project_entity_id") from exc
+    db.refresh(row); return _ser(row)
+
+def _ensemble(db:Session,ensemble_id:str)->PredictiveEnsembleRecord:
+    row=db.get(PredictiveEnsembleRecord,ensemble_id)
+    if row is None: raise HTTPException(status_code=404,detail="Predictive ensemble not found.")
+    return row
+
+def add_ensemble_member(db:Session,ensemble_id:str,payload:dict):
+    _reject(payload); ensemble=_ensemble(db,ensemble_id)
+    model=db.get(PredictiveModelRecord,str(payload.get("model_id") or ""))
+    if model is None: raise ValueError("model_id must reference an existing predictive model")
+    if model.project_entity_id!=ensemble.project_entity_id: raise ValueError("ensemble members must belong to the ensemble project")
+    key=str(payload.get("member_key") or "").strip(); role=str(payload.get("role") or "member")
+    if not key: raise ValueError("member_key is required")
+    if role not in ENSEMBLE_MEMBER_ROLES: raise ValueError(f"role must be one of {sorted(ENSEMBLE_MEMBER_ROLES)}")
+    weight=payload.get("weight")
+    if weight is not None: weight=float(weight)
+    row=PredictiveEnsembleMemberRecord(ensemble_id=ensemble.id,model_id=model.id,member_key=key,role=role,weight=weight,runtime_ref=payload.get("runtime_ref"),forecast_contract=payload.get("forecast_contract"),provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {}))
+    db.add(row)
+    try: db.commit()
+    except IntegrityError as exc: db.rollback(); raise ValueError("member_key must be unique within ensemble_id") from exc
+    db.refresh(row); return _ser(row)
+
+def add_ensemble_forecast(db:Session,ensemble_id:str,payload:dict):
+    _reject(payload); _ensemble(db,ensemble_id)
+    rep=str(payload.get("representation") or "").strip(); forecast=payload.get("forecast")
+    if rep not in PROBABILISTIC_REPRESENTATIONS|{"point"}: raise ValueError("representation must be point or a supported probabilistic representation")
+    if not isinstance(forecast,dict): raise ValueError("forecast must be an object")
+    if rep!="point": _validate_probabilistic_payload(rep,forecast)
+    elif "value" not in forecast: raise ValueError("point ensemble forecast requires value")
+    refs=payload.get("member_forecast_refs") or []
+    if not isinstance(refs,list): raise ValueError("member_forecast_refs must be an array")
+    row=PredictiveEnsembleForecastRecord(ensemble_id=ensemble_id,valid_time=_parse_dt(payload.get("valid_time")),representation=rep,forecast_json=forecast,member_forecast_refs_json=refs,source_ref=payload.get("source_ref"),externally_generated=True,provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {}))
+    db.add(row); db.commit(); db.refresh(row); return _ser(row)
+
+def ensemble_bundle(db:Session,ensemble_id:str):
+    ensemble=_ensemble(db,ensemble_id)
+    members=[_ser(x) for x in db.scalars(select(PredictiveEnsembleMemberRecord).where(PredictiveEnsembleMemberRecord.ensemble_id==ensemble_id).order_by(PredictiveEnsembleMemberRecord.created_at.asc())).all()]
+    forecasts=[_ser(x) for x in db.scalars(select(PredictiveEnsembleForecastRecord).where(PredictiveEnsembleForecastRecord.ensemble_id==ensemble_id).order_by(PredictiveEnsembleForecastRecord.created_at.asc())).all()]
+    return {"contract":"sc.predictive.ensemble.v1","ensemble":_ser(ensemble),"members":members,"forecasts":forecasts,"boundaries":boundaries()}
+
+def create_comparison_study(db:Session,payload:dict):
+    _reject(payload)
+    project=str(payload.get("project_entity_id") or "").strip(); ent=db.get(Entity,project)
+    if ent is None: raise ValueError("project_entity_id must reference an existing Core entity")
+    key=str(payload.get("comparison_key") or "").strip(); name=str(payload.get("name") or "").strip(); vis=str(payload.get("visibility") or "private")
+    if not key or not name: raise ValueError("comparison_key and name are required")
+    if vis not in {"private","public"}: raise ValueError("visibility must be private or public")
+    row=PredictiveComparisonStudyRecord(project_entity_id=project,comparison_key=key,name=name,target_semantics_json=dict(payload.get("target_semantics") or {}),evaluation_scope_json=dict(payload.get("evaluation_scope") or {}),status=str(payload.get("status") or "recorded"),visibility=vis,externally_computed=True,provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {}))
+    db.add(row)
+    try: db.commit()
+    except IntegrityError as exc: db.rollback(); raise ValueError("comparison_key must be unique within project_entity_id") from exc
+    db.refresh(row); return _ser(row)
+
+def _comparison(db:Session,study_id:str)->PredictiveComparisonStudyRecord:
+    row=db.get(PredictiveComparisonStudyRecord,study_id)
+    if row is None: raise HTTPException(status_code=404,detail="Predictive comparison study not found.")
+    return row
+
+def add_comparison_candidate(db:Session,study_id:str,payload:dict):
+    _reject(payload); study=_comparison(db,study_id)
+    key=str(payload.get("candidate_key") or "").strip(); kind=str(payload.get("candidate_kind") or "model"); ref=str(payload.get("candidate_ref") or "").strip(); label=str(payload.get("label") or "").strip()
+    if not key or not ref or not label: raise ValueError("candidate_key, candidate_ref, and label are required")
+    if kind not in COMPARISON_CANDIDATE_KINDS: raise ValueError(f"candidate_kind must be one of {sorted(COMPARISON_CANDIDATE_KINDS)}")
+    if kind=="model":
+        model=db.get(PredictiveModelRecord,ref)
+        if model is None or model.project_entity_id!=study.project_entity_id: raise ValueError("model candidate_ref must reference a model in the comparison project")
+    elif kind=="ensemble":
+        ensemble=db.get(PredictiveEnsembleRecord,ref)
+        if ensemble is None or ensemble.project_entity_id!=study.project_entity_id: raise ValueError("ensemble candidate_ref must reference an ensemble in the comparison project")
+    row=PredictiveComparisonCandidateRecord(comparison_study_id=study_id,candidate_key=key,candidate_kind=kind,candidate_ref=ref,label=label,role=str(payload.get("role") or "candidate"),provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {}))
+    db.add(row)
+    try: db.commit()
+    except IntegrityError as exc: db.rollback(); raise ValueError("candidate_key must be unique within comparison_study_id") from exc
+    db.refresh(row); return _ser(row)
+
+def _candidate(db:Session,study_id:str,candidate_id:str)->PredictiveComparisonCandidateRecord:
+    row=db.get(PredictiveComparisonCandidateRecord,candidate_id)
+    if row is None or row.comparison_study_id!=study_id: raise ValueError("candidate_id must belong to comparison_study_id")
+    return row
+
+def add_comparison_evidence(db:Session,study_id:str,payload:dict):
+    _reject(payload); _comparison(db,study_id); candidate=_candidate(db,study_id,str(payload.get("candidate_id") or ""))
+    key=str(payload.get("evidence_key") or "").strip(); family=str(payload.get("metric_family") or "other"); metric=str(payload.get("metric_name") or "").strip(); value=payload.get("metric_value")
+    if not key or not metric or value is None: raise ValueError("evidence_key, metric_name, and metric_value are required")
+    if family not in COMPARISON_METRIC_FAMILIES: raise ValueError(f"metric_family must be one of {sorted(COMPARISON_METRIC_FAMILIES)}")
+    row=PredictiveComparisonEvidenceRecord(comparison_study_id=study_id,candidate_id=candidate.id,evidence_key=key,metric_family=family,metric_name=metric,metric_value_json=value if isinstance(value,dict) else {"value":value},aggregation_json=dict(payload.get("aggregation") or {}),uncertainty_json=dict(payload.get("uncertainty") or {}),evidence_ref=payload.get("evidence_ref"),externally_computed=True,provenance_json=dict(payload.get("provenance") or {}))
+    db.add(row); db.commit(); db.refresh(row); return _ser(row)
+
+def add_pairwise_comparison(db:Session,study_id:str,payload:dict):
+    _reject(payload); _comparison(db,study_id); left=_candidate(db,study_id,str(payload.get("left_candidate_id") or "")); right=_candidate(db,study_id,str(payload.get("right_candidate_id") or ""))
+    if left.id==right.id: raise ValueError("left_candidate_id and right_candidate_id must differ")
+    kind=str(payload.get("comparison_kind") or "metric-difference")
+    if kind not in PAIRWISE_COMPARISON_KINDS: raise ValueError(f"comparison_kind must be one of {sorted(PAIRWISE_COMPARISON_KINDS)}")
+    statistic=payload.get("statistic")
+    if not isinstance(statistic,dict) or not statistic: raise ValueError("statistic must be a non-empty object")
+    row=PredictivePairwiseComparisonRecord(comparison_study_id=study_id,left_candidate_id=left.id,right_candidate_id=right.id,comparison_kind=kind,statistic_json=statistic,uncertainty_json=dict(payload.get("uncertainty") or {}),evidence_ref=payload.get("evidence_ref"),externally_computed=True,provenance_json=dict(payload.get("provenance") or {}))
+    db.add(row); db.commit(); db.refresh(row); return _ser(row)
+
+def comparison_bundle(db:Session,study_id:str):
+    study=_comparison(db,study_id)
+    candidates=[_ser(x) for x in db.scalars(select(PredictiveComparisonCandidateRecord).where(PredictiveComparisonCandidateRecord.comparison_study_id==study_id).order_by(PredictiveComparisonCandidateRecord.created_at.asc())).all()]
+    evidence=[_ser(x) for x in db.scalars(select(PredictiveComparisonEvidenceRecord).where(PredictiveComparisonEvidenceRecord.comparison_study_id==study_id).order_by(PredictiveComparisonEvidenceRecord.created_at.asc())).all()]
+    pairwise=[_ser(x) for x in db.scalars(select(PredictivePairwiseComparisonRecord).where(PredictivePairwiseComparisonRecord.comparison_study_id==study_id).order_by(PredictivePairwiseComparisonRecord.created_at.asc())).all()]
+    packages=[_ser(x) for x in db.scalars(select(PredictiveComparisonPackageRecord).where(PredictiveComparisonPackageRecord.comparison_study_id==study_id).order_by(PredictiveComparisonPackageRecord.revision.asc())).all()]
+    return {"contract":"sc.predictive.model-comparison-package.v1","study":_ser(study),"candidates":candidates,"evidence":evidence,"pairwise_evidence":pairwise,"packages":packages,"boundaries":boundaries()}
+
+def create_comparison_package(db:Session,study_id:str,payload:dict):
+    _reject(payload); state=comparison_bundle(db,study_id); state.pop("packages",None); digest=_sha256(state)
+    last=db.scalar(select(PredictiveComparisonPackageRecord).where(PredictiveComparisonPackageRecord.comparison_study_id==study_id).order_by(PredictiveComparisonPackageRecord.revision.desc())); rev=(last.revision+1) if last else 1
+    row=PredictiveComparisonPackageRecord(comparison_study_id=study_id,revision=rev,content_hash=digest,previous_package_hash=(last.content_hash if last else None),state_json=state,environment_json=dict(payload.get("environment") or {}),provenance_json=dict(payload.get("provenance") or {}),created_by=str(payload.get("created_by") or "operator"))
+    db.add(row); db.commit(); db.refresh(row); return _ser(row)
+

@@ -1,0 +1,19 @@
+PLATFORM CORE v2.55.0 — PREDICTIVE ENSEMBLES & MODEL COMPARISON
+
+MACOS — EXTRACT + VALIDATE + PUSH/TAG
+cd ~/Downloads
+rm -rf sc-platform-core-v2.55.0-release
+mkdir -p sc-platform-core-v2.55.0-release
+unzip -q sustainable-catalyst-platform-core-v2.55.0-release-bundle.zip -d sc-platform-core-v2.55.0-release
+cd sc-platform-core-v2.55.0-release
+chmod +x deploy_and_validate_platform_core_v2_55_0_macos.sh
+./deploy_and_validate_platform_core_v2_55_0_macos.sh "$HOME/Downloads/sustainable-catalyst-platform-core-v2.55.0-release-bundle.zip"
+
+CONTABO — AFTER GITHUB TAG v2.55.0 EXISTS
+ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes catalystadmin@94.72.113.77
+cd /opt/sustainable-catalyst/core
+bash DEPLOY_PLATFORM_CORE_V2550_CONTABO.sh
+
+PUBLIC VERIFICATION
+curl -fsS https://core.sustainablecatalyst.com/health | python3 -m json.tool
+curl -fsS https://core.sustainablecatalyst.com/v1/predictive-intelligence/readiness | python3 -m json.tool

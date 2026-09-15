@@ -1,0 +1,36 @@
+{
+  "$id": "https://sustainablecatalyst.com/schemas/predictive-model-comparison-package-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "boundaries": {
+      "type": "object"
+    },
+    "candidates": {
+      "type": "array"
+    },
+    "contract": {
+      "const": "sc.predictive.model-comparison-package.v1"
+    },
+    "evidence": {
+      "type": "array"
+    },
+    "packages": {
+      "type": "array"
+    },
+    "pairwise_evidence": {
+      "type": "array"
+    },
+    "study": {
+      "type": "object"
+    }
+  },
+  "required": [
+    "contract",
+    "study",
+    "candidates",
+    "evidence",
+    "pairwise_evidence"
+  ],
+  "title": "Predictive Model Comparison Package",
+  "type": "object"
+}

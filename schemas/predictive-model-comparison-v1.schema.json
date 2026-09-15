@@ -1,0 +1,36 @@
+{
+  "$id": "https://sustainablecatalyst.com/schemas/predictive-model-comparison-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "comparison_key": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "evaluation_scope": {
+      "type": "object"
+    },
+    "name": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "project_entity_id": {
+      "type": "string"
+    },
+    "target_semantics": {
+      "type": "object"
+    },
+    "visibility": {
+      "enum": [
+        "private",
+        "public"
+      ]
+    }
+  },
+  "required": [
+    "project_entity_id",
+    "comparison_key",
+    "name"
+  ],
+  "title": "Predictive Model Comparison",
+  "type": "object"
+}

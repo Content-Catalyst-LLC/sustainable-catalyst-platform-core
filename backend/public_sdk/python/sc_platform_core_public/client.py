@@ -764,3 +764,8 @@ PublicApiClient.predictive_backtest_bundle=_predictive_backtest_bundle
 
 def _predictive_calibration_bundle(self, model_id: str, study_id: str): return self.request("GET", f"/predictive-intelligence/models/{model_id}/calibration-studies/{study_id}/bundle")
 PublicApiClient.predictive_calibration_bundle=_predictive_calibration_bundle
+
+def _predictive_ensemble_bundle(self, ensemble_id: str): return self.request("GET", f"/predictive-intelligence/ensembles/{ensemble_id}/bundle")
+def _predictive_comparison_bundle(self, study_id: str): return self.request("GET", f"/predictive-intelligence/comparison-studies/{study_id}/bundle")
+PublicApiClient.predictive_ensemble_bundle=_predictive_ensemble_bundle
+PublicApiClient.predictive_comparison_bundle=_predictive_comparison_bundle

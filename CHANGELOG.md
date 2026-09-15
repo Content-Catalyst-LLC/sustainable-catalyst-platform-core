@@ -1,3 +1,10 @@
+# Changelog
+
+## 2.55.0 — Predictive Ensembles & Model Comparison
+- Added additive migration 0059 for predictive ensembles, members, ensemble forecasts, comparison studies/candidates/evidence, pairwise comparisons, and comparison packages.
+- Added public and authenticated ensemble/comparison bundle APIs plus Python/JavaScript SDK reads.
+- Preserved the specialist-runtime execution boundary: Core does not optimize weights, execute ensembles, compute metrics/significance, rank candidates, or select models.
+
 # v2.54.0 — Probabilistic Forecasting & Calibration
 
 - Additive migration 0058 with six governed probabilistic/calibration tables.

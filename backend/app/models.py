@@ -6571,3 +6571,160 @@ class PredictiveCalibrationPackageRecord(Base):
     provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
     created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+# v2.55.0 — Predictive Ensembles & Model Comparison
+class PredictiveEnsembleRecord(Base):
+    __tablename__ = "predictive_ensembles"
+    __table_args__ = (
+        UniqueConstraint("project_entity_id", "ensemble_key", name="uq_predictive_ensemble_project_key"),
+        Index("ix_predictive_ensemble_project", "project_entity_id"),
+        Index("ix_predictive_ensemble_visibility", "visibility"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    project_entity_id: Mapped[str] = mapped_column(ForeignKey("entities.id", ondelete="CASCADE"), nullable=False)
+    ensemble_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    name: Mapped[str] = mapped_column(String(300), nullable=False)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    ensemble_kind: Mapped[str] = mapped_column(String(80), nullable=False, default="external")
+    target_semantics_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    combination_rule_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    status: Mapped[str] = mapped_column(String(60), nullable=False, default="draft")
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="private")
+    externally_defined: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    contract_version: Mapped[str] = mapped_column(String(180), nullable=False, default="sc.predictive.ensemble.v1")
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class PredictiveEnsembleMemberRecord(Base):
+    __tablename__ = "predictive_ensemble_members"
+    __table_args__ = (
+        UniqueConstraint("ensemble_id", "member_key", name="uq_predictive_ensemble_member_key"),
+        Index("ix_predictive_ensemble_member_ensemble", "ensemble_id"),
+        Index("ix_predictive_ensemble_member_model", "model_id"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    ensemble_id: Mapped[str] = mapped_column(ForeignKey("predictive_ensembles.id", ondelete="CASCADE"), nullable=False)
+    model_id: Mapped[str] = mapped_column(ForeignKey("predictive_models.id", ondelete="CASCADE"), nullable=False)
+    member_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    role: Mapped[str] = mapped_column(String(80), nullable=False, default="member")
+    weight: Mapped[float | None] = mapped_column(Float, nullable=True)
+    runtime_ref: Mapped[str | None] = mapped_column(String(2000), nullable=True)
+    forecast_contract: Mapped[str | None] = mapped_column(String(180), nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class PredictiveEnsembleForecastRecord(Base):
+    __tablename__ = "predictive_ensemble_forecasts"
+    __table_args__ = (
+        Index("ix_predictive_ensemble_forecast_ensemble", "ensemble_id"),
+        Index("ix_predictive_ensemble_forecast_valid", "valid_time"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    ensemble_id: Mapped[str] = mapped_column(ForeignKey("predictive_ensembles.id", ondelete="CASCADE"), nullable=False)
+    valid_time: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    representation: Mapped[str] = mapped_column(String(80), nullable=False)
+    forecast_json: Mapped[dict] = mapped_column(JSON, nullable=False)
+    member_forecast_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    source_ref: Mapped[str | None] = mapped_column(String(2000), nullable=True)
+    externally_generated: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    contract_version: Mapped[str] = mapped_column(String(180), nullable=False, default="sc.predictive.ensemble-forecast.v1")
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class PredictiveComparisonStudyRecord(Base):
+    __tablename__ = "predictive_comparison_studies"
+    __table_args__ = (
+        UniqueConstraint("project_entity_id", "comparison_key", name="uq_predictive_comparison_project_key"),
+        Index("ix_predictive_comparison_project", "project_entity_id"),
+        Index("ix_predictive_comparison_visibility", "visibility"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    project_entity_id: Mapped[str] = mapped_column(ForeignKey("entities.id", ondelete="CASCADE"), nullable=False)
+    comparison_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    name: Mapped[str] = mapped_column(String(300), nullable=False)
+    target_semantics_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    evaluation_scope_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    status: Mapped[str] = mapped_column(String(60), nullable=False, default="recorded")
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="private")
+    externally_computed: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    contract_version: Mapped[str] = mapped_column(String(180), nullable=False, default="sc.predictive.model-comparison.v1")
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class PredictiveComparisonCandidateRecord(Base):
+    __tablename__ = "predictive_comparison_candidates"
+    __table_args__ = (
+        UniqueConstraint("comparison_study_id", "candidate_key", name="uq_predictive_comparison_candidate_key"),
+        Index("ix_predictive_comparison_candidate_study", "comparison_study_id"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    comparison_study_id: Mapped[str] = mapped_column(ForeignKey("predictive_comparison_studies.id", ondelete="CASCADE"), nullable=False)
+    candidate_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    candidate_kind: Mapped[str] = mapped_column(String(80), nullable=False)
+    candidate_ref: Mapped[str] = mapped_column(String(255), nullable=False)
+    label: Mapped[str] = mapped_column(String(300), nullable=False)
+    role: Mapped[str] = mapped_column(String(80), nullable=False, default="candidate")
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class PredictiveComparisonEvidenceRecord(Base):
+    __tablename__ = "predictive_comparison_evidence"
+    __table_args__ = (
+        Index("ix_predictive_comparison_evidence_study", "comparison_study_id"),
+        Index("ix_predictive_comparison_evidence_candidate", "candidate_id"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    comparison_study_id: Mapped[str] = mapped_column(ForeignKey("predictive_comparison_studies.id", ondelete="CASCADE"), nullable=False)
+    candidate_id: Mapped[str] = mapped_column(ForeignKey("predictive_comparison_candidates.id", ondelete="CASCADE"), nullable=False)
+    evidence_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    metric_family: Mapped[str] = mapped_column(String(80), nullable=False)
+    metric_name: Mapped[str] = mapped_column(String(180), nullable=False)
+    metric_value_json: Mapped[dict] = mapped_column(JSON, nullable=False)
+    aggregation_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    uncertainty_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    evidence_ref: Mapped[str | None] = mapped_column(String(2000), nullable=True)
+    externally_computed: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class PredictivePairwiseComparisonRecord(Base):
+    __tablename__ = "predictive_pairwise_comparisons"
+    __table_args__ = (
+        Index("ix_predictive_pairwise_study", "comparison_study_id"),
+        Index("ix_predictive_pairwise_left", "left_candidate_id"),
+        Index("ix_predictive_pairwise_right", "right_candidate_id"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    comparison_study_id: Mapped[str] = mapped_column(ForeignKey("predictive_comparison_studies.id", ondelete="CASCADE"), nullable=False)
+    left_candidate_id: Mapped[str] = mapped_column(ForeignKey("predictive_comparison_candidates.id", ondelete="CASCADE"), nullable=False)
+    right_candidate_id: Mapped[str] = mapped_column(ForeignKey("predictive_comparison_candidates.id", ondelete="CASCADE"), nullable=False)
+    comparison_kind: Mapped[str] = mapped_column(String(80), nullable=False)
+    statistic_json: Mapped[dict] = mapped_column(JSON, nullable=False)
+    uncertainty_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    evidence_ref: Mapped[str | None] = mapped_column(String(2000), nullable=True)
+    externally_computed: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class PredictiveComparisonPackageRecord(Base):
+    __tablename__ = "predictive_comparison_packages"
+    __table_args__ = (
+        UniqueConstraint("comparison_study_id", "revision", name="uq_predictive_comparison_package_revision"),
+        Index("ix_predictive_comparison_package_hash", "content_hash"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    comparison_study_id: Mapped[str] = mapped_column(ForeignKey("predictive_comparison_studies.id", ondelete="CASCADE"), nullable=False)
+    revision: Mapped[int] = mapped_column(Integer, nullable=False)
+    content_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    previous_package_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    state_json: Mapped[dict] = mapped_column(JSON, nullable=False)
+    environment_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+

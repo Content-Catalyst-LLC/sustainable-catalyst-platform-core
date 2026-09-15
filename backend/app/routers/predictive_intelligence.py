@@ -149,6 +149,56 @@ def calibration_package(model_id:str,study_id:str,request:Request,payload:Payloa
     enabled(request)
     try:return svc.create_calibration_package(db,model_id,study_id,payload.data)
     except Exception as exc:raise bad(exc)
+@router.post("/ensembles",dependencies=[Depends(require_write)])
+def ensemble_create(request:Request,payload:Payload,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.create_ensemble(db,payload.data)
+    except Exception as exc:raise bad(exc)
+@router.post("/ensembles/{ensemble_id}/members",dependencies=[Depends(require_write)])
+def ensemble_member(ensemble_id:str,request:Request,payload:Payload,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.add_ensemble_member(db,ensemble_id,payload.data)
+    except Exception as exc:raise bad(exc)
+@router.post("/ensembles/{ensemble_id}/forecasts",dependencies=[Depends(require_write)])
+def ensemble_forecast(ensemble_id:str,request:Request,payload:Payload,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.add_ensemble_forecast(db,ensemble_id,payload.data)
+    except Exception as exc:raise bad(exc)
+@router.get("/ensembles/{ensemble_id}/bundle",dependencies=[Depends(require_read)])
+def ensemble_bundle(ensemble_id:str,request:Request,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.ensemble_bundle(db,ensemble_id)
+    except Exception as exc:raise bad(exc)
+@router.post("/comparison-studies",dependencies=[Depends(require_write)])
+def comparison_study_create(request:Request,payload:Payload,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.create_comparison_study(db,payload.data)
+    except Exception as exc:raise bad(exc)
+@router.post("/comparison-studies/{study_id}/candidates",dependencies=[Depends(require_write)])
+def comparison_candidate(study_id:str,request:Request,payload:Payload,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.add_comparison_candidate(db,study_id,payload.data)
+    except Exception as exc:raise bad(exc)
+@router.post("/comparison-studies/{study_id}/evidence",dependencies=[Depends(require_write)])
+def comparison_evidence(study_id:str,request:Request,payload:Payload,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.add_comparison_evidence(db,study_id,payload.data)
+    except Exception as exc:raise bad(exc)
+@router.post("/comparison-studies/{study_id}/pairwise-evidence",dependencies=[Depends(require_write)])
+def pairwise_comparison(study_id:str,request:Request,payload:Payload,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.add_pairwise_comparison(db,study_id,payload.data)
+    except Exception as exc:raise bad(exc)
+@router.get("/comparison-studies/{study_id}/bundle",dependencies=[Depends(require_read)])
+def comparison_bundle(study_id:str,request:Request,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.comparison_bundle(db,study_id)
+    except Exception as exc:raise bad(exc)
+@router.post("/comparison-studies/{study_id}/packages",dependencies=[Depends(require_write)])
+def comparison_package(study_id:str,request:Request,payload:Payload,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.create_comparison_package(db,study_id,payload.data)
+    except Exception as exc:raise bad(exc)
 @public_router.get("/readiness",response_model=PublicEnvelope)
 def public_readiness(request:Request,db:Session=Depends(get_session),_ctx:PublicApiContext=Depends(require_public_scope("data:read"))):
     public_enabled(request); data=svc.readiness(db); data.update({"release":request.app.state.settings.version,"enabled":True}); return PublicEnvelope(data=data,meta={"api_version":"v1","request_id":request.state.request_id})
@@ -165,3 +215,16 @@ def public_calibration_bundle(model_id:str,study_id:str,request:Request,db:Sessi
     if model.visibility!="public": raise HTTPException(status_code=404,detail="Predictive model not found.")
     return PublicEnvelope(data=svc.calibration_bundle(db,model_id,study_id),meta={"api_version":"v1","request_id":request.state.request_id})
 
+
+
+@public_router.get("/ensembles/{ensemble_id}/bundle",response_model=PublicEnvelope)
+def public_ensemble_bundle(ensemble_id:str,request:Request,db:Session=Depends(get_session),_ctx:PublicApiContext=Depends(require_public_scope("data:read"))):
+    public_enabled(request); ensemble=svc._ensemble(db,ensemble_id)
+    if ensemble.visibility!="public": raise HTTPException(status_code=404,detail="Predictive ensemble not found.")
+    return PublicEnvelope(data=svc.ensemble_bundle(db,ensemble_id),meta={"api_version":"v1","request_id":request.state.request_id})
+
+@public_router.get("/comparison-studies/{study_id}/bundle",response_model=PublicEnvelope)
+def public_comparison_bundle(study_id:str,request:Request,db:Session=Depends(get_session),_ctx:PublicApiContext=Depends(require_public_scope("data:read"))):
+    public_enabled(request); study=svc._comparison(db,study_id)
+    if study.visibility!="public": raise HTTPException(status_code=404,detail="Predictive comparison study not found.")
+    return PublicEnvelope(data=svc.comparison_bundle(db,study_id),meta={"api_version":"v1","request_id":request.state.request_id})
