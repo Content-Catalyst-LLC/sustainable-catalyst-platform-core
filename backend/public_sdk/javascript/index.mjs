@@ -560,3 +560,7 @@ PublicApiClient.prototype.reproduciblePredictivePackageBundle=function(packageId
 
 // v2.61.0 Visual Reasoning Runtime & Scene Graph
 PublicApiClient.prototype.visualRuntimeSceneBundle=function(sceneId){return this.request(`/visual-runtime/scenes/${encodeURIComponent(sceneId)}/bundle`);};
+
+export async function visualRuntimeCompositionBundle(client, compositionId) {
+  return client.request(`/v1/visual-runtime/composition/compositions/${compositionId}/bundle`);
+}

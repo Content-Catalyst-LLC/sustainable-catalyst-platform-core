@@ -48,6 +48,7 @@ from .routers import (
     research_objects,
     visual_reasoning,
     visual_runtime,
+    visual_composition,
     visualization_registry,
     system_maps,
     flow_maps,
@@ -240,6 +241,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # v2.61.0 renderer-neutral Visual Reasoning Runtime & Scene Graph.
     app.include_router(visual_runtime.router)
     app.include_router(visual_runtime.public_router)
+    # v2.62.0 governed interactive renderer and coordinated view composition.
+    app.include_router(visual_composition.router)
     # Open Forensics includes v2.51.0 Reproducible Investigation Packages.
     app.include_router(open_forensics.router)
     app.include_router(open_forensics.public_router)

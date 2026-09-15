@@ -7657,3 +7657,97 @@ class VisualRuntimeSnapshotRecord(Base):
     provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
     created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+# v2.62.0 — Interactive Renderer & View Composition
+class VisualRendererProfileRecord(Base):
+    __tablename__ = "visual_renderer_profiles"
+    __table_args__ = (UniqueConstraint("renderer_key", name="uq_visual_renderer_profile_key"), Index("ix_visual_renderer_profile_kind", "renderer_kind"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    renderer_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    name: Mapped[str] = mapped_column(String(300), nullable=False)
+    renderer_kind: Mapped[str] = mapped_column(String(80), nullable=False, default="svg")
+    capabilities_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    supported_view_kinds_json: Mapped[list] = mapped_column(JSON, default=list)
+    interaction_contract_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class VisualViewCompositionRecord(Base):
+    __tablename__ = "visual_view_compositions"
+    __table_args__ = (UniqueConstraint("scene_id", "composition_key", name="uq_visual_view_composition_key"), Index("ix_visual_view_composition_scene", "scene_id"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    scene_id: Mapped[str] = mapped_column(ForeignKey("visual_runtime_scenes.id", ondelete="CASCADE"), nullable=False)
+    composition_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    name: Mapped[str] = mapped_column(String(300), nullable=False)
+    composition_kind: Mapped[str] = mapped_column(String(80), nullable=False, default="single")
+    layout_spec_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    shared_state_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="private")
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+class VisualViewAssignmentRecord(Base):
+    __tablename__ = "visual_view_assignments"
+    __table_args__ = (UniqueConstraint("composition_id", "view_id", name="uq_visual_view_assignment"), Index("ix_visual_view_assignment_composition", "composition_id"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    composition_id: Mapped[str] = mapped_column(ForeignKey("visual_view_compositions.id", ondelete="CASCADE"), nullable=False)
+    view_id: Mapped[str] = mapped_column(ForeignKey("visual_runtime_views.id", ondelete="CASCADE"), nullable=False)
+    renderer_profile_id: Mapped[str | None] = mapped_column(ForeignKey("visual_renderer_profiles.id", ondelete="SET NULL"), nullable=True)
+    slot_key: Mapped[str] = mapped_column(String(180), nullable=False, default="main")
+    order_index: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    camera_state_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    layer_state_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    renderer_options_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class VisualViewLinkGroupRecord(Base):
+    __tablename__ = "visual_view_link_groups"
+    __table_args__ = (UniqueConstraint("composition_id", "link_key", name="uq_visual_view_link_group_key"), Index("ix_visual_view_link_group_composition", "composition_id"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    composition_id: Mapped[str] = mapped_column(ForeignKey("visual_view_compositions.id", ondelete="CASCADE"), nullable=False)
+    link_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    name: Mapped[str] = mapped_column(String(300), nullable=False)
+    linked_view_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    propagation_policy_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class VisualInteractionStateRecord(Base):
+    __tablename__ = "visual_interaction_states"
+    __table_args__ = (Index("ix_visual_interaction_state_composition", "composition_id"), Index("ix_visual_interaction_state_kind", "state_kind"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    composition_id: Mapped[str] = mapped_column(ForeignKey("visual_view_compositions.id", ondelete="CASCADE"), nullable=False)
+    source_view_id: Mapped[str | None] = mapped_column(ForeignKey("visual_runtime_views.id", ondelete="SET NULL"), nullable=True)
+    state_kind: Mapped[str] = mapped_column(String(80), nullable=False, default="selection")
+    state_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    propagation_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class VisualRendererResolutionRecord(Base):
+    __tablename__ = "visual_renderer_resolutions"
+    __table_args__ = (Index("ix_visual_renderer_resolution_composition", "composition_id"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    composition_id: Mapped[str] = mapped_column(ForeignKey("visual_view_compositions.id", ondelete="CASCADE"), nullable=False)
+    view_id: Mapped[str] = mapped_column(ForeignKey("visual_runtime_views.id", ondelete="CASCADE"), nullable=False)
+    renderer_profile_id: Mapped[str] = mapped_column(ForeignKey("visual_renderer_profiles.id", ondelete="CASCADE"), nullable=False)
+    resolution_status: Mapped[str] = mapped_column(String(40), nullable=False, default="compatible")
+    capability_evidence_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class VisualCompositionSnapshotRecord(Base):
+    __tablename__ = "visual_composition_snapshots"
+    __table_args__ = (UniqueConstraint("composition_id", "revision", name="uq_visual_composition_snapshot_revision"), Index("ix_visual_composition_snapshot_hash", "content_hash"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    composition_id: Mapped[str] = mapped_column(ForeignKey("visual_view_compositions.id", ondelete="CASCADE"), nullable=False)
+    revision: Mapped[int] = mapped_column(Integer, nullable=False)
+    content_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    previous_snapshot_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    state_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)

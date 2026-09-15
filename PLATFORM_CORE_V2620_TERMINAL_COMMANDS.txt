@@ -1,0 +1,1 @@
+See deploy_and_validate_platform_core_v2_62_0_macos.sh and DEPLOY_PLATFORM_CORE_V2620_CONTABO.sh.

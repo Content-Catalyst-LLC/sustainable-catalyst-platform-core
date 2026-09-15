@@ -804,3 +804,9 @@ def _visual_runtime_scene_bundle(self, scene_id: str):
     return self.request("GET", f"/visual-runtime/scenes/{scene_id}/bundle")
 
 PublicApiClient.visual_runtime_scene_bundle = _visual_runtime_scene_bundle
+
+
+def _visual_runtime_composition_bundle(self, composition_id: str):
+    return self._request("GET", f"/v1/visual-runtime/composition/compositions/{composition_id}/bundle")
+
+PublicApiClient.visual_runtime_composition_bundle = _visual_runtime_composition_bundle
