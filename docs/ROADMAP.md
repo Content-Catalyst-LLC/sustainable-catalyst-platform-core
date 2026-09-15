@@ -319,8 +319,8 @@ Next planned: **v2.49.0 — Quantitative Reconstruction & Reproduction Handoffs*
 - v2.53.0 — Time-Series Forecasting & Backtesting
 - v2.54.0 — Probabilistic Forecasting & Calibration (built)
 - v2.55.0 — Predictive Ensembles & Model Comparison (built)
-- v2.56.0 — Anomaly, Change-Point & Early-Warning Intelligence
-- v2.57.0 — Spatial-Temporal Predictive Intelligence
+- v2.56.0 — Anomaly, Change-Point & Early-Warning Intelligence (built)
+- v2.57.0 — Spatial-Temporal Predictive Intelligence (built)
 - v2.58.0 — Causal-Predictive Integration
 - v2.59.0 — Predictive Decision Intelligence
 - v2.60.0 — Reproducible Predictive Intelligence Packages
@@ -328,8 +328,8 @@ Next planned: **v2.49.0 — Quantitative Reconstruction & Reproduction Handoffs*
 - v2.53.0 — Time-Series Forecasting & Backtesting (built)
 - v2.54.0 — Probabilistic Forecasting & Calibration (built)
 - v2.55.0 — Predictive Ensembles & Model Comparison (built)
-- v2.56.0 — Anomaly, Change-Point & Early-Warning Intelligence
-- v2.57.0 — Spatial-Temporal Predictive Intelligence
+- v2.56.0 — Anomaly, Change-Point & Early-Warning Intelligence (built)
+- v2.57.0 — Spatial-Temporal Predictive Intelligence (built)
 - v2.58.0 — Causal-Predictive Integration
 - v2.59.0 — Predictive Decision Intelligence
 - v2.60.0 — Reproducible Predictive Intelligence Packages

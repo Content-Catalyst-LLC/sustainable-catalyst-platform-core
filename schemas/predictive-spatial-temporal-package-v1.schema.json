@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "contract": {
+      "const": "sc.predictive.spatial-temporal-package.v1"
+    },
+    "evaluations": {
+      "type": "array"
+    },
+    "forecasts": {
+      "type": "array"
+    },
+    "hotspot_evidence": {
+      "type": "array"
+    },
+    "observations": {
+      "type": "array"
+    },
+    "packages": {
+      "type": "array"
+    },
+    "propagation_evidence": {
+      "type": "array"
+    },
+    "spatial_units": {
+      "type": "array"
+    },
+    "study": {
+      "type": "object"
+    }
+  },
+  "required": [
+    "contract",
+    "study",
+    "spatial_units",
+    "forecasts",
+    "observations",
+    "propagation_evidence",
+    "hotspot_evidence",
+    "evaluations"
+  ],
+  "title": "Spatial-Temporal Predictive Package",
+  "type": "object"
+}

@@ -241,6 +241,52 @@ def monitoring_package(study_id:str,request:Request,payload:Payload,db:Session=D
     try:return svc.create_monitoring_package(db,study_id,payload.data)
     except Exception as exc:raise bad(exc)
 
+@router.post("/spatial-temporal-studies",dependencies=[Depends(require_write)])
+def spatial_temporal_study_create(request:Request,payload:Payload,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.create_spatial_temporal_study(db,payload.data)
+    except Exception as exc:raise bad(exc)
+@router.post("/spatial-temporal-studies/{study_id}/units",dependencies=[Depends(require_write)])
+def spatial_temporal_unit(study_id:str,request:Request,payload:Payload,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.add_spatial_unit(db,study_id,payload.data)
+    except Exception as exc:raise bad(exc)
+@router.post("/spatial-temporal-studies/{study_id}/forecasts",dependencies=[Depends(require_write)])
+def spatial_temporal_forecast(study_id:str,request:Request,payload:Payload,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.add_spatial_temporal_forecast(db,study_id,payload.data)
+    except Exception as exc:raise bad(exc)
+@router.post("/spatial-temporal-studies/{study_id}/observations",dependencies=[Depends(require_write)])
+def spatial_temporal_observation(study_id:str,request:Request,payload:Payload,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.add_spatial_temporal_observation(db,study_id,payload.data)
+    except Exception as exc:raise bad(exc)
+@router.post("/spatial-temporal-studies/{study_id}/propagation-evidence",dependencies=[Depends(require_write)])
+def spatial_propagation_evidence(study_id:str,request:Request,payload:Payload,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.add_spatial_propagation_evidence(db,study_id,payload.data)
+    except Exception as exc:raise bad(exc)
+@router.post("/spatial-temporal-studies/{study_id}/hotspot-evidence",dependencies=[Depends(require_write)])
+def spatial_hotspot_evidence(study_id:str,request:Request,payload:Payload,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.add_spatial_hotspot_evidence(db,study_id,payload.data)
+    except Exception as exc:raise bad(exc)
+@router.post("/spatial-temporal-studies/{study_id}/evaluations",dependencies=[Depends(require_write)])
+def spatial_temporal_evaluation(study_id:str,request:Request,payload:Payload,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.add_spatial_temporal_evaluation(db,study_id,payload.data)
+    except Exception as exc:raise bad(exc)
+@router.get("/spatial-temporal-studies/{study_id}/bundle",dependencies=[Depends(require_read)])
+def spatial_temporal_bundle(study_id:str,request:Request,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.spatial_temporal_bundle(db,study_id)
+    except Exception as exc:raise bad(exc)
+@router.post("/spatial-temporal-studies/{study_id}/packages",dependencies=[Depends(require_write)])
+def spatial_temporal_package(study_id:str,request:Request,payload:Payload,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.create_spatial_temporal_package(db,study_id,payload.data)
+    except Exception as exc:raise bad(exc)
+
 @public_router.get("/readiness",response_model=PublicEnvelope)
 def public_readiness(request:Request,db:Session=Depends(get_session),_ctx:PublicApiContext=Depends(require_public_scope("data:read"))):
     public_enabled(request); data=svc.readiness(db); data.update({"release":request.app.state.settings.version,"enabled":True}); return PublicEnvelope(data=data,meta={"api_version":"v1","request_id":request.state.request_id})
@@ -277,3 +323,10 @@ def public_monitoring_bundle(study_id:str,request:Request,db:Session=Depends(get
     public_enabled(request); study=svc._monitoring_study(db,study_id)
     if study.visibility!="public": raise HTTPException(status_code=404,detail="Predictive monitoring study not found.")
     return PublicEnvelope(data=svc.monitoring_bundle(db,study_id),meta={"api_version":"v1","request_id":request.state.request_id})
+
+
+@public_router.get("/spatial-temporal-studies/{study_id}/bundle",response_model=PublicEnvelope)
+def public_spatial_temporal_bundle(study_id:str,request:Request,db:Session=Depends(get_session),_ctx:PublicApiContext=Depends(require_public_scope("data:read"))):
+    public_enabled(request); study=svc._spatial_temporal_study(db,study_id)
+    if study.visibility!="public": raise HTTPException(status_code=404,detail="Predictive spatial-temporal study not found.")
+    return PublicEnvelope(data=svc.spatial_temporal_bundle(db,study_id),meta={"api_version":"v1","request_id":request.state.request_id})

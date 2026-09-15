@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "evidence_kind": {
+      "enum": [
+        "forecast",
+        "observation",
+        "propagation",
+        "hotspot",
+        "evaluation"
+      ]
+    },
+    "evidence_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "payload": {
+      "type": "object"
+    },
+    "provenance": {
+      "type": "object"
+    },
+    "spatial_unit_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "time": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "uncertainty": {
+      "type": "object"
+    }
+  },
+  "required": [
+    "evidence_kind",
+    "payload"
+  ],
+  "title": "Spatial-Temporal Predictive Evidence",
+  "type": "object"
+}

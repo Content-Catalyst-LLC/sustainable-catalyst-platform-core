@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Sustainable Catalyst Platform Core
  * Description: WordPress connector for Sustainable Catalyst Platform Core registry, graph, evidence, developer, gateway, free live-data, international-law, scientific-data, official-statistics, geospatial, time-series, STAC, map-layer, streaming, alerts, source-reliability, and operational-facility, humanitarian-access, essential-services, and country-evidence federation and reconciliation, and Earth/Ocean/Space scientific-service routing, cross-product exchange, distributed scale-control services, and governance/access/audit, production-certification/recovery, and observability/SLO production-operations services, plus incident-response, change-control, rollback-coordination, continuity, backup-verification, disaster-recovery, and multi-region resilience/failover-coordination, and data-lifecycle/archival-integrity/preservation services, plus Federated Core trusted-node exchange services and capacity forecasting/resource-governance services, plus identity/credential/cryptographic-key lifecycle governance, distributed workload governance, and scientific object storage/processing adapter services, research object/model services, renderer-neutral visual reasoning object services, and visualization specification/renderer registry services, and governed System Maps and Flow Maps services.
- * Version: 2.56.0
+ * Version: 2.57.0
  * Author: Content Catalyst LLC
  * License: MIT
  */
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('SCPC_VERSION', '2.56.0');
+define('SCPC_VERSION', '2.57.0');
 define('SCPC_OPTION_BACKEND_URL', 'scpc_backend_url');
 define('SCPC_OPTION_READ_KEY', 'scpc_read_key');
 
@@ -1520,4 +1520,13 @@ add_shortcode('sc_platform_core_predictive_monitoring_status', function () {
       esc_html((string)($counts['anomaly_observations'] ?? 0)) . ' anomaly records · ' .
       esc_html((string)($counts['change_points'] ?? 0)) . ' change points · ' .
       esc_html((string)($counts['early_warning_signals'] ?? 0)) . ' warning signals · Core detection disabled</div>';
+});
+
+
+add_shortcode('sc_platform_core_predictive_spatial_temporal_status', function () {
+    $r = wp_remote_get(rtrim(SCPC_CORE_BASE_URL, '/') . '/v1/predictive-intelligence/readiness', array('timeout' => 8));
+    if (is_wp_error($r)) return '<span class="scpc-status scpc-status-offline">Spatial-temporal predictive status unavailable.</span>';
+    $d = json_decode(wp_remote_retrieve_body($r), true);
+    $ok = is_array($d) && !empty($d['spatial_temporal_study_registry_by_core']);
+    return $ok ? '<span class="scpc-status scpc-status-online">Spatial-Temporal Predictive Intelligence Online</span>' : '<span class="scpc-status scpc-status-offline">Spatial-Temporal Predictive Intelligence unavailable.</span>';
 });

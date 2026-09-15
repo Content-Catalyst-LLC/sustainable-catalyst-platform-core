@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "forecast_horizon": {
+      "type": "object"
+    },
+    "model_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "name": {
+      "type": "string"
+    },
+    "project_entity_id": {
+      "type": "string"
+    },
+    "spatial_reference": {
+      "type": "string"
+    },
+    "spatial_scope": {
+      "type": "object"
+    },
+    "study_key": {
+      "type": "string"
+    },
+    "temporal_reference": {
+      "type": "string"
+    },
+    "temporal_scope": {
+      "type": "object"
+    },
+    "visibility": {
+      "enum": [
+        "private",
+        "public"
+      ]
+    }
+  },
+  "required": [
+    "project_entity_id",
+    "study_key",
+    "name"
+  ],
+  "title": "Spatial-Temporal Predictive Study",
+  "type": "object"
+}

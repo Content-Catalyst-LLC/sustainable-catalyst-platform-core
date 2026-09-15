@@ -1,0 +1,10 @@
+Platform Core v2.57.0 build-session validation
+
+PASS: Python/PHP/JavaScript syntax checks
+PASS: dependency-free v2.57.0 release contract
+PASS: push-safe secret scan
+PASS: v2.57.0 backend invariant validator
+PASS: v2.57/v2.56 immediate regression set (16 tests in release-tool pass)
+PASS: release-specific tests after model-binding hardening (6 tests)
+PASS: historical regression batches explicitly completed before packaging: 13 + 22 + 13 + 12 + 10 tests
+NOTE: The complete historical release list remains mandatory in deploy_and_validate_platform_core_v2_57_0_macos.sh before GitHub promotion.

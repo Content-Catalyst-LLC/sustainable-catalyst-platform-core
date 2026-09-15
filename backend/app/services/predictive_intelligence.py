@@ -23,6 +23,8 @@ from ..models import (
     PredictivePairwiseComparisonRecord, PredictiveComparisonPackageRecord,
     PredictiveMonitoringStudyRecord, PredictiveDetectionRuleRecord, PredictiveAnomalyObservationRecord,
     PredictiveChangePointRecord, PredictiveEarlyWarningSignalRecord, PredictiveMonitoringEpisodeRecord, PredictiveMonitoringPackageRecord,
+    PredictiveSpatialTemporalStudyRecord, PredictiveSpatialUnitRecord, PredictiveSpatialTemporalForecastRecord, PredictiveSpatialTemporalObservationRecord,
+    PredictiveSpatialPropagationEvidenceRecord, PredictiveSpatialHotspotEvidenceRecord, PredictiveSpatialTemporalEvaluationRecord, PredictiveSpatialTemporalPackageRecord,
 )
 
 MODEL_KINDS={"statistical","machine-learning","simulation","hybrid","rules-based","external","other"}
@@ -44,7 +46,9 @@ MONITORING_KINDS={"anomaly","change-point","early-warning","multi-signal","exter
 DETECTION_RULE_KINDS={"anomaly-threshold","change-point","early-warning","composite","external","other"}
 ANOMALY_KINDS={"point","contextual","collective","distribution-shift","residual","forecast-error","external","other"}
 EARLY_WARNING_SIGNAL_KINDS={"threshold-proximity","trend-acceleration","variance-change","autocorrelation-change","critical-slowing","forecast-risk","external","other"}
-FORBIDDEN_FIELDS={"fit_by_core","train_by_core","infer_by_core","execute_by_core","core_execute","probability_calibrated_by_core","winner","rank","verdict","truth_value","automatic_truth_promotion","model_selected_by_core","backtest_execute_by_core","metric_compute_by_core","resample_by_core","probabilistic_infer_by_core","calibration_fit_by_core","recalibration_apply_by_core","scoring_rule_compute_by_core","calibration_metric_compute_by_core","ensemble_construct_by_core","ensemble_execute_by_core","ensemble_weight_optimize_by_core","comparison_metric_compute_by_core","significance_compute_by_core","rank_models_by_core","select_model_by_core","automatic_model_selection","anomaly_detect_by_core","change_point_detect_by_core","early_warning_compute_by_core","threshold_optimize_by_core","alert_dispatch_by_core","causal_attribution_by_core","automatic_intervention_by_core"}
+SPATIAL_UNIT_KINDS={"point","grid-cell","region","administrative-area","watershed","corridor","network-node","external","other"}
+SPATIAL_FORECAST_REPRESENTATIONS={"point","probability","quantile","interval","distribution","categorical","field","external","other"}
+FORBIDDEN_FIELDS={"fit_by_core","train_by_core","infer_by_core","execute_by_core","core_execute","probability_calibrated_by_core","winner","rank","verdict","truth_value","automatic_truth_promotion","model_selected_by_core","backtest_execute_by_core","metric_compute_by_core","resample_by_core","probabilistic_infer_by_core","calibration_fit_by_core","recalibration_apply_by_core","scoring_rule_compute_by_core","calibration_metric_compute_by_core","ensemble_construct_by_core","ensemble_execute_by_core","ensemble_weight_optimize_by_core","comparison_metric_compute_by_core","significance_compute_by_core","rank_models_by_core","select_model_by_core","automatic_model_selection","anomaly_detect_by_core","change_point_detect_by_core","early_warning_compute_by_core","threshold_optimize_by_core","alert_dispatch_by_core","causal_attribution_by_core","automatic_intervention_by_core","spatial_interpolate_by_core","spatial_infer_by_core","trajectory_predict_by_core","propagation_model_by_core","hotspot_detect_by_core","spatial_metric_compute_by_core"}
 
 def _ser(row):
     out={}
@@ -94,6 +98,9 @@ def boundaries():
       "pairwise_comparison_evidence_by_core":True,"reproducible_model_comparison_packages_by_core":True,
       "monitoring_study_registry_by_core":True,"detection_rule_registry_by_core":True,"anomaly_evidence_registry_by_core":True,
       "change_point_evidence_registry_by_core":True,"early_warning_signal_registry_by_core":True,"monitoring_episode_registry_by_core":True,"reproducible_monitoring_packages_by_core":True,
+      "spatial_temporal_study_registry_by_core":True,"spatial_unit_registry_by_core":True,"spatial_temporal_forecast_provenance_by_core":True,
+      "spatial_temporal_observation_registry_by_core":True,"propagation_evidence_registry_by_core":True,"hotspot_evidence_registry_by_core":True,
+      "spatial_temporal_evaluation_evidence_by_core":True,"reproducible_spatial_temporal_packages_by_core":True,
       "model_fitting_by_core":False,"forecast_inference_execution_by_core":False,"backtest_execution_by_core":False,"metric_computation_by_core":False,
       "time_series_resampling_by_core":False,"probabilistic_calibration_by_core":False,"ensemble_selection_by_core":False,
       "probabilistic_inference_execution_by_core":False,"calibration_mapping_fitting_by_core":False,"calibration_mapping_application_by_core":False,
@@ -102,12 +109,14 @@ def boundaries():
       "model_comparison_metric_computation_by_core":False,"statistical_significance_computation_by_core":False,"model_ranking_by_core":False,"automatic_model_selection":False,
       "anomaly_detection_by_core":False,"change_point_detection_by_core":False,"early_warning_computation_by_core":False,"threshold_optimization_by_core":False,
       "alert_dispatch_by_core":False,"causal_attribution_by_core":False,"automatic_intervention_by_core":False,
+      "spatial_interpolation_by_core":False,"spatial_inference_execution_by_core":False,"trajectory_prediction_by_core":False,"propagation_modeling_by_core":False,
+      "hotspot_detection_by_core":False,"spatial_temporal_metric_computation_by_core":False,
       "automatic_model_ranking_by_core":False,"automatic_truth_promotion":False,
     }
 
 def readiness(db:Session):
     def count(m): return int(db.scalar(select(func.count()).select_from(m)) or 0)
-    return {"migration_0056_applied":True,"migration_0057_applied":True,"migration_0058_applied":True,"migration_0059_applied":True,"migration_0060_applied":True,"contract":"sc.predictive.model.v1","forecast_contract":"sc.predictive.forecast-provenance.v1","handoff_contract":"sc.predictive.runtime-handoff.v1","backtest_contract":"sc.predictive.backtest-plan.v1","backtest_package_contract":"sc.predictive.backtest-package.v1","probabilistic_forecast_contract":"sc.predictive.probabilistic-forecast.v1","calibration_study_contract":"sc.predictive.calibration-study.v1","calibration_package_contract":"sc.predictive.calibration-package.v1","ensemble_contract":"sc.predictive.ensemble.v1","model_comparison_contract":"sc.predictive.model-comparison.v1","model_comparison_package_contract":"sc.predictive.model-comparison-package.v1","monitoring_study_contract":"sc.predictive.monitoring-study.v1","monitoring_package_contract":"sc.predictive.monitoring-package.v1","counts":{
+    return {"migration_0056_applied":True,"migration_0057_applied":True,"migration_0058_applied":True,"migration_0059_applied":True,"migration_0060_applied":True,"migration_0061_applied":True,"contract":"sc.predictive.model.v1","forecast_contract":"sc.predictive.forecast-provenance.v1","handoff_contract":"sc.predictive.runtime-handoff.v1","backtest_contract":"sc.predictive.backtest-plan.v1","backtest_package_contract":"sc.predictive.backtest-package.v1","probabilistic_forecast_contract":"sc.predictive.probabilistic-forecast.v1","calibration_study_contract":"sc.predictive.calibration-study.v1","calibration_package_contract":"sc.predictive.calibration-package.v1","ensemble_contract":"sc.predictive.ensemble.v1","model_comparison_contract":"sc.predictive.model-comparison.v1","model_comparison_package_contract":"sc.predictive.model-comparison-package.v1","monitoring_study_contract":"sc.predictive.monitoring-study.v1","monitoring_package_contract":"sc.predictive.monitoring-package.v1","spatial_temporal_study_contract":"sc.predictive.spatial-temporal-study.v1","spatial_temporal_package_contract":"sc.predictive.spatial-temporal-package.v1","counts":{
       "models":count(PredictiveModelRecord),"targets":count(PredictiveTargetRecord),"features":count(PredictiveFeatureRecord),"training_windows":count(PredictiveTrainingWindowRecord),
       "forecast_runs":count(PredictiveForecastRunRecord),"forecast_observations":count(PredictiveForecastObservationRecord),"evaluations":count(PredictiveEvaluationRecord),"handoffs":count(PredictiveRuntimeHandoffRecord),"snapshots":count(PredictiveForecastSnapshotRecord),
       "time_series_datasets":count(PredictiveTimeSeriesDatasetRecord),"forecast_windows":count(PredictiveForecastWindowRecord),"baseline_models":count(PredictiveBaselineModelRecord),"backtest_plans":count(PredictiveBacktestPlanRecord),
@@ -117,7 +126,10 @@ def readiness(db:Session):
       "ensembles":count(PredictiveEnsembleRecord),"ensemble_members":count(PredictiveEnsembleMemberRecord),"ensemble_forecasts":count(PredictiveEnsembleForecastRecord),
       "comparison_studies":count(PredictiveComparisonStudyRecord),"comparison_candidates":count(PredictiveComparisonCandidateRecord),"comparison_evidence":count(PredictiveComparisonEvidenceRecord),"pairwise_comparisons":count(PredictivePairwiseComparisonRecord),"comparison_packages":count(PredictiveComparisonPackageRecord),
       "monitoring_studies":count(PredictiveMonitoringStudyRecord),"detection_rules":count(PredictiveDetectionRuleRecord),"anomaly_observations":count(PredictiveAnomalyObservationRecord),
-      "change_points":count(PredictiveChangePointRecord),"early_warning_signals":count(PredictiveEarlyWarningSignalRecord),"monitoring_episodes":count(PredictiveMonitoringEpisodeRecord),"monitoring_packages":count(PredictiveMonitoringPackageRecord)},**boundaries()}
+      "change_points":count(PredictiveChangePointRecord),"early_warning_signals":count(PredictiveEarlyWarningSignalRecord),"monitoring_episodes":count(PredictiveMonitoringEpisodeRecord),"monitoring_packages":count(PredictiveMonitoringPackageRecord),
+      "spatial_temporal_studies":count(PredictiveSpatialTemporalStudyRecord),"spatial_units":count(PredictiveSpatialUnitRecord),"spatial_temporal_forecasts":count(PredictiveSpatialTemporalForecastRecord),
+      "spatial_temporal_observations":count(PredictiveSpatialTemporalObservationRecord),"spatial_propagation_evidence":count(PredictiveSpatialPropagationEvidenceRecord),"spatial_hotspot_evidence":count(PredictiveSpatialHotspotEvidenceRecord),
+      "spatial_temporal_evaluations":count(PredictiveSpatialTemporalEvaluationRecord),"spatial_temporal_packages":count(PredictiveSpatialTemporalPackageRecord)},**boundaries()}
 
 def create_model(db:Session,payload:dict):
     _reject(payload); project=str(payload.get("project_entity_id") or "").strip(); ent=db.get(Entity,project)
@@ -315,10 +327,11 @@ def bundle(db:Session,model_id:str,public_only=False):
     probabilistic_forecasts=q(PredictiveProbabilisticForecastRecord); calibration_studies=q(PredictiveCalibrationStudyRecord); probabilistic_evaluations=q(PredictiveProbabilisticEvaluationRecord)
     ensemble_memberships=[_ser(x) for x in db.scalars(select(PredictiveEnsembleMemberRecord).where(PredictiveEnsembleMemberRecord.model_id==model_id).order_by(PredictiveEnsembleMemberRecord.created_at.asc())).all()]
     monitoring_studies=[_ser(x) for x in db.scalars(select(PredictiveMonitoringStudyRecord).where(PredictiveMonitoringStudyRecord.model_id==model_id).order_by(PredictiveMonitoringStudyRecord.created_at.asc())).all()]
+    spatial_temporal_studies=[_ser(x) for x in db.scalars(select(PredictiveSpatialTemporalStudyRecord).where(PredictiveSpatialTemporalStudyRecord.model_id==model_id).order_by(PredictiveSpatialTemporalStudyRecord.created_at.asc())).all()]
     observations=[]
     runids=[r["id"] for r in runs]
     if runids: observations=[_ser(x) for x in db.scalars(select(PredictiveForecastObservationRecord).where(PredictiveForecastObservationRecord.forecast_run_id.in_(runids)).order_by(PredictiveForecastObservationRecord.created_at.asc())).all()]
-    return {"contract":"sc.predictive.forecast-provenance.v1","model":_ser(model),"targets":targets,"features":features,"training_windows":windows,"forecast_runs":runs,"forecast_observations":observations,"evaluations":evals,"handoffs":handoffs,"snapshots":snaps,"time_series_datasets":ts_datasets,"forecast_windows":forecast_windows,"baseline_models":baselines,"backtest_plans":backtest_plans,"probabilistic_forecasts":probabilistic_forecasts,"calibration_studies":calibration_studies,"probabilistic_evaluations":probabilistic_evaluations,"ensemble_memberships":ensemble_memberships,"monitoring_studies":monitoring_studies,"boundaries":boundaries()}
+    return {"contract":"sc.predictive.forecast-provenance.v1","model":_ser(model),"targets":targets,"features":features,"training_windows":windows,"forecast_runs":runs,"forecast_observations":observations,"evaluations":evals,"handoffs":handoffs,"snapshots":snaps,"time_series_datasets":ts_datasets,"forecast_windows":forecast_windows,"baseline_models":baselines,"backtest_plans":backtest_plans,"probabilistic_forecasts":probabilistic_forecasts,"calibration_studies":calibration_studies,"probabilistic_evaluations":probabilistic_evaluations,"ensemble_memberships":ensemble_memberships,"monitoring_studies":monitoring_studies,"spatial_temporal_studies":spatial_temporal_studies,"boundaries":boundaries()}
 
 def create_snapshot(db:Session,model_id:str,payload:dict):
     _reject(payload); state=bundle(db,model_id); state.pop("snapshots",None); digest=_sha256(state); last=db.scalar(select(PredictiveForecastSnapshotRecord).where(PredictiveForecastSnapshotRecord.model_id==model_id).order_by(PredictiveForecastSnapshotRecord.revision.desc()))
@@ -685,4 +698,101 @@ def create_monitoring_package(db:Session,study_id:str,payload:dict):
     _reject(payload); state=monitoring_bundle(db,study_id); state.pop("packages",None); digest=_sha256(state)
     last=db.scalar(select(PredictiveMonitoringPackageRecord).where(PredictiveMonitoringPackageRecord.monitoring_study_id==study_id).order_by(PredictiveMonitoringPackageRecord.revision.desc())); rev=(last.revision+1) if last else 1
     row=PredictiveMonitoringPackageRecord(monitoring_study_id=study_id,revision=rev,content_hash=digest,previous_package_hash=(last.content_hash if last else None),state_json=state,environment_json=dict(payload.get("environment") or {}),provenance_json=dict(payload.get("provenance") or {}),created_by=str(payload.get("created_by") or "operator"))
+    db.add(row); db.commit(); db.refresh(row); return _ser(row)
+
+
+# v2.57.0 — Spatial-Temporal Predictive Intelligence
+def _spatial_temporal_study(db:Session,study_id:str)->PredictiveSpatialTemporalStudyRecord:
+    row=db.get(PredictiveSpatialTemporalStudyRecord,study_id)
+    if row is None: raise HTTPException(status_code=404,detail="Predictive spatial-temporal study not found.")
+    return row
+
+def _spatial_unit(db:Session,study_id:str,unit_id:str|None):
+    if not unit_id: return None
+    row=db.get(PredictiveSpatialUnitRecord,unit_id)
+    if row is None or row.spatial_temporal_study_id!=study_id: raise ValueError("spatial_unit_id must belong to spatial_temporal_study_id")
+    return row
+
+def create_spatial_temporal_study(db:Session,payload:dict):
+    _reject(payload); project=str(payload.get("project_entity_id") or "").strip(); ent=db.get(Entity,project)
+    if ent is None: raise ValueError("project_entity_id must reference an existing Core entity")
+    model_id=payload.get("model_id")
+    if model_id: _model(db,model_id)
+    target_id=payload.get("target_id")
+    if target_id:
+        target=db.get(PredictiveTargetRecord,target_id)
+        if target is None or (model_id and target.model_id!=model_id): raise ValueError("target_id must reference the study model when model_id is supplied")
+    dataset_id=payload.get("dataset_id")
+    if dataset_id:
+        dataset=db.get(PredictiveTimeSeriesDatasetRecord,dataset_id)
+        if dataset is None or (model_id and dataset.model_id!=model_id): raise ValueError("dataset_id must reference the study model when model_id is supplied")
+    vis=str(payload.get("visibility") or "private")
+    if vis not in {"private","public"}: raise ValueError("visibility must be private or public")
+    row=PredictiveSpatialTemporalStudyRecord(project_entity_id=project,model_id=model_id,target_id=target_id,dataset_id=dataset_id,study_key=str(payload.get("study_key") or "").strip(),name=str(payload.get("name") or "").strip(),spatial_reference=str(payload.get("spatial_reference") or "EPSG:4326"),temporal_reference=str(payload.get("temporal_reference") or "UTC"),spatial_scope_json=dict(payload.get("spatial_scope") or {}),temporal_scope_json=dict(payload.get("temporal_scope") or {}),forecast_horizon_json=dict(payload.get("forecast_horizon") or {}),status=str(payload.get("status") or "recorded"),visibility=vis,externally_computed=True,provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {}))
+    if not row.study_key or not row.name: raise ValueError("study_key and name are required")
+    db.add(row)
+    try: db.commit()
+    except IntegrityError as exc: db.rollback(); raise ValueError("study_key must be unique within project_entity_id") from exc
+    db.refresh(row); return _ser(row)
+
+def add_spatial_unit(db:Session,study_id:str,payload:dict):
+    _reject(payload); _spatial_temporal_study(db,study_id); kind=str(payload.get("unit_kind") or "region")
+    if kind not in SPATIAL_UNIT_KINDS: raise ValueError(f"unit_kind must be one of {sorted(SPATIAL_UNIT_KINDS)}")
+    parent=payload.get("parent_unit_id")
+    if parent: _spatial_unit(db,study_id,parent)
+    row=PredictiveSpatialUnitRecord(spatial_temporal_study_id=study_id,unit_key=str(payload.get("unit_key") or "").strip(),unit_kind=kind,label=str(payload.get("label") or "").strip(),geometry_json=dict(payload.get("geometry") or {}),bbox_json=list(payload.get("bbox") or []),source_ref=payload.get("source_ref"),parent_unit_id=parent,provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {}))
+    if not row.unit_key or not row.label: raise ValueError("unit_key and label are required")
+    db.add(row)
+    try: db.commit()
+    except IntegrityError as exc: db.rollback(); raise ValueError("unit_key must be unique within spatial_temporal_study_id") from exc
+    db.refresh(row); return _ser(row)
+
+def add_spatial_temporal_forecast(db:Session,study_id:str,payload:dict):
+    _reject(payload); _spatial_temporal_study(db,study_id); unit=_spatial_unit(db,study_id,payload.get("spatial_unit_id")); rep=str(payload.get("representation") or "point")
+    if rep not in SPATIAL_FORECAST_REPRESENTATIONS: raise ValueError(f"representation must be one of {sorted(SPATIAL_FORECAST_REPRESENTATIONS)}")
+    runtime=str(payload.get("runtime_product") or "external")
+    if runtime not in RUNTIME_PRODUCTS: raise ValueError("unsupported runtime_product")
+    forecast=payload.get("forecast")
+    if not isinstance(forecast,dict) or not forecast: raise ValueError("forecast object is required")
+    row=PredictiveSpatialTemporalForecastRecord(spatial_temporal_study_id=study_id,spatial_unit_id=(unit.id if unit else None),forecast_key=str(payload.get("forecast_key") or "").strip(),issued_at=_parse_dt(payload.get("issued_at")),valid_time=_parse_dt(payload.get("valid_time")),valid_start=_parse_dt(payload.get("valid_start")),valid_end=_parse_dt(payload.get("valid_end")),representation=rep,forecast_json=forecast,uncertainty_json=dict(payload.get("uncertainty") or {}),source_forecast_ref=payload.get("source_forecast_ref"),runtime_product=runtime,runtime_ref=payload.get("runtime_ref"),externally_computed=True,provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {}))
+    if not row.forecast_key: raise ValueError("forecast_key is required")
+    db.add(row); db.commit(); db.refresh(row); return _ser(row)
+
+def add_spatial_temporal_observation(db:Session,study_id:str,payload:dict):
+    _reject(payload); _spatial_temporal_study(db,study_id); unit=_spatial_unit(db,study_id,payload.get("spatial_unit_id")); value=payload.get("value")
+    if not isinstance(value,dict) or not value: raise ValueError("value object is required")
+    row=PredictiveSpatialTemporalObservationRecord(spatial_temporal_study_id=study_id,spatial_unit_id=(unit.id if unit else None),observation_key=str(payload.get("observation_key") or "").strip(),observed_at=_parse_dt(payload.get("observed_at")),value_json=value,uncertainty_json=dict(payload.get("uncertainty") or {}),source_ref=payload.get("source_ref"),evidence_ref=payload.get("evidence_ref"),provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {}))
+    if not row.observation_key: raise ValueError("observation_key is required")
+    db.add(row); db.commit(); db.refresh(row); return _ser(row)
+
+def add_spatial_propagation_evidence(db:Session,study_id:str,payload:dict):
+    _reject(payload); _spatial_temporal_study(db,study_id); source=_spatial_unit(db,study_id,payload.get("source_unit_id")); target=_spatial_unit(db,study_id,payload.get("target_unit_id")); statistic=payload.get("statistic")
+    if not isinstance(statistic,dict) or not statistic: raise ValueError("statistic object is required")
+    row=PredictiveSpatialPropagationEvidenceRecord(spatial_temporal_study_id=study_id,evidence_key=str(payload.get("evidence_key") or "").strip(),source_unit_id=(source.id if source else None),target_unit_id=(target.id if target else None),evidence_kind=str(payload.get("evidence_kind") or "propagation"),lag_json=dict(payload.get("lag") or {}),statistic_json=statistic,uncertainty_json=dict(payload.get("uncertainty") or {}),evidence_ref=payload.get("evidence_ref"),externally_computed=True,provenance_json=dict(payload.get("provenance") or {}))
+    if not row.evidence_key: raise ValueError("evidence_key is required")
+    db.add(row); db.commit(); db.refresh(row); return _ser(row)
+
+def add_spatial_hotspot_evidence(db:Session,study_id:str,payload:dict):
+    _reject(payload); _spatial_temporal_study(db,study_id); unit=_spatial_unit(db,study_id,payload.get("spatial_unit_id")); score=payload.get("score")
+    if not isinstance(score,dict) or not score: raise ValueError("score object is required")
+    row=PredictiveSpatialHotspotEvidenceRecord(spatial_temporal_study_id=study_id,spatial_unit_id=(unit.id if unit else None),hotspot_key=str(payload.get("hotspot_key") or "").strip(),observed_at=_parse_dt(payload.get("observed_at")),hotspot_kind=str(payload.get("hotspot_kind") or "external"),score_json=score,threshold_json=dict(payload.get("threshold") or {}),geometry_json=dict(payload.get("geometry") or {}),evidence_ref=payload.get("evidence_ref"),externally_detected=True,provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {}))
+    if not row.hotspot_key: raise ValueError("hotspot_key is required")
+    db.add(row); db.commit(); db.refresh(row); return _ser(row)
+
+def add_spatial_temporal_evaluation(db:Session,study_id:str,payload:dict):
+    _reject(payload); _spatial_temporal_study(db,study_id); evidence=payload.get("metric_evidence")
+    if not isinstance(evidence,dict) or not evidence: raise ValueError("metric_evidence object is required")
+    row=PredictiveSpatialTemporalEvaluationRecord(spatial_temporal_study_id=study_id,evaluation_key=str(payload.get("evaluation_key") or "").strip(),evaluation_kind=str(payload.get("evaluation_kind") or "spatial-temporal"),window_json=dict(payload.get("window") or {}),metric_evidence_json=evidence,strata_json=dict(payload.get("strata") or {}),evidence_ref=payload.get("evidence_ref"),externally_computed=True,provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {}))
+    if not row.evaluation_key: raise ValueError("evaluation_key is required")
+    db.add(row); db.commit(); db.refresh(row); return _ser(row)
+
+def spatial_temporal_bundle(db:Session,study_id:str):
+    study=_spatial_temporal_study(db,study_id)
+    def rows(model): return [_ser(x) for x in db.scalars(select(model).where(model.spatial_temporal_study_id==study_id).order_by(model.created_at.asc())).all()]
+    return {"contract":"sc.predictive.spatial-temporal-package.v1","study":_ser(study),"spatial_units":rows(PredictiveSpatialUnitRecord),"forecasts":rows(PredictiveSpatialTemporalForecastRecord),"observations":rows(PredictiveSpatialTemporalObservationRecord),"propagation_evidence":rows(PredictiveSpatialPropagationEvidenceRecord),"hotspot_evidence":rows(PredictiveSpatialHotspotEvidenceRecord),"evaluations":rows(PredictiveSpatialTemporalEvaluationRecord),"packages":rows(PredictiveSpatialTemporalPackageRecord),"boundaries":boundaries()}
+
+def create_spatial_temporal_package(db:Session,study_id:str,payload:dict):
+    _reject(payload); state=spatial_temporal_bundle(db,study_id); state.pop("packages",None); digest=_sha256(state)
+    last=db.scalar(select(PredictiveSpatialTemporalPackageRecord).where(PredictiveSpatialTemporalPackageRecord.spatial_temporal_study_id==study_id).order_by(PredictiveSpatialTemporalPackageRecord.revision.desc())); rev=(last.revision+1) if last else 1
+    row=PredictiveSpatialTemporalPackageRecord(spatial_temporal_study_id=study_id,revision=rev,content_hash=digest,previous_package_hash=(last.content_hash if last else None),state_json=state,environment_json=dict(payload.get("environment") or {}),provenance_json=dict(payload.get("provenance") or {}),created_by=str(payload.get("created_by") or "operator"))
     db.add(row); db.commit(); db.refresh(row); return _ser(row)

@@ -543,3 +543,7 @@ PublicApiClient.prototype.predictiveComparisonBundle=function(studyId){return th
 
 // v2.56.0 Predictive Monitoring
 PublicApiClient.prototype.predictiveMonitoringBundle=function(studyId){return this.request(`/predictive-intelligence/monitoring-studies/${encodeURIComponent(studyId)}/bundle`);};
+
+
+// v2.57.0 Spatial-Temporal Predictive Intelligence
+PublicApiClient.prototype.predictiveSpatialTemporalBundle=function(studyId){return this.request(`/predictive-intelligence/spatial-temporal-studies/${encodeURIComponent(studyId)}/bundle`);};

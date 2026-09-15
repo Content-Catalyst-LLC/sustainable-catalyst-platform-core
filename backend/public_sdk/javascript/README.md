@@ -200,3 +200,8 @@ Read portable, integrity-verifiable Open Forensics investigation packages assemb
 ## v2.56.0 — Anomaly, Change-Point & Early-Warning Intelligence
 
 Adds public monitoring-bundle access. Detection, threshold optimization, alerting, causal attribution, and intervention remain external to Platform Core.
+
+
+## v2.57.0 — Spatial-Temporal Predictive Intelligence
+
+Read public predictive readiness and governed spatial-temporal study bundles. Core preserves spatial/temporal forecast, observation, propagation, hotspot, evaluation, and package provenance; specialist runtimes perform spatial inference and computation.

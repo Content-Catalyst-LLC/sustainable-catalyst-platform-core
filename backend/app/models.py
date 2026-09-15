@@ -6881,3 +6881,176 @@ class PredictiveMonitoringPackageRecord(Base):
     provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
     created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+# v2.57.0 — Spatial-Temporal Predictive Intelligence
+class PredictiveSpatialTemporalStudyRecord(Base):
+    __tablename__ = "predictive_spatial_temporal_studies"
+    __table_args__ = (
+        UniqueConstraint("project_entity_id", "study_key", name="uq_predictive_spatiotemporal_study_project_key"),
+        Index("ix_predictive_spatiotemporal_study_project", "project_entity_id"),
+        Index("ix_predictive_spatiotemporal_study_model", "model_id"),
+        Index("ix_predictive_spatiotemporal_study_visibility", "visibility"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    project_entity_id: Mapped[str] = mapped_column(ForeignKey("entities.id", ondelete="CASCADE"), nullable=False)
+    model_id: Mapped[str | None] = mapped_column(ForeignKey("predictive_models.id", ondelete="CASCADE"), nullable=True)
+    target_id: Mapped[str | None] = mapped_column(ForeignKey("predictive_targets.id", ondelete="CASCADE"), nullable=True)
+    dataset_id: Mapped[str | None] = mapped_column(ForeignKey("predictive_time_series_datasets.id", ondelete="CASCADE"), nullable=True)
+    study_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    name: Mapped[str] = mapped_column(String(300), nullable=False)
+    spatial_reference: Mapped[str] = mapped_column(String(180), nullable=False, default="EPSG:4326")
+    temporal_reference: Mapped[str] = mapped_column(String(120), nullable=False, default="UTC")
+    spatial_scope_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    temporal_scope_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    forecast_horizon_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    status: Mapped[str] = mapped_column(String(60), nullable=False, default="recorded")
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="private")
+    externally_computed: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    contract_version: Mapped[str] = mapped_column(String(180), nullable=False, default="sc.predictive.spatial-temporal-study.v1")
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class PredictiveSpatialUnitRecord(Base):
+    __tablename__ = "predictive_spatial_units"
+    __table_args__ = (
+        UniqueConstraint("spatial_temporal_study_id", "unit_key", name="uq_predictive_spatial_unit_study_key"),
+        Index("ix_predictive_spatial_unit_study", "spatial_temporal_study_id"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    spatial_temporal_study_id: Mapped[str] = mapped_column(ForeignKey("predictive_spatial_temporal_studies.id", ondelete="CASCADE"), nullable=False)
+    unit_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    unit_kind: Mapped[str] = mapped_column(String(80), nullable=False, default="region")
+    label: Mapped[str] = mapped_column(String(300), nullable=False)
+    geometry_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    bbox_json: Mapped[list] = mapped_column(JSON, default=list)
+    source_ref: Mapped[str | None] = mapped_column(String(2000), nullable=True)
+    parent_unit_id: Mapped[str | None] = mapped_column(ForeignKey("predictive_spatial_units.id", ondelete="SET NULL"), nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class PredictiveSpatialTemporalForecastRecord(Base):
+    __tablename__ = "predictive_spatial_temporal_forecasts"
+    __table_args__ = (
+        UniqueConstraint("spatial_temporal_study_id", "forecast_key", name="uq_predictive_spatiotemporal_forecast_study_key"),
+        Index("ix_predictive_spatiotemporal_forecast_study", "spatial_temporal_study_id"),
+        Index("ix_predictive_spatiotemporal_forecast_valid_time", "valid_time"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    spatial_temporal_study_id: Mapped[str] = mapped_column(ForeignKey("predictive_spatial_temporal_studies.id", ondelete="CASCADE"), nullable=False)
+    spatial_unit_id: Mapped[str | None] = mapped_column(ForeignKey("predictive_spatial_units.id", ondelete="SET NULL"), nullable=True)
+    forecast_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    issued_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    valid_time: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    valid_start: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    valid_end: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    representation: Mapped[str] = mapped_column(String(80), nullable=False, default="point")
+    forecast_json: Mapped[dict] = mapped_column(JSON, nullable=False)
+    uncertainty_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    source_forecast_ref: Mapped[str | None] = mapped_column(String(2000), nullable=True)
+    runtime_product: Mapped[str] = mapped_column(String(80), nullable=False, default="external")
+    runtime_ref: Mapped[str | None] = mapped_column(String(2000), nullable=True)
+    externally_computed: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class PredictiveSpatialTemporalObservationRecord(Base):
+    __tablename__ = "predictive_spatial_temporal_observations"
+    __table_args__ = (
+        UniqueConstraint("spatial_temporal_study_id", "observation_key", name="uq_predictive_spatiotemporal_observation_study_key"),
+        Index("ix_predictive_spatiotemporal_observation_study", "spatial_temporal_study_id"),
+        Index("ix_predictive_spatiotemporal_observation_time", "observed_at"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    spatial_temporal_study_id: Mapped[str] = mapped_column(ForeignKey("predictive_spatial_temporal_studies.id", ondelete="CASCADE"), nullable=False)
+    spatial_unit_id: Mapped[str | None] = mapped_column(ForeignKey("predictive_spatial_units.id", ondelete="SET NULL"), nullable=True)
+    observation_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    observed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    value_json: Mapped[dict] = mapped_column(JSON, nullable=False)
+    uncertainty_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    source_ref: Mapped[str | None] = mapped_column(String(2000), nullable=True)
+    evidence_ref: Mapped[str | None] = mapped_column(String(2000), nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class PredictiveSpatialPropagationEvidenceRecord(Base):
+    __tablename__ = "predictive_spatial_propagation_evidence"
+    __table_args__ = (
+        UniqueConstraint("spatial_temporal_study_id", "evidence_key", name="uq_predictive_spatial_propagation_study_key"),
+        Index("ix_predictive_spatial_propagation_study", "spatial_temporal_study_id"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    spatial_temporal_study_id: Mapped[str] = mapped_column(ForeignKey("predictive_spatial_temporal_studies.id", ondelete="CASCADE"), nullable=False)
+    evidence_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    source_unit_id: Mapped[str | None] = mapped_column(ForeignKey("predictive_spatial_units.id", ondelete="SET NULL"), nullable=True)
+    target_unit_id: Mapped[str | None] = mapped_column(ForeignKey("predictive_spatial_units.id", ondelete="SET NULL"), nullable=True)
+    evidence_kind: Mapped[str] = mapped_column(String(80), nullable=False, default="propagation")
+    lag_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    statistic_json: Mapped[dict] = mapped_column(JSON, nullable=False)
+    uncertainty_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    evidence_ref: Mapped[str | None] = mapped_column(String(2000), nullable=True)
+    externally_computed: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class PredictiveSpatialHotspotEvidenceRecord(Base):
+    __tablename__ = "predictive_spatial_hotspot_evidence"
+    __table_args__ = (
+        UniqueConstraint("spatial_temporal_study_id", "hotspot_key", name="uq_predictive_spatial_hotspot_study_key"),
+        Index("ix_predictive_spatial_hotspot_study", "spatial_temporal_study_id"),
+        Index("ix_predictive_spatial_hotspot_time", "observed_at"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    spatial_temporal_study_id: Mapped[str] = mapped_column(ForeignKey("predictive_spatial_temporal_studies.id", ondelete="CASCADE"), nullable=False)
+    spatial_unit_id: Mapped[str | None] = mapped_column(ForeignKey("predictive_spatial_units.id", ondelete="SET NULL"), nullable=True)
+    hotspot_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    observed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    hotspot_kind: Mapped[str] = mapped_column(String(80), nullable=False, default="external")
+    score_json: Mapped[dict] = mapped_column(JSON, nullable=False)
+    threshold_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    geometry_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    evidence_ref: Mapped[str | None] = mapped_column(String(2000), nullable=True)
+    externally_detected: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class PredictiveSpatialTemporalEvaluationRecord(Base):
+    __tablename__ = "predictive_spatial_temporal_evaluations"
+    __table_args__ = (
+        UniqueConstraint("spatial_temporal_study_id", "evaluation_key", name="uq_predictive_spatiotemporal_evaluation_study_key"),
+        Index("ix_predictive_spatiotemporal_evaluation_study", "spatial_temporal_study_id"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    spatial_temporal_study_id: Mapped[str] = mapped_column(ForeignKey("predictive_spatial_temporal_studies.id", ondelete="CASCADE"), nullable=False)
+    evaluation_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    evaluation_kind: Mapped[str] = mapped_column(String(80), nullable=False, default="spatial-temporal")
+    window_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metric_evidence_json: Mapped[dict] = mapped_column(JSON, nullable=False)
+    strata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    evidence_ref: Mapped[str | None] = mapped_column(String(2000), nullable=True)
+    externally_computed: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class PredictiveSpatialTemporalPackageRecord(Base):
+    __tablename__ = "predictive_spatial_temporal_packages"
+    __table_args__ = (
+        UniqueConstraint("spatial_temporal_study_id", "revision", name="uq_predictive_spatiotemporal_package_revision"),
+        Index("ix_predictive_spatiotemporal_package_hash", "content_hash"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    spatial_temporal_study_id: Mapped[str] = mapped_column(ForeignKey("predictive_spatial_temporal_studies.id", ondelete="CASCADE"), nullable=False)
+    revision: Mapped[int] = mapped_column(Integer, nullable=False)
+    content_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    previous_package_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    state_json: Mapped[dict] = mapped_column(JSON, nullable=False)
+    environment_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)

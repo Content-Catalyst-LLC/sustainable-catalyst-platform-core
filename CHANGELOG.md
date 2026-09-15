@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.57.0 — Spatial-Temporal Predictive Intelligence
+- Added additive migration 0061 with governed spatial-temporal studies, spatial units, forecast/observation fields, propagation and hotspot evidence, external evaluations, and reproducible packages.
+- Added authenticated/public spatial-temporal bundle APIs plus Python/JavaScript SDK reads and WordPress status integration.
+- Preserved the specialist-runtime boundary: Core does not interpolate, execute spatial inference, predict trajectories, model propagation, detect hotspots, compute spatial metrics, or intervene automatically.
+
+## 2.56.0 — Anomaly, Change-Point & Early-Warning Intelligence
+- Added additive migration 0060 for governed monitoring studies, detection rules, anomalies, change points, early-warning signals, monitoring episodes, and reproducible packages.
+- Preserved external detection and non-intervention boundaries.
+
 ## 2.55.0 — Predictive Ensembles & Model Comparison
 - Added additive migration 0059 for predictive ensembles, members, ensemble forecasts, comparison studies/candidates/evidence, pairwise comparisons, and comparison packages.
 - Added public and authenticated ensemble/comparison bundle APIs plus Python/JavaScript SDK reads.
