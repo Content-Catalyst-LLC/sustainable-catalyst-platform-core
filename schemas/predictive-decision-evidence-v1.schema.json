@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/predictive-decision-evidence-v1.schema.json",
+  "title": "Predictive Decision Evidence",
+  "type": "object",
+  "required": [
+    "binding_key",
+    "evidence_kind"
+  ],
+  "properties": {
+    "binding_key": {
+      "type": "string"
+    },
+    "evidence_kind": {
+      "type": "string"
+    },
+    "evidence_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "interpretation": {
+      "type": "object"
+    },
+    "uncertainty": {
+      "type": "object"
+    }
+  }
+}

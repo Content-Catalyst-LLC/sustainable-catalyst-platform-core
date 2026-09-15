@@ -785,3 +785,10 @@ def _predictive_causal_bundle(self, study_id: str):
     return self.request("GET", f"/predictive-intelligence/causal-predictive-studies/{study_id}/bundle")
 
 PublicApiClient.predictive_causal_bundle = _predictive_causal_bundle
+
+
+# v2.59.0 Predictive Decision Intelligence
+def _predictive_decision_bundle(self, study_id: str):
+    return self.request("GET", f"/predictive-intelligence/decision-studies/{study_id}/bundle")
+
+PublicApiClient.predictive_decision_bundle = _predictive_decision_bundle

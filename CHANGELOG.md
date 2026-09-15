@@ -1,3 +1,8 @@
+## 2.59.0 — 2026-09-14
+
+- Added Predictive Decision Intelligence with governed decision studies, options, criteria, evidence bindings, external assessments/evaluations, Decision Studio handoffs, and immutable packages.
+- Added migration `0063` and explicit non-optimization/non-recommendation boundaries.
+
 
 ## 2.58.0 — 2026-09-14
 - Added Causal-Predictive Integration with governed predictive/causal study bindings, intervention scenarios, external counterfactual forecast provenance, causal-effect and evaluation evidence, specialist-runtime handoffs, and immutable packages.

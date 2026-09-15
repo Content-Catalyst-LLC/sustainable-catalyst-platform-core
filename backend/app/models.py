@@ -7217,3 +7217,152 @@ class PredictiveCausalPackageRecord(Base):
     provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
     created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+# v2.59.0 — Predictive Decision Intelligence
+class PredictiveDecisionStudyRecord(Base):
+    __tablename__ = "predictive_decision_studies"
+    __table_args__ = (
+        UniqueConstraint("project_entity_id", "study_key", name="uq_predictive_decision_study_project_key"),
+        Index("ix_predictive_decision_study_project", "project_entity_id"),
+        Index("ix_predictive_decision_study_model", "predictive_model_id"),
+        Index("ix_predictive_decision_study_visibility", "visibility"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    project_entity_id: Mapped[str] = mapped_column(ForeignKey("entities.id", ondelete="CASCADE"), nullable=False)
+    predictive_model_id: Mapped[str] = mapped_column(ForeignKey("predictive_models.id", ondelete="CASCADE"), nullable=False)
+    causal_predictive_study_id: Mapped[str | None] = mapped_column(ForeignKey("predictive_causal_studies.id", ondelete="SET NULL"), nullable=True)
+    monitoring_study_id: Mapped[str | None] = mapped_column(ForeignKey("predictive_monitoring_studies.id", ondelete="SET NULL"), nullable=True)
+    spatial_temporal_study_id: Mapped[str | None] = mapped_column(ForeignKey("predictive_spatial_temporal_studies.id", ondelete="SET NULL"), nullable=True)
+    study_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    name: Mapped[str] = mapped_column(String(300), nullable=False)
+    decision_kind: Mapped[str] = mapped_column(String(80), nullable=False, default="forecast-informed")
+    objective_scope_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    decision_horizon_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    constraints_json: Mapped[list] = mapped_column(JSON, default=list)
+    status: Mapped[str] = mapped_column(String(60), nullable=False, default="recorded")
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="private")
+    externally_computed: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    contract_version: Mapped[str] = mapped_column(String(180), nullable=False, default="sc.predictive.decision-study.v1")
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class PredictiveDecisionOptionRecord(Base):
+    __tablename__ = "predictive_decision_options"
+    __table_args__ = (UniqueConstraint("decision_study_id", "option_key", name="uq_predictive_decision_option_study_key"), Index("ix_predictive_decision_option_study", "decision_study_id"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    decision_study_id: Mapped[str] = mapped_column(ForeignKey("predictive_decision_studies.id", ondelete="CASCADE"), nullable=False)
+    option_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    name: Mapped[str] = mapped_column(String(300), nullable=False)
+    action_json: Mapped[dict] = mapped_column(JSON, nullable=False)
+    feasibility_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    constraints_json: Mapped[list] = mapped_column(JSON, default=list)
+    source_ref: Mapped[str | None] = mapped_column(String(2000), nullable=True)
+    status: Mapped[str] = mapped_column(String(60), nullable=False, default="candidate")
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class PredictiveDecisionCriterionRecord(Base):
+    __tablename__ = "predictive_decision_criteria"
+    __table_args__ = (UniqueConstraint("decision_study_id", "criterion_key", name="uq_predictive_decision_criterion_study_key"), Index("ix_predictive_decision_criterion_study", "decision_study_id"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    decision_study_id: Mapped[str] = mapped_column(ForeignKey("predictive_decision_studies.id", ondelete="CASCADE"), nullable=False)
+    criterion_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    name: Mapped[str] = mapped_column(String(300), nullable=False)
+    value_kind: Mapped[str] = mapped_column(String(80), nullable=False, default="numeric")
+    preference_direction: Mapped[str] = mapped_column(String(40), nullable=False, default="descriptive")
+    threshold_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    preference_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class PredictiveDecisionEvidenceBindingRecord(Base):
+    __tablename__ = "predictive_decision_evidence_bindings"
+    __table_args__ = (UniqueConstraint("decision_study_id", "binding_key", name="uq_predictive_decision_evidence_study_key"), Index("ix_predictive_decision_evidence_study", "decision_study_id"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    decision_study_id: Mapped[str] = mapped_column(ForeignKey("predictive_decision_studies.id", ondelete="CASCADE"), nullable=False)
+    binding_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    option_id: Mapped[str | None] = mapped_column(ForeignKey("predictive_decision_options.id", ondelete="SET NULL"), nullable=True)
+    criterion_id: Mapped[str | None] = mapped_column(ForeignKey("predictive_decision_criteria.id", ondelete="SET NULL"), nullable=True)
+    evidence_kind: Mapped[str] = mapped_column(String(80), nullable=False)
+    forecast_run_id: Mapped[str | None] = mapped_column(ForeignKey("predictive_forecast_runs.id", ondelete="SET NULL"), nullable=True)
+    probabilistic_forecast_id: Mapped[str | None] = mapped_column(ForeignKey("predictive_probabilistic_forecasts.id", ondelete="SET NULL"), nullable=True)
+    early_warning_signal_id: Mapped[str | None] = mapped_column(ForeignKey("predictive_early_warning_signals.id", ondelete="SET NULL"), nullable=True)
+    spatial_temporal_forecast_id: Mapped[str | None] = mapped_column(ForeignKey("predictive_spatial_temporal_forecasts.id", ondelete="SET NULL"), nullable=True)
+    counterfactual_forecast_id: Mapped[str | None] = mapped_column(ForeignKey("predictive_counterfactual_forecasts.id", ondelete="SET NULL"), nullable=True)
+    causal_effect_evidence_id: Mapped[str | None] = mapped_column(ForeignKey("predictive_causal_effect_evidence.id", ondelete="SET NULL"), nullable=True)
+    evidence_ref: Mapped[str | None] = mapped_column(String(2000), nullable=True)
+    interpretation_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    uncertainty_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    externally_computed: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class PredictiveDecisionScenarioAssessmentRecord(Base):
+    __tablename__ = "predictive_decision_scenario_assessments"
+    __table_args__ = (UniqueConstraint("decision_study_id", "assessment_key", name="uq_predictive_decision_assessment_study_key"), Index("ix_predictive_decision_assessment_study", "decision_study_id"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    decision_study_id: Mapped[str] = mapped_column(ForeignKey("predictive_decision_studies.id", ondelete="CASCADE"), nullable=False)
+    option_id: Mapped[str] = mapped_column(ForeignKey("predictive_decision_options.id", ondelete="CASCADE"), nullable=False)
+    assessment_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    scenario_json: Mapped[dict] = mapped_column(JSON, nullable=False)
+    outcome_evidence_json: Mapped[dict] = mapped_column(JSON, nullable=False)
+    risk_evidence_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    uncertainty_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    runtime_product: Mapped[str] = mapped_column(String(80), nullable=False, default="external")
+    runtime_ref: Mapped[str | None] = mapped_column(String(2000), nullable=True)
+    externally_computed: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class PredictiveDecisionEvaluationRecord(Base):
+    __tablename__ = "predictive_decision_evaluations"
+    __table_args__ = (UniqueConstraint("decision_study_id", "evaluation_key", name="uq_predictive_decision_eval_study_key"), Index("ix_predictive_decision_eval_study", "decision_study_id"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    decision_study_id: Mapped[str] = mapped_column(ForeignKey("predictive_decision_studies.id", ondelete="CASCADE"), nullable=False)
+    evaluation_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    evaluation_kind: Mapped[str] = mapped_column(String(80), nullable=False, default="tradeoff-evidence")
+    option_id: Mapped[str | None] = mapped_column(ForeignKey("predictive_decision_options.id", ondelete="SET NULL"), nullable=True)
+    criterion_id: Mapped[str | None] = mapped_column(ForeignKey("predictive_decision_criteria.id", ondelete="SET NULL"), nullable=True)
+    metric_evidence_json: Mapped[dict] = mapped_column(JSON, nullable=False)
+    tradeoff_evidence_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    regret_evidence_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    uncertainty_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    evidence_ref: Mapped[str | None] = mapped_column(String(2000), nullable=True)
+    externally_computed: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class PredictiveDecisionHandoffRecord(Base):
+    __tablename__ = "predictive_decision_handoffs"
+    __table_args__ = (Index("ix_predictive_decision_handoff_study", "decision_study_id"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    decision_study_id: Mapped[str] = mapped_column(ForeignKey("predictive_decision_studies.id", ondelete="CASCADE"), nullable=False)
+    target_product: Mapped[str] = mapped_column(String(80), nullable=False)
+    purpose: Mapped[str] = mapped_column(String(180), nullable=False, default="decision-review")
+    request_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    response_ref: Mapped[str | None] = mapped_column(String(2000), nullable=True)
+    status: Mapped[str] = mapped_column(String(60), nullable=False, default="recorded")
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class PredictiveDecisionPackageRecord(Base):
+    __tablename__ = "predictive_decision_packages"
+    __table_args__ = (UniqueConstraint("decision_study_id", "revision", name="uq_predictive_decision_package_revision"), Index("ix_predictive_decision_package_hash", "content_hash"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    decision_study_id: Mapped[str] = mapped_column(ForeignKey("predictive_decision_studies.id", ondelete="CASCADE"), nullable=False)
+    revision: Mapped[int] = mapped_column(Integer, nullable=False)
+    content_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    previous_package_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    state_json: Mapped[dict] = mapped_column(JSON, nullable=False)
+    environment_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)

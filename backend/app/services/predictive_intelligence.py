@@ -29,6 +29,8 @@ from ..models import (
     PredictiveCausalStudyRecord, PredictiveCausalVariableBindingRecord, PredictiveInterventionScenarioRecord,
     PredictiveCounterfactualForecastRecord, PredictiveCausalEffectEvidenceRecord, PredictiveCausalEvaluationRecord,
     PredictiveCausalHandoffRecord, PredictiveCausalPackageRecord,
+    PredictiveDecisionStudyRecord, PredictiveDecisionOptionRecord, PredictiveDecisionCriterionRecord, PredictiveDecisionEvidenceBindingRecord,
+    PredictiveDecisionScenarioAssessmentRecord, PredictiveDecisionEvaluationRecord, PredictiveDecisionHandoffRecord, PredictiveDecisionPackageRecord,
 )
 
 MODEL_KINDS={"statistical","machine-learning","simulation","hybrid","rules-based","external","other"}
@@ -54,7 +56,10 @@ SPATIAL_UNIT_KINDS={"point","grid-cell","region","administrative-area","watershe
 SPATIAL_FORECAST_REPRESENTATIONS={"point","probability","quantile","interval","distribution","categorical","field","external","other"}
 CAUSAL_PREDICTIVE_INTEGRATION_KINDS={"causal-forecast","intervention-forecast","counterfactual-forecast","effect-informed-forecast","causal-feature-governance","external","other"}
 CAUSAL_BINDING_ROLES={"target","predictor","treatment","outcome","confounder","mediator","effect-modifier","context","other"}
-FORBIDDEN_FIELDS={"fit_by_core","train_by_core","infer_by_core","execute_by_core","core_execute","probability_calibrated_by_core","winner","rank","verdict","truth_value","automatic_truth_promotion","model_selected_by_core","backtest_execute_by_core","metric_compute_by_core","resample_by_core","probabilistic_infer_by_core","calibration_fit_by_core","recalibration_apply_by_core","scoring_rule_compute_by_core","calibration_metric_compute_by_core","ensemble_construct_by_core","ensemble_execute_by_core","ensemble_weight_optimize_by_core","comparison_metric_compute_by_core","significance_compute_by_core","rank_models_by_core","select_model_by_core","automatic_model_selection","anomaly_detect_by_core","change_point_detect_by_core","early_warning_compute_by_core","threshold_optimize_by_core","alert_dispatch_by_core","causal_attribution_by_core","automatic_intervention_by_core","spatial_interpolate_by_core","spatial_infer_by_core","trajectory_predict_by_core","propagation_model_by_core","hotspot_detect_by_core","spatial_metric_compute_by_core","causal_structure_learn_by_core","causal_identify_by_core","causal_effect_estimate_by_core","counterfactual_execute_by_core","intervention_simulate_by_core","causal_predictive_metric_compute_by_core","decision_optimize_by_core"}
+DECISION_KINDS={"forecast-informed","causal-predictive","risk-aware","multi-criteria","monitoring-informed","spatial-temporal","external","other"}
+DECISION_PREFERENCE_DIRECTIONS={"minimize","maximize","target","constraint","descriptive","other"}
+DECISION_EVIDENCE_KINDS={"forecast","probabilistic-forecast","early-warning","spatial-temporal-forecast","counterfactual-forecast","causal-effect","external","other"}
+FORBIDDEN_FIELDS={"fit_by_core","train_by_core","infer_by_core","execute_by_core","core_execute","probability_calibrated_by_core","winner","rank","verdict","truth_value","automatic_truth_promotion","model_selected_by_core","backtest_execute_by_core","metric_compute_by_core","resample_by_core","probabilistic_infer_by_core","calibration_fit_by_core","recalibration_apply_by_core","scoring_rule_compute_by_core","calibration_metric_compute_by_core","ensemble_construct_by_core","ensemble_execute_by_core","ensemble_weight_optimize_by_core","comparison_metric_compute_by_core","significance_compute_by_core","rank_models_by_core","select_model_by_core","automatic_model_selection","anomaly_detect_by_core","change_point_detect_by_core","early_warning_compute_by_core","threshold_optimize_by_core","alert_dispatch_by_core","causal_attribution_by_core","automatic_intervention_by_core","spatial_interpolate_by_core","spatial_infer_by_core","trajectory_predict_by_core","propagation_model_by_core","hotspot_detect_by_core","spatial_metric_compute_by_core","causal_structure_learn_by_core","causal_identify_by_core","causal_effect_estimate_by_core","counterfactual_execute_by_core","intervention_simulate_by_core","causal_predictive_metric_compute_by_core","decision_optimize_by_core","decision_rank_by_core","decision_recommend_by_core","utility_compute_by_core","regret_compute_by_core","constraint_solve_by_core","action_execute_by_core","automatic_action_selection"}
 
 def _ser(row):
     out={}
@@ -110,6 +115,9 @@ def boundaries():
       "causal_predictive_study_registry_by_core":True,"causal_variable_binding_registry_by_core":True,"intervention_scenario_registry_by_core":True,
       "counterfactual_forecast_provenance_by_core":True,"causal_effect_evidence_registry_by_core":True,"causal_predictive_evaluation_evidence_by_core":True,
       "causal_predictive_handoff_registry_by_core":True,"reproducible_causal_predictive_packages_by_core":True,
+      "predictive_decision_study_registry_by_core":True,"decision_option_registry_by_core":True,"decision_criterion_registry_by_core":True,
+      "decision_evidence_binding_registry_by_core":True,"decision_scenario_assessment_registry_by_core":True,"decision_evaluation_evidence_registry_by_core":True,
+      "decision_handoff_registry_by_core":True,"reproducible_predictive_decision_packages_by_core":True,
       "model_fitting_by_core":False,"forecast_inference_execution_by_core":False,"backtest_execution_by_core":False,"metric_computation_by_core":False,
       "time_series_resampling_by_core":False,"probabilistic_calibration_by_core":False,"ensemble_selection_by_core":False,
       "probabilistic_inference_execution_by_core":False,"calibration_mapping_fitting_by_core":False,"calibration_mapping_application_by_core":False,
@@ -122,12 +130,14 @@ def boundaries():
       "hotspot_detection_by_core":False,"spatial_temporal_metric_computation_by_core":False,
       "causal_structure_learning_by_core":False,"causal_identification_by_core":False,"causal_effect_estimation_by_core":False,
       "counterfactual_execution_by_core":False,"intervention_simulation_by_core":False,"causal_predictive_metric_computation_by_core":False,"decision_optimization_by_core":False,
+      "utility_computation_by_core":False,"regret_computation_by_core":False,"decision_ranking_by_core":False,"decision_recommendation_by_core":False,
+      "constraint_solving_by_core":False,"decision_action_execution_by_core":False,"automatic_action_selection":False,
       "automatic_model_ranking_by_core":False,"automatic_truth_promotion":False,
     }
 
 def readiness(db:Session):
     def count(m): return int(db.scalar(select(func.count()).select_from(m)) or 0)
-    return {"migration_0056_applied":True,"migration_0057_applied":True,"migration_0058_applied":True,"migration_0059_applied":True,"migration_0060_applied":True,"migration_0061_applied":True,"migration_0062_applied":True,"contract":"sc.predictive.model.v1","forecast_contract":"sc.predictive.forecast-provenance.v1","handoff_contract":"sc.predictive.runtime-handoff.v1","backtest_contract":"sc.predictive.backtest-plan.v1","backtest_package_contract":"sc.predictive.backtest-package.v1","probabilistic_forecast_contract":"sc.predictive.probabilistic-forecast.v1","calibration_study_contract":"sc.predictive.calibration-study.v1","calibration_package_contract":"sc.predictive.calibration-package.v1","ensemble_contract":"sc.predictive.ensemble.v1","model_comparison_contract":"sc.predictive.model-comparison.v1","model_comparison_package_contract":"sc.predictive.model-comparison-package.v1","monitoring_study_contract":"sc.predictive.monitoring-study.v1","monitoring_package_contract":"sc.predictive.monitoring-package.v1","spatial_temporal_study_contract":"sc.predictive.spatial-temporal-study.v1","spatial_temporal_package_contract":"sc.predictive.spatial-temporal-package.v1","causal_predictive_study_contract":"sc.predictive.causal-study.v1","causal_predictive_package_contract":"sc.predictive.causal-package.v1","counts":{
+    return {"migration_0056_applied":True,"migration_0057_applied":True,"migration_0058_applied":True,"migration_0059_applied":True,"migration_0060_applied":True,"migration_0061_applied":True,"migration_0062_applied":True,"migration_0063_applied":True,"contract":"sc.predictive.model.v1","forecast_contract":"sc.predictive.forecast-provenance.v1","handoff_contract":"sc.predictive.runtime-handoff.v1","backtest_contract":"sc.predictive.backtest-plan.v1","backtest_package_contract":"sc.predictive.backtest-package.v1","probabilistic_forecast_contract":"sc.predictive.probabilistic-forecast.v1","calibration_study_contract":"sc.predictive.calibration-study.v1","calibration_package_contract":"sc.predictive.calibration-package.v1","ensemble_contract":"sc.predictive.ensemble.v1","model_comparison_contract":"sc.predictive.model-comparison.v1","model_comparison_package_contract":"sc.predictive.model-comparison-package.v1","monitoring_study_contract":"sc.predictive.monitoring-study.v1","monitoring_package_contract":"sc.predictive.monitoring-package.v1","spatial_temporal_study_contract":"sc.predictive.spatial-temporal-study.v1","spatial_temporal_package_contract":"sc.predictive.spatial-temporal-package.v1","causal_predictive_study_contract":"sc.predictive.causal-study.v1","causal_predictive_package_contract":"sc.predictive.causal-package.v1","predictive_decision_study_contract":"sc.predictive.decision-study.v1","predictive_decision_package_contract":"sc.predictive.decision-package.v1","counts":{
       "models":count(PredictiveModelRecord),"targets":count(PredictiveTargetRecord),"features":count(PredictiveFeatureRecord),"training_windows":count(PredictiveTrainingWindowRecord),
       "forecast_runs":count(PredictiveForecastRunRecord),"forecast_observations":count(PredictiveForecastObservationRecord),"evaluations":count(PredictiveEvaluationRecord),"handoffs":count(PredictiveRuntimeHandoffRecord),"snapshots":count(PredictiveForecastSnapshotRecord),
       "time_series_datasets":count(PredictiveTimeSeriesDatasetRecord),"forecast_windows":count(PredictiveForecastWindowRecord),"baseline_models":count(PredictiveBaselineModelRecord),"backtest_plans":count(PredictiveBacktestPlanRecord),
@@ -143,7 +153,10 @@ def readiness(db:Session):
       "spatial_temporal_evaluations":count(PredictiveSpatialTemporalEvaluationRecord),"spatial_temporal_packages":count(PredictiveSpatialTemporalPackageRecord),
       "causal_predictive_studies":count(PredictiveCausalStudyRecord),"causal_variable_bindings":count(PredictiveCausalVariableBindingRecord),"intervention_scenarios":count(PredictiveInterventionScenarioRecord),
       "counterfactual_forecasts":count(PredictiveCounterfactualForecastRecord),"causal_effect_evidence":count(PredictiveCausalEffectEvidenceRecord),"causal_predictive_evaluations":count(PredictiveCausalEvaluationRecord),
-      "causal_predictive_handoffs":count(PredictiveCausalHandoffRecord),"causal_predictive_packages":count(PredictiveCausalPackageRecord)},**boundaries()}
+      "causal_predictive_handoffs":count(PredictiveCausalHandoffRecord),"causal_predictive_packages":count(PredictiveCausalPackageRecord),
+      "decision_studies":count(PredictiveDecisionStudyRecord),"decision_options":count(PredictiveDecisionOptionRecord),"decision_criteria":count(PredictiveDecisionCriterionRecord),
+      "decision_evidence_bindings":count(PredictiveDecisionEvidenceBindingRecord),"decision_scenario_assessments":count(PredictiveDecisionScenarioAssessmentRecord),
+      "decision_evaluations":count(PredictiveDecisionEvaluationRecord),"decision_handoffs":count(PredictiveDecisionHandoffRecord),"decision_packages":count(PredictiveDecisionPackageRecord)},**boundaries()}
 
 def create_model(db:Session,payload:dict):
     _reject(payload); project=str(payload.get("project_entity_id") or "").strip(); ent=db.get(Entity,project)
@@ -343,10 +356,11 @@ def bundle(db:Session,model_id:str,public_only=False):
     monitoring_studies=[_ser(x) for x in db.scalars(select(PredictiveMonitoringStudyRecord).where(PredictiveMonitoringStudyRecord.model_id==model_id).order_by(PredictiveMonitoringStudyRecord.created_at.asc())).all()]
     spatial_temporal_studies=[_ser(x) for x in db.scalars(select(PredictiveSpatialTemporalStudyRecord).where(PredictiveSpatialTemporalStudyRecord.model_id==model_id).order_by(PredictiveSpatialTemporalStudyRecord.created_at.asc())).all()]
     causal_predictive_studies=[_ser(x) for x in db.scalars(select(PredictiveCausalStudyRecord).where(PredictiveCausalStudyRecord.predictive_model_id==model_id).order_by(PredictiveCausalStudyRecord.created_at.asc())).all()]
+    decision_studies=[_ser(x) for x in db.scalars(select(PredictiveDecisionStudyRecord).where(PredictiveDecisionStudyRecord.predictive_model_id==model_id).order_by(PredictiveDecisionStudyRecord.created_at.asc())).all()]
     observations=[]
     runids=[r["id"] for r in runs]
     if runids: observations=[_ser(x) for x in db.scalars(select(PredictiveForecastObservationRecord).where(PredictiveForecastObservationRecord.forecast_run_id.in_(runids)).order_by(PredictiveForecastObservationRecord.created_at.asc())).all()]
-    return {"contract":"sc.predictive.forecast-provenance.v1","model":_ser(model),"targets":targets,"features":features,"training_windows":windows,"forecast_runs":runs,"forecast_observations":observations,"evaluations":evals,"handoffs":handoffs,"snapshots":snaps,"time_series_datasets":ts_datasets,"forecast_windows":forecast_windows,"baseline_models":baselines,"backtest_plans":backtest_plans,"probabilistic_forecasts":probabilistic_forecasts,"calibration_studies":calibration_studies,"probabilistic_evaluations":probabilistic_evaluations,"ensemble_memberships":ensemble_memberships,"monitoring_studies":monitoring_studies,"spatial_temporal_studies":spatial_temporal_studies,"causal_predictive_studies":causal_predictive_studies,"boundaries":boundaries()}
+    return {"contract":"sc.predictive.forecast-provenance.v1","model":_ser(model),"targets":targets,"features":features,"training_windows":windows,"forecast_runs":runs,"forecast_observations":observations,"evaluations":evals,"handoffs":handoffs,"snapshots":snaps,"time_series_datasets":ts_datasets,"forecast_windows":forecast_windows,"baseline_models":baselines,"backtest_plans":backtest_plans,"probabilistic_forecasts":probabilistic_forecasts,"calibration_studies":calibration_studies,"probabilistic_evaluations":probabilistic_evaluations,"ensemble_memberships":ensemble_memberships,"monitoring_studies":monitoring_studies,"spatial_temporal_studies":spatial_temporal_studies,"causal_predictive_studies":causal_predictive_studies,"decision_studies":decision_studies,"boundaries":boundaries()}
 
 def create_snapshot(db:Session,model_id:str,payload:dict):
     _reject(payload); state=bundle(db,model_id); state.pop("snapshots",None); digest=_sha256(state); last=db.scalar(select(PredictiveForecastSnapshotRecord).where(PredictiveForecastSnapshotRecord.model_id==model_id).order_by(PredictiveForecastSnapshotRecord.revision.desc()))
@@ -953,4 +967,151 @@ def create_causal_predictive_package(db:Session,study_id:str,payload:dict):
     _reject(payload); state=causal_predictive_bundle(db,study_id); state.pop("packages",None); digest=_sha256(state)
     last=db.scalar(select(PredictiveCausalPackageRecord).where(PredictiveCausalPackageRecord.causal_predictive_study_id==study_id).order_by(PredictiveCausalPackageRecord.revision.desc())); rev=(last.revision+1) if last else 1
     row=PredictiveCausalPackageRecord(causal_predictive_study_id=study_id,revision=rev,content_hash=digest,previous_package_hash=(last.content_hash if last else None),state_json=state,environment_json=dict(payload.get("environment") or {}),provenance_json=dict(payload.get("provenance") or {}),created_by=str(payload.get("created_by") or "operator"))
+    db.add(row); db.commit(); db.refresh(row); return _ser(row)
+
+
+def _decision_study(db:Session,study_id:str)->PredictiveDecisionStudyRecord:
+    row=db.get(PredictiveDecisionStudyRecord,study_id)
+    if row is None: raise HTTPException(status_code=404,detail="Predictive decision study not found.")
+    return row
+
+def _decision_option(db:Session,study_id:str,option_id:str|None)->PredictiveDecisionOptionRecord|None:
+    if not option_id: return None
+    row=db.get(PredictiveDecisionOptionRecord,option_id)
+    if row is None or row.decision_study_id!=study_id: raise ValueError("option_id must belong to decision_study_id")
+    return row
+
+def _decision_criterion(db:Session,study_id:str,criterion_id:str|None)->PredictiveDecisionCriterionRecord|None:
+    if not criterion_id: return None
+    row=db.get(PredictiveDecisionCriterionRecord,criterion_id)
+    if row is None or row.decision_study_id!=study_id: raise ValueError("criterion_id must belong to decision_study_id")
+    return row
+
+def create_predictive_decision_study(db:Session,payload:dict):
+    _reject(payload)
+    project=str(payload.get("project_entity_id") or "").strip(); ent=db.get(Entity,project)
+    if ent is None: raise ValueError("project_entity_id must reference an existing Core entity")
+    model_id=str(payload.get("predictive_model_id") or "").strip(); model=_model(db,model_id)
+    if model.project_entity_id!=project: raise ValueError("predictive_model_id must belong to project_entity_id")
+    causal_id=payload.get("causal_predictive_study_id")
+    if causal_id:
+        c=_causal_predictive_study(db,causal_id)
+        if c.project_entity_id!=project or c.predictive_model_id!=model_id: raise ValueError("causal_predictive_study_id must belong to project/model")
+    monitoring_id=payload.get("monitoring_study_id")
+    if monitoring_id:
+        m=db.get(PredictiveMonitoringStudyRecord,monitoring_id)
+        if m is None or m.project_entity_id!=project or (m.model_id and m.model_id!=model_id): raise ValueError("monitoring_study_id must belong to project/model")
+    spatial_id=payload.get("spatial_temporal_study_id")
+    if spatial_id:
+        s=db.get(PredictiveSpatialTemporalStudyRecord,spatial_id)
+        if s is None or s.project_entity_id!=project or (s.model_id and s.model_id!=model_id): raise ValueError("spatial_temporal_study_id must belong to project/model")
+    kind=str(payload.get("decision_kind") or "forecast-informed")
+    if kind not in DECISION_KINDS: raise ValueError(f"decision_kind must be one of {sorted(DECISION_KINDS)}")
+    constraints=payload.get("constraints") or []
+    if not isinstance(constraints,list): raise ValueError("constraints must be an array")
+    vis=str(payload.get("visibility") or "private")
+    if vis not in {"private","public"}: raise ValueError("visibility must be private or public")
+    row=PredictiveDecisionStudyRecord(project_entity_id=project,predictive_model_id=model_id,causal_predictive_study_id=causal_id,monitoring_study_id=monitoring_id,spatial_temporal_study_id=spatial_id,study_key=str(payload.get("study_key") or "").strip(),name=str(payload.get("name") or "").strip(),decision_kind=kind,objective_scope_json=dict(payload.get("objective_scope") or {}),decision_horizon_json=dict(payload.get("decision_horizon") or {}),constraints_json=constraints,status=str(payload.get("status") or "recorded"),visibility=vis,externally_computed=True,provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {}))
+    if not row.study_key or not row.name: raise ValueError("study_key and name are required")
+    db.add(row)
+    try: db.commit()
+    except IntegrityError as exc: db.rollback(); raise ValueError("study_key must be unique within project_entity_id") from exc
+    db.refresh(row); return _ser(row)
+
+def add_predictive_decision_option(db:Session,study_id:str,payload:dict):
+    _reject(payload); _decision_study(db,study_id); action=payload.get("action")
+    if not isinstance(action,dict) or not action: raise ValueError("action object is required")
+    constraints=payload.get("constraints") or []
+    if not isinstance(constraints,list): raise ValueError("constraints must be an array")
+    row=PredictiveDecisionOptionRecord(decision_study_id=study_id,option_key=str(payload.get("option_key") or "").strip(),name=str(payload.get("name") or "").strip(),action_json=action,feasibility_json=dict(payload.get("feasibility") or {}),constraints_json=constraints,source_ref=payload.get("source_ref"),status=str(payload.get("status") or "candidate"),provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {}))
+    if not row.option_key or not row.name: raise ValueError("option_key and name are required")
+    db.add(row)
+    try: db.commit()
+    except IntegrityError as exc: db.rollback(); raise ValueError("option_key must be unique within decision_study_id") from exc
+    db.refresh(row); return _ser(row)
+
+def add_predictive_decision_criterion(db:Session,study_id:str,payload:dict):
+    _reject(payload); _decision_study(db,study_id); direction=str(payload.get("preference_direction") or "descriptive")
+    if direction not in DECISION_PREFERENCE_DIRECTIONS: raise ValueError(f"preference_direction must be one of {sorted(DECISION_PREFERENCE_DIRECTIONS)}")
+    row=PredictiveDecisionCriterionRecord(decision_study_id=study_id,criterion_key=str(payload.get("criterion_key") or "").strip(),name=str(payload.get("name") or "").strip(),value_kind=str(payload.get("value_kind") or "numeric"),preference_direction=direction,threshold_json=dict(payload.get("threshold") or {}),preference_json=dict(payload.get("preference") or {}),provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {}))
+    if not row.criterion_key or not row.name: raise ValueError("criterion_key and name are required")
+    db.add(row)
+    try: db.commit()
+    except IntegrityError as exc: db.rollback(); raise ValueError("criterion_key must be unique within decision_study_id") from exc
+    db.refresh(row); return _ser(row)
+
+def add_predictive_decision_evidence(db:Session,study_id:str,payload:dict):
+    _reject(payload); study=_decision_study(db,study_id); option=_decision_option(db,study_id,payload.get("option_id")); criterion=_decision_criterion(db,study_id,payload.get("criterion_id"))
+    kind=str(payload.get("evidence_kind") or "external")
+    if kind not in DECISION_EVIDENCE_KINDS: raise ValueError(f"evidence_kind must be one of {sorted(DECISION_EVIDENCE_KINDS)}")
+    refs={k:payload.get(k) for k in ("forecast_run_id","probabilistic_forecast_id","early_warning_signal_id","spatial_temporal_forecast_id","counterfactual_forecast_id","causal_effect_evidence_id")}
+    if sum(bool(v) for v in refs.values())>1: raise ValueError("at most one governed predictive evidence reference may be supplied per binding")
+    if not any(refs.values()) and not str(payload.get("evidence_ref") or "").strip(): raise ValueError("a governed evidence id or evidence_ref is required")
+    if refs["forecast_run_id"]:
+        r=db.get(PredictiveForecastRunRecord,refs["forecast_run_id"]);
+        if r is None or r.model_id!=study.predictive_model_id: raise ValueError("forecast_run_id must belong to study predictive model")
+    if refs["probabilistic_forecast_id"]:
+        r=db.get(PredictiveProbabilisticForecastRecord,refs["probabilistic_forecast_id"]);
+        if r is None or r.model_id!=study.predictive_model_id: raise ValueError("probabilistic_forecast_id must belong to study predictive model")
+    if refs["early_warning_signal_id"]:
+        r=db.get(PredictiveEarlyWarningSignalRecord,refs["early_warning_signal_id"]); m=db.get(PredictiveMonitoringStudyRecord,r.monitoring_study_id) if r else None
+        if r is None or m is None or (m.model_id and m.model_id!=study.predictive_model_id): raise ValueError("early_warning_signal_id must belong to study predictive model")
+    if refs["spatial_temporal_forecast_id"]:
+        r=db.get(PredictiveSpatialTemporalForecastRecord,refs["spatial_temporal_forecast_id"]); s=db.get(PredictiveSpatialTemporalStudyRecord,r.spatial_temporal_study_id) if r else None
+        if r is None or s is None or (s.model_id and s.model_id!=study.predictive_model_id): raise ValueError("spatial_temporal_forecast_id must belong to study predictive model")
+    if refs["counterfactual_forecast_id"]:
+        r=db.get(PredictiveCounterfactualForecastRecord,refs["counterfactual_forecast_id"]); c=db.get(PredictiveCausalStudyRecord,r.causal_predictive_study_id) if r else None
+        if r is None or c is None or c.predictive_model_id!=study.predictive_model_id: raise ValueError("counterfactual_forecast_id must belong to study predictive model")
+    if refs["causal_effect_evidence_id"]:
+        r=db.get(PredictiveCausalEffectEvidenceRecord,refs["causal_effect_evidence_id"]); c=db.get(PredictiveCausalStudyRecord,r.causal_predictive_study_id) if r else None
+        if r is None or c is None or c.predictive_model_id!=study.predictive_model_id: raise ValueError("causal_effect_evidence_id must belong to study predictive model")
+    row=PredictiveDecisionEvidenceBindingRecord(decision_study_id=study_id,binding_key=str(payload.get("binding_key") or "").strip(),option_id=(option.id if option else None),criterion_id=(criterion.id if criterion else None),evidence_kind=kind,forecast_run_id=refs["forecast_run_id"],probabilistic_forecast_id=refs["probabilistic_forecast_id"],early_warning_signal_id=refs["early_warning_signal_id"],spatial_temporal_forecast_id=refs["spatial_temporal_forecast_id"],counterfactual_forecast_id=refs["counterfactual_forecast_id"],causal_effect_evidence_id=refs["causal_effect_evidence_id"],evidence_ref=payload.get("evidence_ref"),interpretation_json=dict(payload.get("interpretation") or {}),uncertainty_json=dict(payload.get("uncertainty") or {}),externally_computed=True,provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {}))
+    if not row.binding_key: raise ValueError("binding_key is required")
+    db.add(row)
+    try: db.commit()
+    except IntegrityError as exc: db.rollback(); raise ValueError("binding_key must be unique within decision_study_id") from exc
+    db.refresh(row); return _ser(row)
+
+def add_predictive_decision_scenario_assessment(db:Session,study_id:str,payload:dict):
+    _reject(payload); _decision_study(db,study_id); option=_decision_option(db,study_id,payload.get("option_id"))
+    if option is None: raise ValueError("option_id is required")
+    scenario=payload.get("scenario"); outcomes=payload.get("outcome_evidence")
+    if not isinstance(scenario,dict) or not scenario: raise ValueError("scenario object is required")
+    if not isinstance(outcomes,dict) or not outcomes: raise ValueError("outcome_evidence object is required")
+    runtime=str(payload.get("runtime_product") or "external")
+    if runtime not in RUNTIME_PRODUCTS: raise ValueError("unsupported runtime_product")
+    row=PredictiveDecisionScenarioAssessmentRecord(decision_study_id=study_id,option_id=option.id,assessment_key=str(payload.get("assessment_key") or "").strip(),scenario_json=scenario,outcome_evidence_json=outcomes,risk_evidence_json=dict(payload.get("risk_evidence") or {}),uncertainty_json=dict(payload.get("uncertainty") or {}),runtime_product=runtime,runtime_ref=payload.get("runtime_ref"),externally_computed=True,provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {}))
+    if not row.assessment_key: raise ValueError("assessment_key is required")
+    db.add(row)
+    try: db.commit()
+    except IntegrityError as exc: db.rollback(); raise ValueError("assessment_key must be unique within decision_study_id") from exc
+    db.refresh(row); return _ser(row)
+
+def add_predictive_decision_evaluation(db:Session,study_id:str,payload:dict):
+    _reject(payload); _decision_study(db,study_id); option=_decision_option(db,study_id,payload.get("option_id")); criterion=_decision_criterion(db,study_id,payload.get("criterion_id")); metrics=payload.get("metric_evidence")
+    if not isinstance(metrics,dict) or not metrics: raise ValueError("metric_evidence object is required")
+    row=PredictiveDecisionEvaluationRecord(decision_study_id=study_id,evaluation_key=str(payload.get("evaluation_key") or "").strip(),evaluation_kind=str(payload.get("evaluation_kind") or "tradeoff-evidence"),option_id=(option.id if option else None),criterion_id=(criterion.id if criterion else None),metric_evidence_json=metrics,tradeoff_evidence_json=dict(payload.get("tradeoff_evidence") or {}),regret_evidence_json=dict(payload.get("regret_evidence") or {}),uncertainty_json=dict(payload.get("uncertainty") or {}),evidence_ref=payload.get("evidence_ref"),externally_computed=True,provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {}))
+    if not row.evaluation_key: raise ValueError("evaluation_key is required")
+    db.add(row)
+    try: db.commit()
+    except IntegrityError as exc: db.rollback(); raise ValueError("evaluation_key must be unique within decision_study_id") from exc
+    db.refresh(row); return _ser(row)
+
+def add_predictive_decision_handoff(db:Session,study_id:str,payload:dict):
+    _reject(payload); _decision_study(db,study_id); product=str(payload.get("target_product") or "decision-studio").strip()
+    if product not in RUNTIME_PRODUCTS-{"external"}: raise ValueError("target_product must be a supported specialist runtime")
+    req=payload.get("request") or {}
+    if not isinstance(req,dict): raise ValueError("request must be an object")
+    row=PredictiveDecisionHandoffRecord(decision_study_id=study_id,target_product=product,purpose=str(payload.get("purpose") or "decision-review"),request_json=req,response_ref=payload.get("response_ref"),status=str(payload.get("status") or "recorded"),provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {}))
+    db.add(row); db.commit(); db.refresh(row); return _ser(row)
+
+def predictive_decision_bundle(db:Session,study_id:str):
+    study=_decision_study(db,study_id)
+    def rows(model): return [_ser(x) for x in db.scalars(select(model).where(model.decision_study_id==study_id).order_by(model.created_at.asc())).all()]
+    return {"contract":"sc.predictive.decision-package.v1","study":_ser(study),"options":rows(PredictiveDecisionOptionRecord),"criteria":rows(PredictiveDecisionCriterionRecord),"evidence_bindings":rows(PredictiveDecisionEvidenceBindingRecord),"scenario_assessments":rows(PredictiveDecisionScenarioAssessmentRecord),"evaluations":rows(PredictiveDecisionEvaluationRecord),"handoffs":rows(PredictiveDecisionHandoffRecord),"packages":rows(PredictiveDecisionPackageRecord),"boundaries":boundaries()}
+
+def create_predictive_decision_package(db:Session,study_id:str,payload:dict):
+    _reject(payload); state=predictive_decision_bundle(db,study_id); state.pop("packages",None); digest=_sha256(state)
+    last=db.scalar(select(PredictiveDecisionPackageRecord).where(PredictiveDecisionPackageRecord.decision_study_id==study_id).order_by(PredictiveDecisionPackageRecord.revision.desc())); rev=(last.revision+1) if last else 1
+    row=PredictiveDecisionPackageRecord(decision_study_id=study_id,revision=rev,content_hash=digest,previous_package_hash=(last.content_hash if last else None),state_json=state,environment_json=dict(payload.get("environment") or {}),provenance_json=dict(payload.get("provenance") or {}),created_by=str(payload.get("created_by") or "operator"))
     db.add(row); db.commit(); db.refresh(row); return _ser(row)

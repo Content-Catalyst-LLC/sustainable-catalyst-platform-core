@@ -334,6 +334,54 @@ def causal_predictive_package(study_id:str,request:Request,payload:Payload,db:Se
     try:return svc.create_causal_predictive_package(db,study_id,payload.data)
     except Exception as exc:raise bad(exc)
 
+
+
+@router.post("/decision-studies",dependencies=[Depends(require_write)])
+def predictive_decision_study_create(request:Request,payload:Payload,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.create_predictive_decision_study(db,payload.data)
+    except Exception as exc:raise bad(exc)
+@router.post("/decision-studies/{study_id}/options",dependencies=[Depends(require_write)])
+def predictive_decision_option(study_id:str,request:Request,payload:Payload,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.add_predictive_decision_option(db,study_id,payload.data)
+    except Exception as exc:raise bad(exc)
+@router.post("/decision-studies/{study_id}/criteria",dependencies=[Depends(require_write)])
+def predictive_decision_criterion(study_id:str,request:Request,payload:Payload,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.add_predictive_decision_criterion(db,study_id,payload.data)
+    except Exception as exc:raise bad(exc)
+@router.post("/decision-studies/{study_id}/evidence-bindings",dependencies=[Depends(require_write)])
+def predictive_decision_evidence(study_id:str,request:Request,payload:Payload,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.add_predictive_decision_evidence(db,study_id,payload.data)
+    except Exception as exc:raise bad(exc)
+@router.post("/decision-studies/{study_id}/scenario-assessments",dependencies=[Depends(require_write)])
+def predictive_decision_assessment(study_id:str,request:Request,payload:Payload,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.add_predictive_decision_scenario_assessment(db,study_id,payload.data)
+    except Exception as exc:raise bad(exc)
+@router.post("/decision-studies/{study_id}/evaluations",dependencies=[Depends(require_write)])
+def predictive_decision_evaluation(study_id:str,request:Request,payload:Payload,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.add_predictive_decision_evaluation(db,study_id,payload.data)
+    except Exception as exc:raise bad(exc)
+@router.post("/decision-studies/{study_id}/handoffs",dependencies=[Depends(require_write)])
+def predictive_decision_handoff(study_id:str,request:Request,payload:Payload,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.add_predictive_decision_handoff(db,study_id,payload.data)
+    except Exception as exc:raise bad(exc)
+@router.get("/decision-studies/{study_id}/bundle",dependencies=[Depends(require_read)])
+def predictive_decision_bundle(study_id:str,request:Request,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.predictive_decision_bundle(db,study_id)
+    except Exception as exc:raise bad(exc)
+@router.post("/decision-studies/{study_id}/packages",dependencies=[Depends(require_write)])
+def predictive_decision_package(study_id:str,request:Request,payload:Payload,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.create_predictive_decision_package(db,study_id,payload.data)
+    except Exception as exc:raise bad(exc)
+
 @public_router.get("/readiness",response_model=PublicEnvelope)
 def public_readiness(request:Request,db:Session=Depends(get_session),_ctx:PublicApiContext=Depends(require_public_scope("data:read"))):
     public_enabled(request); data=svc.readiness(db); data.update({"release":request.app.state.settings.version,"enabled":True}); return PublicEnvelope(data=data,meta={"api_version":"v1","request_id":request.state.request_id})
@@ -384,3 +432,10 @@ def public_causal_predictive_bundle(study_id:str,request:Request,db:Session=Depe
     if study.visibility!="public": raise HTTPException(status_code=404,detail="Predictive causal study not found.")
     return PublicEnvelope(data=svc.causal_predictive_bundle(db,study_id),meta={"api_version":"v1","request_id":request.state.request_id})
 
+
+
+@public_router.get("/decision-studies/{study_id}/bundle",response_model=PublicEnvelope)
+def public_predictive_decision_bundle(study_id:str,request:Request,db:Session=Depends(get_session),_ctx:PublicApiContext=Depends(require_public_scope("data:read"))):
+    public_enabled(request); study=svc._decision_study(db,study_id)
+    if study.visibility!="public": raise HTTPException(status_code=404,detail="Predictive decision study not found.")
+    return PublicEnvelope(data=svc.predictive_decision_bundle(db,study_id),meta={"api_version":"v1","request_id":request.state.request_id})

@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/predictive-decision-package-v1.schema.json",
+  "title": "Predictive Decision Package",
+  "type": "object",
+  "required": [
+    "study",
+    "options",
+    "criteria",
+    "evidence_bindings",
+    "scenario_assessments",
+    "evaluations",
+    "handoffs"
+  ],
+  "properties": {
+    "study": {
+      "type": "object"
+    },
+    "options": {
+      "type": "array"
+    },
+    "criteria": {
+      "type": "array"
+    },
+    "evidence_bindings": {
+      "type": "array"
+    },
+    "scenario_assessments": {
+      "type": "array"
+    },
+    "evaluations": {
+      "type": "array"
+    },
+    "handoffs": {
+      "type": "array"
+    }
+  }
+}

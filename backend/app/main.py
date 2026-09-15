@@ -239,7 +239,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # Open Forensics includes v2.51.0 Reproducible Investigation Packages.
     app.include_router(open_forensics.router)
     app.include_router(open_forensics.public_router)
-    # Predictive Intelligence v2.58.0 adds governed causal-predictive integration above the v2.57.0 spatial-temporal layer.
+    # Predictive Intelligence v2.59.0 adds governed predictive decision intelligence above the v2.58.0 causal-predictive layer.
     app.include_router(predictive_intelligence.router)
     app.include_router(predictive_intelligence.public_router)
     app.include_router(economic_data.router)

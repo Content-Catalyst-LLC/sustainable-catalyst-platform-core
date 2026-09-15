@@ -1,0 +1,12 @@
+MAC VALIDATE/PROMOTE
+cd ~/Downloads
+rm -rf sc-platform-core-v2.59.0-release
+mkdir -p sc-platform-core-v2.59.0-release
+unzip -q sustainable-catalyst-platform-core-v2.59.0-release-bundle.zip -d sc-platform-core-v2.59.0-release
+cd sc-platform-core-v2.59.0-release
+chmod +x deploy_and_validate_platform_core_v2_59_0_macos.sh
+./deploy_and_validate_platform_core_v2_59_0_macos.sh "$HOME/Downloads/sustainable-catalyst-platform-core-v2.59.0-release-bundle.zip"
+
+CONTABO
+cd /opt/sustainable-catalyst/core
+bash DEPLOY_PLATFORM_CORE_V2590_CONTABO.sh

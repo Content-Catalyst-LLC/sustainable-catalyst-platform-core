@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/predictive-decision-study-v1.schema.json",
+  "title": "Predictive Decision Study",
+  "type": "object",
+  "required": [
+    "project_entity_id",
+    "predictive_model_id",
+    "study_key",
+    "name"
+  ],
+  "properties": {
+    "project_entity_id": {
+      "type": "string"
+    },
+    "predictive_model_id": {
+      "type": "string"
+    },
+    "study_key": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "decision_kind": {
+      "type": "string"
+    },
+    "objective_scope": {
+      "type": "object"
+    },
+    "decision_horizon": {
+      "type": "object"
+    },
+    "constraints": {
+      "type": "array"
+    }
+  }
+}
