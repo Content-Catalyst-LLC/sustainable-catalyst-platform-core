@@ -1,3 +1,6 @@
+## 2.63.0
+- Analytical Visualization Grammar: declarative marks, encodings, scales, transforms, guides, data bindings, and immutable snapshots.
+
 ## Platform Core v2.61.0 — Visual Reasoning Runtime & Scene Graph
 
 Renderer-neutral scene runtime, interaction-state persistence, cross-product visual bindings, and immutable scene snapshots.

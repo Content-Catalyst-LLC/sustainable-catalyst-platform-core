@@ -62,6 +62,8 @@ from .models import (
     PredictiveChangePointRecord, PredictiveEarlyWarningSignalRecord, PredictiveMonitoringEpisodeRecord, PredictiveMonitoringPackageRecord,
     PredictiveSpatialTemporalStudyRecord, PredictiveSpatialUnitRecord, PredictiveSpatialTemporalForecastRecord, PredictiveSpatialTemporalObservationRecord,
     PredictiveSpatialPropagationEvidenceRecord, PredictiveSpatialHotspotEvidenceRecord, PredictiveSpatialTemporalEvaluationRecord, PredictiveSpatialTemporalPackageRecord,
+    VisualGrammarSpecificationRecord, VisualGrammarDataBindingRecord, VisualGrammarMarkRecord, VisualGrammarScaleRecord,
+    VisualGrammarEncodingRecord, VisualGrammarTransformRecord, VisualGrammarGuideRecord, VisualGrammarSnapshotRecord,
 )
 from .predicate_catalog import DEFAULT_PREDICATES
 from .api_plan_catalog import DEFAULT_API_PLANS
@@ -133,7 +135,7 @@ MIGRATIONS = [
     ("0062", 'Causal-predictive integration with governed studies, bindings, intervention scenarios, external counterfactual forecasts, effect/evaluation evidence, handoffs, and packages; Core does not learn structure, estimate effects, execute counterfactuals, simulate interventions, or optimize decisions.'),
     ("0063", 'Predictive decision intelligence with governed studies, options, criteria, evidence bindings, external assessments/evaluations, handoffs, and packages; Core does not compute utility/regret, rank or recommend options, optimize policies, solve constraints, select actions, or execute decisions.'),
     ("0064", 'Reproducible predictive intelligence packages with governed cross-layer manifests, artifacts, environments, verification/review evidence, and immutable hash-chained snapshots; Core does not execute, refit, regenerate forecasts, rerun analyses, optimize decisions, or reproduce automatically.'),
-    ("0065", 'Visual reasoning runtime and scene graph with governed scenes, nodes, edges, layers, views, bindings, and immutable snapshots; Core stores renderer-neutral semantic and interaction state but does not render, compute layout, animate, infer visually, hit-test, or execute GPU work.'),    ("0066", 'Interactive renderer and view composition with governed renderer profiles, compositions, assignments, link groups, propagated interaction state, and immutable snapshots; Core coordinates renderer-neutral views but does not draw, layout, animate, hit-test, run GPU work, or infer visually.'),
+    ("0065", 'Visual reasoning runtime and scene graph with governed scenes, nodes, edges, layers, views, bindings, and immutable snapshots; Core stores renderer-neutral semantic and interaction state but does not render, compute layout, animate, infer visually, hit-test, or execute GPU work.'),    ("0066", 'Interactive renderer and view composition with governed renderer profiles, compositions, assignments, link groups, propagated interaction state, and immutable snapshots; Core coordinates renderer-neutral views but does not draw, layout, animate, hit-test, run GPU work, or infer visually.'),    ("0067", 'Analytical visualization grammar with governed specifications, bindings, marks, encodings, scales, transforms, guides, and immutable snapshots; Core stores renderer-neutral grammar but does not execute transforms, calculate scales/layout, draw marks, aggregate data, or infer visually.'),
 ]
 
 

@@ -810,3 +810,9 @@ def _visual_runtime_composition_bundle(self, composition_id: str):
     return self._request("GET", f"/v1/visual-runtime/composition/compositions/{composition_id}/bundle")
 
 PublicApiClient.visual_runtime_composition_bundle = _visual_runtime_composition_bundle
+
+
+# v2.63.0 Analytical Visualization Grammar
+def _visual_runtime_grammar_bundle(self, specification_id: str):
+    return self.request("GET", f"/visual-runtime/grammar/specifications/{specification_id}/bundle")
+PublicApiClient.visual_runtime_grammar_bundle = _visual_runtime_grammar_bundle

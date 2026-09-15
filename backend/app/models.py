@@ -7751,3 +7751,152 @@ class VisualCompositionSnapshotRecord(Base):
     provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
     created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+# v2.63.0 — Analytical Visualization Grammar
+class VisualGrammarSpecificationRecord(Base):
+    __tablename__ = "visual_grammar_specifications"
+    __table_args__ = (
+        UniqueConstraint("scene_id", "grammar_key", name="uq_visual_grammar_specification_key"),
+        Index("ix_visual_grammar_specification_scene", "scene_id"),
+        Index("ix_visual_grammar_specification_kind", "grammar_kind"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    scene_id: Mapped[str] = mapped_column(ForeignKey("visual_runtime_scenes.id", ondelete="CASCADE"), nullable=False)
+    composition_id: Mapped[str | None] = mapped_column(ForeignKey("visual_view_compositions.id", ondelete="SET NULL"), nullable=True)
+    view_id: Mapped[str | None] = mapped_column(ForeignKey("visual_runtime_views.id", ondelete="SET NULL"), nullable=True)
+    grammar_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    name: Mapped[str] = mapped_column(String(300), nullable=False)
+    grammar_kind: Mapped[str] = mapped_column(String(80), nullable=False, default="cartesian")
+    coordinate_system: Mapped[str] = mapped_column(String(80), nullable=False, default="cartesian")
+    data_policy_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    interaction_policy_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="private")
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+class VisualGrammarDataBindingRecord(Base):
+    __tablename__ = "visual_grammar_data_bindings"
+    __table_args__ = (
+        UniqueConstraint("specification_id", "binding_key", name="uq_visual_grammar_data_binding_key"),
+        Index("ix_visual_grammar_data_binding_spec", "specification_id"),
+        Index("ix_visual_grammar_data_binding_source", "source_kind"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    specification_id: Mapped[str] = mapped_column(ForeignKey("visual_grammar_specifications.id", ondelete="CASCADE"), nullable=False)
+    binding_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    source_kind: Mapped[str] = mapped_column(String(100), nullable=False, default="scene")
+    source_ref: Mapped[str] = mapped_column(String(500), nullable=False)
+    fields_json: Mapped[list] = mapped_column(JSON, default=list)
+    schema_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class VisualGrammarMarkRecord(Base):
+    __tablename__ = "visual_grammar_marks"
+    __table_args__ = (
+        UniqueConstraint("specification_id", "mark_key", name="uq_visual_grammar_mark_key"),
+        Index("ix_visual_grammar_mark_spec", "specification_id", "order_index"),
+        Index("ix_visual_grammar_mark_kind", "mark_kind"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    specification_id: Mapped[str] = mapped_column(ForeignKey("visual_grammar_specifications.id", ondelete="CASCADE"), nullable=False)
+    mark_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    mark_kind: Mapped[str] = mapped_column(String(80), nullable=False)
+    data_binding_id: Mapped[str | None] = mapped_column(ForeignKey("visual_grammar_data_bindings.id", ondelete="SET NULL"), nullable=True)
+    semantic_role: Mapped[str] = mapped_column(String(80), nullable=False, default="data")
+    order_index: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    mark_spec_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class VisualGrammarScaleRecord(Base):
+    __tablename__ = "visual_grammar_scales"
+    __table_args__ = (
+        UniqueConstraint("specification_id", "scale_key", name="uq_visual_grammar_scale_key"),
+        Index("ix_visual_grammar_scale_spec", "specification_id"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    specification_id: Mapped[str] = mapped_column(ForeignKey("visual_grammar_specifications.id", ondelete="CASCADE"), nullable=False)
+    scale_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    scale_kind: Mapped[str] = mapped_column(String(80), nullable=False, default="linear")
+    domain_json: Mapped[object] = mapped_column(JSON, nullable=True)
+    range_json: Mapped[object] = mapped_column(JSON, nullable=True)
+    clamp: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    nice: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class VisualGrammarEncodingRecord(Base):
+    __tablename__ = "visual_grammar_encodings"
+    __table_args__ = (
+        Index("ix_visual_grammar_encoding_spec", "specification_id"),
+        Index("ix_visual_grammar_encoding_channel", "channel"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    specification_id: Mapped[str] = mapped_column(ForeignKey("visual_grammar_specifications.id", ondelete="CASCADE"), nullable=False)
+    mark_id: Mapped[str | None] = mapped_column(ForeignKey("visual_grammar_marks.id", ondelete="CASCADE"), nullable=True)
+    scale_id: Mapped[str | None] = mapped_column(ForeignKey("visual_grammar_scales.id", ondelete="SET NULL"), nullable=True)
+    channel: Mapped[str] = mapped_column(String(80), nullable=False)
+    field_name: Mapped[str | None] = mapped_column(String(300), nullable=True)
+    data_type: Mapped[str | None] = mapped_column(String(80), nullable=True)
+    aggregate: Mapped[str | None] = mapped_column(String(80), nullable=True)
+    value_json: Mapped[object] = mapped_column(JSON, nullable=True)
+    bin_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    condition_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class VisualGrammarTransformRecord(Base):
+    __tablename__ = "visual_grammar_transforms"
+    __table_args__ = (
+        UniqueConstraint("specification_id", "transform_key", name="uq_visual_grammar_transform_key"),
+        Index("ix_visual_grammar_transform_spec", "specification_id", "order_index"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    specification_id: Mapped[str] = mapped_column(ForeignKey("visual_grammar_specifications.id", ondelete="CASCADE"), nullable=False)
+    transform_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    transform_kind: Mapped[str] = mapped_column(String(80), nullable=False)
+    input_binding_id: Mapped[str | None] = mapped_column(ForeignKey("visual_grammar_data_bindings.id", ondelete="SET NULL"), nullable=True)
+    output_binding_key: Mapped[str | None] = mapped_column(String(180), nullable=True)
+    order_index: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    parameters_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class VisualGrammarGuideRecord(Base):
+    __tablename__ = "visual_grammar_guides"
+    __table_args__ = (
+        UniqueConstraint("specification_id", "guide_key", name="uq_visual_grammar_guide_key"),
+        Index("ix_visual_grammar_guide_spec", "specification_id", "order_index"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    specification_id: Mapped[str] = mapped_column(ForeignKey("visual_grammar_specifications.id", ondelete="CASCADE"), nullable=False)
+    guide_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    guide_kind: Mapped[str] = mapped_column(String(80), nullable=False, default="axis")
+    channel: Mapped[str | None] = mapped_column(String(80), nullable=True)
+    scale_id: Mapped[str | None] = mapped_column(ForeignKey("visual_grammar_scales.id", ondelete="SET NULL"), nullable=True)
+    title: Mapped[str | None] = mapped_column(String(300), nullable=True)
+    order_index: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    guide_spec_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class VisualGrammarSnapshotRecord(Base):
+    __tablename__ = "visual_grammar_snapshots"
+    __table_args__ = (
+        UniqueConstraint("specification_id", "revision", name="uq_visual_grammar_snapshot_revision"),
+        Index("ix_visual_grammar_snapshot_hash", "content_hash"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    specification_id: Mapped[str] = mapped_column(ForeignKey("visual_grammar_specifications.id", ondelete="CASCADE"), nullable=False)
+    revision: Mapped[int] = mapped_column(Integer, nullable=False)
+    content_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    previous_snapshot_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    state_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)

@@ -564,3 +564,7 @@ PublicApiClient.prototype.visualRuntimeSceneBundle=function(sceneId){return this
 export async function visualRuntimeCompositionBundle(client, compositionId) {
   return client.request(`/v1/visual-runtime/composition/compositions/${compositionId}/bundle`);
 }
+
+
+// v2.63.0 Analytical Visualization Grammar
+PublicApiClient.prototype.visualRuntimeGrammarBundle=function(specificationId){return this.request(`/visual-runtime/grammar/specifications/${encodeURIComponent(specificationId)}/bundle`);};

@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/analytical-visualization-grammar-v1.schema.json",
+  "title": "Sustainable Catalyst Analytical Visualization Grammar v1",
+  "type": "object",
+  "required": [
+    "contract",
+    "specification",
+    "marks",
+    "encodings",
+    "scales"
+  ],
+  "properties": {
+    "contract": {
+      "const": "sc.visual-runtime.grammar.v1"
+    },
+    "specification": {
+      "type": "object"
+    },
+    "data_bindings": {
+      "type": "array"
+    },
+    "marks": {
+      "type": "array"
+    },
+    "encodings": {
+      "type": "array"
+    },
+    "scales": {
+      "type": "array"
+    },
+    "transforms": {
+      "type": "array"
+    },
+    "guides": {
+      "type": "array"
+    },
+    "snapshots": {
+      "type": "array"
+    },
+    "boundaries": {
+      "type": "object"
+    }
+  }
+}
