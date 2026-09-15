@@ -130,6 +130,7 @@ MIGRATIONS = [
     ("0058", 'Probabilistic forecasting and calibration with governed probability, quantile, interval, distribution, calibration-study, mapping, scoring evidence, and reproducible packages without Core-side recalibration fitting/application, probabilistic inference, or automatic model ranking.'),
     ("0059", 'Predictive ensembles and model comparison with governed ensemble definitions, members, external forecasts, comparison candidates, metric and pairwise evidence, and reproducible packages without Core-side weight optimization, ensemble execution, metric computation, ranking, or model selection.'),
     ("0060", 'Anomaly, change-point, and early-warning intelligence with governed monitoring studies, detection rules, external anomaly/change/signal evidence, monitoring episodes, and reproducible packages without Core-side detection, threshold optimization, alert dispatch, causal attribution, or intervention.'),    ("0061", 'Spatial-temporal predictive intelligence with governed studies, spatial units, forecast/observation fields, propagation and hotspot evidence, external evaluations, and reproducible packages; Core does not interpolate, infer spatially, predict trajectories, model propagation, or detect hotspots.'),
+    ("0062", 'Causal-predictive integration with governed studies, bindings, intervention scenarios, external counterfactual forecasts, effect/evaluation evidence, handoffs, and packages; Core does not learn structure, estimate effects, execute counterfactuals, simulate interventions, or optimize decisions.'),
 ]
 
 

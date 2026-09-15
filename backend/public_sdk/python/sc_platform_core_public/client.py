@@ -778,3 +778,10 @@ PublicApiClient.predictive_monitoring_bundle=_predictive_monitoring_bundle
 # v2.57.0 Spatial-Temporal Predictive Intelligence
 def _predictive_spatial_temporal_bundle(self, study_id: str): return self.request("GET", f"/predictive-intelligence/spatial-temporal-studies/{study_id}/bundle")
 PublicApiClient.predictive_spatial_temporal_bundle=_predictive_spatial_temporal_bundle
+
+
+# v2.58.0 Causal-Predictive Integration
+def _predictive_causal_bundle(self, study_id: str):
+    return self.request("GET", f"/predictive-intelligence/causal-predictive-studies/{study_id}/bundle")
+
+PublicApiClient.predictive_causal_bundle = _predictive_causal_bundle

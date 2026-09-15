@@ -547,3 +547,7 @@ PublicApiClient.prototype.predictiveMonitoringBundle=function(studyId){return th
 
 // v2.57.0 Spatial-Temporal Predictive Intelligence
 PublicApiClient.prototype.predictiveSpatialTemporalBundle=function(studyId){return this.request(`/predictive-intelligence/spatial-temporal-studies/${encodeURIComponent(studyId)}/bundle`);};
+
+
+// v2.58.0 Causal-Predictive Integration
+PublicApiClient.prototype.predictiveCausalBundle=function(studyId){return this.request(`/predictive-intelligence/causal-predictive-studies/${encodeURIComponent(studyId)}/bundle`);};

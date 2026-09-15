@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/predictive-causal-evidence-v1.schema.json",
+  "title": "Sustainable Catalyst Predictive Causal Evidence v1",
+  "type": "object",
+  "required": ["evidence_key", "effect"],
+  "properties": {
+    "evidence_key": {"type": "string", "minLength": 1},
+    "causal_identification_id": {"type": ["string", "null"]},
+    "causal_estimate_id": {"type": ["string", "null"]},
+    "estimand": {"type": "string"},
+    "effect": {"type": "object", "minProperties": 1},
+    "uncertainty": {"type": "object"},
+    "assumptions": {"type": "array"},
+    "evidence_ref": {"type": ["string", "null"]},
+    "provenance": {"type": "object"}
+  },
+  "additionalProperties": true
+}

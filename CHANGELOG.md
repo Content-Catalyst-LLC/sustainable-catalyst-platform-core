@@ -1,3 +1,7 @@
+
+## 2.58.0 — 2026-09-14
+- Added Causal-Predictive Integration with governed predictive/causal study bindings, intervention scenarios, external counterfactual forecast provenance, causal-effect and evaluation evidence, specialist-runtime handoffs, and immutable packages.
+- Added additive migration `0062` and explicit non-compute boundaries for causal structure learning, effect estimation, counterfactual execution, intervention simulation, metric computation, and decision optimization.
 # Changelog
 
 ## 2.57.0 — Spatial-Temporal Predictive Intelligence

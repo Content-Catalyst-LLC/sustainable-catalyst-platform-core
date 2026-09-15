@@ -25,6 +25,10 @@ from ..models import (
     PredictiveChangePointRecord, PredictiveEarlyWarningSignalRecord, PredictiveMonitoringEpisodeRecord, PredictiveMonitoringPackageRecord,
     PredictiveSpatialTemporalStudyRecord, PredictiveSpatialUnitRecord, PredictiveSpatialTemporalForecastRecord, PredictiveSpatialTemporalObservationRecord,
     PredictiveSpatialPropagationEvidenceRecord, PredictiveSpatialHotspotEvidenceRecord, PredictiveSpatialTemporalEvaluationRecord, PredictiveSpatialTemporalPackageRecord,
+    CausalGraphRecord, CausalVariableRecord, CausalInterventionRecord, CausalIdentificationRecord, CausalEstimateRecord,
+    PredictiveCausalStudyRecord, PredictiveCausalVariableBindingRecord, PredictiveInterventionScenarioRecord,
+    PredictiveCounterfactualForecastRecord, PredictiveCausalEffectEvidenceRecord, PredictiveCausalEvaluationRecord,
+    PredictiveCausalHandoffRecord, PredictiveCausalPackageRecord,
 )
 
 MODEL_KINDS={"statistical","machine-learning","simulation","hybrid","rules-based","external","other"}
@@ -48,7 +52,9 @@ ANOMALY_KINDS={"point","contextual","collective","distribution-shift","residual"
 EARLY_WARNING_SIGNAL_KINDS={"threshold-proximity","trend-acceleration","variance-change","autocorrelation-change","critical-slowing","forecast-risk","external","other"}
 SPATIAL_UNIT_KINDS={"point","grid-cell","region","administrative-area","watershed","corridor","network-node","external","other"}
 SPATIAL_FORECAST_REPRESENTATIONS={"point","probability","quantile","interval","distribution","categorical","field","external","other"}
-FORBIDDEN_FIELDS={"fit_by_core","train_by_core","infer_by_core","execute_by_core","core_execute","probability_calibrated_by_core","winner","rank","verdict","truth_value","automatic_truth_promotion","model_selected_by_core","backtest_execute_by_core","metric_compute_by_core","resample_by_core","probabilistic_infer_by_core","calibration_fit_by_core","recalibration_apply_by_core","scoring_rule_compute_by_core","calibration_metric_compute_by_core","ensemble_construct_by_core","ensemble_execute_by_core","ensemble_weight_optimize_by_core","comparison_metric_compute_by_core","significance_compute_by_core","rank_models_by_core","select_model_by_core","automatic_model_selection","anomaly_detect_by_core","change_point_detect_by_core","early_warning_compute_by_core","threshold_optimize_by_core","alert_dispatch_by_core","causal_attribution_by_core","automatic_intervention_by_core","spatial_interpolate_by_core","spatial_infer_by_core","trajectory_predict_by_core","propagation_model_by_core","hotspot_detect_by_core","spatial_metric_compute_by_core"}
+CAUSAL_PREDICTIVE_INTEGRATION_KINDS={"causal-forecast","intervention-forecast","counterfactual-forecast","effect-informed-forecast","causal-feature-governance","external","other"}
+CAUSAL_BINDING_ROLES={"target","predictor","treatment","outcome","confounder","mediator","effect-modifier","context","other"}
+FORBIDDEN_FIELDS={"fit_by_core","train_by_core","infer_by_core","execute_by_core","core_execute","probability_calibrated_by_core","winner","rank","verdict","truth_value","automatic_truth_promotion","model_selected_by_core","backtest_execute_by_core","metric_compute_by_core","resample_by_core","probabilistic_infer_by_core","calibration_fit_by_core","recalibration_apply_by_core","scoring_rule_compute_by_core","calibration_metric_compute_by_core","ensemble_construct_by_core","ensemble_execute_by_core","ensemble_weight_optimize_by_core","comparison_metric_compute_by_core","significance_compute_by_core","rank_models_by_core","select_model_by_core","automatic_model_selection","anomaly_detect_by_core","change_point_detect_by_core","early_warning_compute_by_core","threshold_optimize_by_core","alert_dispatch_by_core","causal_attribution_by_core","automatic_intervention_by_core","spatial_interpolate_by_core","spatial_infer_by_core","trajectory_predict_by_core","propagation_model_by_core","hotspot_detect_by_core","spatial_metric_compute_by_core","causal_structure_learn_by_core","causal_identify_by_core","causal_effect_estimate_by_core","counterfactual_execute_by_core","intervention_simulate_by_core","causal_predictive_metric_compute_by_core","decision_optimize_by_core"}
 
 def _ser(row):
     out={}
@@ -101,6 +107,9 @@ def boundaries():
       "spatial_temporal_study_registry_by_core":True,"spatial_unit_registry_by_core":True,"spatial_temporal_forecast_provenance_by_core":True,
       "spatial_temporal_observation_registry_by_core":True,"propagation_evidence_registry_by_core":True,"hotspot_evidence_registry_by_core":True,
       "spatial_temporal_evaluation_evidence_by_core":True,"reproducible_spatial_temporal_packages_by_core":True,
+      "causal_predictive_study_registry_by_core":True,"causal_variable_binding_registry_by_core":True,"intervention_scenario_registry_by_core":True,
+      "counterfactual_forecast_provenance_by_core":True,"causal_effect_evidence_registry_by_core":True,"causal_predictive_evaluation_evidence_by_core":True,
+      "causal_predictive_handoff_registry_by_core":True,"reproducible_causal_predictive_packages_by_core":True,
       "model_fitting_by_core":False,"forecast_inference_execution_by_core":False,"backtest_execution_by_core":False,"metric_computation_by_core":False,
       "time_series_resampling_by_core":False,"probabilistic_calibration_by_core":False,"ensemble_selection_by_core":False,
       "probabilistic_inference_execution_by_core":False,"calibration_mapping_fitting_by_core":False,"calibration_mapping_application_by_core":False,
@@ -111,12 +120,14 @@ def boundaries():
       "alert_dispatch_by_core":False,"causal_attribution_by_core":False,"automatic_intervention_by_core":False,
       "spatial_interpolation_by_core":False,"spatial_inference_execution_by_core":False,"trajectory_prediction_by_core":False,"propagation_modeling_by_core":False,
       "hotspot_detection_by_core":False,"spatial_temporal_metric_computation_by_core":False,
+      "causal_structure_learning_by_core":False,"causal_identification_by_core":False,"causal_effect_estimation_by_core":False,
+      "counterfactual_execution_by_core":False,"intervention_simulation_by_core":False,"causal_predictive_metric_computation_by_core":False,"decision_optimization_by_core":False,
       "automatic_model_ranking_by_core":False,"automatic_truth_promotion":False,
     }
 
 def readiness(db:Session):
     def count(m): return int(db.scalar(select(func.count()).select_from(m)) or 0)
-    return {"migration_0056_applied":True,"migration_0057_applied":True,"migration_0058_applied":True,"migration_0059_applied":True,"migration_0060_applied":True,"migration_0061_applied":True,"contract":"sc.predictive.model.v1","forecast_contract":"sc.predictive.forecast-provenance.v1","handoff_contract":"sc.predictive.runtime-handoff.v1","backtest_contract":"sc.predictive.backtest-plan.v1","backtest_package_contract":"sc.predictive.backtest-package.v1","probabilistic_forecast_contract":"sc.predictive.probabilistic-forecast.v1","calibration_study_contract":"sc.predictive.calibration-study.v1","calibration_package_contract":"sc.predictive.calibration-package.v1","ensemble_contract":"sc.predictive.ensemble.v1","model_comparison_contract":"sc.predictive.model-comparison.v1","model_comparison_package_contract":"sc.predictive.model-comparison-package.v1","monitoring_study_contract":"sc.predictive.monitoring-study.v1","monitoring_package_contract":"sc.predictive.monitoring-package.v1","spatial_temporal_study_contract":"sc.predictive.spatial-temporal-study.v1","spatial_temporal_package_contract":"sc.predictive.spatial-temporal-package.v1","counts":{
+    return {"migration_0056_applied":True,"migration_0057_applied":True,"migration_0058_applied":True,"migration_0059_applied":True,"migration_0060_applied":True,"migration_0061_applied":True,"migration_0062_applied":True,"contract":"sc.predictive.model.v1","forecast_contract":"sc.predictive.forecast-provenance.v1","handoff_contract":"sc.predictive.runtime-handoff.v1","backtest_contract":"sc.predictive.backtest-plan.v1","backtest_package_contract":"sc.predictive.backtest-package.v1","probabilistic_forecast_contract":"sc.predictive.probabilistic-forecast.v1","calibration_study_contract":"sc.predictive.calibration-study.v1","calibration_package_contract":"sc.predictive.calibration-package.v1","ensemble_contract":"sc.predictive.ensemble.v1","model_comparison_contract":"sc.predictive.model-comparison.v1","model_comparison_package_contract":"sc.predictive.model-comparison-package.v1","monitoring_study_contract":"sc.predictive.monitoring-study.v1","monitoring_package_contract":"sc.predictive.monitoring-package.v1","spatial_temporal_study_contract":"sc.predictive.spatial-temporal-study.v1","spatial_temporal_package_contract":"sc.predictive.spatial-temporal-package.v1","causal_predictive_study_contract":"sc.predictive.causal-study.v1","causal_predictive_package_contract":"sc.predictive.causal-package.v1","counts":{
       "models":count(PredictiveModelRecord),"targets":count(PredictiveTargetRecord),"features":count(PredictiveFeatureRecord),"training_windows":count(PredictiveTrainingWindowRecord),
       "forecast_runs":count(PredictiveForecastRunRecord),"forecast_observations":count(PredictiveForecastObservationRecord),"evaluations":count(PredictiveEvaluationRecord),"handoffs":count(PredictiveRuntimeHandoffRecord),"snapshots":count(PredictiveForecastSnapshotRecord),
       "time_series_datasets":count(PredictiveTimeSeriesDatasetRecord),"forecast_windows":count(PredictiveForecastWindowRecord),"baseline_models":count(PredictiveBaselineModelRecord),"backtest_plans":count(PredictiveBacktestPlanRecord),
@@ -129,7 +140,10 @@ def readiness(db:Session):
       "change_points":count(PredictiveChangePointRecord),"early_warning_signals":count(PredictiveEarlyWarningSignalRecord),"monitoring_episodes":count(PredictiveMonitoringEpisodeRecord),"monitoring_packages":count(PredictiveMonitoringPackageRecord),
       "spatial_temporal_studies":count(PredictiveSpatialTemporalStudyRecord),"spatial_units":count(PredictiveSpatialUnitRecord),"spatial_temporal_forecasts":count(PredictiveSpatialTemporalForecastRecord),
       "spatial_temporal_observations":count(PredictiveSpatialTemporalObservationRecord),"spatial_propagation_evidence":count(PredictiveSpatialPropagationEvidenceRecord),"spatial_hotspot_evidence":count(PredictiveSpatialHotspotEvidenceRecord),
-      "spatial_temporal_evaluations":count(PredictiveSpatialTemporalEvaluationRecord),"spatial_temporal_packages":count(PredictiveSpatialTemporalPackageRecord)},**boundaries()}
+      "spatial_temporal_evaluations":count(PredictiveSpatialTemporalEvaluationRecord),"spatial_temporal_packages":count(PredictiveSpatialTemporalPackageRecord),
+      "causal_predictive_studies":count(PredictiveCausalStudyRecord),"causal_variable_bindings":count(PredictiveCausalVariableBindingRecord),"intervention_scenarios":count(PredictiveInterventionScenarioRecord),
+      "counterfactual_forecasts":count(PredictiveCounterfactualForecastRecord),"causal_effect_evidence":count(PredictiveCausalEffectEvidenceRecord),"causal_predictive_evaluations":count(PredictiveCausalEvaluationRecord),
+      "causal_predictive_handoffs":count(PredictiveCausalHandoffRecord),"causal_predictive_packages":count(PredictiveCausalPackageRecord)},**boundaries()}
 
 def create_model(db:Session,payload:dict):
     _reject(payload); project=str(payload.get("project_entity_id") or "").strip(); ent=db.get(Entity,project)
@@ -328,10 +342,11 @@ def bundle(db:Session,model_id:str,public_only=False):
     ensemble_memberships=[_ser(x) for x in db.scalars(select(PredictiveEnsembleMemberRecord).where(PredictiveEnsembleMemberRecord.model_id==model_id).order_by(PredictiveEnsembleMemberRecord.created_at.asc())).all()]
     monitoring_studies=[_ser(x) for x in db.scalars(select(PredictiveMonitoringStudyRecord).where(PredictiveMonitoringStudyRecord.model_id==model_id).order_by(PredictiveMonitoringStudyRecord.created_at.asc())).all()]
     spatial_temporal_studies=[_ser(x) for x in db.scalars(select(PredictiveSpatialTemporalStudyRecord).where(PredictiveSpatialTemporalStudyRecord.model_id==model_id).order_by(PredictiveSpatialTemporalStudyRecord.created_at.asc())).all()]
+    causal_predictive_studies=[_ser(x) for x in db.scalars(select(PredictiveCausalStudyRecord).where(PredictiveCausalStudyRecord.predictive_model_id==model_id).order_by(PredictiveCausalStudyRecord.created_at.asc())).all()]
     observations=[]
     runids=[r["id"] for r in runs]
     if runids: observations=[_ser(x) for x in db.scalars(select(PredictiveForecastObservationRecord).where(PredictiveForecastObservationRecord.forecast_run_id.in_(runids)).order_by(PredictiveForecastObservationRecord.created_at.asc())).all()]
-    return {"contract":"sc.predictive.forecast-provenance.v1","model":_ser(model),"targets":targets,"features":features,"training_windows":windows,"forecast_runs":runs,"forecast_observations":observations,"evaluations":evals,"handoffs":handoffs,"snapshots":snaps,"time_series_datasets":ts_datasets,"forecast_windows":forecast_windows,"baseline_models":baselines,"backtest_plans":backtest_plans,"probabilistic_forecasts":probabilistic_forecasts,"calibration_studies":calibration_studies,"probabilistic_evaluations":probabilistic_evaluations,"ensemble_memberships":ensemble_memberships,"monitoring_studies":monitoring_studies,"spatial_temporal_studies":spatial_temporal_studies,"boundaries":boundaries()}
+    return {"contract":"sc.predictive.forecast-provenance.v1","model":_ser(model),"targets":targets,"features":features,"training_windows":windows,"forecast_runs":runs,"forecast_observations":observations,"evaluations":evals,"handoffs":handoffs,"snapshots":snaps,"time_series_datasets":ts_datasets,"forecast_windows":forecast_windows,"baseline_models":baselines,"backtest_plans":backtest_plans,"probabilistic_forecasts":probabilistic_forecasts,"calibration_studies":calibration_studies,"probabilistic_evaluations":probabilistic_evaluations,"ensemble_memberships":ensemble_memberships,"monitoring_studies":monitoring_studies,"spatial_temporal_studies":spatial_temporal_studies,"causal_predictive_studies":causal_predictive_studies,"boundaries":boundaries()}
 
 def create_snapshot(db:Session,model_id:str,payload:dict):
     _reject(payload); state=bundle(db,model_id); state.pop("snapshots",None); digest=_sha256(state); last=db.scalar(select(PredictiveForecastSnapshotRecord).where(PredictiveForecastSnapshotRecord.model_id==model_id).order_by(PredictiveForecastSnapshotRecord.revision.desc()))
@@ -795,4 +810,147 @@ def create_spatial_temporal_package(db:Session,study_id:str,payload:dict):
     _reject(payload); state=spatial_temporal_bundle(db,study_id); state.pop("packages",None); digest=_sha256(state)
     last=db.scalar(select(PredictiveSpatialTemporalPackageRecord).where(PredictiveSpatialTemporalPackageRecord.spatial_temporal_study_id==study_id).order_by(PredictiveSpatialTemporalPackageRecord.revision.desc())); rev=(last.revision+1) if last else 1
     row=PredictiveSpatialTemporalPackageRecord(spatial_temporal_study_id=study_id,revision=rev,content_hash=digest,previous_package_hash=(last.content_hash if last else None),state_json=state,environment_json=dict(payload.get("environment") or {}),provenance_json=dict(payload.get("provenance") or {}),created_by=str(payload.get("created_by") or "operator"))
+    db.add(row); db.commit(); db.refresh(row); return _ser(row)
+
+# v2.58.0 — Causal-Predictive Integration
+
+def _causal_predictive_study(db:Session, study_id:str)->PredictiveCausalStudyRecord:
+    row=db.get(PredictiveCausalStudyRecord,study_id)
+    if row is None: raise ValueError("causal_predictive_study_id not found")
+    return row
+
+def _causal_intervention_scenario(db:Session,study_id:str,scenario_id:str|None)->PredictiveInterventionScenarioRecord|None:
+    if not scenario_id: return None
+    row=db.get(PredictiveInterventionScenarioRecord,scenario_id)
+    if row is None or row.causal_predictive_study_id!=study_id: raise ValueError("intervention_scenario_id must belong to causal_predictive_study_id")
+    return row
+
+def create_causal_predictive_study(db:Session,payload:dict):
+    _reject(payload)
+    project=str(payload.get("project_entity_id") or "").strip(); ent=db.get(Entity,project)
+    if ent is None: raise ValueError("project_entity_id must reference an existing Core entity")
+    model_id=str(payload.get("predictive_model_id") or "").strip(); model=_model(db,model_id)
+    if model.project_entity_id!=project: raise ValueError("predictive_model_id must belong to project_entity_id")
+    graph_id=str(payload.get("causal_graph_id") or "").strip(); graph=db.get(CausalGraphRecord,graph_id)
+    if graph is None: raise ValueError("causal_graph_id must reference an existing causal graph")
+    if graph.project_entity_id!=project: raise ValueError("causal_graph_id must belong to project_entity_id")
+    target_id=payload.get("target_id")
+    if target_id:
+        target=db.get(PredictiveTargetRecord,target_id)
+        if target is None or target.model_id!=model_id: raise ValueError("target_id must belong to predictive_model_id")
+    kind=str(payload.get("integration_kind") or "causal-forecast")
+    if kind not in CAUSAL_PREDICTIVE_INTEGRATION_KINDS: raise ValueError(f"integration_kind must be one of {sorted(CAUSAL_PREDICTIVE_INTEGRATION_KINDS)}")
+    vis=str(payload.get("visibility") or "private")
+    if vis not in {"private","public"}: raise ValueError("visibility must be private or public")
+    row=PredictiveCausalStudyRecord(project_entity_id=project,predictive_model_id=model_id,causal_graph_id=graph_id,target_id=target_id,study_key=str(payload.get("study_key") or "").strip(),name=str(payload.get("name") or "").strip(),integration_kind=kind,estimand_scope_json=dict(payload.get("estimand_scope") or {}),temporal_scope_json=dict(payload.get("temporal_scope") or {}),status=str(payload.get("status") or "recorded"),visibility=vis,externally_computed=True,provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {}))
+    if not row.study_key or not row.name: raise ValueError("study_key and name are required")
+    db.add(row)
+    try: db.commit()
+    except IntegrityError as exc: db.rollback(); raise ValueError("study_key must be unique within project_entity_id") from exc
+    db.refresh(row); return _ser(row)
+
+def add_causal_variable_binding(db:Session,study_id:str,payload:dict):
+    _reject(payload); study=_causal_predictive_study(db,study_id)
+    variable_id=str(payload.get("causal_variable_id") or "").strip(); variable=db.get(CausalVariableRecord,variable_id)
+    if variable is None or variable.graph_id!=study.causal_graph_id: raise ValueError("causal_variable_id must belong to the study causal graph")
+    target_id=payload.get("predictive_target_id"); feature_id=payload.get("predictive_feature_id")
+    if not target_id and not feature_id: raise ValueError("predictive_target_id or predictive_feature_id is required")
+    if target_id:
+        target=db.get(PredictiveTargetRecord,target_id)
+        if target is None or target.model_id!=study.predictive_model_id: raise ValueError("predictive_target_id must belong to the study predictive model")
+    if feature_id:
+        feature=db.get(PredictiveFeatureRecord,feature_id)
+        if feature is None or feature.model_id!=study.predictive_model_id: raise ValueError("predictive_feature_id must belong to the study predictive model")
+    role=str(payload.get("binding_role") or "predictor")
+    if role not in CAUSAL_BINDING_ROLES: raise ValueError(f"binding_role must be one of {sorted(CAUSAL_BINDING_ROLES)}")
+    row=PredictiveCausalVariableBindingRecord(causal_predictive_study_id=study_id,binding_key=str(payload.get("binding_key") or "").strip(),causal_variable_id=variable_id,predictive_target_id=target_id,predictive_feature_id=feature_id,binding_role=role,transformation_json=dict(payload.get("transformation") or {}),provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {}))
+    if not row.binding_key: raise ValueError("binding_key is required")
+    db.add(row)
+    try: db.commit()
+    except IntegrityError as exc: db.rollback(); raise ValueError("binding_key must be unique within causal_predictive_study_id") from exc
+    db.refresh(row); return _ser(row)
+
+def add_intervention_scenario(db:Session,study_id:str,payload:dict):
+    _reject(payload); study=_causal_predictive_study(db,study_id)
+    causal_intervention_id=payload.get("causal_intervention_id")
+    if causal_intervention_id:
+        intervention=db.get(CausalInterventionRecord,causal_intervention_id)
+        if intervention is None or intervention.graph_id!=study.causal_graph_id: raise ValueError("causal_intervention_id must belong to the study causal graph")
+    intervention_json=payload.get("intervention")
+    if not isinstance(intervention_json,dict) or not intervention_json: raise ValueError("intervention object is required")
+    assumptions=payload.get("assumptions") or []
+    if not isinstance(assumptions,list): raise ValueError("assumptions must be an array")
+    row=PredictiveInterventionScenarioRecord(causal_predictive_study_id=study_id,scenario_key=str(payload.get("scenario_key") or "").strip(),name=str(payload.get("name") or "").strip(),causal_intervention_id=causal_intervention_id,intervention_json=intervention_json,baseline_json=dict(payload.get("baseline") or {}),assumptions_json=assumptions,horizon_json=dict(payload.get("horizon") or {}),source_ref=payload.get("source_ref"),provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {}))
+    if not row.scenario_key or not row.name: raise ValueError("scenario_key and name are required")
+    db.add(row)
+    try: db.commit()
+    except IntegrityError as exc: db.rollback(); raise ValueError("scenario_key must be unique within causal_predictive_study_id") from exc
+    db.refresh(row); return _ser(row)
+
+def add_counterfactual_forecast(db:Session,study_id:str,payload:dict):
+    _reject(payload); _causal_predictive_study(db,study_id); scenario=_causal_intervention_scenario(db,study_id,payload.get("intervention_scenario_id"))
+    cf=payload.get("counterfactual_forecast")
+    if not isinstance(cf,dict) or not cf: raise ValueError("counterfactual_forecast object is required")
+    factual=payload.get("factual_forecast") or {}
+    if not isinstance(factual,dict): raise ValueError("factual_forecast must be an object")
+    runtime=str(payload.get("runtime_product") or "external")
+    if runtime not in RUNTIME_PRODUCTS: raise ValueError("unsupported runtime_product")
+    row=PredictiveCounterfactualForecastRecord(causal_predictive_study_id=study_id,intervention_scenario_id=(scenario.id if scenario else None),forecast_key=str(payload.get("forecast_key") or "").strip(),issued_at=_parse_dt(payload.get("issued_at")),horizon_json=dict(payload.get("horizon") or {}),factual_forecast_json=factual,counterfactual_forecast_json=cf,contrast_json=dict(payload.get("contrast") or {}),uncertainty_json=dict(payload.get("uncertainty") or {}),runtime_product=runtime,runtime_ref=payload.get("runtime_ref"),externally_computed=True,provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {}))
+    if not row.forecast_key: raise ValueError("forecast_key is required")
+    db.add(row)
+    try: db.commit()
+    except IntegrityError as exc: db.rollback(); raise ValueError("forecast_key must be unique within causal_predictive_study_id") from exc
+    db.refresh(row); return _ser(row)
+
+def add_causal_effect_evidence(db:Session,study_id:str,payload:dict):
+    _reject(payload); study=_causal_predictive_study(db,study_id)
+    identification_id=payload.get("causal_identification_id")
+    if identification_id:
+        ident=db.get(CausalIdentificationRecord,identification_id)
+        if ident is None or ident.graph_id!=study.causal_graph_id: raise ValueError("causal_identification_id must belong to the study causal graph")
+    estimate_id=payload.get("causal_estimate_id")
+    if estimate_id:
+        estimate=db.get(CausalEstimateRecord,estimate_id)
+        if estimate is None or estimate.graph_id!=study.causal_graph_id: raise ValueError("causal_estimate_id must belong to the study causal graph")
+    effect=payload.get("effect")
+    if not isinstance(effect,dict) or not effect: raise ValueError("effect object is required")
+    assumptions=payload.get("assumptions") or []
+    if not isinstance(assumptions,list): raise ValueError("assumptions must be an array")
+    row=PredictiveCausalEffectEvidenceRecord(causal_predictive_study_id=study_id,evidence_key=str(payload.get("evidence_key") or "").strip(),causal_identification_id=identification_id,causal_estimate_id=estimate_id,estimand=str(payload.get("estimand") or "effect"),effect_json=effect,uncertainty_json=dict(payload.get("uncertainty") or {}),assumptions_json=assumptions,evidence_ref=payload.get("evidence_ref"),externally_computed=True,provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {}))
+    if not row.evidence_key: raise ValueError("evidence_key is required")
+    db.add(row)
+    try: db.commit()
+    except IntegrityError as exc: db.rollback(); raise ValueError("evidence_key must be unique within causal_predictive_study_id") from exc
+    db.refresh(row); return _ser(row)
+
+def add_causal_predictive_evaluation(db:Session,study_id:str,payload:dict):
+    _reject(payload); _causal_predictive_study(db,study_id); metrics=payload.get("metric_evidence")
+    if not isinstance(metrics,dict) or not metrics: raise ValueError("metric_evidence object is required")
+    diagnostics=payload.get("diagnostic_evidence") or {}
+    if not isinstance(diagnostics,dict): raise ValueError("diagnostic_evidence must be an object")
+    row=PredictiveCausalEvaluationRecord(causal_predictive_study_id=study_id,evaluation_key=str(payload.get("evaluation_key") or "").strip(),evaluation_kind=str(payload.get("evaluation_kind") or "causal-predictive"),metric_evidence_json=metrics,diagnostic_evidence_json=diagnostics,comparison_scope_json=dict(payload.get("comparison_scope") or {}),evidence_ref=payload.get("evidence_ref"),externally_computed=True,provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {}))
+    if not row.evaluation_key: raise ValueError("evaluation_key is required")
+    db.add(row)
+    try: db.commit()
+    except IntegrityError as exc: db.rollback(); raise ValueError("evaluation_key must be unique within causal_predictive_study_id") from exc
+    db.refresh(row); return _ser(row)
+
+def add_causal_predictive_handoff(db:Session,study_id:str,payload:dict):
+    _reject(payload); _causal_predictive_study(db,study_id); product=str(payload.get("target_product") or "").strip()
+    if product not in RUNTIME_PRODUCTS-{"external"}: raise ValueError("target_product must be a supported specialist runtime")
+    request=payload.get("request") or {}
+    if not isinstance(request,dict): raise ValueError("request must be an object")
+    row=PredictiveCausalHandoffRecord(causal_predictive_study_id=study_id,target_product=product,purpose=str(payload.get("purpose") or "external-causal-predictive-compute"),request_json=request,response_ref=payload.get("response_ref"),status=str(payload.get("status") or "recorded"),provenance_json=dict(payload.get("provenance") or {}),metadata_json=dict(payload.get("metadata") or {}))
+    db.add(row); db.commit(); db.refresh(row); return _ser(row)
+
+def causal_predictive_bundle(db:Session,study_id:str):
+    study=_causal_predictive_study(db,study_id)
+    def rows(model): return [_ser(x) for x in db.scalars(select(model).where(model.causal_predictive_study_id==study_id).order_by(model.created_at.asc())).all()]
+    graph=db.get(CausalGraphRecord,study.causal_graph_id)
+    return {"contract":"sc.predictive.causal-package.v1","study":_ser(study),"causal_graph":(_ser(graph) if graph else None),"variable_bindings":rows(PredictiveCausalVariableBindingRecord),"intervention_scenarios":rows(PredictiveInterventionScenarioRecord),"counterfactual_forecasts":rows(PredictiveCounterfactualForecastRecord),"causal_effect_evidence":rows(PredictiveCausalEffectEvidenceRecord),"evaluations":rows(PredictiveCausalEvaluationRecord),"handoffs":rows(PredictiveCausalHandoffRecord),"packages":rows(PredictiveCausalPackageRecord),"boundaries":boundaries()}
+
+def create_causal_predictive_package(db:Session,study_id:str,payload:dict):
+    _reject(payload); state=causal_predictive_bundle(db,study_id); state.pop("packages",None); digest=_sha256(state)
+    last=db.scalar(select(PredictiveCausalPackageRecord).where(PredictiveCausalPackageRecord.causal_predictive_study_id==study_id).order_by(PredictiveCausalPackageRecord.revision.desc())); rev=(last.revision+1) if last else 1
+    row=PredictiveCausalPackageRecord(causal_predictive_study_id=study_id,revision=rev,content_hash=digest,previous_package_hash=(last.content_hash if last else None),state_json=state,environment_json=dict(payload.get("environment") or {}),provenance_json=dict(payload.get("provenance") or {}),created_by=str(payload.get("created_by") or "operator"))
     db.add(row); db.commit(); db.refresh(row); return _ser(row)

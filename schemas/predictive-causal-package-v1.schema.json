@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/predictive-causal-package-v1.schema.json",
+  "title": "Sustainable Catalyst Predictive Causal Package v1",
+  "type": "object",
+  "required": ["contract", "study", "variable_bindings", "intervention_scenarios", "counterfactual_forecasts", "causal_effect_evidence", "evaluations", "handoffs"],
+  "properties": {
+    "contract": {"const": "sc.predictive.causal-package.v1"},
+    "study": {"type": "object"},
+    "causal_graph": {"type": ["object", "null"]},
+    "variable_bindings": {"type": "array"},
+    "intervention_scenarios": {"type": "array"},
+    "counterfactual_forecasts": {"type": "array"},
+    "causal_effect_evidence": {"type": "array"},
+    "evaluations": {"type": "array"},
+    "handoffs": {"type": "array"},
+    "packages": {"type": "array"},
+    "boundaries": {"type": "object"}
+  },
+  "additionalProperties": true
+}

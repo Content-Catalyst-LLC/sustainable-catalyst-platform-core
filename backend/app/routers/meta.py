@@ -199,6 +199,7 @@ def health(request: Request):
         "predictive_ensembles_model_comparison": request.app.state.settings.predictive_intelligence_enabled,
         "predictive_anomaly_change_point_early_warning": request.app.state.settings.predictive_intelligence_enabled,
         "predictive_spatial_temporal_intelligence": request.app.state.settings.predictive_intelligence_enabled,
+        "predictive_causal_predictive_integration": request.app.state.settings.predictive_intelligence_enabled,
     }
 
 

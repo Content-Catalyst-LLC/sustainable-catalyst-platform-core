@@ -287,6 +287,53 @@ def spatial_temporal_package(study_id:str,request:Request,payload:Payload,db:Ses
     try:return svc.create_spatial_temporal_package(db,study_id,payload.data)
     except Exception as exc:raise bad(exc)
 
+
+@router.post("/causal-predictive-studies",dependencies=[Depends(require_write)])
+def causal_predictive_study_create(request:Request,payload:Payload,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.create_causal_predictive_study(db,payload.data)
+    except Exception as exc:raise bad(exc)
+@router.post("/causal-predictive-studies/{study_id}/variable-bindings",dependencies=[Depends(require_write)])
+def causal_predictive_binding(study_id:str,request:Request,payload:Payload,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.add_causal_variable_binding(db,study_id,payload.data)
+    except Exception as exc:raise bad(exc)
+@router.post("/causal-predictive-studies/{study_id}/intervention-scenarios",dependencies=[Depends(require_write)])
+def causal_predictive_scenario(study_id:str,request:Request,payload:Payload,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.add_intervention_scenario(db,study_id,payload.data)
+    except Exception as exc:raise bad(exc)
+@router.post("/causal-predictive-studies/{study_id}/counterfactual-forecasts",dependencies=[Depends(require_write)])
+def causal_predictive_counterfactual(study_id:str,request:Request,payload:Payload,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.add_counterfactual_forecast(db,study_id,payload.data)
+    except Exception as exc:raise bad(exc)
+@router.post("/causal-predictive-studies/{study_id}/effect-evidence",dependencies=[Depends(require_write)])
+def causal_predictive_effect(study_id:str,request:Request,payload:Payload,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.add_causal_effect_evidence(db,study_id,payload.data)
+    except Exception as exc:raise bad(exc)
+@router.post("/causal-predictive-studies/{study_id}/evaluations",dependencies=[Depends(require_write)])
+def causal_predictive_evaluation(study_id:str,request:Request,payload:Payload,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.add_causal_predictive_evaluation(db,study_id,payload.data)
+    except Exception as exc:raise bad(exc)
+@router.post("/causal-predictive-studies/{study_id}/handoffs",dependencies=[Depends(require_write)])
+def causal_predictive_handoff(study_id:str,request:Request,payload:Payload,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.add_causal_predictive_handoff(db,study_id,payload.data)
+    except Exception as exc:raise bad(exc)
+@router.get("/causal-predictive-studies/{study_id}/bundle",dependencies=[Depends(require_read)])
+def causal_predictive_bundle(study_id:str,request:Request,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.causal_predictive_bundle(db,study_id)
+    except Exception as exc:raise bad(exc)
+@router.post("/causal-predictive-studies/{study_id}/packages",dependencies=[Depends(require_write)])
+def causal_predictive_package(study_id:str,request:Request,payload:Payload,db:Session=Depends(get_session)):
+    enabled(request)
+    try:return svc.create_causal_predictive_package(db,study_id,payload.data)
+    except Exception as exc:raise bad(exc)
+
 @public_router.get("/readiness",response_model=PublicEnvelope)
 def public_readiness(request:Request,db:Session=Depends(get_session),_ctx:PublicApiContext=Depends(require_public_scope("data:read"))):
     public_enabled(request); data=svc.readiness(db); data.update({"release":request.app.state.settings.version,"enabled":True}); return PublicEnvelope(data=data,meta={"api_version":"v1","request_id":request.state.request_id})
@@ -330,3 +377,10 @@ def public_spatial_temporal_bundle(study_id:str,request:Request,db:Session=Depen
     public_enabled(request); study=svc._spatial_temporal_study(db,study_id)
     if study.visibility!="public": raise HTTPException(status_code=404,detail="Predictive spatial-temporal study not found.")
     return PublicEnvelope(data=svc.spatial_temporal_bundle(db,study_id),meta={"api_version":"v1","request_id":request.state.request_id})
+
+@public_router.get("/causal-predictive-studies/{study_id}/bundle",response_model=PublicEnvelope)
+def public_causal_predictive_bundle(study_id:str,request:Request,db:Session=Depends(get_session),_ctx:PublicApiContext=Depends(require_public_scope("data:read"))):
+    public_enabled(request); study=svc._causal_predictive_study(db,study_id)
+    if study.visibility!="public": raise HTTPException(status_code=404,detail="Predictive causal study not found.")
+    return PublicEnvelope(data=svc.causal_predictive_bundle(db,study_id),meta={"api_version":"v1","request_id":request.state.request_id})
+

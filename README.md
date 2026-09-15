@@ -1,6 +1,6 @@
-# Sustainable Catalyst Platform Core v2.57.0
+# Sustainable Catalyst Platform Core v2.58.0
 
-**Spatial-Temporal Predictive Intelligence** extends the governed Predictive Intelligence layer with spatial units, forecast/observation fields, propagation and hotspot evidence, external evaluation evidence, and reproducible packages. Platform Core records provenance and contracts; spatial inference and computation remain in specialist runtimes.
+**Causal-Predictive Integration** connects governed predictive models to governed causal graphs through explicit variable bindings, intervention scenarios, external counterfactual forecasts, causal-effect evidence, evaluation evidence, specialist-runtime handoffs, and reproducible packages. Platform Core records provenance and contracts; causal identification, effect estimation, counterfactual execution, intervention simulation, and decision optimization remain in specialist runtimes.
 
 ## v2.49.0 — Quantitative Reconstruction & Reproduction Handoffs
 Platform Core now provides a governed quantitative reconstruction layer for Open Forensics with evidence-linked inputs, explicit uncertainty, external specialist-runtime handoffs, result bindings, and reproducible quantitative packages. Core does not execute or solve quantitative models.

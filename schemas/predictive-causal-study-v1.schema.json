@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/predictive-causal-study-v1.schema.json",
+  "title": "Sustainable Catalyst Predictive Causal Study v1",
+  "type": "object",
+  "required": ["project_entity_id", "predictive_model_id", "causal_graph_id", "study_key", "name"],
+  "properties": {
+    "project_entity_id": {"type": "string", "minLength": 1},
+    "predictive_model_id": {"type": "string", "minLength": 1},
+    "causal_graph_id": {"type": "string", "minLength": 1},
+    "target_id": {"type": ["string", "null"]},
+    "study_key": {"type": "string", "minLength": 1},
+    "name": {"type": "string", "minLength": 1},
+    "integration_kind": {"type": "string"},
+    "estimand_scope": {"type": "object"},
+    "temporal_scope": {"type": "object"},
+    "visibility": {"enum": ["private", "public"]},
+    "provenance": {"type": "object"},
+    "metadata": {"type": "object"}
+  },
+  "additionalProperties": true
+}

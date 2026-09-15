@@ -1,0 +1,9 @@
+Platform Core v2.58.0 — build-time validation
+
+PASS - dependency-free release contract; migration ledger max=300, 0062 chars=294
+PASS - v2.58.0 Causal-Predictive Integration release contract
+PASS - push-safe secret scan
+PASS - targeted v2.58/v2.57/health/release-lineage regression set: 16 passed
+PASS - causal-predictive backend invariant validator
+
+The complete historical release regression list is retained in backend/release_v2580_testfiles.txt and is executed by deploy_and_validate_platform_core_v2_58_0_macos.sh before GitHub promotion. Build-time validation does not claim that full historical suite was run in this packaging session.
