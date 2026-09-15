@@ -7479,3 +7479,181 @@ class PredictiveIntelligencePackageSnapshotRecord(Base):
     provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
     created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+# v2.61.0 — Visual Reasoning Runtime & Scene Graph
+
+class VisualRuntimeSceneRecord(Base):
+    __tablename__ = "visual_runtime_scenes"
+    __table_args__ = (
+        UniqueConstraint("project_entity_id", "scene_key", name="uq_visual_runtime_scene_key"),
+        Index("ix_visual_runtime_scene_project", "project_entity_id"),
+        Index("ix_visual_runtime_scene_visual", "source_visual_entity_id"),
+        Index("ix_visual_runtime_scene_kind", "scene_kind", "status"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    project_entity_id: Mapped[str] = mapped_column(ForeignKey("entities.id", ondelete="CASCADE"), nullable=False)
+    source_visual_entity_id: Mapped[str | None] = mapped_column(ForeignKey("entities.id", ondelete="SET NULL"), nullable=True)
+    scene_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    name: Mapped[str] = mapped_column(String(300), nullable=False)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    scene_kind: Mapped[str] = mapped_column(String(80), nullable=False, default="semantic")
+    coordinate_space: Mapped[str] = mapped_column(String(50), nullable=False, default="abstract")
+    status: Mapped[str] = mapped_column(String(40), nullable=False, default="draft", index=True)
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="private", index=True)
+    runtime_contract: Mapped[str] = mapped_column(String(80), nullable=False, default="sc.visual-runtime.scene.v1")
+    scene_metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class VisualRuntimeLayerRecord(Base):
+    __tablename__ = "visual_runtime_layers"
+    __table_args__ = (
+        UniqueConstraint("scene_id", "layer_key", name="uq_visual_runtime_layer_key"),
+        Index("ix_visual_runtime_layer_scene", "scene_id", "order_index"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    scene_id: Mapped[str] = mapped_column(ForeignKey("visual_runtime_scenes.id", ondelete="CASCADE"), nullable=False)
+    layer_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    name: Mapped[str] = mapped_column(String(300), nullable=False)
+    layer_kind: Mapped[str] = mapped_column(String(80), nullable=False, default="semantic")
+    order_index: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    visible_by_default: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    locked_by_default: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    style_hints_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class VisualRuntimeNodeRecord(Base):
+    __tablename__ = "visual_runtime_nodes"
+    __table_args__ = (
+        UniqueConstraint("scene_id", "node_key", name="uq_visual_runtime_node_key"),
+        Index("ix_visual_runtime_node_scene", "scene_id"),
+        Index("ix_visual_runtime_node_entity", "source_entity_id"),
+        Index("ix_visual_runtime_node_kind", "node_kind", "semantic_role"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    scene_id: Mapped[str] = mapped_column(ForeignKey("visual_runtime_scenes.id", ondelete="CASCADE"), nullable=False)
+    layer_id: Mapped[str | None] = mapped_column(ForeignKey("visual_runtime_layers.id", ondelete="SET NULL"), nullable=True)
+    node_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    node_kind: Mapped[str] = mapped_column(String(80), nullable=False, default="node")
+    semantic_role: Mapped[str] = mapped_column(String(80), nullable=False, default="context")
+    label: Mapped[str] = mapped_column(String(300), nullable=False)
+    source_entity_id: Mapped[str | None] = mapped_column(ForeignKey("entities.id", ondelete="SET NULL"), nullable=True)
+    source_visual_element_id: Mapped[str | None] = mapped_column(ForeignKey("visual_reasoning_elements.id", ondelete="SET NULL"), nullable=True)
+    position_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    geometry_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    value_json: Mapped[object] = mapped_column(JSON, nullable=True)
+    uncertainty_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    style_hints_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class VisualRuntimeEdgeRecord(Base):
+    __tablename__ = "visual_runtime_edges"
+    __table_args__ = (
+        UniqueConstraint("scene_id", "edge_key", name="uq_visual_runtime_edge_key"),
+        Index("ix_visual_runtime_edge_scene", "scene_id"),
+        Index("ix_visual_runtime_edge_kind", "edge_kind"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    scene_id: Mapped[str] = mapped_column(ForeignKey("visual_runtime_scenes.id", ondelete="CASCADE"), nullable=False)
+    layer_id: Mapped[str | None] = mapped_column(ForeignKey("visual_runtime_layers.id", ondelete="SET NULL"), nullable=True)
+    edge_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    source_node_id: Mapped[str] = mapped_column(ForeignKey("visual_runtime_nodes.id", ondelete="CASCADE"), nullable=False)
+    target_node_id: Mapped[str] = mapped_column(ForeignKey("visual_runtime_nodes.id", ondelete="CASCADE"), nullable=False)
+    edge_kind: Mapped[str] = mapped_column(String(80), nullable=False, default="relation")
+    semantic_role: Mapped[str] = mapped_column(String(80), nullable=False, default="association")
+    direction: Mapped[str] = mapped_column(String(30), nullable=False, default="directed")
+    label: Mapped[str | None] = mapped_column(String(300), nullable=True)
+    weight: Mapped[float | None] = mapped_column(Float, nullable=True)
+    confidence: Mapped[float | None] = mapped_column(Float, nullable=True)
+    geometry_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    style_hints_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class VisualRuntimeAnnotationRecord(Base):
+    __tablename__ = "visual_runtime_annotations"
+    __table_args__ = (Index("ix_visual_runtime_annotation_scene", "scene_id"), Index("ix_visual_runtime_annotation_kind", "annotation_kind"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    scene_id: Mapped[str] = mapped_column(ForeignKey("visual_runtime_scenes.id", ondelete="CASCADE"), nullable=False)
+    node_id: Mapped[str | None] = mapped_column(ForeignKey("visual_runtime_nodes.id", ondelete="CASCADE"), nullable=True)
+    edge_id: Mapped[str | None] = mapped_column(ForeignKey("visual_runtime_edges.id", ondelete="CASCADE"), nullable=True)
+    annotation_kind: Mapped[str] = mapped_column(String(80), nullable=False, default="note")
+    text: Mapped[str] = mapped_column(Text, nullable=False)
+    anchor_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    evidence_ref: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class VisualRuntimeViewRecord(Base):
+    __tablename__ = "visual_runtime_views"
+    __table_args__ = (
+        UniqueConstraint("scene_id", "view_key", name="uq_visual_runtime_view_key"),
+        Index("ix_visual_runtime_view_scene", "scene_id"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    scene_id: Mapped[str] = mapped_column(ForeignKey("visual_runtime_scenes.id", ondelete="CASCADE"), nullable=False)
+    view_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    name: Mapped[str] = mapped_column(String(300), nullable=False)
+    view_kind: Mapped[str] = mapped_column(String(80), nullable=False, default="canvas")
+    viewport_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    selection_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    filter_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    layer_state_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    interaction_state_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    renderer_hints_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class VisualRuntimeBindingRecord(Base):
+    __tablename__ = "visual_runtime_bindings"
+    __table_args__ = (
+        UniqueConstraint("scene_id", "binding_key", name="uq_visual_runtime_binding_key"),
+        Index("ix_visual_runtime_binding_scene", "scene_id"),
+        Index("ix_visual_runtime_binding_source", "source_product", "source_kind"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    scene_id: Mapped[str] = mapped_column(ForeignKey("visual_runtime_scenes.id", ondelete="CASCADE"), nullable=False)
+    node_id: Mapped[str | None] = mapped_column(ForeignKey("visual_runtime_nodes.id", ondelete="CASCADE"), nullable=True)
+    edge_id: Mapped[str | None] = mapped_column(ForeignKey("visual_runtime_edges.id", ondelete="CASCADE"), nullable=True)
+    binding_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    source_product: Mapped[str] = mapped_column(String(80), nullable=False)
+    source_kind: Mapped[str] = mapped_column(String(100), nullable=False)
+    source_ref: Mapped[str] = mapped_column(String(500), nullable=False)
+    binding_role: Mapped[str] = mapped_column(String(80), nullable=False, default="context")
+    contract_version: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    projection_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class VisualRuntimeSnapshotRecord(Base):
+    __tablename__ = "visual_runtime_snapshots"
+    __table_args__ = (
+        UniqueConstraint("scene_id", "revision", name="uq_visual_runtime_snapshot_revision"),
+        Index("ix_visual_runtime_snapshot_scene", "scene_id", "revision"),
+        Index("ix_visual_runtime_snapshot_hash", "content_hash"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    scene_id: Mapped[str] = mapped_column(ForeignKey("visual_runtime_scenes.id", ondelete="CASCADE"), nullable=False)
+    revision: Mapped[int] = mapped_column(Integer, nullable=False)
+    content_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    previous_snapshot_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    state_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)

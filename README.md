@@ -1,3 +1,7 @@
+## Platform Core v2.61.0 — Visual Reasoning Runtime & Scene Graph
+
+Renderer-neutral scene runtime, interaction-state persistence, cross-product visual bindings, and immutable scene snapshots.
+
 # Sustainable Catalyst Platform Core v2.59.0
 
 **Causal-Predictive Integration** connects governed predictive models to governed causal graphs through explicit variable bindings, intervention scenarios, external counterfactual forecasts, causal-effect evidence, evaluation evidence, specialist-runtime handoffs, and reproducible packages. Platform Core records provenance and contracts; causal identification, effect estimation, counterfactual execution, intervention simulation, and decision optimization remain in specialist runtimes.

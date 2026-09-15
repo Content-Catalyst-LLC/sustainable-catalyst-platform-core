@@ -133,6 +133,7 @@ MIGRATIONS = [
     ("0062", 'Causal-predictive integration with governed studies, bindings, intervention scenarios, external counterfactual forecasts, effect/evaluation evidence, handoffs, and packages; Core does not learn structure, estimate effects, execute counterfactuals, simulate interventions, or optimize decisions.'),
     ("0063", 'Predictive decision intelligence with governed studies, options, criteria, evidence bindings, external assessments/evaluations, handoffs, and packages; Core does not compute utility/regret, rank or recommend options, optimize policies, solve constraints, select actions, or execute decisions.'),
     ("0064", 'Reproducible predictive intelligence packages with governed cross-layer manifests, artifacts, environments, verification/review evidence, and immutable hash-chained snapshots; Core does not execute, refit, regenerate forecasts, rerun analyses, optimize decisions, or reproduce automatically.'),
+    ("0065", 'Visual reasoning runtime and scene graph with governed scenes, nodes, edges, layers, views, bindings, and immutable snapshots; Core stores renderer-neutral semantic and interaction state but does not render, compute layout, animate, infer visually, hit-test, or execute GPU work.'),
 ]
 
 

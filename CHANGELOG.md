@@ -1,3 +1,7 @@
+## Platform Core v2.61.0 — Visual Reasoning Runtime & Scene Graph
+
+Renderer-neutral scene runtime, interaction-state persistence, cross-product visual bindings, and immutable scene snapshots.
+
 ## 2.59.0 — 2026-09-14
 
 - Added Predictive Decision Intelligence with governed decision studies, options, criteria, evidence bindings, external assessments/evaluations, Decision Studio handoffs, and immutable packages.

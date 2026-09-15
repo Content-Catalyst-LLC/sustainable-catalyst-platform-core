@@ -797,3 +797,10 @@ def _reproducible_predictive_package_bundle(self, package_id: str):
     return self.request("GET", f"/predictive-intelligence/packages/{package_id}/bundle")
 
 PublicApiClient.reproducible_predictive_package_bundle = _reproducible_predictive_package_bundle
+
+
+# v2.61.0 Visual Reasoning Runtime & Scene Graph
+def _visual_runtime_scene_bundle(self, scene_id: str):
+    return self.request("GET", f"/visual-runtime/scenes/{scene_id}/bundle")
+
+PublicApiClient.visual_runtime_scene_bundle = _visual_runtime_scene_bundle

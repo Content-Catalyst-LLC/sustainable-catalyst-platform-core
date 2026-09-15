@@ -556,3 +556,7 @@ PublicApiClient.prototype.predictiveCausalBundle=function(studyId){return this.r
 PublicApiClient.prototype.predictiveDecisionBundle=function(studyId){return this.request(`/predictive-intelligence/decision-studies/${encodeURIComponent(studyId)}/bundle`);};
 
 PublicApiClient.prototype.reproduciblePredictivePackageBundle=function(packageId){return this.request(`/predictive-intelligence/packages/${encodeURIComponent(packageId)}/bundle`);};
+
+
+// v2.61.0 Visual Reasoning Runtime & Scene Graph
+PublicApiClient.prototype.visualRuntimeSceneBundle=function(sceneId){return this.request(`/visual-runtime/scenes/${encodeURIComponent(sceneId)}/bundle`);};

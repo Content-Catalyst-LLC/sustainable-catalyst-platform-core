@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/visual-runtime-scene-v1.schema.json",
+  "title": "Sustainable Catalyst Visual Runtime Scene",
+  "type": "object",
+  "required": [
+    "contract",
+    "scene",
+    "layers",
+    "nodes",
+    "edges",
+    "views",
+    "bindings"
+  ],
+  "properties": {
+    "contract": {
+      "const": "sc.visual-runtime.scene.v1"
+    },
+    "scene": {
+      "type": "object"
+    },
+    "layers": {
+      "type": "array"
+    },
+    "nodes": {
+      "type": "array"
+    },
+    "edges": {
+      "type": "array"
+    },
+    "annotations": {
+      "type": "array"
+    },
+    "views": {
+      "type": "array"
+    },
+    "bindings": {
+      "type": "array"
+    },
+    "snapshots": {
+      "type": "array"
+    },
+    "boundaries": {
+      "type": "object"
+    }
+  }
+}

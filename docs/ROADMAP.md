@@ -1,3 +1,7 @@
+## v2.61.0 — Visual Reasoning Runtime & Scene Graph
+
+Renderer-neutral scenes, semantic nodes/edges/layers, annotations, saved viewport/selection/interaction state, cross-product bindings, and immutable scene snapshots. Rendering/layout/GPU execution remain external to Core.
+
 
 - v2.51.0 — Reproducible Investigation Packages: frozen cross-forensics manifests, artifact/environment records, integrity verification, independent review records, immutable snapshots, and portable review bundles.
 ## v2.49.0 — Quantitative Reconstruction & Reproduction Handoffs
