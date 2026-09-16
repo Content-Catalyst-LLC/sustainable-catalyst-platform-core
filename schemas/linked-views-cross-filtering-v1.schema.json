@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Sustainable Catalyst Linked Views & Cross-Filtering Bundle v1",
+  "type": "object",
+  "properties": {
+    "contract": {
+      "const": "sc.visual-runtime.linked-views.v1"
+    },
+    "composition": {
+      "type": "object"
+    },
+    "link_policies": {
+      "type": "array"
+    },
+    "selection_sets": {
+      "type": "array"
+    },
+    "cross_filters": {
+      "type": "array"
+    },
+    "brush_ranges": {
+      "type": "array"
+    },
+    "focus_highlights": {
+      "type": "array"
+    },
+    "propagation_records": {
+      "type": "array"
+    },
+    "snapshots": {
+      "type": "array"
+    },
+    "boundaries": {
+      "type": "object"
+    }
+  },
+  "required": [
+    "contract",
+    "composition",
+    "link_policies",
+    "selection_sets",
+    "cross_filters",
+    "brush_ranges",
+    "focus_highlights",
+    "propagation_records",
+    "snapshots",
+    "boundaries"
+  ]
+}

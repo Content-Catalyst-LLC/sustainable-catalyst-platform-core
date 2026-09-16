@@ -816,3 +816,9 @@ PublicApiClient.visual_runtime_composition_bundle = _visual_runtime_composition_
 def _visual_runtime_grammar_bundle(self, specification_id: str):
     return self.request("GET", f"/visual-runtime/grammar/specifications/{specification_id}/bundle")
 PublicApiClient.visual_runtime_grammar_bundle = _visual_runtime_grammar_bundle
+
+
+# v2.64.0 Linked Views & Cross-Filtering
+def _visual_runtime_linked_views_bundle(self, composition_id: str):
+    return self.request("GET", f"/visual-runtime/linked-views/compositions/{composition_id}/bundle")
+PublicApiClient.visual_runtime_linked_views_bundle = _visual_runtime_linked_views_bundle

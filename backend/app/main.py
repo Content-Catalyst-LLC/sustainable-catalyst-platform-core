@@ -50,6 +50,7 @@ from .routers import (
     visual_runtime,
     visual_composition,
     visual_grammar,
+    visual_linked_views,
     visualization_registry,
     system_maps,
     flow_maps,
@@ -247,6 +248,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # v2.63.0 renderer-neutral Analytical Visualization Grammar.
     app.include_router(visual_grammar.router)
     app.include_router(visual_grammar.public_router)
+    # v2.64.0 governed linked views and cross-filter interaction contracts.
+    app.include_router(visual_linked_views.router)
+    app.include_router(visual_linked_views.public_router)
     # Open Forensics includes v2.51.0 Reproducible Investigation Packages.
     app.include_router(open_forensics.router)
     app.include_router(open_forensics.public_router)

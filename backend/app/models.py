@@ -7900,3 +7900,138 @@ class VisualGrammarSnapshotRecord(Base):
     provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
     created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+# v2.64.0 — Linked Views & Cross-Filtering
+class VisualLinkPolicyRecord(Base):
+    __tablename__ = "visual_link_policies"
+    __table_args__ = (
+        UniqueConstraint("composition_id", "policy_key", name="uq_visual_link_policy_key"),
+        Index("ix_visual_link_policy_composition", "composition_id"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    composition_id: Mapped[str] = mapped_column(ForeignKey("visual_view_compositions.id", ondelete="CASCADE"), nullable=False)
+    link_group_id: Mapped[str | None] = mapped_column(ForeignKey("visual_view_link_groups.id", ondelete="SET NULL"), nullable=True)
+    policy_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    name: Mapped[str] = mapped_column(String(300), nullable=False)
+    source_view_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    target_view_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    channels_json: Mapped[list] = mapped_column(JSON, default=list)
+    propagation_mode: Mapped[str] = mapped_column(String(80), nullable=False, default="declarative")
+    policy_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class VisualSelectionSetRecord(Base):
+    __tablename__ = "visual_selection_sets"
+    __table_args__ = (
+        UniqueConstraint("composition_id", "selection_key", name="uq_visual_selection_set_key"),
+        Index("ix_visual_selection_set_composition", "composition_id"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    composition_id: Mapped[str] = mapped_column(ForeignKey("visual_view_compositions.id", ondelete="CASCADE"), nullable=False)
+    source_view_id: Mapped[str] = mapped_column(ForeignKey("visual_runtime_views.id", ondelete="CASCADE"), nullable=False)
+    grammar_specification_id: Mapped[str | None] = mapped_column(ForeignKey("visual_grammar_specifications.id", ondelete="SET NULL"), nullable=True)
+    data_binding_id: Mapped[str | None] = mapped_column(ForeignKey("visual_grammar_data_bindings.id", ondelete="SET NULL"), nullable=True)
+    selection_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    selection_kind: Mapped[str] = mapped_column(String(80), nullable=False, default="set")
+    selected_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    field_values_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    target_view_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class VisualCrossFilterRecord(Base):
+    __tablename__ = "visual_cross_filters"
+    __table_args__ = (
+        UniqueConstraint("composition_id", "filter_key", name="uq_visual_cross_filter_key"),
+        Index("ix_visual_cross_filter_composition", "composition_id"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    composition_id: Mapped[str] = mapped_column(ForeignKey("visual_view_compositions.id", ondelete="CASCADE"), nullable=False)
+    source_view_id: Mapped[str] = mapped_column(ForeignKey("visual_runtime_views.id", ondelete="CASCADE"), nullable=False)
+    grammar_specification_id: Mapped[str | None] = mapped_column(ForeignKey("visual_grammar_specifications.id", ondelete="SET NULL"), nullable=True)
+    data_binding_id: Mapped[str | None] = mapped_column(ForeignKey("visual_grammar_data_bindings.id", ondelete="SET NULL"), nullable=True)
+    filter_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    predicate_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    target_view_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    combine_mode: Mapped[str] = mapped_column(String(40), nullable=False, default="and")
+    empty_policy: Mapped[str] = mapped_column(String(40), nullable=False, default="show-all")
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class VisualBrushRangeRecord(Base):
+    __tablename__ = "visual_brush_ranges"
+    __table_args__ = (
+        UniqueConstraint("composition_id", "brush_key", name="uq_visual_brush_range_key"),
+        Index("ix_visual_brush_range_composition", "composition_id"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    composition_id: Mapped[str] = mapped_column(ForeignKey("visual_view_compositions.id", ondelete="CASCADE"), nullable=False)
+    source_view_id: Mapped[str] = mapped_column(ForeignKey("visual_runtime_views.id", ondelete="CASCADE"), nullable=False)
+    grammar_specification_id: Mapped[str | None] = mapped_column(ForeignKey("visual_grammar_specifications.id", ondelete="SET NULL"), nullable=True)
+    data_binding_id: Mapped[str | None] = mapped_column(ForeignKey("visual_grammar_data_bindings.id", ondelete="SET NULL"), nullable=True)
+    brush_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    field_name: Mapped[str | None] = mapped_column(String(300), nullable=True)
+    channel: Mapped[str | None] = mapped_column(String(80), nullable=True)
+    range_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    target_view_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class VisualFocusHighlightRecord(Base):
+    __tablename__ = "visual_focus_highlights"
+    __table_args__ = (
+        UniqueConstraint("composition_id", "state_key", name="uq_visual_focus_highlight_key"),
+        Index("ix_visual_focus_highlight_composition", "composition_id"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    composition_id: Mapped[str] = mapped_column(ForeignKey("visual_view_compositions.id", ondelete="CASCADE"), nullable=False)
+    source_view_id: Mapped[str] = mapped_column(ForeignKey("visual_runtime_views.id", ondelete="CASCADE"), nullable=False)
+    state_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    focused_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    highlighted_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    target_view_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    style_contract_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class VisualPropagationRecord(Base):
+    __tablename__ = "visual_propagation_records"
+    __table_args__ = (
+        Index("ix_visual_propagation_composition", "composition_id"),
+        Index("ix_visual_propagation_status", "status"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    composition_id: Mapped[str] = mapped_column(ForeignKey("visual_view_compositions.id", ondelete="CASCADE"), nullable=False)
+    link_policy_id: Mapped[str | None] = mapped_column(ForeignKey("visual_link_policies.id", ondelete="SET NULL"), nullable=True)
+    source_view_id: Mapped[str] = mapped_column(ForeignKey("visual_runtime_views.id", ondelete="CASCADE"), nullable=False)
+    target_view_id: Mapped[str] = mapped_column(ForeignKey("visual_runtime_views.id", ondelete="CASCADE"), nullable=False)
+    event_kind: Mapped[str] = mapped_column(String(80), nullable=False)
+    source_record_kind: Mapped[str | None] = mapped_column(String(80), nullable=True)
+    source_record_id: Mapped[str | None] = mapped_column(String(36), nullable=True)
+    propagated_state_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    status: Mapped[str] = mapped_column(String(40), nullable=False, default="declared")
+    evidence_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class VisualLinkedViewSnapshotRecord(Base):
+    __tablename__ = "visual_linked_view_snapshots"
+    __table_args__ = (
+        UniqueConstraint("composition_id", "revision", name="uq_visual_linked_view_snapshot_revision"),
+        Index("ix_visual_linked_view_snapshot_hash", "content_hash"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    composition_id: Mapped[str] = mapped_column(ForeignKey("visual_view_compositions.id", ondelete="CASCADE"), nullable=False)
+    revision: Mapped[int] = mapped_column(Integer, nullable=False)
+    content_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    previous_snapshot_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    state_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)

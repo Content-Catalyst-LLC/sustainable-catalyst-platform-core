@@ -568,3 +568,7 @@ export async function visualRuntimeCompositionBundle(client, compositionId) {
 
 // v2.63.0 Analytical Visualization Grammar
 PublicApiClient.prototype.visualRuntimeGrammarBundle=function(specificationId){return this.request(`/visual-runtime/grammar/specifications/${encodeURIComponent(specificationId)}/bundle`);};
+
+
+// v2.64.0 Linked Views & Cross-Filtering
+PublicApiClient.prototype.visualRuntimeLinkedViewsBundle=function(compositionId){return this.request(`/visual-runtime/linked-views/compositions/${encodeURIComponent(compositionId)}/bundle`);};

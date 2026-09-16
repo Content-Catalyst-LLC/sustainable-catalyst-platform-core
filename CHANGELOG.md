@@ -1,3 +1,8 @@
+## 2.64.0 — Linked Views & Cross-Filtering
+- Added governed cross-view link policies, selections, filters, brushes, focus/highlight state, propagation evidence, and immutable interaction snapshots.
+- Added migration 0068 and renderer-neutral linked-view public bundle contract.
+- Preserved strict non-execution boundaries for query/filter/UI/rendering work.
+
 ## 2.63.0
 - Analytical Visualization Grammar: declarative marks, encodings, scales, transforms, guides, data bindings, and immutable snapshots.
 

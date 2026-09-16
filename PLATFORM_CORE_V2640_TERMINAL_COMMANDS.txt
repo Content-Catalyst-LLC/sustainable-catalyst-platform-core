@@ -1,0 +1,1 @@
+./deploy_and_validate_platform_core_v2_64_0_macos.sh ~/Downloads/sustainable-catalyst-platform-core-v2.64.0-release-bundle.zip
