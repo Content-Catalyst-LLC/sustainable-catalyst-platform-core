@@ -1,0 +1,2 @@
+Mac: ./deploy_and_validate_platform_core_v2_68_0_macos.sh "$HOME/Downloads/sustainable-catalyst-platform-core-v2.68.0-release-bundle.zip"
+VPS: bash DEPLOY_PLATFORM_CORE_V2680_CONTABO.sh

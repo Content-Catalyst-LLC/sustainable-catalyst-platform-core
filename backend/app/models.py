@@ -8454,3 +8454,53 @@ class VisualPredictiveSnapshotRecord(Base):
     created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
 
+
+
+# v2.68.0 — Visual Forensics Workbench
+class VisualForensicWorkspaceRecord(Base):
+    __tablename__ = "visual_forensic_workspaces"
+    __table_args__ = (UniqueConstraint("composition_id", "workspace_key", name="uq_visual_forensic_workspace_key"), Index("ix_visual_forensic_workspace_composition", "composition_id"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    composition_id: Mapped[str] = mapped_column(ForeignKey("visual_view_compositions.id", ondelete="CASCADE"), nullable=False)
+    investigation_id: Mapped[str] = mapped_column(ForeignKey("forensic_investigations.id", ondelete="CASCADE"), nullable=False)
+    workspace_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    name: Mapped[str] = mapped_column(String(300), nullable=False)
+    purpose: Mapped[str | None] = mapped_column(Text, nullable=True)
+    status: Mapped[str] = mapped_column(String(40), nullable=False, default="draft")
+    visibility: Mapped[str] = mapped_column(String(40), nullable=False, default="private")
+    settings_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+def _vf_child(name):
+    return None
+
+class VisualForensicEvidenceBindingRecord(Base):
+    __tablename__="visual_forensic_evidence_bindings"; __table_args__=(Index("ix_visual_forensic_evidence_workspace","workspace_id"),)
+    id: Mapped[str]=mapped_column(String(36),primary_key=True,default=lambda:str(uuid.uuid4())); workspace_id: Mapped[str]=mapped_column(ForeignKey("visual_forensic_workspaces.id",ondelete="CASCADE"),nullable=False)
+    binding_key: Mapped[str]=mapped_column(String(180),nullable=False); evidence_item_ids_json: Mapped[list]=mapped_column(JSON,default=list); target_view_ids_json: Mapped[list]=mapped_column(JSON,default=list); display_contract_json: Mapped[dict]=mapped_column(JSON,default=dict); provenance_json: Mapped[dict]=mapped_column(JSON,default=dict); created_at: Mapped[datetime]=mapped_column(DateTime(timezone=True),default=utcnow)
+class VisualForensicClaimOverlayRecord(Base):
+    __tablename__="visual_forensic_claim_overlays"; __table_args__=(Index("ix_visual_forensic_claim_workspace","workspace_id"),)
+    id: Mapped[str]=mapped_column(String(36),primary_key=True,default=lambda:str(uuid.uuid4())); workspace_id: Mapped[str]=mapped_column(ForeignKey("visual_forensic_workspaces.id",ondelete="CASCADE"),nullable=False); overlay_key: Mapped[str]=mapped_column(String(180),nullable=False); claim_ids_json: Mapped[list]=mapped_column(JSON,default=list); hypothesis_ids_json: Mapped[list]=mapped_column(JSON,default=list); contradiction_ids_json: Mapped[list]=mapped_column(JSON,default=list); target_view_ids_json: Mapped[list]=mapped_column(JSON,default=list); display_contract_json: Mapped[dict]=mapped_column(JSON,default=dict); provenance_json: Mapped[dict]=mapped_column(JSON,default=dict); created_at: Mapped[datetime]=mapped_column(DateTime(timezone=True),default=utcnow)
+class VisualForensicTimelineLayerRecord(Base):
+    __tablename__="visual_forensic_timeline_layers"; __table_args__=(Index("ix_visual_forensic_timeline_workspace","workspace_id"),)
+    id: Mapped[str]=mapped_column(String(36),primary_key=True,default=lambda:str(uuid.uuid4())); workspace_id: Mapped[str]=mapped_column(ForeignKey("visual_forensic_workspaces.id",ondelete="CASCADE"),nullable=False); layer_key: Mapped[str]=mapped_column(String(180),nullable=False); event_ids_json: Mapped[list]=mapped_column(JSON,default=list); reconstruction_ids_json: Mapped[list]=mapped_column(JSON,default=list); target_view_ids_json: Mapped[list]=mapped_column(JSON,default=list); temporal_window_json: Mapped[dict]=mapped_column(JSON,default=dict); provenance_json: Mapped[dict]=mapped_column(JSON,default=dict); created_at: Mapped[datetime]=mapped_column(DateTime(timezone=True),default=utcnow)
+class VisualForensicSpatialTemporalLayerRecord(Base):
+    __tablename__="visual_forensic_spatial_temporal_layers"; __table_args__=(Index("ix_visual_forensic_spatial_workspace","workspace_id"),)
+    id: Mapped[str]=mapped_column(String(36),primary_key=True,default=lambda:str(uuid.uuid4())); workspace_id: Mapped[str]=mapped_column(ForeignKey("visual_forensic_workspaces.id",ondelete="CASCADE"),nullable=False); layer_key: Mapped[str]=mapped_column(String(180),nullable=False); place_ids_json: Mapped[list]=mapped_column(JSON,default=list); trajectory_ids_json: Mapped[list]=mapped_column(JSON,default=list); intersection_ids_json: Mapped[list]=mapped_column(JSON,default=list); target_view_ids_json: Mapped[list]=mapped_column(JSON,default=list); layer_contract_json: Mapped[dict]=mapped_column(JSON,default=dict); provenance_json: Mapped[dict]=mapped_column(JSON,default=dict); created_at: Mapped[datetime]=mapped_column(DateTime(timezone=True),default=utcnow)
+class VisualForensicMediaLayerRecord(Base):
+    __tablename__="visual_forensic_media_layers"; __table_args__=(Index("ix_visual_forensic_media_workspace","workspace_id"),)
+    id: Mapped[str]=mapped_column(String(36),primary_key=True,default=lambda:str(uuid.uuid4())); workspace_id: Mapped[str]=mapped_column(ForeignKey("visual_forensic_workspaces.id",ondelete="CASCADE"),nullable=False); layer_key: Mapped[str]=mapped_column(String(180),nullable=False); media_artifact_ids_json: Mapped[list]=mapped_column(JSON,default=list); comparison_ids_json: Mapped[list]=mapped_column(JSON,default=list); target_view_ids_json: Mapped[list]=mapped_column(JSON,default=list); display_contract_json: Mapped[dict]=mapped_column(JSON,default=dict); provenance_json: Mapped[dict]=mapped_column(JSON,default=dict); created_at: Mapped[datetime]=mapped_column(DateTime(timezone=True),default=utcnow)
+class VisualForensicReconstructionBindingRecord(Base):
+    __tablename__="visual_forensic_reconstruction_bindings"; __table_args__=(Index("ix_visual_forensic_reconstruction_workspace","workspace_id"),)
+    id: Mapped[str]=mapped_column(String(36),primary_key=True,default=lambda:str(uuid.uuid4())); workspace_id: Mapped[str]=mapped_column(ForeignKey("visual_forensic_workspaces.id",ondelete="CASCADE"),nullable=False); binding_key: Mapped[str]=mapped_column(String(180),nullable=False); reconstruction_ids_json: Mapped[list]=mapped_column(JSON,default=list); result_binding_ids_json: Mapped[list]=mapped_column(JSON,default=list); target_view_ids_json: Mapped[list]=mapped_column(JSON,default=list); display_contract_json: Mapped[dict]=mapped_column(JSON,default=dict); provenance_json: Mapped[dict]=mapped_column(JSON,default=dict); created_at: Mapped[datetime]=mapped_column(DateTime(timezone=True),default=utcnow)
+class VisualForensicDocumentaryBindingRecord(Base):
+    __tablename__="visual_forensic_documentary_bindings"; __table_args__=(Index("ix_visual_forensic_documentary_workspace","workspace_id"),)
+    id: Mapped[str]=mapped_column(String(36),primary_key=True,default=lambda:str(uuid.uuid4())); workspace_id: Mapped[str]=mapped_column(ForeignKey("visual_forensic_workspaces.id",ondelete="CASCADE"),nullable=False); binding_key: Mapped[str]=mapped_column(String(180),nullable=False); statement_ids_json: Mapped[list]=mapped_column(JSON,default=list); document_ids_json: Mapped[list]=mapped_column(JSON,default=list); target_view_ids_json: Mapped[list]=mapped_column(JSON,default=list); display_contract_json: Mapped[dict]=mapped_column(JSON,default=dict); provenance_json: Mapped[dict]=mapped_column(JSON,default=dict); created_at: Mapped[datetime]=mapped_column(DateTime(timezone=True),default=utcnow)
+class VisualForensicGraphBindingRecord(Base):
+    __tablename__="visual_forensic_graph_bindings"; __table_args__=(Index("ix_visual_forensic_graph_workspace","workspace_id"),)
+    id: Mapped[str]=mapped_column(String(36),primary_key=True,default=lambda:str(uuid.uuid4())); workspace_id: Mapped[str]=mapped_column(ForeignKey("visual_forensic_workspaces.id",ondelete="CASCADE"),nullable=False); binding_key: Mapped[str]=mapped_column(String(180),nullable=False); research_graph_ids_json: Mapped[list]=mapped_column(JSON,default=list); package_ids_json: Mapped[list]=mapped_column(JSON,default=list); target_view_ids_json: Mapped[list]=mapped_column(JSON,default=list); display_contract_json: Mapped[dict]=mapped_column(JSON,default=dict); provenance_json: Mapped[dict]=mapped_column(JSON,default=dict); created_at: Mapped[datetime]=mapped_column(DateTime(timezone=True),default=utcnow)
+class VisualForensicSnapshotRecord(Base):
+    __tablename__="visual_forensic_snapshots"; __table_args__=(UniqueConstraint("workspace_id","revision",name="uq_visual_forensic_snapshot_revision"),Index("ix_visual_forensic_snapshot_hash","content_hash"),)
+    id: Mapped[str]=mapped_column(String(36),primary_key=True,default=lambda:str(uuid.uuid4())); workspace_id: Mapped[str]=mapped_column(ForeignKey("visual_forensic_workspaces.id",ondelete="CASCADE"),nullable=False); revision: Mapped[int]=mapped_column(Integer,nullable=False); content_hash: Mapped[str]=mapped_column(String(64),nullable=False); previous_snapshot_hash: Mapped[str|None]=mapped_column(String(64),nullable=True); state_json: Mapped[dict]=mapped_column(JSON,default=dict); provenance_json: Mapped[dict]=mapped_column(JSON,default=dict); created_by: Mapped[str]=mapped_column(String(255),nullable=False,default="operator"); created_at: Mapped[datetime]=mapped_column(DateTime(timezone=True),default=utcnow)

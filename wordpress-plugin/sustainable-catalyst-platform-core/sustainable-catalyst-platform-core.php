@@ -1653,3 +1653,6 @@ function scpc_visual_predictive_intelligence_status_shortcode() {
 }
 add_shortcode('sc_platform_core_visual_predictive_status', 'scpc_visual_predictive_intelligence_status_shortcode');
 
+
+// v2.68.0 Visual Forensics Workbench status surface.
+add_shortcode('sc_platform_core_visual_forensics_status', function () { return '<div class="sc-core-status"><strong>Visual Forensics Workbench</strong><br>Platform Core 2.68.0 · governed forensic view coordination · analysis/rendering external</div>'; });

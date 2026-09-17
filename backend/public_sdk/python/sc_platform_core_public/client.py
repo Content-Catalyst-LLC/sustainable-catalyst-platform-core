@@ -840,3 +840,9 @@ def _visual_predictive_workspace_bundle(self, workspace_id: str):
     return self.request("GET", f"/visual-runtime/predictive/workspaces/{workspace_id}/bundle")
 PublicApiClient.visual_predictive_workspace_bundle = _visual_predictive_workspace_bundle
 
+
+
+# v2.68.0 Visual Forensics Workbench
+def _visual_forensics_workspace_bundle(self, workspace_id: str):
+    return self.request("GET", f"/visual-runtime/forensics/workspaces/{workspace_id}/bundle")
+PublicApiClient.visual_forensics_workspace_bundle = _visual_forensics_workspace_bundle
