@@ -73,6 +73,9 @@ from .models import (
     VisualPredictiveWorkspaceRecord, VisualForecastOverlayRecord, VisualUncertaintyDisplayRecord, VisualCalibrationDisplayRecord,
     VisualEnsembleComparisonOverlayRecord, VisualMonitoringOverlayRecord, VisualSpatialTemporalForecastLayerRecord,
     VisualCausalPredictiveOverlayRecord, VisualDecisionPredictionBindingRecord, VisualPredictiveSnapshotRecord,
+    VisualDecisionWorkspaceRecord, VisualDecisionAlternativeRecord, VisualDecisionCriterionRecord, VisualDecisionEvidenceBindingRecord,
+    VisualDecisionScenarioBindingRecord, VisualDecisionRiskOverlayRecord, VisualDecisionTradeoffRecord, VisualDecisionRationaleRecord,
+    VisualDecisionHandoffRecord, VisualDecisionSnapshotRecord,
 )
 from .predicate_catalog import DEFAULT_PREDICATES
 from .api_plan_catalog import DEFAULT_API_PLANS
@@ -149,7 +152,7 @@ MIGRATIONS = [
     ("0069", 'Visual query/exploration with governed sessions, targets, predicates, traversal requests, external result/evidence bindings, saved states, and immutable snapshots; Core records intent/provenance but does not execute queries, traverse graphs, retrieve data, rank results, or infer visually.'),
     ("0070", 'Visual model construction with governed components, relationships, assumptions, constraints, interventions, external runtime handoffs, and immutable snapshots; Core records model semantics/provenance but does not solve equations, optimize constraints, run simulations, or execute models.'),
     ("0071", 'Visual predictive intelligence with governed forecast, uncertainty, calibration, ensemble, monitoring, spatial-temporal, causal, and decision overlays plus immutable snapshots; Core binds predictive evidence to views but does not forecast, calibrate, detect anomalies, simulate, rank, or render.'),
-    ("0072", 'Visual forensics workbench with governed evidence, claims, timelines, spatial-temporal, media, reconstruction, documentary, research-graph bindings, and immutable snapshots; Core coordinates forensic views but does not authenticate evidence, infer guilt, reconstruct automatically, or render.'),
+    ("0072", 'Visual forensics workbench with governed evidence, claims, timelines, spatial-temporal, media, reconstruction, documentary, research-graph bindings, and immutable snapshots; Core coordinates forensic views but does not authenticate evidence, infer guilt, reconstruct automatically, or render.'),    ("0073", 'Visual decision intelligence with governed workspaces, alternatives, criteria, evidence, scenarios, risk, tradeoffs, rationale, handoffs, and immutable snapshots; Core coordinates decision views but does not rank, recommend, optimize, select actions, execute decisions, or infer visually.'),
 ]
 
 

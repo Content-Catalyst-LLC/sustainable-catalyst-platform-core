@@ -538,3 +538,7 @@ Governed, reference-first cross-product visual research packages with explicit s
 
 ## v2.60.0 — Reproducible Predictive Intelligence Packages
 Cross-layer predictive reproducibility packages, integrity metadata, environments, verification/review evidence, and immutable snapshots.
+
+
+## v2.69.0
+Visual Decision Intelligence: governed decision workspaces and external Decision Studio handoffs.

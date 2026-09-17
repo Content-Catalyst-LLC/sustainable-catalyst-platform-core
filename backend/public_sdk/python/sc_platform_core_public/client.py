@@ -846,3 +846,9 @@ PublicApiClient.visual_predictive_workspace_bundle = _visual_predictive_workspac
 def _visual_forensics_workspace_bundle(self, workspace_id: str):
     return self.request("GET", f"/visual-runtime/forensics/workspaces/{workspace_id}/bundle")
 PublicApiClient.visual_forensics_workspace_bundle = _visual_forensics_workspace_bundle
+
+
+# v2.69.0 Visual Decision Intelligence
+def _visual_decision_workspace_bundle(self, workspace_id: str):
+    return self.request("GET", f"/visual-runtime/decision/workspaces/{workspace_id}/bundle")
+PublicApiClient.visual_decision_workspace_bundle = _visual_decision_workspace_bundle

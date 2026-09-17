@@ -583,3 +583,6 @@ PublicApiClient.prototype.visualModelConstructionBundle=function(constructionId)
 PublicApiClient.prototype.visualPredictiveWorkspaceBundle=function(workspaceId){return this.request(`/visual-runtime/predictive/workspaces/${encodeURIComponent(workspaceId)}/bundle`);};
 
 export async function visualForensicsWorkspaceBundle(client, workspaceId) { return client.get(`/api/v1/visual-runtime/forensics/workspaces/${workspaceId}/bundle`); }
+
+
+export async function visualDecisionWorkspaceBundle(client, workspaceId) { return client.get(`/api/v1/visual-runtime/decision/workspaces/${workspaceId}/bundle`); }

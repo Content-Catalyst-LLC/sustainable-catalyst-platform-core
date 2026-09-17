@@ -55,6 +55,7 @@ from .routers import (
     visual_model_construction,
     visual_predictive_intelligence,
     visual_forensics_workbench,
+    visual_decision_intelligence,
     visualization_registry,
     system_maps,
     flow_maps,
@@ -267,6 +268,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # v2.68.0 governed Visual Forensics Workbench bindings.
     app.include_router(visual_forensics_workbench.router)
     app.include_router(visual_forensics_workbench.public_router)
+    # v2.69.0 governed Visual Decision Intelligence workspaces.
+    app.include_router(visual_decision_intelligence.router)
+    app.include_router(visual_decision_intelligence.public_router)
     # Open Forensics includes v2.51.0 Reproducible Investigation Packages.
     app.include_router(open_forensics.router)
     app.include_router(open_forensics.public_router)

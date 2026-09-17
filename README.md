@@ -83,3 +83,7 @@ Platform Core now governs predictive ensemble definitions, member provenance, ex
 
 ## v2.60.0
 The predictive intelligence line now culminates in cross-layer reproducibility packages with immutable provenance and explicit non-execution boundaries.
+
+
+## v2.69.0
+Visual Decision Intelligence: governed decision workspaces and external Decision Studio handoffs.
