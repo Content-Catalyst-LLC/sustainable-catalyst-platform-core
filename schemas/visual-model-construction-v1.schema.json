@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/visual-model-construction-v1.schema.json",
+  "title": "Sustainable Catalyst Visual Model Construction Bundle",
+  "type": "object",
+  "required": [
+    "contract",
+    "construction",
+    "components",
+    "relationships",
+    "assumptions",
+    "constraints",
+    "interventions",
+    "handoffs",
+    "snapshots",
+    "boundaries"
+  ],
+  "properties": {
+    "contract": {
+      "const": "sc.visual-runtime.model-construction.v1"
+    },
+    "construction": {
+      "type": "object"
+    },
+    "components": {
+      "type": "array"
+    },
+    "relationships": {
+      "type": "array"
+    },
+    "assumptions": {
+      "type": "array"
+    },
+    "constraints": {
+      "type": "array"
+    },
+    "interventions": {
+      "type": "array"
+    },
+    "handoffs": {
+      "type": "array"
+    },
+    "snapshots": {
+      "type": "array"
+    },
+    "boundaries": {
+      "type": "object"
+    }
+  }
+}

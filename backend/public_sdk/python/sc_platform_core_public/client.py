@@ -828,3 +828,9 @@ PublicApiClient.visual_runtime_linked_views_bundle = _visual_runtime_linked_view
 def _visual_query_exploration_bundle(self, session_id: str):
     return self.request("GET", f"/visual-runtime/query/sessions/{session_id}/bundle")
 PublicApiClient.visual_query_exploration_bundle = _visual_query_exploration_bundle
+
+
+# v2.66.0 Visual Model Construction
+def _visual_model_construction_bundle(self, construction_id: str):
+    return self.request("GET", f"/visual-runtime/model-construction/constructions/{construction_id}/bundle")
+PublicApiClient.visual_model_construction_bundle = _visual_model_construction_bundle

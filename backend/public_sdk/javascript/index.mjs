@@ -576,3 +576,7 @@ PublicApiClient.prototype.visualRuntimeLinkedViewsBundle=function(compositionId)
 
 // v2.65.0 Visual Query & Exploration Engine
 PublicApiClient.prototype.visualQueryExplorationBundle=function(sessionId){return this.request(`/visual-runtime/query/sessions/${encodeURIComponent(sessionId)}/bundle`);};
+
+
+// v2.66.0 Visual Model Construction
+PublicApiClient.prototype.visualModelConstructionBundle=function(constructionId){return this.request(`/visual-runtime/model-construction/constructions/${encodeURIComponent(constructionId)}/bundle`);};

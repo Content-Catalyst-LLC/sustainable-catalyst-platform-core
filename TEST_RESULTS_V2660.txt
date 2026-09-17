@@ -1,0 +1,2 @@
+Platform Core v2.66.0 — Visual Model Construction
+Focused release tests are executed by deploy_and_validate_platform_core_v2_66_0_macos.sh before promotion.

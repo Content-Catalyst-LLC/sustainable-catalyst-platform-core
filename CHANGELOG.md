@@ -1,3 +1,8 @@
+## 2.66.0 — Visual Model Construction
+
+- Adds governed visual model construction semantics, external execution handoffs, and immutable model snapshots.
+- Core does not solve equations, optimize constraints, run simulations, or execute models.
+
 ## 2.65.0 — Visual Query & Exploration Engine
 
 - Adds governed visual exploration sessions, query targets, query/predicate and traversal requests, external result/evidence bindings, saved exploration states, and immutable snapshots.

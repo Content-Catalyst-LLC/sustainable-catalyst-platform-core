@@ -8183,3 +8183,119 @@ class VisualQuerySnapshotRecord(Base):
     provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
     created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+# v2.66.0 — Visual Model Construction
+class VisualModelConstructionRecord(Base):
+    __tablename__ = "visual_model_constructions"
+    __table_args__ = (
+        UniqueConstraint("canvas_visual_entity_id", "construction_key", name="uq_visual_model_construction_key"),
+        Index("ix_visual_model_construction_canvas", "canvas_visual_entity_id"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    canvas_visual_entity_id: Mapped[str] = mapped_column(ForeignKey("model_canvases.visual_entity_id", ondelete="CASCADE"), nullable=False)
+    construction_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    name: Mapped[str] = mapped_column(String(300), nullable=False)
+    model_kind: Mapped[str] = mapped_column(String(80), nullable=False, default="system")
+    purpose: Mapped[str | None] = mapped_column(Text, nullable=True)
+    status: Mapped[str] = mapped_column(String(40), nullable=False, default="draft")
+    visibility: Mapped[str] = mapped_column(String(40), nullable=False, default="private")
+    specification_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class VisualModelComponentRecord(Base):
+    __tablename__ = "visual_model_components"
+    __table_args__ = (UniqueConstraint("construction_id", "component_key", name="uq_visual_model_component_key"), Index("ix_visual_model_component_construction", "construction_id"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    construction_id: Mapped[str] = mapped_column(ForeignKey("visual_model_constructions.id", ondelete="CASCADE"), nullable=False)
+    component_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    component_kind: Mapped[str] = mapped_column(String(80), nullable=False)
+    label: Mapped[str] = mapped_column(String(300), nullable=False)
+    symbol: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    unit: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    bound_entity_id: Mapped[str | None] = mapped_column(ForeignKey("entities.id", ondelete="SET NULL"), nullable=True)
+    role: Mapped[str] = mapped_column(String(80), nullable=False, default="state")
+    default_value_json: Mapped[object] = mapped_column(JSON, nullable=True)
+    domain_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class VisualModelRelationshipRecord(Base):
+    __tablename__ = "visual_model_relationships"
+    __table_args__ = (UniqueConstraint("construction_id", "relationship_key", name="uq_visual_model_relationship_key"), Index("ix_visual_model_relationship_construction", "construction_id"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    construction_id: Mapped[str] = mapped_column(ForeignKey("visual_model_constructions.id", ondelete="CASCADE"), nullable=False)
+    relationship_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    relationship_kind: Mapped[str] = mapped_column(String(80), nullable=False)
+    source_component_id: Mapped[str | None] = mapped_column(ForeignKey("visual_model_components.id", ondelete="SET NULL"), nullable=True)
+    target_component_id: Mapped[str | None] = mapped_column(ForeignKey("visual_model_components.id", ondelete="SET NULL"), nullable=True)
+    expression: Mapped[str | None] = mapped_column(Text, nullable=True)
+    relationship_spec_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class VisualModelAssumptionRecord(Base):
+    __tablename__ = "visual_model_assumptions"
+    __table_args__ = (UniqueConstraint("construction_id", "assumption_key", name="uq_visual_model_assumption_key"), Index("ix_visual_model_assumption_construction", "construction_id"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    construction_id: Mapped[str] = mapped_column(ForeignKey("visual_model_constructions.id", ondelete="CASCADE"), nullable=False)
+    assumption_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    statement: Mapped[str] = mapped_column(Text, nullable=False)
+    scope_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    evidence_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class VisualModelConstraintRecord(Base):
+    __tablename__ = "visual_model_constraints"
+    __table_args__ = (UniqueConstraint("construction_id", "constraint_key", name="uq_visual_model_constraint_key"), Index("ix_visual_model_constraint_construction", "construction_id"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    construction_id: Mapped[str] = mapped_column(ForeignKey("visual_model_constructions.id", ondelete="CASCADE"), nullable=False)
+    constraint_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    constraint_kind: Mapped[str] = mapped_column(String(80), nullable=False, default="bound")
+    expression: Mapped[str | None] = mapped_column(Text, nullable=True)
+    constraint_spec_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class VisualModelInterventionRecord(Base):
+    __tablename__ = "visual_model_interventions"
+    __table_args__ = (UniqueConstraint("construction_id", "intervention_key", name="uq_visual_model_intervention_key"), Index("ix_visual_model_intervention_construction", "construction_id"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    construction_id: Mapped[str] = mapped_column(ForeignKey("visual_model_constructions.id", ondelete="CASCADE"), nullable=False)
+    intervention_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    name: Mapped[str] = mapped_column(String(300), nullable=False)
+    target_component_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    intervention_spec_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class VisualModelHandoffRecord(Base):
+    __tablename__ = "visual_model_handoffs"
+    __table_args__ = (Index("ix_visual_model_handoff_construction", "construction_id"), Index("ix_visual_model_handoff_target", "target_product"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    construction_id: Mapped[str] = mapped_column(ForeignKey("visual_model_constructions.id", ondelete="CASCADE"), nullable=False)
+    target_product: Mapped[str] = mapped_column(String(120), nullable=False)
+    purpose: Mapped[str] = mapped_column(String(300), nullable=False)
+    request_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    response_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    status: Mapped[str] = mapped_column(String(40), nullable=False, default="prepared")
+    externally_executed: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class VisualModelSnapshotRecord(Base):
+    __tablename__ = "visual_model_snapshots"
+    __table_args__ = (UniqueConstraint("construction_id", "revision", name="uq_visual_model_snapshot_revision"), Index("ix_visual_model_snapshot_hash", "content_hash"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    construction_id: Mapped[str] = mapped_column(ForeignKey("visual_model_constructions.id", ondelete="CASCADE"), nullable=False)
+    revision: Mapped[int] = mapped_column(Integer, nullable=False)
+    content_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    previous_snapshot_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    state_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)

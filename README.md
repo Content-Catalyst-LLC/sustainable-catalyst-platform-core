@@ -1,4 +1,4 @@
-> Current release: **2.65.0 — Visual Query & Exploration Engine**
+> Current release: **2.66.0 — Visual Model Construction**
 
 ## Platform Core 2.64.0
 
