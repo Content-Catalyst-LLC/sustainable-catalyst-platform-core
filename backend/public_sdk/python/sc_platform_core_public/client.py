@@ -834,3 +834,9 @@ PublicApiClient.visual_query_exploration_bundle = _visual_query_exploration_bund
 def _visual_model_construction_bundle(self, construction_id: str):
     return self.request("GET", f"/visual-runtime/model-construction/constructions/{construction_id}/bundle")
 PublicApiClient.visual_model_construction_bundle = _visual_model_construction_bundle
+
+# v2.67.0 Visual Predictive Intelligence
+def _visual_predictive_workspace_bundle(self, workspace_id: str):
+    return self.request("GET", f"/visual-runtime/predictive/workspaces/{workspace_id}/bundle")
+PublicApiClient.visual_predictive_workspace_bundle = _visual_predictive_workspace_bundle
+

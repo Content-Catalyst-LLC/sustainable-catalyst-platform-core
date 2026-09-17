@@ -580,3 +580,4 @@ PublicApiClient.prototype.visualQueryExplorationBundle=function(sessionId){retur
 
 // v2.66.0 Visual Model Construction
 PublicApiClient.prototype.visualModelConstructionBundle=function(constructionId){return this.request(`/visual-runtime/model-construction/constructions/${encodeURIComponent(constructionId)}/bundle`);};
+PublicApiClient.prototype.visualPredictiveWorkspaceBundle=function(workspaceId){return this.request(`/visual-runtime/predictive/workspaces/${encodeURIComponent(workspaceId)}/bundle`);};

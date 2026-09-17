@@ -1,3 +1,7 @@
+# Platform Core v2.67.0 — Visual Predictive Intelligence
+
+Current release adds governed predictive visual workspaces across the full predictive stack while retaining external compute/render boundaries.
+
 > Current release: **2.66.0 — Visual Model Construction**
 
 ## Platform Core 2.64.0

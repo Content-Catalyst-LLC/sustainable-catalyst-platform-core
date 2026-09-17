@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Sustainable Catalyst Platform Core
  * Description: WordPress connector for Sustainable Catalyst Platform Core registry, graph, evidence, developer, gateway, free live-data, international-law, scientific-data, official-statistics, geospatial, time-series, STAC, map-layer, streaming, alerts, source-reliability, and operational-facility, humanitarian-access, essential-services, and country-evidence federation and reconciliation, and Earth/Ocean/Space scientific-service routing, cross-product exchange, distributed scale-control services, and governance/access/audit, production-certification/recovery, and observability/SLO production-operations services, plus incident-response, change-control, rollback-coordination, continuity, backup-verification, disaster-recovery, and multi-region resilience/failover-coordination, and data-lifecycle/archival-integrity/preservation services, plus Federated Core trusted-node exchange services and capacity forecasting/resource-governance services, plus identity/credential/cryptographic-key lifecycle governance, distributed workload governance, and scientific object storage/processing adapter services, research object/model services, renderer-neutral visual reasoning object services, and visualization specification/renderer registry services, and governed System Maps and Flow Maps services, plus the renderer-neutral visual reasoning runtime/scene graph.
- * Version: 2.66.0
+ * Version: 2.67.0
  * Author: Content Catalyst LLC
  * License: MIT
  */
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('SCPC_VERSION', '2.66.0');
+define('SCPC_VERSION', '2.67.0');
 define('SCPC_OPTION_BACKEND_URL', 'scpc_backend_url');
 define('SCPC_OPTION_READ_KEY', 'scpc_read_key');
 
@@ -1642,3 +1642,14 @@ function scpc_visual_model_construction_status_shortcode() {
     return '<div class="scpc-status"><strong>Visual Model Construction</strong><br>Core ' . esc_html($d['release'] ?? '2.66.0') . ' · ' . esc_html($c) . ' constructions · ' . esc_html($m) . ' components · execution external</div>';
 }
 add_shortcode('sc_platform_core_visual_model_status', 'scpc_visual_model_construction_status_shortcode');
+
+function scpc_visual_predictive_intelligence_status_shortcode() {
+    $r = scpc_request('/v1/visual-runtime/predictive/readiness');
+    if (is_wp_error($r)) return '<div class="scpc-status">Visual Predictive Intelligence unavailable</div>';
+    $d = json_decode(wp_remote_retrieve_body($r), true);
+    $w = isset($d['counts']['workspaces']) ? intval($d['counts']['workspaces']) : 0;
+    $f = isset($d['counts']['forecast_overlays']) ? intval($d['counts']['forecast_overlays']) : 0;
+    return '<div class="scpc-status"><strong>Visual Predictive Intelligence</strong><br>Core ' . esc_html($d['release'] ?? '2.67.0') . ' · ' . esc_html($w) . ' workspaces · ' . esc_html($f) . ' forecast overlays · predictive execution external</div>';
+}
+add_shortcode('sc_platform_core_visual_predictive_status', 'scpc_visual_predictive_intelligence_status_shortcode');
+

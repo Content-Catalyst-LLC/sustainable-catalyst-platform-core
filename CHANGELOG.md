@@ -1,3 +1,9 @@
+# v2.67.0 — Visual Predictive Intelligence
+
+- Added migration `0071` and ten visual-predictive persistence families.
+- Added forecast, uncertainty/calibration, ensemble, monitoring, spatial-temporal, causal, and decision visual bindings.
+- Added immutable visual predictive snapshots and public bundle SDK helpers.
+
 ## 2.66.0 — Visual Model Construction
 
 - Adds governed visual model construction semantics, external execution handoffs, and immutable model snapshots.

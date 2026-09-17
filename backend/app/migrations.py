@@ -70,6 +70,9 @@ from .models import (
     VisualTraversalRequestRecord, VisualQueryResultBindingRecord, VisualExplorationStateRecord, VisualQuerySnapshotRecord,
     VisualModelConstructionRecord, VisualModelComponentRecord, VisualModelRelationshipRecord, VisualModelAssumptionRecord,
     VisualModelConstraintRecord, VisualModelInterventionRecord, VisualModelHandoffRecord, VisualModelSnapshotRecord,
+    VisualPredictiveWorkspaceRecord, VisualForecastOverlayRecord, VisualUncertaintyDisplayRecord, VisualCalibrationDisplayRecord,
+    VisualEnsembleComparisonOverlayRecord, VisualMonitoringOverlayRecord, VisualSpatialTemporalForecastLayerRecord,
+    VisualCausalPredictiveOverlayRecord, VisualDecisionPredictionBindingRecord, VisualPredictiveSnapshotRecord,
 )
 from .predicate_catalog import DEFAULT_PREDICATES
 from .api_plan_catalog import DEFAULT_API_PLANS
@@ -145,6 +148,7 @@ MIGRATIONS = [
     ("0068", 'Linked views and cross-filtering with governed policies, selections, filters, brush ranges, focus/highlight state, propagation evidence, and immutable snapshots; Core stores interaction contracts but does not execute queries, filter data, dispatch UI events, or infer visually.'),
     ("0069", 'Visual query/exploration with governed sessions, targets, predicates, traversal requests, external result/evidence bindings, saved states, and immutable snapshots; Core records intent/provenance but does not execute queries, traverse graphs, retrieve data, rank results, or infer visually.'),
     ("0070", 'Visual model construction with governed components, relationships, assumptions, constraints, interventions, external runtime handoffs, and immutable snapshots; Core records model semantics/provenance but does not solve equations, optimize constraints, run simulations, or execute models.'),
+    ("0071", 'Visual predictive intelligence with governed forecast, uncertainty, calibration, ensemble, monitoring, spatial-temporal, causal, and decision overlays plus immutable snapshots; Core binds predictive evidence to views but does not forecast, calibrate, detect anomalies, simulate, rank, or render.'),
 ]
 
 

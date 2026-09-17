@@ -1,0 +1,7 @@
+cd ~/Downloads
+rm -rf sc-platform-core-v2.67.0-release
+mkdir -p sc-platform-core-v2.67.0-release
+unzip -q sustainable-catalyst-platform-core-v2.67.0-release-bundle.zip -d sc-platform-core-v2.67.0-release
+cd sc-platform-core-v2.67.0-release
+chmod +x deploy_and_validate_platform_core_v2_67_0_macos.sh
+./deploy_and_validate_platform_core_v2_67_0_macos.sh "$HOME/Downloads/sustainable-catalyst-platform-core-v2.67.0-release-bundle.zip"

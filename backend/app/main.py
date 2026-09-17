@@ -53,6 +53,7 @@ from .routers import (
     visual_linked_views,
     visual_query_exploration,
     visual_model_construction,
+    visual_predictive_intelligence,
     visualization_registry,
     system_maps,
     flow_maps,
@@ -259,6 +260,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # v2.66.0 governed visual model construction and external execution handoffs.
     app.include_router(visual_model_construction.router)
     app.include_router(visual_model_construction.public_router)
+    # v2.67.0 governed Visual Predictive Intelligence bindings and overlays.
+    app.include_router(visual_predictive_intelligence.router)
+    app.include_router(visual_predictive_intelligence.public_router)
     # Open Forensics includes v2.51.0 Reproducible Investigation Packages.
     app.include_router(open_forensics.router)
     app.include_router(open_forensics.public_router)

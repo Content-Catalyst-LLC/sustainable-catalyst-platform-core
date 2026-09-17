@@ -8299,3 +8299,158 @@ class VisualModelSnapshotRecord(Base):
     provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
     created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+# v2.67.0 — Visual Predictive Intelligence
+class VisualPredictiveWorkspaceRecord(Base):
+    __tablename__ = "visual_predictive_workspaces"
+    __table_args__ = (
+        UniqueConstraint("composition_id", "workspace_key", name="uq_visual_predictive_workspace_key"),
+        Index("ix_visual_predictive_workspace_composition", "composition_id"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    composition_id: Mapped[str] = mapped_column(ForeignKey("visual_view_compositions.id", ondelete="CASCADE"), nullable=False)
+    grammar_specification_id: Mapped[str | None] = mapped_column(ForeignKey("visual_grammar_specifications.id", ondelete="SET NULL"), nullable=True)
+    model_construction_id: Mapped[str | None] = mapped_column(ForeignKey("visual_model_constructions.id", ondelete="SET NULL"), nullable=True)
+    predictive_package_id: Mapped[str | None] = mapped_column(ForeignKey("predictive_intelligence_packages.id", ondelete="SET NULL"), nullable=True)
+    workspace_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    name: Mapped[str] = mapped_column(String(300), nullable=False)
+    purpose: Mapped[str | None] = mapped_column(Text, nullable=True)
+    status: Mapped[str] = mapped_column(String(40), nullable=False, default="draft")
+    visibility: Mapped[str] = mapped_column(String(40), nullable=False, default="private")
+    settings_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class VisualForecastOverlayRecord(Base):
+    __tablename__ = "visual_forecast_overlays"
+    __table_args__ = (UniqueConstraint("workspace_id", "overlay_key", name="uq_visual_forecast_overlay_key"), Index("ix_visual_forecast_overlay_workspace", "workspace_id"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    workspace_id: Mapped[str] = mapped_column(ForeignKey("visual_predictive_workspaces.id", ondelete="CASCADE"), nullable=False)
+    overlay_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    forecast_run_id: Mapped[str | None] = mapped_column(ForeignKey("predictive_forecast_runs.id", ondelete="SET NULL"), nullable=True)
+    probabilistic_forecast_id: Mapped[str | None] = mapped_column(ForeignKey("predictive_probabilistic_forecasts.id", ondelete="SET NULL"), nullable=True)
+    ensemble_forecast_id: Mapped[str | None] = mapped_column(ForeignKey("predictive_ensemble_forecasts.id", ondelete="SET NULL"), nullable=True)
+    target_view_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    display_contract_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class VisualUncertaintyDisplayRecord(Base):
+    __tablename__ = "visual_uncertainty_displays"
+    __table_args__ = (UniqueConstraint("workspace_id", "display_key", name="uq_visual_uncertainty_display_key"), Index("ix_visual_uncertainty_display_workspace", "workspace_id"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    workspace_id: Mapped[str] = mapped_column(ForeignKey("visual_predictive_workspaces.id", ondelete="CASCADE"), nullable=False)
+    display_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    probabilistic_forecast_id: Mapped[str | None] = mapped_column(ForeignKey("predictive_probabilistic_forecasts.id", ondelete="SET NULL"), nullable=True)
+    calibration_study_id: Mapped[str | None] = mapped_column(ForeignKey("predictive_calibration_studies.id", ondelete="SET NULL"), nullable=True)
+    display_kind: Mapped[str] = mapped_column(String(80), nullable=False, default="interval-band")
+    interval_levels_json: Mapped[list] = mapped_column(JSON, default=list)
+    quantiles_json: Mapped[list] = mapped_column(JSON, default=list)
+    target_view_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    display_contract_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class VisualCalibrationDisplayRecord(Base):
+    __tablename__ = "visual_calibration_displays"
+    __table_args__ = (UniqueConstraint("workspace_id", "display_key", name="uq_visual_calibration_display_key"), Index("ix_visual_calibration_display_workspace", "workspace_id"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    workspace_id: Mapped[str] = mapped_column(ForeignKey("visual_predictive_workspaces.id", ondelete="CASCADE"), nullable=False)
+    display_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    calibration_study_id: Mapped[str] = mapped_column(ForeignKey("predictive_calibration_studies.id", ondelete="CASCADE"), nullable=False)
+    calibration_mapping_id: Mapped[str | None] = mapped_column(ForeignKey("predictive_calibration_mappings.id", ondelete="SET NULL"), nullable=True)
+    display_kind: Mapped[str] = mapped_column(String(80), nullable=False, default="reliability")
+    target_view_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    evidence_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    display_contract_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class VisualEnsembleComparisonOverlayRecord(Base):
+    __tablename__ = "visual_ensemble_comparison_overlays"
+    __table_args__ = (UniqueConstraint("workspace_id", "overlay_key", name="uq_visual_ensemble_comparison_key"), Index("ix_visual_ensemble_comparison_workspace", "workspace_id"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    workspace_id: Mapped[str] = mapped_column(ForeignKey("visual_predictive_workspaces.id", ondelete="CASCADE"), nullable=False)
+    overlay_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    ensemble_id: Mapped[str | None] = mapped_column(ForeignKey("predictive_ensembles.id", ondelete="SET NULL"), nullable=True)
+    comparison_study_id: Mapped[str | None] = mapped_column(ForeignKey("predictive_comparison_studies.id", ondelete="SET NULL"), nullable=True)
+    ensemble_forecast_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    target_view_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    display_contract_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class VisualMonitoringOverlayRecord(Base):
+    __tablename__ = "visual_monitoring_overlays"
+    __table_args__ = (UniqueConstraint("workspace_id", "overlay_key", name="uq_visual_monitoring_overlay_key"), Index("ix_visual_monitoring_overlay_workspace", "workspace_id"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    workspace_id: Mapped[str] = mapped_column(ForeignKey("visual_predictive_workspaces.id", ondelete="CASCADE"), nullable=False)
+    overlay_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    monitoring_study_id: Mapped[str | None] = mapped_column(ForeignKey("predictive_monitoring_studies.id", ondelete="SET NULL"), nullable=True)
+    anomaly_observation_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    change_point_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    early_warning_signal_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    target_view_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    display_contract_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class VisualSpatialTemporalForecastLayerRecord(Base):
+    __tablename__ = "visual_spatial_temporal_forecast_layers"
+    __table_args__ = (UniqueConstraint("workspace_id", "layer_key", name="uq_visual_spatial_temporal_forecast_layer_key"), Index("ix_visual_spatial_temporal_layer_workspace", "workspace_id"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    workspace_id: Mapped[str] = mapped_column(ForeignKey("visual_predictive_workspaces.id", ondelete="CASCADE"), nullable=False)
+    layer_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    spatial_temporal_study_id: Mapped[str] = mapped_column(ForeignKey("predictive_spatial_temporal_studies.id", ondelete="CASCADE"), nullable=False)
+    forecast_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    spatial_unit_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    target_view_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    temporal_window_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    layer_contract_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class VisualCausalPredictiveOverlayRecord(Base):
+    __tablename__ = "visual_causal_predictive_overlays"
+    __table_args__ = (UniqueConstraint("workspace_id", "overlay_key", name="uq_visual_causal_predictive_overlay_key"), Index("ix_visual_causal_predictive_workspace", "workspace_id"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    workspace_id: Mapped[str] = mapped_column(ForeignKey("visual_predictive_workspaces.id", ondelete="CASCADE"), nullable=False)
+    overlay_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    causal_predictive_study_id: Mapped[str] = mapped_column(ForeignKey("predictive_causal_studies.id", ondelete="CASCADE"), nullable=False)
+    counterfactual_forecast_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    causal_effect_evidence_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    target_view_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    display_contract_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class VisualDecisionPredictionBindingRecord(Base):
+    __tablename__ = "visual_decision_prediction_bindings"
+    __table_args__ = (UniqueConstraint("workspace_id", "binding_key", name="uq_visual_decision_prediction_binding_key"), Index("ix_visual_decision_prediction_workspace", "workspace_id"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    workspace_id: Mapped[str] = mapped_column(ForeignKey("visual_predictive_workspaces.id", ondelete="CASCADE"), nullable=False)
+    binding_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    decision_study_id: Mapped[str] = mapped_column(ForeignKey("predictive_decision_studies.id", ondelete="CASCADE"), nullable=False)
+    evidence_binding_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    scenario_assessment_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    evaluation_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    target_view_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    display_contract_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class VisualPredictiveSnapshotRecord(Base):
+    __tablename__ = "visual_predictive_snapshots"
+    __table_args__ = (UniqueConstraint("workspace_id", "revision", name="uq_visual_predictive_snapshot_revision"), Index("ix_visual_predictive_snapshot_hash", "content_hash"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    workspace_id: Mapped[str] = mapped_column(ForeignKey("visual_predictive_workspaces.id", ondelete="CASCADE"), nullable=False)
+    revision: Mapped[int] = mapped_column(Integer, nullable=False)
+    content_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    previous_snapshot_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    state_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
