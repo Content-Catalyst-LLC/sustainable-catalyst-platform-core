@@ -51,6 +51,7 @@ from .routers import (
     visual_composition,
     visual_grammar,
     visual_linked_views,
+    visual_query_exploration,
     visualization_registry,
     system_maps,
     flow_maps,
@@ -251,6 +252,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # v2.64.0 governed linked views and cross-filter interaction contracts.
     app.include_router(visual_linked_views.router)
     app.include_router(visual_linked_views.public_router)
+    # v2.65.0 governed visual query and exploration contracts.
+    app.include_router(visual_query_exploration.router)
+    app.include_router(visual_query_exploration.public_router)
     # Open Forensics includes v2.51.0 Reproducible Investigation Packages.
     app.include_router(open_forensics.router)
     app.include_router(open_forensics.public_router)

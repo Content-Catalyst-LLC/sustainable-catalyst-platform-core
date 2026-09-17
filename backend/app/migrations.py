@@ -66,6 +66,8 @@ from .models import (
     VisualGrammarEncodingRecord, VisualGrammarTransformRecord, VisualGrammarGuideRecord, VisualGrammarSnapshotRecord,
     VisualLinkPolicyRecord, VisualSelectionSetRecord, VisualCrossFilterRecord, VisualBrushRangeRecord,
     VisualFocusHighlightRecord, VisualPropagationRecord, VisualLinkedViewSnapshotRecord,
+    VisualExplorationSessionRecord, VisualQueryTargetRecord, VisualQueryRequestRecord, VisualQueryPredicateRecord,
+    VisualTraversalRequestRecord, VisualQueryResultBindingRecord, VisualExplorationStateRecord, VisualQuerySnapshotRecord,
 )
 from .predicate_catalog import DEFAULT_PREDICATES
 from .api_plan_catalog import DEFAULT_API_PLANS
@@ -139,6 +141,7 @@ MIGRATIONS = [
     ("0064", 'Reproducible predictive intelligence packages with governed cross-layer manifests, artifacts, environments, verification/review evidence, and immutable hash-chained snapshots; Core does not execute, refit, regenerate forecasts, rerun analyses, optimize decisions, or reproduce automatically.'),
     ("0065", 'Visual reasoning runtime and scene graph with governed scenes, nodes, edges, layers, views, bindings, and immutable snapshots; Core stores renderer-neutral semantic and interaction state but does not render, compute layout, animate, infer visually, hit-test, or execute GPU work.'),    ("0066", 'Interactive renderer and view composition with governed renderer profiles, compositions, assignments, link groups, propagated interaction state, and immutable snapshots; Core coordinates renderer-neutral views but does not draw, layout, animate, hit-test, run GPU work, or infer visually.'),    ("0067", 'Analytical visualization grammar with governed specifications, bindings, marks, encodings, scales, transforms, guides, and immutable snapshots; Core stores renderer-neutral grammar but does not execute transforms, calculate scales/layout, draw marks, aggregate data, or infer visually.'),
     ("0068", 'Linked views and cross-filtering with governed policies, selections, filters, brush ranges, focus/highlight state, propagation evidence, and immutable snapshots; Core stores interaction contracts but does not execute queries, filter data, dispatch UI events, or infer visually.'),
+    ("0069", 'Visual query/exploration with governed sessions, targets, predicates, traversal requests, external result/evidence bindings, saved states, and immutable snapshots; Core records intent/provenance but does not execute queries, traverse graphs, retrieve data, rank results, or infer visually.'),
 ]
 
 

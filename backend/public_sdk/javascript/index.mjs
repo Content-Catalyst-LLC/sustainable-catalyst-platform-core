@@ -572,3 +572,7 @@ PublicApiClient.prototype.visualRuntimeGrammarBundle=function(specificationId){r
 
 // v2.64.0 Linked Views & Cross-Filtering
 PublicApiClient.prototype.visualRuntimeLinkedViewsBundle=function(compositionId){return this.request(`/visual-runtime/linked-views/compositions/${encodeURIComponent(compositionId)}/bundle`);};
+
+
+// v2.65.0 Visual Query & Exploration Engine
+PublicApiClient.prototype.visualQueryExplorationBundle=function(sessionId){return this.request(`/visual-runtime/query/sessions/${encodeURIComponent(sessionId)}/bundle`);};

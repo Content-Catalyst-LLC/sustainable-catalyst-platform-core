@@ -1,0 +1,10 @@
+Platform Core v2.65.0 — Visual Query & Exploration Engine
+
+Build-time validation completed in the packaging environment:
+- v2.65 focused migration/query/validator tests: 7 passed
+- v2.64 immediate predecessor + v2.65 combined regression: 13 passed
+- health/release-lineage + v2.63 grammar lineage slice: 10 passed
+- dependency-free v2.65 release contract: PASS
+- push-safe secret scan: PASS
+
+The complete historical regression list is preserved in backend/release_v2650_testfiles.txt and is executed by the macOS promotion validator before GitHub promotion. This packaging session does not claim that the full historical suite was executed monolithically.

@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Sustainable Catalyst Platform Core
  * Description: WordPress connector for Sustainable Catalyst Platform Core registry, graph, evidence, developer, gateway, free live-data, international-law, scientific-data, official-statistics, geospatial, time-series, STAC, map-layer, streaming, alerts, source-reliability, and operational-facility, humanitarian-access, essential-services, and country-evidence federation and reconciliation, and Earth/Ocean/Space scientific-service routing, cross-product exchange, distributed scale-control services, and governance/access/audit, production-certification/recovery, and observability/SLO production-operations services, plus incident-response, change-control, rollback-coordination, continuity, backup-verification, disaster-recovery, and multi-region resilience/failover-coordination, and data-lifecycle/archival-integrity/preservation services, plus Federated Core trusted-node exchange services and capacity forecasting/resource-governance services, plus identity/credential/cryptographic-key lifecycle governance, distributed workload governance, and scientific object storage/processing adapter services, research object/model services, renderer-neutral visual reasoning object services, and visualization specification/renderer registry services, and governed System Maps and Flow Maps services, plus the renderer-neutral visual reasoning runtime/scene graph.
- * Version: 2.64.0
+ * Version: 2.65.0
  * Author: Content Catalyst LLC
  * License: MIT
  */
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('SCPC_VERSION', '2.64.0');
+define('SCPC_VERSION', '2.65.0');
 define('SCPC_OPTION_BACKEND_URL', 'scpc_backend_url');
 define('SCPC_OPTION_READ_KEY', 'scpc_read_key');
 
@@ -1618,5 +1618,16 @@ add_shortcode('sc_platform_core_linked_views_status', function () {
     if (!is_array($d)) return '<div class="scpc-status"><strong>Linked Views &amp; Cross-Filtering</strong><br>Unavailable</div>';
     $c = isset($d['counts']['cross_filters']) ? intval($d['counts']['cross_filters']) : 0;
     $s = isset($d['counts']['selection_sets']) ? intval($d['counts']['selection_sets']) : 0;
-    return '<div class="scpc-status"><strong>Linked Views &amp; Cross-Filtering</strong><br>Core ' . esc_html($d['release'] ?? '2.64.0') . ' · ' . esc_html($s) . ' selections · ' . esc_html($c) . ' cross-filters · UI execution external</div>';
+    return '<div class="scpc-status"><strong>Linked Views &amp; Cross-Filtering</strong><br>Core ' . esc_html($d['release'] ?? '2.65.0') . ' · ' . esc_html($s) . ' selections · ' . esc_html($c) . ' cross-filters · UI execution external</div>';
+});
+
+
+add_shortcode('sc_platform_core_visual_query_status', function () {
+    $data = scpc_request('/v1/visual-runtime/query/readiness');
+    if (is_wp_error($data)) return '<div class="scpc-status scpc-status-error">Visual Query &amp; Exploration status unavailable.</div>';
+    $release = isset($data['release']) ? esc_html($data['release']) : '2.65.0';
+    $sessions = isset($data['counts']['sessions']) ? intval($data['counts']['sessions']) : 0;
+    $queries = isset($data['counts']['queries']) ? intval($data['counts']['queries']) : 0;
+    $results = isset($data['counts']['results']) ? intval($data['counts']['results']) : 0;
+    return '<div class="scpc-status"><strong>Visual Query &amp; Exploration Online</strong><br><span>Core '.$release.' · '.esc_html($sessions).' sessions · '.esc_html($queries).' queries · '.esc_html($results).' external results · Core query execution disabled</span></div>';
 });

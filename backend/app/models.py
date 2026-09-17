@@ -8035,3 +8035,151 @@ class VisualLinkedViewSnapshotRecord(Base):
     provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
     created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+# v2.65.0 — Visual Query & Exploration Engine
+class VisualExplorationSessionRecord(Base):
+    __tablename__ = "visual_exploration_sessions"
+    __table_args__ = (
+        UniqueConstraint("composition_id", "session_key", name="uq_visual_exploration_session_key"),
+        Index("ix_visual_exploration_session_composition", "composition_id"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    composition_id: Mapped[str] = mapped_column(ForeignKey("visual_view_compositions.id", ondelete="CASCADE"), nullable=False)
+    session_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    name: Mapped[str] = mapped_column(String(300), nullable=False)
+    purpose: Mapped[str | None] = mapped_column(Text, nullable=True)
+    visibility: Mapped[str] = mapped_column(String(40), nullable=False, default="private")
+    status: Mapped[str] = mapped_column(String(40), nullable=False, default="active")
+    context_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class VisualQueryTargetRecord(Base):
+    __tablename__ = "visual_query_targets"
+    __table_args__ = (
+        UniqueConstraint("session_id", "target_key", name="uq_visual_query_target_key"),
+        Index("ix_visual_query_target_session", "session_id"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    session_id: Mapped[str] = mapped_column(ForeignKey("visual_exploration_sessions.id", ondelete="CASCADE"), nullable=False)
+    target_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    target_kind: Mapped[str] = mapped_column(String(80), nullable=False)
+    target_ref: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    view_id: Mapped[str | None] = mapped_column(ForeignKey("visual_runtime_views.id", ondelete="SET NULL"), nullable=True)
+    grammar_specification_id: Mapped[str | None] = mapped_column(ForeignKey("visual_grammar_specifications.id", ondelete="SET NULL"), nullable=True)
+    data_binding_id: Mapped[str | None] = mapped_column(ForeignKey("visual_grammar_data_bindings.id", ondelete="SET NULL"), nullable=True)
+    target_spec_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class VisualQueryRequestRecord(Base):
+    __tablename__ = "visual_query_requests"
+    __table_args__ = (
+        UniqueConstraint("session_id", "query_key", name="uq_visual_query_request_key"),
+        Index("ix_visual_query_request_session", "session_id"),
+        Index("ix_visual_query_request_kind", "query_kind"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    session_id: Mapped[str] = mapped_column(ForeignKey("visual_exploration_sessions.id", ondelete="CASCADE"), nullable=False)
+    query_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    name: Mapped[str] = mapped_column(String(300), nullable=False)
+    query_kind: Mapped[str] = mapped_column(String(80), nullable=False)
+    target_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    query_spec_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    expected_result_kind: Mapped[str | None] = mapped_column(String(80), nullable=True)
+    runtime_product: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    status: Mapped[str] = mapped_column(String(40), nullable=False, default="declared")
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class VisualQueryPredicateRecord(Base):
+    __tablename__ = "visual_query_predicates"
+    __table_args__ = (
+        UniqueConstraint("query_id", "predicate_key", name="uq_visual_query_predicate_key"),
+        Index("ix_visual_query_predicate_query", "query_id"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    query_id: Mapped[str] = mapped_column(ForeignKey("visual_query_requests.id", ondelete="CASCADE"), nullable=False)
+    predicate_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    predicate_kind: Mapped[str] = mapped_column(String(80), nullable=False, default="filter")
+    field_name: Mapped[str | None] = mapped_column(String(300), nullable=True)
+    operator: Mapped[str | None] = mapped_column(String(80), nullable=True)
+    value_json: Mapped[object] = mapped_column(JSON, nullable=True)
+    predicate_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class VisualTraversalRequestRecord(Base):
+    __tablename__ = "visual_traversal_requests"
+    __table_args__ = (
+        UniqueConstraint("query_id", "traversal_key", name="uq_visual_traversal_request_key"),
+        Index("ix_visual_traversal_request_query", "query_id"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    query_id: Mapped[str] = mapped_column(ForeignKey("visual_query_requests.id", ondelete="CASCADE"), nullable=False)
+    traversal_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    traversal_kind: Mapped[str] = mapped_column(String(80), nullable=False, default="path")
+    start_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    end_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    relation_kinds_json: Mapped[list] = mapped_column(JSON, default=list)
+    max_depth: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    constraints_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class VisualQueryResultBindingRecord(Base):
+    __tablename__ = "visual_query_result_bindings"
+    __table_args__ = (
+        Index("ix_visual_query_result_query", "query_id"),
+        Index("ix_visual_query_result_status", "status"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    query_id: Mapped[str] = mapped_column(ForeignKey("visual_query_requests.id", ondelete="CASCADE"), nullable=False)
+    result_kind: Mapped[str] = mapped_column(String(80), nullable=False)
+    result_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    result_summary_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    evidence_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    runtime_product: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    runtime_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    status: Mapped[str] = mapped_column(String(40), nullable=False, default="external-result")
+    externally_computed: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class VisualExplorationStateRecord(Base):
+    __tablename__ = "visual_exploration_states"
+    __table_args__ = (
+        UniqueConstraint("session_id", "state_key", name="uq_visual_exploration_state_key"),
+        Index("ix_visual_exploration_state_session", "session_id"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    session_id: Mapped[str] = mapped_column(ForeignKey("visual_exploration_sessions.id", ondelete="CASCADE"), nullable=False)
+    state_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    active_query_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    selected_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    filter_state_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    view_state_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    notes_json: Mapped[list] = mapped_column(JSON, default=list)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class VisualQuerySnapshotRecord(Base):
+    __tablename__ = "visual_query_snapshots"
+    __table_args__ = (
+        UniqueConstraint("session_id", "revision", name="uq_visual_query_snapshot_revision"),
+        Index("ix_visual_query_snapshot_hash", "content_hash"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    session_id: Mapped[str] = mapped_column(ForeignKey("visual_exploration_sessions.id", ondelete="CASCADE"), nullable=False)
+    revision: Mapped[int] = mapped_column(Integer, nullable=False)
+    content_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    previous_snapshot_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    state_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)

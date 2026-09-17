@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/visual-query-exploration-v1.schema.json",
+  "title": "Sustainable Catalyst Visual Query & Exploration Bundle",
+  "type": "object",
+  "required": [
+    "contract",
+    "session",
+    "targets",
+    "queries",
+    "predicates",
+    "traversals",
+    "results",
+    "saved_states",
+    "snapshots",
+    "boundaries"
+  ],
+  "properties": {
+    "contract": {
+      "const": "sc.visual-runtime.visual-query.v1"
+    },
+    "session": {
+      "type": "object"
+    },
+    "targets": {
+      "type": "array"
+    },
+    "queries": {
+      "type": "array"
+    },
+    "predicates": {
+      "type": "array"
+    },
+    "traversals": {
+      "type": "array"
+    },
+    "results": {
+      "type": "array"
+    },
+    "saved_states": {
+      "type": "array"
+    },
+    "snapshots": {
+      "type": "array"
+    },
+    "boundaries": {
+      "type": "object"
+    }
+  }
+}

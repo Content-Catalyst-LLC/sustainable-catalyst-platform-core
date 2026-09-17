@@ -1,3 +1,8 @@
+## 2.65.0 — Visual Query & Exploration Engine
+
+- Adds governed visual exploration sessions, query targets, query/predicate and traversal requests, external result/evidence bindings, saved exploration states, and immutable snapshots.
+- Keeps query execution, traversal, retrieval, filtering, aggregation, ranking, recommendation, and visual inference outside Platform Core.
+
 ## 2.64.0 — Linked Views & Cross-Filtering
 - Added governed cross-view link policies, selections, filters, brushes, focus/highlight state, propagation evidence, and immutable interaction snapshots.
 - Added migration 0068 and renderer-neutral linked-view public bundle contract.

@@ -822,3 +822,9 @@ PublicApiClient.visual_runtime_grammar_bundle = _visual_runtime_grammar_bundle
 def _visual_runtime_linked_views_bundle(self, composition_id: str):
     return self.request("GET", f"/visual-runtime/linked-views/compositions/{composition_id}/bundle")
 PublicApiClient.visual_runtime_linked_views_bundle = _visual_runtime_linked_views_bundle
+
+
+# v2.65.0 Visual Query & Exploration Engine
+def _visual_query_exploration_bundle(self, session_id: str):
+    return self.request("GET", f"/visual-runtime/query/sessions/{session_id}/bundle")
+PublicApiClient.visual_query_exploration_bundle = _visual_query_exploration_bundle

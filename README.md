@@ -1,3 +1,5 @@
+> Current release: **2.65.0 — Visual Query & Exploration Engine**
+
 ## Platform Core 2.64.0
 
 Linked Views & Cross-Filtering adds provenance-aware coordinated interaction contracts above the v2.61 scene graph, v2.62 view composition layer, and v2.63 analytical grammar.
