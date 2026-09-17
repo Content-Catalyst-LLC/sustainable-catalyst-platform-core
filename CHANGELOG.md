@@ -1,3 +1,7 @@
+## 2.70.0 — Unified Visual Reasoning Engine
+- Unified renderer-neutral cross-layer visual reasoning workspace and orchestration contract.
+- Added migration 0074 with nine additive persistence families.
+
 # v2.67.0 — Visual Predictive Intelligence
 
 - Added migration `0071` and ten visual-predictive persistence families.

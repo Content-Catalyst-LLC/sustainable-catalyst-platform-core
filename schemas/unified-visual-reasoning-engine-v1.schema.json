@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/unified-visual-reasoning-engine-v1.schema.json",
+  "title": "Unified Visual Reasoning Engine",
+  "type": "object",
+  "required": [
+    "contract",
+    "workspace"
+  ],
+  "properties": {
+    "contract": {
+      "const": "sc.visual-runtime.unified-reasoning.v1"
+    },
+    "workspace": {
+      "type": "object"
+    },
+    "layer_bindings": {
+      "type": "array"
+    },
+    "reasoning_paths": {
+      "type": "array"
+    },
+    "state_bridges": {
+      "type": "array"
+    },
+    "evidence_chains": {
+      "type": "array"
+    },
+    "runtime_handoffs": {
+      "type": "array"
+    },
+    "package_bindings": {
+      "type": "array"
+    },
+    "replay_states": {
+      "type": "array"
+    },
+    "snapshots": {
+      "type": "array"
+    }
+  }
+}

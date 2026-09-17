@@ -8550,3 +8550,132 @@ class VisualDecisionHandoffRecord(Base):
 class VisualDecisionSnapshotRecord(Base):
     __tablename__="visual_decision_snapshots"; __table_args__=(UniqueConstraint("workspace_id","revision",name="uq_visual_decision_snapshot_revision"),Index("ix_visual_decision_snapshot_hash","content_hash"),)
     id: Mapped[str]=mapped_column(String(36),primary_key=True,default=lambda:str(uuid.uuid4())); workspace_id: Mapped[str]=mapped_column(ForeignKey("visual_decision_workspaces.id",ondelete="CASCADE"),nullable=False); revision: Mapped[int]=mapped_column(Integer,nullable=False); content_hash: Mapped[str]=mapped_column(String(64),nullable=False); previous_snapshot_hash: Mapped[str|None]=mapped_column(String(64),nullable=True); state_json: Mapped[dict]=mapped_column(JSON,default=dict); provenance_json: Mapped[dict]=mapped_column(JSON,default=dict); created_by: Mapped[str]=mapped_column(String(255),nullable=False,default="operator"); created_at: Mapped[datetime]=mapped_column(DateTime(timezone=True),default=utcnow)
+
+
+# v2.70.0 — Unified Visual Reasoning Engine
+class UnifiedVisualReasoningWorkspaceRecord(Base):
+    __tablename__ = "unified_visual_reasoning_workspaces"
+    __table_args__ = (UniqueConstraint("composition_id", "workspace_key", name="uq_unified_visual_reasoning_workspace_key"), Index("ix_unified_visual_reasoning_workspace_composition", "composition_id"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    composition_id: Mapped[str] = mapped_column(ForeignKey("visual_view_compositions.id", ondelete="CASCADE"), nullable=False)
+    workspace_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    name: Mapped[str] = mapped_column(String(300), nullable=False)
+    purpose: Mapped[str | None] = mapped_column(Text, nullable=True)
+    status: Mapped[str] = mapped_column(String(40), nullable=False, default="draft")
+    visibility: Mapped[str] = mapped_column(String(40), nullable=False, default="private")
+    settings_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class UnifiedVisualLayerBindingRecord(Base):
+    __tablename__ = "unified_visual_layer_bindings"
+    __table_args__ = (UniqueConstraint("workspace_id", "binding_key", name="uq_unified_visual_layer_binding_key"), Index("ix_unified_visual_layer_binding_workspace", "workspace_id"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    workspace_id: Mapped[str] = mapped_column(ForeignKey("unified_visual_reasoning_workspaces.id", ondelete="CASCADE"), nullable=False)
+    binding_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    scene_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    view_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    grammar_specification_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    link_policy_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    exploration_session_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    model_construction_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    predictive_workspace_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    forensics_workspace_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    decision_workspace_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    display_contract_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class UnifiedVisualReasoningPathRecord(Base):
+    __tablename__ = "unified_visual_reasoning_paths"
+    __table_args__ = (UniqueConstraint("workspace_id", "path_key", name="uq_unified_visual_reasoning_path_key"), Index("ix_unified_visual_reasoning_path_workspace", "workspace_id"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    workspace_id: Mapped[str] = mapped_column(ForeignKey("unified_visual_reasoning_workspaces.id", ondelete="CASCADE"), nullable=False)
+    path_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    stages_json: Mapped[list] = mapped_column(JSON, default=list)
+    transitions_json: Mapped[list] = mapped_column(JSON, default=list)
+    target_view_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class UnifiedVisualStateBridgeRecord(Base):
+    __tablename__ = "unified_visual_state_bridges"
+    __table_args__ = (Index("ix_unified_visual_state_bridge_workspace", "workspace_id"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    workspace_id: Mapped[str] = mapped_column(ForeignKey("unified_visual_reasoning_workspaces.id", ondelete="CASCADE"), nullable=False)
+    bridge_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    source_layer: Mapped[str] = mapped_column(String(80), nullable=False)
+    target_layer: Mapped[str] = mapped_column(String(80), nullable=False)
+    source_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    target_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    state_contract_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    propagation_evidence_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class UnifiedVisualEvidenceChainRecord(Base):
+    __tablename__ = "unified_visual_evidence_chains"
+    __table_args__ = (Index("ix_unified_visual_evidence_chain_workspace", "workspace_id"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    workspace_id: Mapped[str] = mapped_column(ForeignKey("unified_visual_reasoning_workspaces.id", ondelete="CASCADE"), nullable=False)
+    chain_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    evidence_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    reasoning_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    provenance_links_json: Mapped[list] = mapped_column(JSON, default=list)
+    uncertainty_context_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    target_view_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class UnifiedVisualRuntimeHandoffRecord(Base):
+    __tablename__ = "unified_visual_runtime_handoffs"
+    __table_args__ = (Index("ix_unified_visual_runtime_handoff_workspace", "workspace_id"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    workspace_id: Mapped[str] = mapped_column(ForeignKey("unified_visual_reasoning_workspaces.id", ondelete="CASCADE"), nullable=False)
+    handoff_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    target_product: Mapped[str] = mapped_column(String(120), nullable=False)
+    request_contract_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    result_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    status: Mapped[str] = mapped_column(String(40), nullable=False, default="declared")
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class UnifiedVisualPackageBindingRecord(Base):
+    __tablename__ = "unified_visual_package_bindings"
+    __table_args__ = (Index("ix_unified_visual_package_binding_workspace", "workspace_id"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    workspace_id: Mapped[str] = mapped_column(ForeignKey("unified_visual_reasoning_workspaces.id", ondelete="CASCADE"), nullable=False)
+    binding_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    visual_package_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    predictive_package_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    forensic_package_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    investigation_package_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    verification_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class UnifiedVisualReplayStateRecord(Base):
+    __tablename__ = "unified_visual_replay_states"
+    __table_args__ = (Index("ix_unified_visual_replay_state_workspace", "workspace_id"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    workspace_id: Mapped[str] = mapped_column(ForeignKey("unified_visual_reasoning_workspaces.id", ondelete="CASCADE"), nullable=False)
+    replay_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    state_manifest_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    environment_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    external_execution_contract_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    verification_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class UnifiedVisualReasoningSnapshotRecord(Base):
+    __tablename__ = "unified_visual_reasoning_snapshots"
+    __table_args__ = (UniqueConstraint("workspace_id", "revision", name="uq_unified_visual_reasoning_snapshot_revision"), Index("ix_unified_visual_reasoning_snapshot_hash", "content_hash"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    workspace_id: Mapped[str] = mapped_column(ForeignKey("unified_visual_reasoning_workspaces.id", ondelete="CASCADE"), nullable=False)
+    revision: Mapped[int] = mapped_column(Integer, nullable=False)
+    content_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    previous_snapshot_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    state_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)

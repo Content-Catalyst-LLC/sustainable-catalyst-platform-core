@@ -586,3 +586,7 @@ export async function visualForensicsWorkspaceBundle(client, workspaceId) { retu
 
 
 export async function visualDecisionWorkspaceBundle(client, workspaceId) { return client.get(`/api/v1/visual-runtime/decision/workspaces/${workspaceId}/bundle`); }
+
+
+// v2.70.0 Unified Visual Reasoning Engine
+export async function unifiedVisualReasoningWorkspaceBundle(client, workspaceId) { return client.get(`/api/v1/visual-runtime/unified/workspaces/${workspaceId}/bundle`); }
