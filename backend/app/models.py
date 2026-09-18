@@ -8679,3 +8679,109 @@ class UnifiedVisualReasoningSnapshotRecord(Base):
     provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
     created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+# v2.71.0 — Cross-Product Visual Runtime Integration
+class CrossProductVisualRuntimeIntegrationRecord(Base):
+    __tablename__ = "cross_product_visual_runtime_integrations"
+    __table_args__ = (UniqueConstraint("workspace_id", "product_key", "integration_key", name="uq_cross_product_visual_runtime_integration"), Index("ix_cross_product_visual_runtime_workspace", "workspace_id"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    workspace_id: Mapped[str] = mapped_column(ForeignKey("unified_visual_reasoning_workspaces.id", ondelete="CASCADE"), nullable=False)
+    product_key: Mapped[str] = mapped_column(String(80), nullable=False)
+    integration_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    name: Mapped[str] = mapped_column(String(300), nullable=False)
+    status: Mapped[str] = mapped_column(String(40), nullable=False, default="declared")
+    runtime_contract_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class CrossProductVisualObjectBindingRecord(Base):
+    __tablename__ = "cross_product_visual_object_bindings"
+    __table_args__ = (UniqueConstraint("integration_id", "binding_key", name="uq_cross_product_visual_object_binding"), Index("ix_cross_product_visual_object_integration", "integration_id"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    integration_id: Mapped[str] = mapped_column(ForeignKey("cross_product_visual_runtime_integrations.id", ondelete="CASCADE"), nullable=False)
+    binding_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    canonical_object_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    product_object_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    semantic_roles_json: Mapped[list] = mapped_column(JSON, default=list)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class CrossProductVisualContextBindingRecord(Base):
+    __tablename__ = "cross_product_visual_context_bindings"
+    __table_args__ = (UniqueConstraint("integration_id", "context_key", name="uq_cross_product_visual_context_binding"), Index("ix_cross_product_visual_context_integration", "integration_id"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    integration_id: Mapped[str] = mapped_column(ForeignKey("cross_product_visual_runtime_integrations.id", ondelete="CASCADE"), nullable=False)
+    context_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    context_type: Mapped[str] = mapped_column(String(80), nullable=False)
+    canonical_context_ref: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    product_context_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    context_contract_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class CrossProductVisualCapabilityBindingRecord(Base):
+    __tablename__ = "cross_product_visual_capability_bindings"
+    __table_args__ = (UniqueConstraint("integration_id", "capability_key", name="uq_cross_product_visual_capability_binding"), Index("ix_cross_product_visual_capability_integration", "integration_id"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    integration_id: Mapped[str] = mapped_column(ForeignKey("cross_product_visual_runtime_integrations.id", ondelete="CASCADE"), nullable=False)
+    capability_key: Mapped[str] = mapped_column(String(120), nullable=False)
+    object_kinds_json: Mapped[list] = mapped_column(JSON, default=list)
+    operation_contract_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    output_contract_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class CrossProductVisualViewBindingRecord(Base):
+    __tablename__ = "cross_product_visual_view_bindings"
+    __table_args__ = (UniqueConstraint("integration_id", "binding_key", name="uq_cross_product_visual_view_binding"), Index("ix_cross_product_visual_view_integration", "integration_id"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    integration_id: Mapped[str] = mapped_column(ForeignKey("cross_product_visual_runtime_integrations.id", ondelete="CASCADE"), nullable=False)
+    binding_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    unified_view_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    product_view_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    view_contract_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class CrossProductVisualHandoffRouteRecord(Base):
+    __tablename__ = "cross_product_visual_handoff_routes"
+    __table_args__ = (UniqueConstraint("workspace_id", "route_key", name="uq_cross_product_visual_handoff_route"), Index("ix_cross_product_visual_handoff_workspace", "workspace_id"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    workspace_id: Mapped[str] = mapped_column(ForeignKey("unified_visual_reasoning_workspaces.id", ondelete="CASCADE"), nullable=False)
+    route_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    source_product: Mapped[str] = mapped_column(String(80), nullable=False)
+    target_product: Mapped[str] = mapped_column(String(80), nullable=False)
+    capability_key: Mapped[str] = mapped_column(String(120), nullable=False)
+    request_contract_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    result_contract_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class CrossProductVisualSyncRecord(Base):
+    __tablename__ = "cross_product_visual_sync_records"
+    __table_args__ = (Index("ix_cross_product_visual_sync_workspace", "workspace_id"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    workspace_id: Mapped[str] = mapped_column(ForeignKey("unified_visual_reasoning_workspaces.id", ondelete="CASCADE"), nullable=False)
+    sync_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    source_product: Mapped[str] = mapped_column(String(80), nullable=False)
+    target_product: Mapped[str] = mapped_column(String(80), nullable=False)
+    direction: Mapped[str] = mapped_column(String(40), nullable=False, default="declared")
+    state_hashes_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    synchronization_evidence_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class CrossProductVisualIntegrationSnapshotRecord(Base):
+    __tablename__ = "cross_product_visual_integration_snapshots"
+    __table_args__ = (UniqueConstraint("workspace_id", "revision", name="uq_cross_product_visual_integration_snapshot_revision"), Index("ix_cross_product_visual_integration_snapshot_hash", "content_hash"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    workspace_id: Mapped[str] = mapped_column(ForeignKey("unified_visual_reasoning_workspaces.id", ondelete="CASCADE"), nullable=False)
+    revision: Mapped[int] = mapped_column(Integer, nullable=False)
+    content_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    previous_snapshot_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    state_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)

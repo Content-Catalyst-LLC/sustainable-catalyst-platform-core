@@ -590,3 +590,7 @@ export async function visualDecisionWorkspaceBundle(client, workspaceId) { retur
 
 // v2.70.0 Unified Visual Reasoning Engine
 export async function unifiedVisualReasoningWorkspaceBundle(client, workspaceId) { return client.get(`/api/v1/visual-runtime/unified/workspaces/${workspaceId}/bundle`); }
+
+
+// v2.71.0 Cross-Product Visual Runtime Integration
+export async function crossProductVisualRuntimeWorkspaceBundle(client, workspaceId) { return client.get(`/api/v1/visual-runtime/integrations/workspaces/${workspaceId}/bundle`); }

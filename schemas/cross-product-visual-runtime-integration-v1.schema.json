@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/cross-product-visual-runtime-integration-v1.schema.json",
+  "title": "Cross-Product Visual Runtime Integration",
+  "type": "object",
+  "required": ["contract", "workspace_id", "products", "integrations"],
+  "properties": {
+    "contract": {"const": "sc.visual-runtime.cross-product-integration.v1"},
+    "workspace_id": {"type": "string"},
+    "products": {"type": "array", "items": {"type": "string"}},
+    "capabilities": {"type": "array", "items": {"type": "string"}},
+    "integrations": {"type": "array", "items": {"type": "object"}},
+    "object_bindings": {"type": "array", "items": {"type": "object"}},
+    "context_bindings": {"type": "array", "items": {"type": "object"}},
+    "capability_bindings": {"type": "array", "items": {"type": "object"}},
+    "view_bindings": {"type": "array", "items": {"type": "object"}},
+    "handoff_routes": {"type": "array", "items": {"type": "object"}},
+    "sync_records": {"type": "array", "items": {"type": "object"}},
+    "snapshots": {"type": "array", "items": {"type": "object"}}
+  },
+  "additionalProperties": true
+}

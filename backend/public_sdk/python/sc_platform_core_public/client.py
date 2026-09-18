@@ -858,3 +858,9 @@ PublicApiClient.visual_decision_workspace_bundle = _visual_decision_workspace_bu
 def _unified_visual_reasoning_workspace_bundle(self, workspace_id: str):
     return self.request("GET", f"/visual-runtime/unified/workspaces/{workspace_id}/bundle")
 PublicApiClient.unified_visual_reasoning_workspace_bundle = _unified_visual_reasoning_workspace_bundle
+
+
+# v2.71.0 Cross-Product Visual Runtime Integration
+def _cross_product_visual_runtime_workspace_bundle(self, workspace_id: str):
+    return self.request("GET", f"/visual-runtime/integrations/workspaces/{workspace_id}/bundle")
+PublicApiClient.cross_product_visual_runtime_workspace_bundle = _cross_product_visual_runtime_workspace_bundle

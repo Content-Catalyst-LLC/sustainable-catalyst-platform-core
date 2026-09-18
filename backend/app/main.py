@@ -57,6 +57,7 @@ from .routers import (
     visual_forensics_workbench,
     visual_decision_intelligence,
     unified_visual_reasoning,
+    cross_product_visual_runtime_integration,
     visualization_registry,
     system_maps,
     flow_maps,
@@ -275,6 +276,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # v2.70.0 convergence layer for the Unified Visual Reasoning Engine.
     app.include_router(unified_visual_reasoning.router)
     app.include_router(unified_visual_reasoning.public_router)
+    # v2.71.0 shared visual-runtime contracts for specialist Catalyst products.
+    app.include_router(cross_product_visual_runtime_integration.router)
+    app.include_router(cross_product_visual_runtime_integration.public_router)
     # Open Forensics includes v2.51.0 Reproducible Investigation Packages.
     app.include_router(open_forensics.router)
     app.include_router(open_forensics.public_router)

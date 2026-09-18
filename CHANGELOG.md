@@ -1,3 +1,8 @@
+## 2.71.0 — Cross-Product Visual Runtime Integration
+
+- Shared v2.70 visual runtime contracts across Library, Lab, Workbench, Decision Studio, Site Intelligence, Workspace, and Research Librarian.
+- Added migration 0075, cross-product object/context/capability/view bindings, handoff routes, synchronization evidence, and immutable snapshots.
+
 ## 2.70.0 — Unified Visual Reasoning Engine
 - Unified renderer-neutral cross-layer visual reasoning workspace and orchestration contract.
 - Added migration 0074 with nine additive persistence families.
