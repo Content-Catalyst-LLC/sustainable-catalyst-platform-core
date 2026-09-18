@@ -93,3 +93,8 @@ Visual Decision Intelligence: governed decision workspaces and external Decision
 
 ## v2.73.0 Research Lineage & Provenance Graph
 Trace declared research lineage from findings through analyses, models, transformations, datasets, and sources without Core-side inference.
+
+
+## v2.74.0 Methodology & Analysis Run Registry
+
+Adds governed methodology records, versions, variables, assumptions/exclusions, parameters, execution environments, externally executed analysis runs, run inputs/outputs, and immutable snapshots under the unified research project model.

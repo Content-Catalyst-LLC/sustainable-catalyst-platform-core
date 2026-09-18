@@ -875,3 +875,9 @@ PublicApiClient.unified_research_project_bundle = _unified_research_project_bund
 def _research_lineage_graph_bundle(self, graph_id: str):
     return self.request("GET", f"/research/lineage/graphs/{graph_id}/bundle")
 PublicApiClient.research_lineage_graph_bundle = _research_lineage_graph_bundle
+
+# v2.74.0 Methodology & Analysis Run Registry
+def research_methodology_readiness(self):
+    return self._request("GET", "/v1/research/methodology/readiness")
+def research_methodology_bundle(self, project_id):
+    return self._request("GET", f"/v1/research/methodology/projects/{project_id}/bundle")

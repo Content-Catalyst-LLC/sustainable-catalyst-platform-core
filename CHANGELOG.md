@@ -557,3 +557,9 @@ Visual Decision Intelligence: governed decision workspaces and external Decision
 
 ## 2.73.0
 - Research Lineage & Provenance Graph with explicit traceable provenance paths and immutable snapshots.
+
+
+## 2.74.0
+- Added Methodology & Analysis Run Registry (`sc.research.methodology-analysis.v1`).
+- Added migration `0078` and ten governed methodology/run persistence families.
+- Added explicit human/researcher control boundaries: Core records declared methods and executions but does not execute analyses, infer causality, select methods, validate results, or judge research quality.

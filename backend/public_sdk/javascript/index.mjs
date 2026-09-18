@@ -603,3 +603,7 @@ export async function unifiedResearchProjectBundle(client, projectId) {
 
 // v2.73.0 Research Lineage & Provenance Graph
 PublicApiClient.prototype.researchLineageGraphBundle = function (graphId) { return this.request(`/research/lineage/graphs/${encodeURIComponent(graphId)}/bundle`); };
+
+// v2.74.0 Methodology & Analysis Run Registry
+export async function researchMethodologyReadiness(client) { return client.request("GET", "/v1/research/methodology/readiness"); }
+export async function researchMethodologyBundle(client, projectId) { return client.request("GET", `/v1/research/methodology/projects/${projectId}/bundle`); }

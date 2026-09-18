@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Sustainable Catalyst Methodology & Analysis Run Registry",
+  "type": "object",
+  "properties": {
+    "release": {
+      "const": "2.74.0"
+    },
+    "contract": {
+      "const": "sc.research.methodology-analysis.v1"
+    },
+    "project_entity_id": {
+      "type": "string"
+    },
+    "methodologies": {
+      "type": "array"
+    },
+    "runs": {
+      "type": "array"
+    }
+  },
+  "required": [
+    "release",
+    "contract",
+    "project_entity_id",
+    "methodologies",
+    "runs"
+  ]
+}

@@ -60,6 +60,7 @@ from .routers import (
     cross_product_visual_runtime_integration,
     unified_research_projects,
     research_lineage,
+    research_methodology,
     visualization_registry,
     system_maps,
     flow_maps,
@@ -287,6 +288,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # v2.73.0 Research Lineage & Provenance Graph.
     app.include_router(research_lineage.router)
     app.include_router(research_lineage.public_router)
+
+    app.include_router(research_methodology.router)
+    app.include_router(research_methodology.public_router)
     # Open Forensics includes v2.51.0 Reproducible Investigation Packages.
     app.include_router(open_forensics.router)
     app.include_router(open_forensics.public_router)
