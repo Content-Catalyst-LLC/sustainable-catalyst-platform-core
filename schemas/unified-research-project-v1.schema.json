@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/unified-research-project-v1.schema.json",
+  "title": "Sustainable Catalyst Unified Research Project v1",
+  "type": "object",
+  "required": [
+    "contract",
+    "project",
+    "questions",
+    "objectives",
+    "components",
+    "relationships",
+    "provenance_records",
+    "handoffs",
+    "boundaries"
+  ],
+  "properties": {
+    "contract": {
+      "const": "sc.research.unified-project.v1"
+    },
+    "project": {
+      "type": "object"
+    },
+    "questions": {
+      "type": "array"
+    },
+    "objectives": {
+      "type": "array"
+    },
+    "components": {
+      "type": "array"
+    },
+    "relationships": {
+      "type": "array"
+    },
+    "provenance_records": {
+      "type": "array"
+    },
+    "handoffs": {
+      "type": "array"
+    },
+    "snapshots": {
+      "type": "array"
+    },
+    "boundaries": {
+      "type": "object"
+    }
+  }
+}

@@ -1,3 +1,6 @@
+## 2.72.0 — Unified Research Project Object Model
+- Promotes the existing research-project identity into a first-class cross-product research substrate with questions, objectives, typed components, provenance, handoffs, relationships, and immutable snapshots.
+
 ## 2.71.0 — Cross-Product Visual Runtime Integration
 
 - Shared v2.70 visual runtime contracts across Library, Lab, Workbench, Decision Studio, Site Intelligence, Workspace, and Research Librarian.

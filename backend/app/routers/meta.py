@@ -196,6 +196,7 @@ def health(request: Request):
         "visual_decision_intelligence": request.app.state.settings.visual_decision_intelligence_enabled,
         "unified_visual_reasoning_engine": request.app.state.settings.unified_visual_reasoning_engine_enabled,
         "cross_product_visual_runtime_integration": request.app.state.settings.cross_product_visual_runtime_integration_enabled,
+        "unified_research_project_object_model": request.app.state.settings.unified_research_project_model_enabled,
         "open_forensics": request.app.state.settings.open_forensics_enabled,
         "forensic_timeline_event_reconstruction": request.app.state.settings.open_forensics_enabled,
         "forensic_spatial_temporal_evidence_integration": request.app.state.settings.open_forensics_enabled,

@@ -594,3 +594,8 @@ export async function unifiedVisualReasoningWorkspaceBundle(client, workspaceId)
 
 // v2.71.0 Cross-Product Visual Runtime Integration
 export async function crossProductVisualRuntimeWorkspaceBundle(client, workspaceId) { return client.get(`/api/v1/visual-runtime/integrations/workspaces/${workspaceId}/bundle`); }
+
+// v2.72.0 Unified Research Project Object Model
+export async function unifiedResearchProjectBundle(client, projectId) {
+  return client.request("GET", `/research/projects/${projectId}/bundle`);
+}

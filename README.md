@@ -1,3 +1,5 @@
+> Current release: **v2.72.0 — Unified Research Project Object Model**
+
 # Platform Core v2.67.0 — Visual Predictive Intelligence
 
 Current release adds governed predictive visual workspaces across the full predictive stack while retaining external compute/render boundaries.

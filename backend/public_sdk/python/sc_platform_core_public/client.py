@@ -864,3 +864,8 @@ PublicApiClient.unified_visual_reasoning_workspace_bundle = _unified_visual_reas
 def _cross_product_visual_runtime_workspace_bundle(self, workspace_id: str):
     return self.request("GET", f"/visual-runtime/integrations/workspaces/{workspace_id}/bundle")
 PublicApiClient.cross_product_visual_runtime_workspace_bundle = _cross_product_visual_runtime_workspace_bundle
+
+# v2.72.0 Unified Research Project Object Model
+def _unified_research_project_bundle(self, project_id: str):
+    return self.request("GET", f"/research/projects/{project_id}/bundle")
+PublicApiClient.unified_research_project_bundle = _unified_research_project_bundle
