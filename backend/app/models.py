@@ -8911,3 +8911,169 @@ class UnifiedResearchProjectSnapshotRecord(Base):
     provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
     created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+# v2.73.0 — Research Lineage & Provenance Graph
+class ResearchLineageGraphRecord(Base):
+    __tablename__ = "research_lineage_graphs"
+    __table_args__ = (
+        UniqueConstraint("project_entity_id", "graph_key", name="uq_research_lineage_graph"),
+        Index("ix_research_lineage_graph_project", "project_entity_id"),
+        Index("ix_research_lineage_graph_status", "status"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    project_entity_id: Mapped[str] = mapped_column(ForeignKey("research_projects.entity_id", ondelete="CASCADE"), nullable=False)
+    graph_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    title: Mapped[str] = mapped_column(String(500), nullable=False)
+    purpose: Mapped[str | None] = mapped_column(Text, nullable=True)
+    status: Mapped[str] = mapped_column(String(40), nullable=False, default="active")
+    root_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+class ResearchLineageNodeRecord(Base):
+    __tablename__ = "research_lineage_nodes"
+    __table_args__ = (
+        UniqueConstraint("graph_id", "node_key", name="uq_research_lineage_node"),
+        Index("ix_research_lineage_node_graph_type", "graph_id", "node_type"),
+        Index("ix_research_lineage_node_project", "project_entity_id"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    graph_id: Mapped[str] = mapped_column(ForeignKey("research_lineage_graphs.id", ondelete="CASCADE"), nullable=False)
+    project_entity_id: Mapped[str] = mapped_column(ForeignKey("research_projects.entity_id", ondelete="CASCADE"), nullable=False)
+    node_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    node_type: Mapped[str] = mapped_column(String(80), nullable=False)
+    label: Mapped[str] = mapped_column(String(500), nullable=False)
+    canonical_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    product_key: Mapped[str | None] = mapped_column(String(80), nullable=True)
+    product_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    version_ref: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    content_hash: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    attributes_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchLineageEdgeRecord(Base):
+    __tablename__ = "research_lineage_edges"
+    __table_args__ = (
+        UniqueConstraint("graph_id", "edge_key", name="uq_research_lineage_edge"),
+        Index("ix_research_lineage_edge_graph_predicate", "graph_id", "predicate"),
+        Index("ix_research_lineage_edge_source", "source_node_id"),
+        Index("ix_research_lineage_edge_target", "target_node_id"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    graph_id: Mapped[str] = mapped_column(ForeignKey("research_lineage_graphs.id", ondelete="CASCADE"), nullable=False)
+    project_entity_id: Mapped[str] = mapped_column(ForeignKey("research_projects.entity_id", ondelete="CASCADE"), nullable=False)
+    edge_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    source_node_id: Mapped[str] = mapped_column(ForeignKey("research_lineage_nodes.id", ondelete="CASCADE"), nullable=False)
+    predicate: Mapped[str] = mapped_column(String(120), nullable=False)
+    target_node_id: Mapped[str] = mapped_column(ForeignKey("research_lineage_nodes.id", ondelete="CASCADE"), nullable=False)
+    evidence_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    method_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    transformation_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    uncertainty_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchLineageActivityRecord(Base):
+    __tablename__ = "research_lineage_activities"
+    __table_args__ = (
+        UniqueConstraint("graph_id", "activity_key", name="uq_research_lineage_activity"),
+        Index("ix_research_lineage_activity_graph_type", "graph_id", "activity_type"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    graph_id: Mapped[str] = mapped_column(ForeignKey("research_lineage_graphs.id", ondelete="CASCADE"), nullable=False)
+    project_entity_id: Mapped[str] = mapped_column(ForeignKey("research_projects.entity_id", ondelete="CASCADE"), nullable=False)
+    activity_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    activity_type: Mapped[str] = mapped_column(String(100), nullable=False)
+    product_key: Mapped[str | None] = mapped_column(String(80), nullable=True)
+    actor_ref: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    method_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    input_node_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    output_node_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    parameter_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    environment_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchLineageTransformationRecord(Base):
+    __tablename__ = "research_lineage_transformations"
+    __table_args__ = (
+        UniqueConstraint("graph_id", "transformation_key", name="uq_research_lineage_transformation"),
+        Index("ix_research_lineage_transformation_graph", "graph_id"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    graph_id: Mapped[str] = mapped_column(ForeignKey("research_lineage_graphs.id", ondelete="CASCADE"), nullable=False)
+    project_entity_id: Mapped[str] = mapped_column(ForeignKey("research_projects.entity_id", ondelete="CASCADE"), nullable=False)
+    transformation_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    source_node_id: Mapped[str] = mapped_column(ForeignKey("research_lineage_nodes.id", ondelete="CASCADE"), nullable=False)
+    output_node_id: Mapped[str] = mapped_column(ForeignKey("research_lineage_nodes.id", ondelete="CASCADE"), nullable=False)
+    operation: Mapped[str] = mapped_column(String(160), nullable=False)
+    method_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    code_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    parameters_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    environment_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    integrity_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchLineageSourceBindingRecord(Base):
+    __tablename__ = "research_lineage_source_bindings"
+    __table_args__ = (
+        UniqueConstraint("graph_id", "binding_key", name="uq_research_lineage_source_binding"),
+        Index("ix_research_lineage_source_binding_node", "node_id"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    graph_id: Mapped[str] = mapped_column(ForeignKey("research_lineage_graphs.id", ondelete="CASCADE"), nullable=False)
+    project_entity_id: Mapped[str] = mapped_column(ForeignKey("research_projects.entity_id", ondelete="CASCADE"), nullable=False)
+    binding_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    node_id: Mapped[str] = mapped_column(ForeignKey("research_lineage_nodes.id", ondelete="CASCADE"), nullable=False)
+    source_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    source_kind: Mapped[str] = mapped_column(String(100), nullable=False, default="source")
+    source_version: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    retrieval_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    citation_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    content_hash: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchLineageTraceRecord(Base):
+    __tablename__ = "research_lineage_traces"
+    __table_args__ = (
+        UniqueConstraint("graph_id", "trace_key", name="uq_research_lineage_trace"),
+        Index("ix_research_lineage_trace_graph", "graph_id"),
+        Index("ix_research_lineage_trace_hash", "trace_hash"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    graph_id: Mapped[str] = mapped_column(ForeignKey("research_lineage_graphs.id", ondelete="CASCADE"), nullable=False)
+    project_entity_id: Mapped[str] = mapped_column(ForeignKey("research_projects.entity_id", ondelete="CASCADE"), nullable=False)
+    trace_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    start_node_id: Mapped[str] = mapped_column(ForeignKey("research_lineage_nodes.id", ondelete="CASCADE"), nullable=False)
+    end_node_id: Mapped[str] = mapped_column(ForeignKey("research_lineage_nodes.id", ondelete="CASCADE"), nullable=False)
+    orientation: Mapped[str] = mapped_column(String(30), nullable=False, default="outbound")
+    path_node_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    path_edge_ids_json: Mapped[list] = mapped_column(JSON, default=list)
+    purpose: Mapped[str | None] = mapped_column(Text, nullable=True)
+    trace_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchLineageSnapshotRecord(Base):
+    __tablename__ = "research_lineage_snapshots"
+    __table_args__ = (
+        UniqueConstraint("graph_id", "revision", name="uq_research_lineage_snapshot_revision"),
+        Index("ix_research_lineage_snapshot_hash", "content_hash"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    graph_id: Mapped[str] = mapped_column(ForeignKey("research_lineage_graphs.id", ondelete="CASCADE"), nullable=False)
+    project_entity_id: Mapped[str] = mapped_column(ForeignKey("research_projects.entity_id", ondelete="CASCADE"), nullable=False)
+    revision: Mapped[int] = mapped_column(Integer, nullable=False)
+    content_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    previous_snapshot_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    state_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)

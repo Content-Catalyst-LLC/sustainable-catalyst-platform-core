@@ -89,3 +89,7 @@ The predictive intelligence line now culminates in cross-layer reproducibility p
 
 ## v2.69.0
 Visual Decision Intelligence: governed decision workspaces and external Decision Studio handoffs.
+
+
+## v2.73.0 Research Lineage & Provenance Graph
+Trace declared research lineage from findings through analyses, models, transformations, datasets, and sources without Core-side inference.

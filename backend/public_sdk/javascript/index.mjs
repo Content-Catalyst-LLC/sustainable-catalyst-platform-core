@@ -599,3 +599,7 @@ export async function crossProductVisualRuntimeWorkspaceBundle(client, workspace
 export async function unifiedResearchProjectBundle(client, projectId) {
   return client.request("GET", `/research/projects/${projectId}/bundle`);
 }
+
+
+// v2.73.0 Research Lineage & Provenance Graph
+PublicApiClient.prototype.researchLineageGraphBundle = function (graphId) { return this.request(`/research/lineage/graphs/${encodeURIComponent(graphId)}/bundle`); };

@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/research-lineage-v1.schema.json",
+  "title": "Sustainable Catalyst Research Lineage & Provenance Graph",
+  "type": "object",
+  "required": [
+    "contract",
+    "graph",
+    "project",
+    "nodes",
+    "edges"
+  ],
+  "properties": {
+    "contract": {
+      "const": "sc.research.lineage-graph.v1"
+    },
+    "graph": {
+      "type": "object"
+    },
+    "project": {
+      "type": "object"
+    },
+    "nodes": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "activities": {
+      "type": "array"
+    },
+    "transformations": {
+      "type": "array"
+    },
+    "source_bindings": {
+      "type": "array"
+    },
+    "traces": {
+      "type": "array"
+    },
+    "snapshots": {
+      "type": "array"
+    },
+    "boundaries": {
+      "type": "object"
+    }
+  }
+}

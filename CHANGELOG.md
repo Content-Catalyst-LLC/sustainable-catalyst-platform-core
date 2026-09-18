@@ -554,3 +554,6 @@ Cross-layer predictive reproducibility packages, integrity metadata, environment
 
 ## v2.69.0
 Visual Decision Intelligence: governed decision workspaces and external Decision Studio handoffs.
+
+## 2.73.0
+- Research Lineage & Provenance Graph with explicit traceable provenance paths and immutable snapshots.

@@ -869,3 +869,9 @@ PublicApiClient.cross_product_visual_runtime_workspace_bundle = _cross_product_v
 def _unified_research_project_bundle(self, project_id: str):
     return self.request("GET", f"/research/projects/{project_id}/bundle")
 PublicApiClient.unified_research_project_bundle = _unified_research_project_bundle
+
+
+# v2.73.0 Research Lineage & Provenance Graph
+def _research_lineage_graph_bundle(self, graph_id: str):
+    return self.request("GET", f"/research/lineage/graphs/{graph_id}/bundle")
+PublicApiClient.research_lineage_graph_bundle = _research_lineage_graph_bundle
