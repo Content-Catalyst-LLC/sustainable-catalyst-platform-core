@@ -654,3 +654,11 @@ PublicApiClient.prototype.peerReviewBundle=function(publicationId){return this.r
 PublicApiClient.prototype.evidenceSynthesisSummary=function(synthesisId){return this.request(`/research/evidence-synthesis/syntheses/${encodeURIComponent(synthesisId)}/summary`);};
 PublicApiClient.prototype.evidenceSynthesisLineage=function(synthesisId){return this.request(`/research/evidence-synthesis/syntheses/${encodeURIComponent(synthesisId)}/lineage`);};
 PublicApiClient.prototype.evidenceSynthesisBundle=function(synthesisId){return this.request(`/research/evidence-synthesis/syntheses/${encodeURIComponent(synthesisId)}/bundle`);};
+
+
+// v2.84.0 Research Program & Longitudinal Knowledge Graph
+PublicApiClient.prototype.researchProgramSummary=function(programId){return this.request(`/research/programs/${encodeURIComponent(programId)}/summary`);};
+PublicApiClient.prototype.researchProgramGraph=function(programId){return this.request(`/research/programs/${encodeURIComponent(programId)}/graph`);};
+PublicApiClient.prototype.researchProgramTimeline=function(programId){return this.request(`/research/programs/${encodeURIComponent(programId)}/timeline`);};
+PublicApiClient.prototype.researchProgramLineage=function(programId){return this.request(`/research/programs/${encodeURIComponent(programId)}/lineage`);};
+PublicApiClient.prototype.researchProgramBundle=function(programId){return this.request(`/research/programs/${encodeURIComponent(programId)}/bundle`);};

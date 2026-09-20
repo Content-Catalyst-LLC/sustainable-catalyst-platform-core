@@ -964,3 +964,21 @@ def _v283_evidence_synthesis_bundle(self, synthesis_id: str):
 PublicApiClient.evidence_synthesis_summary = _v283_evidence_synthesis_summary
 PublicApiClient.evidence_synthesis_lineage = _v283_evidence_synthesis_lineage
 PublicApiClient.evidence_synthesis_bundle = _v283_evidence_synthesis_bundle
+
+
+# v2.84.0 Research Program & Longitudinal Knowledge Graph
+def _v284_research_program_summary(self, program_id: str):
+    return self.request("GET", f"/research/programs/{program_id}/summary")
+def _v284_research_program_graph(self, program_id: str):
+    return self.request("GET", f"/research/programs/{program_id}/graph")
+def _v284_research_program_timeline(self, program_id: str):
+    return self.request("GET", f"/research/programs/{program_id}/timeline")
+def _v284_research_program_lineage(self, program_id: str):
+    return self.request("GET", f"/research/programs/{program_id}/lineage")
+def _v284_research_program_bundle(self, program_id: str):
+    return self.request("GET", f"/research/programs/{program_id}/bundle")
+PublicApiClient.research_program_summary = _v284_research_program_summary
+PublicApiClient.research_program_graph = _v284_research_program_graph
+PublicApiClient.research_program_timeline = _v284_research_program_timeline
+PublicApiClient.research_program_lineage = _v284_research_program_lineage
+PublicApiClient.research_program_bundle = _v284_research_program_bundle

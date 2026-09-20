@@ -10784,3 +10784,183 @@ class ResearchEvidenceSynthesisSnapshotRecord(Base):
     provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
     created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+# v2.84.0 — Research Program & Longitudinal Knowledge Graph
+class ResearchProgramRecord(Base):
+    __tablename__ = "research_programs_v284"
+    __table_args__ = (
+        UniqueConstraint("program_key", name="uq_research_program_v284_key"),
+        Index("ix_research_program_v284_status_visibility", "status", "visibility"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    program_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    title: Mapped[str] = mapped_column(String(500), nullable=False)
+    description_text: Mapped[str | None] = mapped_column(Text, nullable=True)
+    status: Mapped[str] = mapped_column(String(60), nullable=False, default="active")
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="private")
+    horizon_start: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    horizon_end: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    vision_text: Mapped[str | None] = mapped_column(Text, nullable=True)
+    scope_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    governance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class ResearchProgramProjectRecord(Base):
+    __tablename__ = "research_program_projects_v284"
+    __table_args__ = (
+        UniqueConstraint("program_id", "membership_key", name="uq_research_program_project_v284_key"),
+        UniqueConstraint("program_id", "project_entity_id", name="uq_research_program_project_v284_project"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    program_id: Mapped[str] = mapped_column(ForeignKey("research_programs_v284.id", ondelete="CASCADE"), nullable=False)
+    project_entity_id: Mapped[str] = mapped_column(ForeignKey("research_projects.entity_id", ondelete="CASCADE"), nullable=False)
+    membership_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    role: Mapped[str] = mapped_column(String(80), nullable=False, default="member")
+    status: Mapped[str] = mapped_column(String(40), nullable=False, default="active")
+    joined_at: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    left_at: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    rationale_text: Mapped[str | None] = mapped_column(Text, nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ResearchProgramObjectiveRecord(Base):
+    __tablename__ = "research_program_objectives_v284"
+    __table_args__ = (UniqueConstraint("program_id", "objective_key", name="uq_research_program_objective_v284_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    program_id: Mapped[str] = mapped_column(ForeignKey("research_programs_v284.id", ondelete="CASCADE"), nullable=False)
+    objective_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    title: Mapped[str] = mapped_column(String(500), nullable=False)
+    description_text: Mapped[str | None] = mapped_column(Text, nullable=True)
+    status: Mapped[str] = mapped_column(String(40), nullable=False, default="active")
+    target_horizon: Mapped[str | None] = mapped_column(String(180), nullable=True)
+    success_criteria_json: Mapped[list] = mapped_column(JSON, default=list)
+    evidence_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ResearchProgramMilestoneRecord(Base):
+    __tablename__ = "research_program_milestones_v284"
+    __table_args__ = (UniqueConstraint("program_id", "milestone_key", name="uq_research_program_milestone_v284_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    program_id: Mapped[str] = mapped_column(ForeignKey("research_programs_v284.id", ondelete="CASCADE"), nullable=False)
+    milestone_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    title: Mapped[str] = mapped_column(String(500), nullable=False)
+    milestone_type: Mapped[str] = mapped_column(String(80), nullable=False, default="research")
+    status: Mapped[str] = mapped_column(String(40), nullable=False, default="planned")
+    target_at: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    achieved_at: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    related_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    evidence_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ResearchLongitudinalNodeRecord(Base):
+    __tablename__ = "research_longitudinal_nodes_v284"
+    __table_args__ = (UniqueConstraint("program_id", "node_key", name="uq_research_longitudinal_node_v284_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    program_id: Mapped[str] = mapped_column(ForeignKey("research_programs_v284.id", ondelete="CASCADE"), nullable=False)
+    node_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    object_type: Mapped[str] = mapped_column(String(100), nullable=False)
+    object_ref: Mapped[str] = mapped_column(String(1500), nullable=False)
+    label: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    first_observed_at: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    last_observed_at: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    state_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ResearchLongitudinalEdgeRecord(Base):
+    __tablename__ = "research_longitudinal_edges_v284"
+    __table_args__ = (UniqueConstraint("program_id", "edge_key", name="uq_research_longitudinal_edge_v284_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    program_id: Mapped[str] = mapped_column(ForeignKey("research_programs_v284.id", ondelete="CASCADE"), nullable=False)
+    edge_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    source_node_id: Mapped[str] = mapped_column(ForeignKey("research_longitudinal_nodes_v284.id", ondelete="CASCADE"), nullable=False)
+    target_node_id: Mapped[str] = mapped_column(ForeignKey("research_longitudinal_nodes_v284.id", ondelete="CASCADE"), nullable=False)
+    relation_type: Mapped[str] = mapped_column(String(100), nullable=False)
+    valid_from: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    valid_to: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    rationale_text: Mapped[str | None] = mapped_column(Text, nullable=True)
+    evidence_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ResearchKnowledgeStateRecord(Base):
+    __tablename__ = "research_knowledge_states_v284"
+    __table_args__ = (UniqueConstraint("program_id", "state_key", name="uq_research_knowledge_state_v284_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    program_id: Mapped[str] = mapped_column(ForeignKey("research_programs_v284.id", ondelete="CASCADE"), nullable=False)
+    state_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    observed_at: Mapped[str] = mapped_column(String(64), nullable=False)
+    subject_type: Mapped[str] = mapped_column(String(100), nullable=False)
+    subject_ref: Mapped[str] = mapped_column(String(1500), nullable=False)
+    status: Mapped[str] = mapped_column(String(80), nullable=False, default="declared")
+    summary_text: Mapped[str | None] = mapped_column(Text, nullable=True)
+    attributes_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    evidence_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ResearchEvolutionEventRecord(Base):
+    __tablename__ = "research_evolution_events_v284"
+    __table_args__ = (UniqueConstraint("program_id", "event_key", name="uq_research_evolution_event_v284_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    program_id: Mapped[str] = mapped_column(ForeignKey("research_programs_v284.id", ondelete="CASCADE"), nullable=False)
+    event_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    event_type: Mapped[str] = mapped_column(String(100), nullable=False)
+    occurred_at: Mapped[str] = mapped_column(String(64), nullable=False)
+    subject_ref: Mapped[str] = mapped_column(String(1500), nullable=False)
+    prior_state_ref: Mapped[str | None] = mapped_column(String(1500), nullable=True)
+    resulting_state_ref: Mapped[str | None] = mapped_column(String(1500), nullable=True)
+    description_text: Mapped[str | None] = mapped_column(Text, nullable=True)
+    evidence_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ResearchProgramRevisionRecord(Base):
+    __tablename__ = "research_program_revisions_v284"
+    __table_args__ = (UniqueConstraint("program_id", "revision", name="uq_research_program_revision_v284_revision"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    program_id: Mapped[str] = mapped_column(ForeignKey("research_programs_v284.id", ondelete="CASCADE"), nullable=False)
+    revision: Mapped[int] = mapped_column(Integer, nullable=False)
+    state_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    prior_state_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    revised_state_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    change_summary: Mapped[str | None] = mapped_column(Text, nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ResearchProgramSnapshotRecord(Base):
+    __tablename__ = "research_program_snapshots_v284"
+    __table_args__ = (UniqueConstraint("program_id", "revision", name="uq_research_program_snapshot_v284_revision"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    program_id: Mapped[str] = mapped_column(ForeignKey("research_programs_v284.id", ondelete="CASCADE"), nullable=False)
+    revision: Mapped[int] = mapped_column(Integer, nullable=False)
+    content_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    previous_snapshot_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    state_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)

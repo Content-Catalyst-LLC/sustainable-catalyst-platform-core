@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/research-program-longitudinal-knowledge-graph-v1.schema.json",
+  "title": "Sustainable Catalyst Research Program & Longitudinal Knowledge Graph",
+  "type": "object",
+  "required": ["program_key", "title"],
+  "properties": {
+    "program_key": {"type": "string", "minLength": 1},
+    "title": {"type": "string", "minLength": 1},
+    "status": {"enum": ["draft", "active", "paused", "completed", "archived"]},
+    "visibility": {"enum": ["private", "internal", "public"]},
+    "horizon_start": {"type": ["string", "null"]},
+    "horizon_end": {"type": ["string", "null"]},
+    "scope": {"type": "object"},
+    "governance": {"type": "object"},
+    "provenance": {"type": "object"}
+  },
+  "additionalProperties": true
+}

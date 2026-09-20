@@ -70,6 +70,7 @@ from .routers import (
     research_publications,
     peer_review_intelligence,
     cross_study_synthesis,
+    research_programs,
     visualization_registry,
     system_maps,
     flow_maps,
@@ -327,6 +328,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # v2.83.0 Cross-Study Evidence Synthesis & Meta-Research.
     app.include_router(cross_study_synthesis.router)
     app.include_router(cross_study_synthesis.public_router)
+    # v2.84.0 Research Program & Longitudinal Knowledge Graph.
+    app.include_router(research_programs.router)
+    app.include_router(research_programs.public_router)
     # Open Forensics includes v2.51.0 Reproducible Investigation Packages.
     app.include_router(open_forensics.router)
     app.include_router(open_forensics.public_router)

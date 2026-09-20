@@ -173,6 +173,7 @@ MIGRATIONS = [
     ("0085", 'Reproducible scholarly publications with sections, references/citations, figures, supplements, identifiers, exports, readiness diagnostics, lineage, revisions, and snapshots; Core does not author conclusions, fabricate citations, judge quality, issue identifiers, or publish externally.'),
     ("0086", 'Peer review, replication, and rebuttal records with comments/responses, replication attempts/comparisons, rebuttal points, revisions, lineage, and snapshots; Core does not generate reviews, score quality, infer replication success, resolve rebuttals, or decide publication.'),
     ("0087", 'Cross-study evidence synthesis and meta-research with governed study inclusion, outcomes, extracted effects, external meta-analysis results, assessments, relations, gaps, revisions, lineage, and snapshots; Core does not search, select, compute, pool, score, rank, infer causality, or infer truth.'),
+    ("0088", 'Research programs and longitudinal knowledge graphs with projects, objectives, milestones, declared nodes/edges, knowledge states, evolution events, revisions, lineage, and snapshots; Core does not prioritize, fund, auto-link, rank, forecast success, infer causality, or infer truth.'),
 ]
 
 
