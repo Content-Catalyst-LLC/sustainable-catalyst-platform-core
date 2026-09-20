@@ -200,6 +200,7 @@ def health(request: Request):
         "research_lineage_provenance_graph": request.app.state.settings.research_lineage_provenance_graph_enabled,
         "methodology_analysis_run_registry": request.app.state.settings.methodology_analysis_run_registry_enabled,
         "reproducible_research_package_runtime": request.app.state.settings.reproducible_research_package_runtime_enabled,
+        "research_notebook_analytical_narrative": request.app.state.settings.research_notebook_analytical_narrative_enabled,
         "open_forensics": request.app.state.settings.open_forensics_enabled,
         "forensic_timeline_event_reconstruction": request.app.state.settings.open_forensics_enabled,
         "forensic_spatial_temporal_evidence_integration": request.app.state.settings.open_forensics_enabled,

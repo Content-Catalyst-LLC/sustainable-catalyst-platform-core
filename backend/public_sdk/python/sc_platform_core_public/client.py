@@ -887,3 +887,9 @@ def research_methodology_bundle(self, project_id):
 
     def reproducible_research_package(self, package_id: str):
         return self._request("GET", f"/api/v1/research/reproducibility/packages/{package_id}/bundle")
+
+
+# v2.76.0 Research Notebook & Analytical Narrative
+def _research_notebook_bundle(self, notebook_id: str):
+    return self.request("GET", f"/research/notebooks/notebooks/{notebook_id}/bundle")
+PublicApiClient.research_notebook_bundle = _research_notebook_bundle

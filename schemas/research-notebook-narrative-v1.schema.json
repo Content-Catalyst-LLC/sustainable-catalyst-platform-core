@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/research-notebook-narrative-v1.schema.json",
+  "title": "Sustainable Catalyst Research Notebook & Analytical Narrative",
+  "type": "object",
+  "required": [
+    "contract",
+    "notebook"
+  ],
+  "properties": {
+    "contract": {
+      "const": "sc.research.notebook-narrative.v1"
+    },
+    "notebook": {
+      "type": "object",
+      "required": [
+        "project_entity_id",
+        "notebook_key",
+        "title"
+      ],
+      "properties": {
+        "project_entity_id": {
+          "type": "string"
+        },
+        "notebook_key": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "notebook_type": {
+          "enum": [
+            "analytical",
+            "literature",
+            "experimental",
+            "computational",
+            "field",
+            "investigative",
+            "mixed"
+          ]
+        },
+        "status": {
+          "type": "string"
+        },
+        "visibility": {
+          "enum": [
+            "private",
+            "internal",
+            "public"
+          ]
+        }
+      }
+    },
+    "sections": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "bindings": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "citations": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "narratives": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "narrative_blocks": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "revisions": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "snapshots": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    }
+  },
+  "additionalProperties": true
+}

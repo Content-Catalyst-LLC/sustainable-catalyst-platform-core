@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Sustainable Catalyst Platform Core
  * Description: WordPress connector for Sustainable Catalyst Platform Core registry, graph, evidence, developer, gateway, free live-data, international-law, scientific-data, official-statistics, geospatial, time-series, STAC, map-layer, streaming, alerts, source-reliability, and operational-facility, humanitarian-access, essential-services, and country-evidence federation and reconciliation, and Earth/Ocean/Space scientific-service routing, cross-product exchange, distributed scale-control services, and governance/access/audit, production-certification/recovery, and observability/SLO production-operations services, plus incident-response, change-control, rollback-coordination, continuity, backup-verification, disaster-recovery, and multi-region resilience/failover-coordination, and data-lifecycle/archival-integrity/preservation services, plus Federated Core trusted-node exchange services and capacity forecasting/resource-governance services, plus identity/credential/cryptographic-key lifecycle governance, distributed workload governance, and scientific object storage/processing adapter services, research object/model services, renderer-neutral visual reasoning object services, and visualization specification/renderer registry services, and governed System Maps and Flow Maps services, plus the renderer-neutral visual reasoning runtime/scene graph.
- * Version: 2.75.0
+ * Version: 2.76.0
  * Author: Content Catalyst LLC
  * License: MIT
  */
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('SCPC_VERSION', '2.75.0');
+define('SCPC_VERSION', '2.76.0');
 define('SCPC_OPTION_BACKEND_URL', 'scpc_backend_url');
 define('SCPC_OPTION_READ_KEY', 'scpc_read_key');
 
@@ -1700,3 +1700,12 @@ function sc_core_methodology_analysis_status() {
     return '<div class="sc-core-status"><strong>Methodology &amp; Analysis Run Registry</strong><br>Platform Core ' . esc_html($d['release'] ?? '2.75.0') . ' · ' . esc_html($c['methodologies'] ?? 0) . ' methods · ' . esc_html($c['runs'] ?? 0) . ' recorded runs · execution/validation external</div>';
 }
 add_shortcode('sc_core_methodology_analysis_status', 'sc_core_methodology_analysis_status');
+
+
+// v2.76.0 Research Notebook & Analytical Narrative status surface.
+add_shortcode('sc_platform_core_research_notebook_status', function () {
+    $d = scpc_get_json('/v1/research/notebooks/readiness');
+    if (!is_array($d)) return '<div class="sc-core-status"><strong>Research Notebook &amp; Analytical Narrative</strong><br>Unavailable</div>';
+    $c = isset($d['counts']) && is_array($d['counts']) ? $d['counts'] : array();
+    return '<div class="sc-core-status"><strong>Research Notebook &amp; Analytical Narrative</strong><br>Platform Core ' . esc_html($d['release'] ?? '2.76.0') . ' · ' . esc_html($c['notebooks'] ?? 0) . ' notebooks · ' . esc_html($c['entries'] ?? 0) . ' entries · execution/narrative generation external</div>';
+});

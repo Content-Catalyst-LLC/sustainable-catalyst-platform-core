@@ -102,3 +102,7 @@ Adds governed methodology records, versions, variables, assumptions/exclusions, 
 
 ## v2.75.0 — Reproducible Research Package Runtime
 Portable, immutable research package manifests, replay contracts, verification evidence, reviews, and snapshots.
+
+
+## v2.76.0 — Research Notebook & Analytical Narrative
+Project-scoped analytical notebooks connect methods, runs, evidence, datasets, findings, visualizations, and reproducibility packages into a citable provenance-preserving narrative. Core records state; execution, narrative generation, inference, and publication remain external/human governed.

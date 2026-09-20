@@ -62,6 +62,7 @@ from .routers import (
     research_lineage,
     research_methodology,
     reproducible_research,
+    research_notebooks,
     visualization_registry,
     system_maps,
     flow_maps,
@@ -295,6 +296,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # v2.75.0 portable, immutable Reproducible Research Package Runtime.
     app.include_router(reproducible_research.router)
     app.include_router(reproducible_research.public_router)
+    # v2.76.0 Research Notebook & Analytical Narrative.
+    app.include_router(research_notebooks.router)
+    app.include_router(research_notebooks.public_router)
     # Open Forensics includes v2.51.0 Reproducible Investigation Packages.
     app.include_router(open_forensics.router)
     app.include_router(open_forensics.public_router)

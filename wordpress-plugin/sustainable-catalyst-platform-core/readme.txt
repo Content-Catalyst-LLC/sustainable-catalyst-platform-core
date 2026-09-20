@@ -16,7 +16,7 @@ Tags: knowledge graph, entity registry, provenance, live data, sustainable catal
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.0
-Stable tag: 2.75.0
+Stable tag: 2.76.0
 License: MIT
 
 WordPress status, live-data gateway, and entity lookup client for Sustainable Catalyst Platform Core.
@@ -245,3 +245,6 @@ Adds Open Forensics: governed forensic investigations, typed objects, evidence p
 
 == 2.45.0 ==
 Adds Open Forensics claims, contradictions, competing hypotheses, evidence-position assessments, descriptive comparison matrices, and immutable reasoning snapshots.
+
+== 2.76.0 ==
+Research Notebook & Analytical Narrative status surface and Core 2.76.0 compatibility.

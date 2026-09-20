@@ -567,3 +567,7 @@ Visual Decision Intelligence: governed decision workspaces and external Decision
 
 ## v2.75.0 — Reproducible Research Package Runtime
 Portable, immutable research package manifests, replay contracts, verification evidence, reviews, and snapshots.
+
+
+## v2.76.0 — Research Notebook & Analytical Narrative
+Adds governed research notebooks, ordered sections and entries, cross-research bindings, citations, analytical narratives, revision records, and immutable snapshots.

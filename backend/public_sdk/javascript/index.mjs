@@ -609,3 +609,7 @@ export async function researchMethodologyReadiness(client) { return client.reque
 export async function researchMethodologyBundle(client, projectId) { return client.request("GET", `/v1/research/methodology/projects/${projectId}/bundle`); }
 
 export const reproducibleResearchPackage = (client, packageId) => client.get(`/api/v1/research/reproducibility/packages/${packageId}/bundle`);
+
+
+// v2.76.0 Research Notebook & Analytical Narrative
+export async function researchNotebookBundle(client, notebookId) { return client.request(`/research/notebooks/notebooks/${encodeURIComponent(notebookId)}/bundle`); }

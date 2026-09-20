@@ -9334,3 +9334,144 @@ class ReproducibleResearchSnapshotRecord(Base):
     provenance_json: Mapped[dict]=mapped_column(JSON,default=dict)
     created_by: Mapped[str]=mapped_column(String(255),nullable=False,default="operator")
     created_at: Mapped[datetime]=mapped_column(DateTime(timezone=True),default=utcnow)
+
+
+# v2.76.0 — Research Notebook & Analytical Narrative
+class ResearchNotebookRecord(Base):
+    __tablename__ = "research_notebooks"
+    __table_args__ = (UniqueConstraint("project_entity_id", "notebook_key", name="uq_research_notebook_key"), Index("ix_research_notebook_project_status", "project_entity_id", "status"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    project_entity_id: Mapped[str] = mapped_column(ForeignKey("research_projects.entity_id", ondelete="CASCADE"), nullable=False)
+    notebook_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    title: Mapped[str] = mapped_column(String(500), nullable=False)
+    purpose: Mapped[str | None] = mapped_column(Text, nullable=True)
+    notebook_type: Mapped[str] = mapped_column(String(80), nullable=False, default="analytical")
+    status: Mapped[str] = mapped_column(String(50), nullable=False, default="draft")
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="private")
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+class ResearchNotebookSectionRecord(Base):
+    __tablename__ = "research_notebook_sections"
+    __table_args__ = (UniqueConstraint("notebook_id", "section_key", name="uq_research_notebook_section"), Index("ix_research_notebook_section_order", "notebook_id", "sequence"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    notebook_id: Mapped[str] = mapped_column(ForeignKey("research_notebooks.id", ondelete="CASCADE"), nullable=False)
+    project_entity_id: Mapped[str] = mapped_column(ForeignKey("research_projects.entity_id", ondelete="CASCADE"), nullable=False)
+    section_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    heading: Mapped[str] = mapped_column(String(500), nullable=False)
+    section_type: Mapped[str] = mapped_column(String(80), nullable=False, default="analysis")
+    sequence: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    purpose: Mapped[str | None] = mapped_column(Text, nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchNotebookEntryRecord(Base):
+    __tablename__ = "research_notebook_entries"
+    __table_args__ = (UniqueConstraint("notebook_id", "entry_key", name="uq_research_notebook_entry"), Index("ix_research_notebook_entry_order", "notebook_id", "sequence"), Index("ix_research_notebook_entry_type", "entry_type"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    notebook_id: Mapped[str] = mapped_column(ForeignKey("research_notebooks.id", ondelete="CASCADE"), nullable=False)
+    project_entity_id: Mapped[str] = mapped_column(ForeignKey("research_projects.entity_id", ondelete="CASCADE"), nullable=False)
+    section_id: Mapped[str | None] = mapped_column(ForeignKey("research_notebook_sections.id", ondelete="SET NULL"), nullable=True)
+    entry_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    entry_type: Mapped[str] = mapped_column(String(100), nullable=False)
+    sequence: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    title: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    body_text: Mapped[str | None] = mapped_column(Text, nullable=True)
+    content_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    language: Mapped[str | None] = mapped_column(String(80), nullable=True)
+    status: Mapped[str] = mapped_column(String(50), nullable=False, default="draft")
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchNotebookBindingRecord(Base):
+    __tablename__ = "research_notebook_bindings"
+    __table_args__ = (UniqueConstraint("entry_id", "binding_key", name="uq_research_notebook_binding"), Index("ix_research_notebook_binding_target", "binding_type", "target_ref"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    entry_id: Mapped[str] = mapped_column(ForeignKey("research_notebook_entries.id", ondelete="CASCADE"), nullable=False)
+    notebook_id: Mapped[str] = mapped_column(ForeignKey("research_notebooks.id", ondelete="CASCADE"), nullable=False)
+    project_entity_id: Mapped[str] = mapped_column(ForeignKey("research_projects.entity_id", ondelete="CASCADE"), nullable=False)
+    binding_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    binding_type: Mapped[str] = mapped_column(String(100), nullable=False)
+    target_ref: Mapped[str] = mapped_column(String(1500), nullable=False)
+    relationship: Mapped[str] = mapped_column(String(120), nullable=False, default="references")
+    version_ref: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    content_hash: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchNotebookCitationRecord(Base):
+    __tablename__ = "research_notebook_citations"
+    __table_args__ = (UniqueConstraint("entry_id", "citation_key", name="uq_research_notebook_citation"), Index("ix_research_notebook_citation_source", "source_ref"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    entry_id: Mapped[str] = mapped_column(ForeignKey("research_notebook_entries.id", ondelete="CASCADE"), nullable=False)
+    notebook_id: Mapped[str] = mapped_column(ForeignKey("research_notebooks.id", ondelete="CASCADE"), nullable=False)
+    project_entity_id: Mapped[str] = mapped_column(ForeignKey("research_projects.entity_id", ondelete="CASCADE"), nullable=False)
+    citation_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    source_ref: Mapped[str] = mapped_column(String(1500), nullable=False)
+    locator: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    citation_text: Mapped[str | None] = mapped_column(Text, nullable=True)
+    citation_data_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchAnalyticalNarrativeRecord(Base):
+    __tablename__ = "research_analytical_narratives"
+    __table_args__ = (UniqueConstraint("notebook_id", "narrative_key", name="uq_research_analytical_narrative"), Index("ix_research_analytical_narrative_notebook", "notebook_id"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    notebook_id: Mapped[str] = mapped_column(ForeignKey("research_notebooks.id", ondelete="CASCADE"), nullable=False)
+    project_entity_id: Mapped[str] = mapped_column(ForeignKey("research_projects.entity_id", ondelete="CASCADE"), nullable=False)
+    narrative_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    title: Mapped[str] = mapped_column(String(500), nullable=False)
+    purpose: Mapped[str | None] = mapped_column(Text, nullable=True)
+    status: Mapped[str] = mapped_column(String(50), nullable=False, default="draft")
+    scope_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchAnalyticalNarrativeBlockRecord(Base):
+    __tablename__ = "research_analytical_narrative_blocks"
+    __table_args__ = (UniqueConstraint("narrative_id", "block_key", name="uq_research_analytical_narrative_block"), Index("ix_research_analytical_narrative_block_order", "narrative_id", "sequence"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    narrative_id: Mapped[str] = mapped_column(ForeignKey("research_analytical_narratives.id", ondelete="CASCADE"), nullable=False)
+    notebook_id: Mapped[str] = mapped_column(ForeignKey("research_notebooks.id", ondelete="CASCADE"), nullable=False)
+    project_entity_id: Mapped[str] = mapped_column(ForeignKey("research_projects.entity_id", ondelete="CASCADE"), nullable=False)
+    block_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    block_type: Mapped[str] = mapped_column(String(100), nullable=False)
+    sequence: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    text: Mapped[str | None] = mapped_column(Text, nullable=True)
+    support_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    uncertainty_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchNotebookRevisionRecord(Base):
+    __tablename__ = "research_notebook_revisions"
+    __table_args__ = (UniqueConstraint("notebook_id", "revision", name="uq_research_notebook_revision"), Index("ix_research_notebook_revision_state_hash", "state_hash"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    notebook_id: Mapped[str] = mapped_column(ForeignKey("research_notebooks.id", ondelete="CASCADE"), nullable=False)
+    project_entity_id: Mapped[str] = mapped_column(ForeignKey("research_projects.entity_id", ondelete="CASCADE"), nullable=False)
+    revision: Mapped[int] = mapped_column(Integer, nullable=False)
+    state_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    change_summary: Mapped[str | None] = mapped_column(Text, nullable=True)
+    change_set_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchNotebookSnapshotRecord(Base):
+    __tablename__ = "research_notebook_snapshots"
+    __table_args__ = (UniqueConstraint("notebook_id", "revision", name="uq_research_notebook_snapshot_revision"), Index("ix_research_notebook_snapshot_hash", "content_hash"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    notebook_id: Mapped[str] = mapped_column(ForeignKey("research_notebooks.id", ondelete="CASCADE"), nullable=False)
+    project_entity_id: Mapped[str] = mapped_column(ForeignKey("research_projects.entity_id", ondelete="CASCADE"), nullable=False)
+    revision: Mapped[int] = mapped_column(Integer, nullable=False)
+    content_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    previous_snapshot_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    state_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
