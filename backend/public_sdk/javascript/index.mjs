@@ -607,3 +607,5 @@ PublicApiClient.prototype.researchLineageGraphBundle = function (graphId) { retu
 // v2.74.0 Methodology & Analysis Run Registry
 export async function researchMethodologyReadiness(client) { return client.request("GET", "/v1/research/methodology/readiness"); }
 export async function researchMethodologyBundle(client, projectId) { return client.request("GET", `/v1/research/methodology/projects/${projectId}/bundle`); }
+
+export const reproducibleResearchPackage = (client, packageId) => client.get(`/api/v1/research/reproducibility/packages/${packageId}/bundle`);

@@ -9221,3 +9221,116 @@ class ResearchMethodologySnapshotRecord(Base):
     provenance_json: Mapped[dict]=mapped_column(JSON,default=dict)
     created_by: Mapped[str]=mapped_column(String(255),nullable=False,default="operator")
     created_at: Mapped[datetime]=mapped_column(DateTime(timezone=True),default=utcnow)
+
+
+class ReproducibleResearchPackageRecord(Base):
+    __tablename__="reproducible_research_packages"
+    __table_args__=(UniqueConstraint("project_entity_id","package_key",name="uq_repro_research_package"),Index("ix_repro_research_package_project_status","project_entity_id","status"),)
+    id: Mapped[str]=mapped_column(String(36),primary_key=True,default=lambda:str(uuid.uuid4()))
+    project_entity_id: Mapped[str]=mapped_column(ForeignKey("research_projects.entity_id",ondelete="CASCADE"),nullable=False)
+    package_key: Mapped[str]=mapped_column(String(180),nullable=False)
+    title: Mapped[str]=mapped_column(String(500),nullable=False)
+    purpose: Mapped[str|None]=mapped_column(Text,nullable=True)
+    status: Mapped[str]=mapped_column(String(50),nullable=False,default="draft")
+    manifest_version: Mapped[str]=mapped_column(String(50),nullable=False,default="1.0")
+    provenance_json: Mapped[dict]=mapped_column(JSON,default=dict)
+    metadata_json: Mapped[dict]=mapped_column(JSON,default=dict)
+    created_at: Mapped[datetime]=mapped_column(DateTime(timezone=True),default=utcnow)
+
+class ReproducibleResearchPackageComponentRecord(Base):
+    __tablename__="reproducible_research_package_components"
+    __table_args__=(UniqueConstraint("package_id","component_key",name="uq_repro_research_package_component"),)
+    id: Mapped[str]=mapped_column(String(36),primary_key=True,default=lambda:str(uuid.uuid4()))
+    package_id: Mapped[str]=mapped_column(ForeignKey("reproducible_research_packages.id",ondelete="CASCADE"),nullable=False)
+    project_entity_id: Mapped[str]=mapped_column(ForeignKey("research_projects.entity_id",ondelete="CASCADE"),nullable=False)
+    component_key: Mapped[str]=mapped_column(String(180),nullable=False)
+    component_type: Mapped[str]=mapped_column(String(100),nullable=False)
+    component_ref: Mapped[str]=mapped_column(String(1000),nullable=False)
+    version_ref: Mapped[str|None]=mapped_column(String(500),nullable=True)
+    content_hash: Mapped[str|None]=mapped_column(String(128),nullable=True)
+    required: Mapped[bool]=mapped_column(Boolean,nullable=False,default=True)
+    metadata_json: Mapped[dict]=mapped_column(JSON,default=dict)
+    created_at: Mapped[datetime]=mapped_column(DateTime(timezone=True),default=utcnow)
+
+class ReproducibleResearchPackageArtifactRecord(Base):
+    __tablename__="reproducible_research_package_artifacts"
+    __table_args__=(UniqueConstraint("package_id","artifact_key",name="uq_repro_research_package_artifact"),)
+    id: Mapped[str]=mapped_column(String(36),primary_key=True,default=lambda:str(uuid.uuid4()))
+    package_id: Mapped[str]=mapped_column(ForeignKey("reproducible_research_packages.id",ondelete="CASCADE"),nullable=False)
+    project_entity_id: Mapped[str]=mapped_column(ForeignKey("research_projects.entity_id",ondelete="CASCADE"),nullable=False)
+    artifact_key: Mapped[str]=mapped_column(String(180),nullable=False)
+    artifact_type: Mapped[str]=mapped_column(String(100),nullable=False)
+    artifact_ref: Mapped[str]=mapped_column(String(1500),nullable=False)
+    media_type: Mapped[str|None]=mapped_column(String(200),nullable=True)
+    content_hash: Mapped[str|None]=mapped_column(String(128),nullable=True)
+    size_bytes: Mapped[int|None]=mapped_column(Integer,nullable=True)
+    provenance_json: Mapped[dict]=mapped_column(JSON,default=dict)
+    created_at: Mapped[datetime]=mapped_column(DateTime(timezone=True),default=utcnow)
+
+class ReproducibleResearchPackageEnvironmentRecord(Base):
+    __tablename__="reproducible_research_package_environments"
+    __table_args__=(UniqueConstraint("package_id","environment_key",name="uq_repro_research_package_environment"),)
+    id: Mapped[str]=mapped_column(String(36),primary_key=True,default=lambda:str(uuid.uuid4()))
+    package_id: Mapped[str]=mapped_column(ForeignKey("reproducible_research_packages.id",ondelete="CASCADE"),nullable=False)
+    project_entity_id: Mapped[str]=mapped_column(ForeignKey("research_projects.entity_id",ondelete="CASCADE"),nullable=False)
+    environment_key: Mapped[str]=mapped_column(String(180),nullable=False)
+    environment_ref: Mapped[str|None]=mapped_column(String(1000),nullable=True)
+    runtime_manifest_json: Mapped[dict]=mapped_column(JSON,default=dict)
+    dependency_manifest_json: Mapped[dict]=mapped_column(JSON,default=dict)
+    container_ref: Mapped[str|None]=mapped_column(String(1000),nullable=True)
+    hardware_json: Mapped[dict]=mapped_column(JSON,default=dict)
+    created_at: Mapped[datetime]=mapped_column(DateTime(timezone=True),default=utcnow)
+
+class ReproducibleResearchReplayPlanRecord(Base):
+    __tablename__="reproducible_research_replay_plans"
+    __table_args__=(UniqueConstraint("package_id","plan_key",name="uq_repro_research_replay_plan"),)
+    id: Mapped[str]=mapped_column(String(36),primary_key=True,default=lambda:str(uuid.uuid4()))
+    package_id: Mapped[str]=mapped_column(ForeignKey("reproducible_research_packages.id",ondelete="CASCADE"),nullable=False)
+    project_entity_id: Mapped[str]=mapped_column(ForeignKey("research_projects.entity_id",ondelete="CASCADE"),nullable=False)
+    plan_key: Mapped[str]=mapped_column(String(180),nullable=False)
+    target_product: Mapped[str|None]=mapped_column(String(80),nullable=True)
+    instructions_json: Mapped[dict]=mapped_column(JSON,default=dict)
+    entrypoint_ref: Mapped[str|None]=mapped_column(String(1000),nullable=True)
+    expected_outputs_json: Mapped[list]=mapped_column(JSON,default=list)
+    provenance_json: Mapped[dict]=mapped_column(JSON,default=dict)
+    created_at: Mapped[datetime]=mapped_column(DateTime(timezone=True),default=utcnow)
+
+class ReproducibleResearchVerificationRecord(Base):
+    __tablename__="reproducible_research_verifications"
+    __table_args__=(Index("ix_repro_research_verification_package","package_id","created_at"),)
+    id: Mapped[str]=mapped_column(String(36),primary_key=True,default=lambda:str(uuid.uuid4()))
+    package_id: Mapped[str]=mapped_column(ForeignKey("reproducible_research_packages.id",ondelete="CASCADE"),nullable=False)
+    project_entity_id: Mapped[str]=mapped_column(ForeignKey("research_projects.entity_id",ondelete="CASCADE"),nullable=False)
+    verification_type: Mapped[str]=mapped_column(String(100),nullable=False,default="external")
+    verifier_ref: Mapped[str|None]=mapped_column(String(500),nullable=True)
+    status: Mapped[str]=mapped_column(String(80),nullable=False,default="recorded")
+    evidence_json: Mapped[dict]=mapped_column(JSON,default=dict)
+    observed_hash: Mapped[str|None]=mapped_column(String(128),nullable=True)
+    created_at: Mapped[datetime]=mapped_column(DateTime(timezone=True),default=utcnow)
+
+class ReproducibleResearchReviewRecord(Base):
+    __tablename__="reproducible_research_reviews"
+    __table_args__=(Index("ix_repro_research_review_package","package_id","created_at"),)
+    id: Mapped[str]=mapped_column(String(36),primary_key=True,default=lambda:str(uuid.uuid4()))
+    package_id: Mapped[str]=mapped_column(ForeignKey("reproducible_research_packages.id",ondelete="CASCADE"),nullable=False)
+    project_entity_id: Mapped[str]=mapped_column(ForeignKey("research_projects.entity_id",ondelete="CASCADE"),nullable=False)
+    reviewer_ref: Mapped[str|None]=mapped_column(String(500),nullable=True)
+    review_type: Mapped[str]=mapped_column(String(100),nullable=False,default="reproducibility")
+    status: Mapped[str]=mapped_column(String(80),nullable=False,default="recorded")
+    findings_json: Mapped[dict]=mapped_column(JSON,default=dict)
+    notes: Mapped[str|None]=mapped_column(Text,nullable=True)
+    created_at: Mapped[datetime]=mapped_column(DateTime(timezone=True),default=utcnow)
+
+class ReproducibleResearchSnapshotRecord(Base):
+    __tablename__="reproducible_research_snapshots"
+    __table_args__=(UniqueConstraint("package_id","revision",name="uq_repro_research_snapshot_revision"),Index("ix_repro_research_snapshot_hash","content_hash"),)
+    id: Mapped[str]=mapped_column(String(36),primary_key=True,default=lambda:str(uuid.uuid4()))
+    package_id: Mapped[str]=mapped_column(ForeignKey("reproducible_research_packages.id",ondelete="CASCADE"),nullable=False)
+    project_entity_id: Mapped[str]=mapped_column(ForeignKey("research_projects.entity_id",ondelete="CASCADE"),nullable=False)
+    revision: Mapped[int]=mapped_column(Integer,nullable=False)
+    content_hash: Mapped[str]=mapped_column(String(64),nullable=False)
+    previous_snapshot_hash: Mapped[str|None]=mapped_column(String(64),nullable=True)
+    state_json: Mapped[dict]=mapped_column(JSON,default=dict)
+    provenance_json: Mapped[dict]=mapped_column(JSON,default=dict)
+    created_by: Mapped[str]=mapped_column(String(255),nullable=False,default="operator")
+    created_at: Mapped[datetime]=mapped_column(DateTime(timezone=True),default=utcnow)

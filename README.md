@@ -98,3 +98,7 @@ Trace declared research lineage from findings through analyses, models, transfor
 ## v2.74.0 Methodology & Analysis Run Registry
 
 Adds governed methodology records, versions, variables, assumptions/exclusions, parameters, execution environments, externally executed analysis runs, run inputs/outputs, and immutable snapshots under the unified research project model.
+
+
+## v2.75.0 — Reproducible Research Package Runtime
+Portable, immutable research package manifests, replay contracts, verification evidence, reviews, and snapshots.

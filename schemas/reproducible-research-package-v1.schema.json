@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Sustainable Catalyst Reproducible Research Package v1",
+  "type": "object",
+  "required": [
+    "release",
+    "contract",
+    "package",
+    "components",
+    "artifacts",
+    "environments",
+    "replay_plans",
+    "verifications",
+    "reviews",
+    "snapshots"
+  ],
+  "properties": {
+    "release": {
+      "const": "2.75.0"
+    },
+    "contract": {
+      "const": "sc.research.reproducible-package.v1"
+    },
+    "package": {
+      "type": "object"
+    },
+    "components": {
+      "type": "array"
+    },
+    "artifacts": {
+      "type": "array"
+    },
+    "environments": {
+      "type": "array"
+    },
+    "replay_plans": {
+      "type": "array"
+    },
+    "verifications": {
+      "type": "array"
+    },
+    "reviews": {
+      "type": "array"
+    },
+    "snapshots": {
+      "type": "array"
+    }
+  }
+}

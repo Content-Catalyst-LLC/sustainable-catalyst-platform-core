@@ -61,6 +61,7 @@ from .routers import (
     unified_research_projects,
     research_lineage,
     research_methodology,
+    reproducible_research,
     visualization_registry,
     system_maps,
     flow_maps,
@@ -291,6 +292,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     app.include_router(research_methodology.router)
     app.include_router(research_methodology.public_router)
+    # v2.75.0 portable, immutable Reproducible Research Package Runtime.
+    app.include_router(reproducible_research.router)
+    app.include_router(reproducible_research.public_router)
     # Open Forensics includes v2.51.0 Reproducible Investigation Packages.
     app.include_router(open_forensics.router)
     app.include_router(open_forensics.public_router)

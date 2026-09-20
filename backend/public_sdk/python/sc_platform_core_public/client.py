@@ -881,3 +881,9 @@ def research_methodology_readiness(self):
     return self._request("GET", "/v1/research/methodology/readiness")
 def research_methodology_bundle(self, project_id):
     return self._request("GET", f"/v1/research/methodology/projects/{project_id}/bundle")
+
+    def reproducible_research_readiness(self):
+        return self._request("GET", "/v1/research/reproducibility/readiness")
+
+    def reproducible_research_package(self, package_id: str):
+        return self._request("GET", f"/api/v1/research/reproducibility/packages/{package_id}/bundle")
