@@ -220,3 +220,7 @@ Public publication readiness, lineage, and bundle access preserve declared resea
 
 ## v2.82.0 — Peer Review, Replication & Rebuttal Intelligence
 Adds public read methods for descriptive peer-review summary, declared lineage, and the publication-scoped review/replication/rebuttal bundle. Core does not author reviews, score quality, infer replication success, resolve rebuttals, or decide publication.
+
+
+## v2.83.0 — Cross-Study Evidence Synthesis & Meta-Research
+Adds public summary, lineage, and bundle accessors for governed cross-study syntheses. Effect estimates and meta-analysis outputs are source-reported or externally computed; Core does not search literature, decide inclusion, calculate/pool effects, score studies, or infer truth.

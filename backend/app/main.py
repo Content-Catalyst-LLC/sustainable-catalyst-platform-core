@@ -69,6 +69,7 @@ from .routers import (
     research_conclusions,
     research_publications,
     peer_review_intelligence,
+    cross_study_synthesis,
     visualization_registry,
     system_maps,
     flow_maps,
@@ -323,6 +324,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # v2.82.0 Peer Review, Replication & Rebuttal Intelligence.
     app.include_router(peer_review_intelligence.router)
     app.include_router(peer_review_intelligence.public_router)
+    # v2.83.0 Cross-Study Evidence Synthesis & Meta-Research.
+    app.include_router(cross_study_synthesis.router)
+    app.include_router(cross_study_synthesis.public_router)
     # Open Forensics includes v2.51.0 Reproducible Investigation Packages.
     app.include_router(open_forensics.router)
     app.include_router(open_forensics.public_router)

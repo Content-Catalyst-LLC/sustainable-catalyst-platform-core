@@ -172,6 +172,7 @@ MIGRATIONS = [
     ("0084", 'Research conclusion governance with researcher-authored conclusions, evidence bindings, caveats, dissent, decision traces, reviews, revision history, descriptive governance summaries, and immutable snapshots; Core does not choose, score, certify, publish, or infer truth.'),
     ("0085", 'Reproducible scholarly publications with sections, references/citations, figures, supplements, identifiers, exports, readiness diagnostics, lineage, revisions, and snapshots; Core does not author conclusions, fabricate citations, judge quality, issue identifiers, or publish externally.'),
     ("0086", 'Peer review, replication, and rebuttal records with comments/responses, replication attempts/comparisons, rebuttal points, revisions, lineage, and snapshots; Core does not generate reviews, score quality, infer replication success, resolve rebuttals, or decide publication.'),
+    ("0087", 'Cross-study evidence synthesis and meta-research with governed study inclusion, outcomes, extracted effects, external meta-analysis results, assessments, relations, gaps, revisions, lineage, and snapshots; Core does not search, select, compute, pool, score, rank, infer causality, or infer truth.'),
 ]
 
 

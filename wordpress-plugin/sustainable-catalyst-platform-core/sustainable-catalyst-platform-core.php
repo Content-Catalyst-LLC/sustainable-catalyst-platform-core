@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Sustainable Catalyst Platform Core
  * Description: WordPress connector for Sustainable Catalyst Platform Core registry, graph, evidence, developer, gateway, free live-data, international-law, scientific-data, official-statistics, geospatial, time-series, STAC, map-layer, streaming, alerts, source-reliability, and operational-facility, humanitarian-access, essential-services, and country-evidence federation and reconciliation, and Earth/Ocean/Space scientific-service routing, cross-product exchange, distributed scale-control services, and governance/access/audit, production-certification/recovery, and observability/SLO production-operations services, plus incident-response, change-control, rollback-coordination, continuity, backup-verification, disaster-recovery, and multi-region resilience/failover-coordination, and data-lifecycle/archival-integrity/preservation services, plus Federated Core trusted-node exchange services and capacity forecasting/resource-governance services, plus identity/credential/cryptographic-key lifecycle governance, distributed workload governance, and scientific object storage/processing adapter services, research object/model services, renderer-neutral visual reasoning object services, and visualization specification/renderer registry services, and governed System Maps and Flow Maps services, plus the renderer-neutral visual reasoning runtime/scene graph.
- * Version: 2.82.0
+ * Version: 2.83.0
  * Author: Content Catalyst LLC
  * License: MIT
  */
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('SCPC_VERSION', '2.82.0');
+define('SCPC_VERSION', '2.83.0');
 define('SCPC_OPTION_BACKEND_URL', 'scpc_backend_url');
 define('SCPC_OPTION_READ_KEY', 'scpc_read_key');
 
@@ -1762,4 +1762,13 @@ add_shortcode('sc_platform_core_peer_review_status', function () {
     if (!is_array($d)) return '<div class="sc-core-status"><strong>Peer Review, Replication &amp; Rebuttal Intelligence</strong><br>Unavailable</div>';
     $c = isset($d['counts']) && is_array($d['counts']) ? $d['counts'] : array();
     return '<div class="sc-core-status"><strong>Peer Review, Replication &amp; Rebuttal Intelligence</strong><br>Platform Core ' . esc_html($d['release'] ?? '2.82.0') . ' · ' . esc_html($c['reviews'] ?? 0) . ' reviews · ' . esc_html($c['replication_studies'] ?? 0) . ' replication studies · ' . esc_html($c['rebuttals'] ?? 0) . ' rebuttals · descriptive provenance only; quality scoring, replication inference, and publication decisions remain human-directed</div>';
+});
+
+
+// v2.83.0 Cross-Study Evidence Synthesis & Meta-Research status surface.
+add_shortcode('sc_platform_core_evidence_synthesis_status', function () {
+    $d = scpc_get_json('/v1/research/evidence-synthesis/readiness');
+    if (!is_array($d)) return '<div class="sc-core-status"><strong>Cross-Study Evidence Synthesis &amp; Meta-Research</strong><br>Unavailable</div>';
+    $c = isset($d['counts']) && is_array($d['counts']) ? $d['counts'] : array();
+    return '<div class="sc-core-status"><strong>Cross-Study Evidence Synthesis &amp; Meta-Research</strong><br>Platform Core ' . esc_html($d['release'] ?? '2.83.0') . ' · ' . esc_html($c['syntheses'] ?? 0) . ' syntheses · ' . esc_html($c['studies'] ?? 0) . ' studies · ' . esc_html($c['meta_analyses'] ?? 0) . ' external meta-analysis records · provenance-aware synthesis; literature search, inclusion decisions, effect computation, pooling, scoring, and truth inference remain external/researcher-directed</div>';
 });

@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema.json",
+  "$id": "https://sustainablecatalyst.com/schemas/research-cross-study-evidence-synthesis-v1.schema.json",
+  "title": "Sustainable Catalyst Cross-Study Evidence Synthesis & Meta-Research",
+  "type": "object",
+  "required": [
+    "release",
+    "contract",
+    "synthesis",
+    "studies",
+    "outcomes",
+    "effects"
+  ],
+  "properties": {
+    "release": {
+      "const": "2.83.0"
+    },
+    "contract": {
+      "const": "sc.research.cross-study-evidence-synthesis.v1"
+    },
+    "project": {
+      "type": "object"
+    },
+    "synthesis": {
+      "type": "object"
+    },
+    "studies": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "outcomes": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "effects": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "meta_analyses": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "meta_research_assessments": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "cross_study_relations": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "evidence_gaps": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "revisions": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "snapshots": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    }
+  },
+  "additionalProperties": true
+}

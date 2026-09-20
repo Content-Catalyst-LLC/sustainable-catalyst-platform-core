@@ -952,3 +952,15 @@ def _v282_peer_review_bundle(self, publication_id: str):
 PublicApiClient.peer_review_summary = _v282_peer_review_summary
 PublicApiClient.peer_review_lineage = _v282_peer_review_lineage
 PublicApiClient.peer_review_bundle = _v282_peer_review_bundle
+
+
+# v2.83.0 Cross-Study Evidence Synthesis & Meta-Research
+def _v283_evidence_synthesis_summary(self, synthesis_id: str):
+    return self.request("GET", f"/research/evidence-synthesis/syntheses/{synthesis_id}/summary")
+def _v283_evidence_synthesis_lineage(self, synthesis_id: str):
+    return self.request("GET", f"/research/evidence-synthesis/syntheses/{synthesis_id}/lineage")
+def _v283_evidence_synthesis_bundle(self, synthesis_id: str):
+    return self.request("GET", f"/research/evidence-synthesis/syntheses/{synthesis_id}/bundle")
+PublicApiClient.evidence_synthesis_summary = _v283_evidence_synthesis_summary
+PublicApiClient.evidence_synthesis_lineage = _v283_evidence_synthesis_lineage
+PublicApiClient.evidence_synthesis_bundle = _v283_evidence_synthesis_bundle

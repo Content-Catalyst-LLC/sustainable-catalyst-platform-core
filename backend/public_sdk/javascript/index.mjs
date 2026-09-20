@@ -648,3 +648,9 @@ export async function getResearchPublicationBundle(client, publicationId) { retu
 PublicApiClient.prototype.peerReviewSummary=function(publicationId){return this.request(`/research/peer-review/publications/${encodeURIComponent(publicationId)}/summary`);};
 PublicApiClient.prototype.peerReviewLineage=function(publicationId){return this.request(`/research/peer-review/publications/${encodeURIComponent(publicationId)}/lineage`);};
 PublicApiClient.prototype.peerReviewBundle=function(publicationId){return this.request(`/research/peer-review/publications/${encodeURIComponent(publicationId)}/bundle`);};
+
+
+// v2.83.0 Cross-Study Evidence Synthesis & Meta-Research
+PublicApiClient.prototype.evidenceSynthesisSummary=function(synthesisId){return this.request(`/research/evidence-synthesis/syntheses/${encodeURIComponent(synthesisId)}/summary`);};
+PublicApiClient.prototype.evidenceSynthesisLineage=function(synthesisId){return this.request(`/research/evidence-synthesis/syntheses/${encodeURIComponent(synthesisId)}/lineage`);};
+PublicApiClient.prototype.evidenceSynthesisBundle=function(synthesisId){return this.request(`/research/evidence-synthesis/syntheses/${encodeURIComponent(synthesisId)}/bundle`);};
