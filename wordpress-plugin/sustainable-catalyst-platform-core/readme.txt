@@ -16,7 +16,7 @@ Tags: knowledge graph, entity registry, provenance, live data, sustainable catal
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.0
-Stable tag: 2.80.0
+Stable tag: 2.81.0
 License: MIT
 
 WordPress status, live-data gateway, and entity lookup client for Sustainable Catalyst Platform Core.
@@ -262,3 +262,7 @@ Research Argument & Evidentiary Synthesis Engine status surface and Core 2.79.0 
 
 == 2.80.0 ==
 Research Decision Trace & Conclusion Governance status surface and Core 2.80.0 compatibility. Adds researcher-authored conclusions, evidence bindings, caveats, dissent, decision traces, reviews, revisions, descriptive governance summaries, and immutable snapshots without Core-side conclusion selection, scoring, ranking, certification, truth inference, or publication.
+
+
+== 2.81.0 ==
+Reproducible Research Publication & Scholarly Output Engine status surface and Core 2.81.0 compatibility. Adds structured publications, manuscript sections, bibliographic references and claim-linked citations, figures/tables, supplementary materials, external identifier records, structural readiness diagnostics, research-to-publication lineage, export manifests, revisions, and immutable snapshots without Core-side manuscript/conclusion generation, citation fabrication, quality judgment, DOI issuance, or external publication. Adds [sc_platform_core_research_publication_status].

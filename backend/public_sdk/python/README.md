@@ -212,3 +212,7 @@ Adds public bundle and argument-map helpers for public research projects. The AP
 
 ## v2.80.0 — Research Decision Trace & Conclusion Governance
 Public read helpers expose descriptive conclusion-governance summaries and provenance-preserving bundles. Core does not choose, score, rank, certify, or publish conclusions.
+
+
+## v2.81.0 — Reproducible Research Publication & Scholarly Output Engine
+Public publication readiness, lineage, and bundle access preserve declared research provenance. Core does not author conclusions, fabricate citations, judge publication quality, issue DOIs, or publish externally.

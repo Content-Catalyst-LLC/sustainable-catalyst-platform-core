@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/research-reproducible-publication-v1.schema.json",
+  "title": "Sustainable Catalyst Reproducible Research Publication",
+  "type": "object",
+  "required": [
+    "publication_key",
+    "title",
+    "publication_type"
+  ],
+  "properties": {
+    "publication_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "publication_type": {
+      "enum": [
+        "dataset_note",
+        "investigation_report",
+        "methodological_note",
+        "paper",
+        "research_brief",
+        "technical_report",
+        "thesis_chapter",
+        "working_paper"
+      ]
+    },
+    "conclusion_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "required_sections": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "authors": {
+      "type": "array"
+    },
+    "keywords": {
+      "type": "array"
+    },
+    "provenance": {
+      "type": "object"
+    }
+  }
+}

@@ -928,3 +928,15 @@ def _v280_conclusion_bundle(self, conclusion_id: str):
     return self.request("GET", f"/research/conclusions/{conclusion_id}/bundle")
 PublicApiClient.conclusion_governance = _v280_conclusion_governance
 PublicApiClient.conclusion_bundle = _v280_conclusion_bundle
+
+
+# v2.81.0 Reproducible Research Publication & Scholarly Output Engine
+def _v281_publication_readiness(self, publication_id: str):
+    return self.request("GET", f"/research/publications/{publication_id}/readiness")
+def _v281_publication_lineage(self, publication_id: str):
+    return self.request("GET", f"/research/publications/{publication_id}/lineage")
+def _v281_publication_bundle(self, publication_id: str):
+    return self.request("GET", f"/research/publications/{publication_id}/bundle")
+PublicApiClient.publication_readiness = _v281_publication_readiness
+PublicApiClient.publication_lineage = _v281_publication_lineage
+PublicApiClient.publication_bundle = _v281_publication_bundle

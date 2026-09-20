@@ -636,3 +636,9 @@ export async function getResearchConclusionGovernance(client, conclusionId) {
 export async function getResearchConclusionBundle(client, conclusionId) {
   return client.request(`/research/conclusions/${encodeURIComponent(conclusionId)}/bundle`);
 }
+
+
+// v2.81.0 Reproducible Research Publication & Scholarly Output Engine
+export async function getResearchPublicationReadiness(client, publicationId) { return client.request(`/research/publications/${encodeURIComponent(publicationId)}/readiness`); }
+export async function getResearchPublicationLineage(client, publicationId) { return client.request(`/research/publications/${encodeURIComponent(publicationId)}/lineage`); }
+export async function getResearchPublicationBundle(client, publicationId) { return client.request(`/research/publications/${encodeURIComponent(publicationId)}/bundle`); }

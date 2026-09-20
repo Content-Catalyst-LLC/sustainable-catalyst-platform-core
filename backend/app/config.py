@@ -20,7 +20,7 @@ def _int(name: str, default: int) -> int:
 @dataclass(frozen=True)
 class Settings:
     app_name: str = "Sustainable Catalyst Platform Core"
-    version: str = "2.80.0"
+    version: str = "2.81.0"
     environment: str = "development"
     database_url: str = "sqlite:///./platform_core.db"
     write_api_key: str = ""
@@ -53,7 +53,7 @@ class Settings:
     live_data_enabled: bool = True
     live_data_ingest_enabled: bool = True
     live_data_strict_free_sources: bool = True
-    live_data_user_agent: str = "SustainableCatalystPlatformCore/2.80.0 (+https://sustainablecatalyst.com/contact/)"
+    live_data_user_agent: str = "SustainableCatalystPlatformCore/2.81.0 (+https://sustainablecatalyst.com/contact/)"
     live_data_timeout_seconds: int = 20
     live_data_max_response_bytes: int = 12582912
     live_data_raw_payload_max_bytes: int = 1048576
@@ -227,6 +227,7 @@ class Settings:
     hypothesis_competing_explanation_engine_enabled: bool = True
     research_argument_evidentiary_synthesis_enabled: bool = True
     research_decision_trace_conclusion_governance_enabled: bool = True
+    reproducible_research_publication_enabled: bool = True
     visual_reasoning_runtime_public_metadata_enabled: bool = True
     open_forensics_enabled: bool = True
     open_forensics_public_metadata_enabled: bool = True
@@ -309,7 +310,7 @@ class Settings:
             live_data_strict_free_sources=_bool("SC_CORE_LIVE_DATA_STRICT_FREE_SOURCES", True),
             live_data_user_agent=os.getenv(
                 "SC_CORE_LIVE_DATA_USER_AGENT",
-                "SustainableCatalystPlatformCore/2.80.0 (+https://sustainablecatalyst.com/contact/)",
+                "SustainableCatalystPlatformCore/2.81.0 (+https://sustainablecatalyst.com/contact/)",
             ).strip(),
             live_data_timeout_seconds=max(
                 1, min(_int("SC_CORE_LIVE_DATA_TIMEOUT_SECONDS", 20), 120)
@@ -479,6 +480,7 @@ class Settings:
             hypothesis_competing_explanation_engine_enabled=_bool("SC_CORE_HYPOTHESIS_COMPETING_EXPLANATION_ENGINE_ENABLED", True),
             research_argument_evidentiary_synthesis_enabled=_bool("SC_CORE_RESEARCH_ARGUMENT_EVIDENTIARY_SYNTHESIS_ENABLED", True),
             research_decision_trace_conclusion_governance_enabled=_bool("SC_CORE_RESEARCH_DECISION_TRACE_CONCLUSION_GOVERNANCE_ENABLED", True),
+            reproducible_research_publication_enabled=_bool("SC_CORE_REPRODUCIBLE_RESEARCH_PUBLICATION_ENABLED", True),
             open_forensics_enabled=_bool("SC_CORE_OPEN_FORENSICS_ENABLED", True),
             open_forensics_public_metadata_enabled=_bool("SC_CORE_OPEN_FORENSICS_PUBLIC_METADATA_ENABLED", True),
             predictive_intelligence_enabled=_bool("SC_CORE_PREDICTIVE_INTELLIGENCE_ENABLED", True),
