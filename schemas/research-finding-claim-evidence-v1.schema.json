@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/research-finding-claim-evidence-v1.schema.json",
+  "title": "Sustainable Catalyst Finding, Claim & Evidence Intelligence",
+  "type": "object",
+  "required": [
+    "contract",
+    "project"
+  ],
+  "properties": {
+    "contract": {
+      "const": "sc.research.finding-claim-evidence.v1"
+    },
+    "project": {
+      "type": "object"
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "finding_revisions": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "interpretations": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "claims": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "claim_revisions": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "evidence_links": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "derivation_links": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "contradictions": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "snapshots": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    }
+  },
+  "additionalProperties": true
+}

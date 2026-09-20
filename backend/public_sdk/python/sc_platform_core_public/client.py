@@ -893,3 +893,12 @@ def research_methodology_bundle(self, project_id):
 def _research_notebook_bundle(self, notebook_id: str):
     return self.request("GET", f"/research/notebooks/notebooks/{notebook_id}/bundle")
 PublicApiClient.research_notebook_bundle = _research_notebook_bundle
+
+
+# v2.77.0 Finding, Claim & Evidence Intelligence
+def _research_intelligence_bundle(self, project_id: str):
+    return self.request("GET", f"/research/intelligence/projects/{project_id}/bundle")
+def _research_intelligence_contradiction_candidates(self, project_id: str):
+    return self.request("GET", f"/research/intelligence/projects/{project_id}/contradiction-candidates")
+PublicApiClient.research_intelligence_bundle = _research_intelligence_bundle
+PublicApiClient.research_intelligence_contradiction_candidates = _research_intelligence_contradiction_candidates

@@ -1,3 +1,7 @@
+# Sustainable Catalyst Platform Core v2.77.0
+
+Current release: **Finding, Claim & Evidence Intelligence**. See `RELEASE_NOTES_V2770.md`.
+
 > Current release: **v2.72.0 — Unified Research Project Object Model**
 
 # Platform Core v2.67.0 — Visual Predictive Intelligence

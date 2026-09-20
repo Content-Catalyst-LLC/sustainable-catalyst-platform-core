@@ -20,7 +20,7 @@ def _int(name: str, default: int) -> int:
 @dataclass(frozen=True)
 class Settings:
     app_name: str = "Sustainable Catalyst Platform Core"
-    version: str = "2.76.0"
+    version: str = "2.77.0"
     environment: str = "development"
     database_url: str = "sqlite:///./platform_core.db"
     write_api_key: str = ""
@@ -53,7 +53,7 @@ class Settings:
     live_data_enabled: bool = True
     live_data_ingest_enabled: bool = True
     live_data_strict_free_sources: bool = True
-    live_data_user_agent: str = "SustainableCatalystPlatformCore/2.76.0 (+https://sustainablecatalyst.com/contact/)"
+    live_data_user_agent: str = "SustainableCatalystPlatformCore/2.77.0 (+https://sustainablecatalyst.com/contact/)"
     live_data_timeout_seconds: int = 20
     live_data_max_response_bytes: int = 12582912
     live_data_raw_payload_max_bytes: int = 1048576
@@ -223,6 +223,7 @@ class Settings:
     methodology_analysis_run_registry_enabled: bool = True
     reproducible_research_package_runtime_enabled: bool = True
     research_notebook_analytical_narrative_enabled: bool = True
+    finding_claim_evidence_intelligence_enabled: bool = True
     visual_reasoning_runtime_public_metadata_enabled: bool = True
     open_forensics_enabled: bool = True
     open_forensics_public_metadata_enabled: bool = True
@@ -471,6 +472,7 @@ class Settings:
             cross_product_visual_research_public_metadata_enabled=_bool("SC_CORE_CROSS_PRODUCT_VISUAL_RESEARCH_PUBLIC_METADATA_ENABLED", True),
             reproducible_visual_knowledge_enabled=_bool("SC_CORE_REPRODUCIBLE_VISUAL_KNOWLEDGE_ENABLED", True),
             reproducible_visual_knowledge_public_metadata_enabled=_bool("SC_CORE_REPRODUCIBLE_VISUAL_KNOWLEDGE_PUBLIC_METADATA_ENABLED", True),
+            finding_claim_evidence_intelligence_enabled=_bool("SC_CORE_FINDING_CLAIM_EVIDENCE_INTELLIGENCE_ENABLED", True),
             open_forensics_enabled=_bool("SC_CORE_OPEN_FORENSICS_ENABLED", True),
             open_forensics_public_metadata_enabled=_bool("SC_CORE_OPEN_FORENSICS_PUBLIC_METADATA_ENABLED", True),
             predictive_intelligence_enabled=_bool("SC_CORE_PREDICTIVE_INTELLIGENCE_ENABLED", True),

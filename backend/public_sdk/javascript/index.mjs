@@ -613,3 +613,8 @@ export const reproducibleResearchPackage = (client, packageId) => client.get(`/a
 
 // v2.76.0 Research Notebook & Analytical Narrative
 export async function researchNotebookBundle(client, notebookId) { return client.request(`/research/notebooks/notebooks/${encodeURIComponent(notebookId)}/bundle`); }
+
+
+// v2.77.0 Finding, Claim & Evidence Intelligence
+export async function researchIntelligenceBundle(client, projectId) { return client.request(`/research/intelligence/projects/${encodeURIComponent(projectId)}/bundle`); }
+export async function researchIntelligenceContradictionCandidates(client, projectId) { return client.request(`/research/intelligence/projects/${encodeURIComponent(projectId)}/contradiction-candidates`); }
