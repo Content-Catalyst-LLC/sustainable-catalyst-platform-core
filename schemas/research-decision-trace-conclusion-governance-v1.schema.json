@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/research-decision-trace-conclusion-governance-v1.schema.json",
+  "title": "Sustainable Catalyst Research Decision Trace & Conclusion Governance",
+  "type": "object",
+  "required": [
+    "contract",
+    "conclusion"
+  ],
+  "properties": {
+    "contract": {
+      "const": "sc.research.decision-trace-conclusion-governance.v1"
+    },
+    "conclusion": {
+      "type": "object"
+    },
+    "evidence_bindings": {
+      "type": "array"
+    },
+    "caveats": {
+      "type": "array"
+    },
+    "dissent_records": {
+      "type": "array"
+    },
+    "decision_trace_steps": {
+      "type": "array"
+    },
+    "reviews": {
+      "type": "array"
+    },
+    "revisions": {
+      "type": "array"
+    },
+    "snapshots": {
+      "type": "array"
+    }
+  },
+  "additionalProperties": true
+}

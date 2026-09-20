@@ -628,3 +628,11 @@ export async function hypothesisIntelligenceComparison(client, setId) { return c
 // v2.79.0 Research Argument & Evidentiary Synthesis Engine
 export async function researchArgumentBundle(client, argumentId) { return client.request(`/research/arguments/${encodeURIComponent(argumentId)}/bundle`); }
 export async function researchArgumentMap(client, argumentId) { return client.request(`/research/arguments/${encodeURIComponent(argumentId)}/map`); }
+
+// v2.80.0 Research Decision Trace & Conclusion Governance
+export async function getResearchConclusionGovernance(client, conclusionId) {
+  return client.request(`/research/conclusions/${encodeURIComponent(conclusionId)}/governance`);
+}
+export async function getResearchConclusionBundle(client, conclusionId) {
+  return client.request(`/research/conclusions/${encodeURIComponent(conclusionId)}/bundle`);
+}

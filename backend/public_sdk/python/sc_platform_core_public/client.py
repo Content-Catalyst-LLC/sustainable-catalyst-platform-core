@@ -920,3 +920,11 @@ def _research_argument_map(self, argument_id: str):
     return self.request("GET", f"/research/arguments/{argument_id}/map")
 PublicApiClient.research_argument_bundle = _research_argument_bundle
 PublicApiClient.research_argument_map = _research_argument_map
+
+# v2.80.0 Research Decision Trace & Conclusion Governance
+def _v280_conclusion_governance(self, conclusion_id: str):
+    return self.request("GET", f"/research/conclusions/{conclusion_id}/governance")
+def _v280_conclusion_bundle(self, conclusion_id: str):
+    return self.request("GET", f"/research/conclusions/{conclusion_id}/bundle")
+PublicApiClient.conclusion_governance = _v280_conclusion_governance
+PublicApiClient.conclusion_bundle = _v280_conclusion_bundle

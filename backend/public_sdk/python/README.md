@@ -209,3 +209,6 @@ Read public predictive readiness and governed spatial-temporal study bundles. Co
 ## v2.79.0 — Research Argument & Evidentiary Synthesis
 
 Adds public bundle and argument-map helpers for public research projects. The API exposes researcher-declared graph structure and descriptive coverage only; Core does not generate arguments or syntheses, score evidence, rank alternatives, resolve evidentiary tensions, or infer truth.
+
+## v2.80.0 — Research Decision Trace & Conclusion Governance
+Public read helpers expose descriptive conclusion-governance summaries and provenance-preserving bundles. Core does not choose, score, rank, certify, or publish conclusions.

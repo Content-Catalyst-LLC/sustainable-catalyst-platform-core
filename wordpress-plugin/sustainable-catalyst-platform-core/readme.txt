@@ -16,7 +16,7 @@ Tags: knowledge graph, entity registry, provenance, live data, sustainable catal
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.0
-Stable tag: 2.79.0
+Stable tag: 2.80.0
 License: MIT
 
 WordPress status, live-data gateway, and entity lookup client for Sustainable Catalyst Platform Core.
@@ -259,3 +259,6 @@ Hypothesis & Competing Explanation Engine status surface and Core 2.78.0 compati
 
 == 2.79.0 ==
 Research Argument & Evidentiary Synthesis Engine status surface and Core 2.79.0 compatibility. Adds governed argument graphs, researcher-authored synthesis registries, counterarguments, unresolved tensions, descriptive coverage, revisions, and immutable snapshots without Core-side generation, evidence scoring, ranking, or truth inference.
+
+== 2.80.0 ==
+Research Decision Trace & Conclusion Governance status surface and Core 2.80.0 compatibility. Adds researcher-authored conclusions, evidence bindings, caveats, dissent, decision traces, reviews, revisions, descriptive governance summaries, and immutable snapshots without Core-side conclusion selection, scoring, ranking, certification, truth inference, or publication.

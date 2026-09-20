@@ -169,6 +169,7 @@ MIGRATIONS = [
     ("0081", 'Finding, claim, interpretation, and evidence-link intelligence with version history, derivation lineage, structured contradiction flags, declared uncertainty/strength metadata, and immutable snapshots; Core records research judgment but does not infer truth, rank claims, or resolve contradictions.'),
     ("0082", 'Hypothesis/competing-explanation intelligence with governed sets, assumptions, predictions, evidence assessments, relations, discrimination gaps, revisions, comparison matrices, and snapshots; Core does not generate, score, rank, select, confirm, reject, or infer truth.'),
     ("0083", 'Research argument and evidentiary synthesis with governed argument graphs, researcher-authored syntheses, counterarguments, unresolved tensions, revision history, descriptive coverage, and immutable snapshots; Core does not generate, score, rank, resolve, or infer truth.'),
+    ("0084", 'Research conclusion governance with researcher-authored conclusions, evidence bindings, caveats, dissent, decision traces, reviews, revision history, descriptive governance summaries, and immutable snapshots; Core does not choose, score, certify, publish, or infer truth.'),
 ]
 
 
