@@ -940,3 +940,15 @@ def _v281_publication_bundle(self, publication_id: str):
 PublicApiClient.publication_readiness = _v281_publication_readiness
 PublicApiClient.publication_lineage = _v281_publication_lineage
 PublicApiClient.publication_bundle = _v281_publication_bundle
+
+
+# v2.82.0 Peer Review, Replication & Rebuttal Intelligence
+def _v282_peer_review_summary(self, publication_id: str):
+    return self.request("GET", f"/research/peer-review/publications/{publication_id}/summary")
+def _v282_peer_review_lineage(self, publication_id: str):
+    return self.request("GET", f"/research/peer-review/publications/{publication_id}/lineage")
+def _v282_peer_review_bundle(self, publication_id: str):
+    return self.request("GET", f"/research/peer-review/publications/{publication_id}/bundle")
+PublicApiClient.peer_review_summary = _v282_peer_review_summary
+PublicApiClient.peer_review_lineage = _v282_peer_review_lineage
+PublicApiClient.peer_review_bundle = _v282_peer_review_bundle

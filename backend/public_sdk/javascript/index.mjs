@@ -642,3 +642,9 @@ export async function getResearchConclusionBundle(client, conclusionId) {
 export async function getResearchPublicationReadiness(client, publicationId) { return client.request(`/research/publications/${encodeURIComponent(publicationId)}/readiness`); }
 export async function getResearchPublicationLineage(client, publicationId) { return client.request(`/research/publications/${encodeURIComponent(publicationId)}/lineage`); }
 export async function getResearchPublicationBundle(client, publicationId) { return client.request(`/research/publications/${encodeURIComponent(publicationId)}/bundle`); }
+
+
+// v2.82.0 Peer Review, Replication & Rebuttal Intelligence
+PublicApiClient.prototype.peerReviewSummary=function(publicationId){return this.request(`/research/peer-review/publications/${encodeURIComponent(publicationId)}/summary`);};
+PublicApiClient.prototype.peerReviewLineage=function(publicationId){return this.request(`/research/peer-review/publications/${encodeURIComponent(publicationId)}/lineage`);};
+PublicApiClient.prototype.peerReviewBundle=function(publicationId){return this.request(`/research/peer-review/publications/${encodeURIComponent(publicationId)}/bundle`);};

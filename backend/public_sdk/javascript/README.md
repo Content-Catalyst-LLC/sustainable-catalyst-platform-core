@@ -216,3 +216,7 @@ Public read helpers expose descriptive conclusion-governance summaries and prove
 
 ## v2.81.0 — Reproducible Research Publication & Scholarly Output Engine
 Public publication readiness, lineage, and bundle access preserve declared research provenance. Core does not author conclusions, fabricate citations, judge publication quality, issue DOIs, or publish externally.
+
+
+## v2.82.0 — Peer Review, Replication & Rebuttal Intelligence
+Adds public read methods for descriptive peer-review summary, declared lineage, and the publication-scoped review/replication/rebuttal bundle. Core does not author reviews, score quality, infer replication success, resolve rebuttals, or decide publication.

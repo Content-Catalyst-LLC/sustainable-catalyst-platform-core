@@ -68,6 +68,7 @@ from .routers import (
     research_arguments,
     research_conclusions,
     research_publications,
+    peer_review_intelligence,
     visualization_registry,
     system_maps,
     flow_maps,
@@ -319,6 +320,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # v2.81.0 Reproducible Research Publication & Scholarly Output Engine.
     app.include_router(research_publications.router)
     app.include_router(research_publications.public_router)
+    # v2.82.0 Peer Review, Replication & Rebuttal Intelligence.
+    app.include_router(peer_review_intelligence.router)
+    app.include_router(peer_review_intelligence.public_router)
     # Open Forensics includes v2.51.0 Reproducible Investigation Packages.
     app.include_router(open_forensics.router)
     app.include_router(open_forensics.public_router)

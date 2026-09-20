@@ -10399,3 +10399,195 @@ class ResearchPublicationSnapshotRecord(Base):
     provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
     created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+# v2.82.0 — Peer Review, Replication & Rebuttal Intelligence
+class ResearchPeerReviewRecord(Base):
+    __tablename__ = "research_peer_reviews_v282"
+    __table_args__ = (
+        UniqueConstraint("publication_id", "review_key", name="uq_research_peer_review_v282_key"),
+        Index("ix_research_peer_review_v282_stage_status", "stage", "status"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    project_entity_id: Mapped[str] = mapped_column(ForeignKey("research_projects.entity_id", ondelete="CASCADE"), nullable=False)
+    publication_id: Mapped[str] = mapped_column(ForeignKey("research_publications_v281.id", ondelete="CASCADE"), nullable=False)
+    review_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    review_type: Mapped[str] = mapped_column(String(80), nullable=False, default="peer")
+    stage: Mapped[str] = mapped_column(String(80), nullable=False, default="initial")
+    status: Mapped[str] = mapped_column(String(60), nullable=False, default="open")
+    reviewer_role: Mapped[str | None] = mapped_column(String(180), nullable=True)
+    reviewer_identity_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    summary_text: Mapped[str | None] = mapped_column(Text, nullable=True)
+    declared_recommendation: Mapped[str | None] = mapped_column(String(80), nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class ResearchPeerReviewCommentRecord(Base):
+    __tablename__ = "research_peer_review_comments_v282"
+    __table_args__ = (UniqueConstraint("review_id", "comment_key", name="uq_research_peer_review_comment_v282_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    project_entity_id: Mapped[str] = mapped_column(ForeignKey("research_projects.entity_id", ondelete="CASCADE"), nullable=False)
+    publication_id: Mapped[str] = mapped_column(ForeignKey("research_publications_v281.id", ondelete="CASCADE"), nullable=False)
+    review_id: Mapped[str] = mapped_column(ForeignKey("research_peer_reviews_v282.id", ondelete="CASCADE"), nullable=False)
+    comment_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    comment_type: Mapped[str] = mapped_column(String(80), nullable=False, default="general")
+    target_type: Mapped[str] = mapped_column(String(80), nullable=False, default="publication")
+    target_ref: Mapped[str | None] = mapped_column(String(1500), nullable=True)
+    priority: Mapped[str] = mapped_column(String(40), nullable=False, default="unspecified")
+    comment_text: Mapped[str] = mapped_column(Text, nullable=False)
+    response_required: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    evidence_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ResearchPeerReviewResponseRecord(Base):
+    __tablename__ = "research_peer_review_responses_v282"
+    __table_args__ = (UniqueConstraint("comment_id", "response_key", name="uq_research_peer_review_response_v282_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    project_entity_id: Mapped[str] = mapped_column(ForeignKey("research_projects.entity_id", ondelete="CASCADE"), nullable=False)
+    publication_id: Mapped[str] = mapped_column(ForeignKey("research_publications_v281.id", ondelete="CASCADE"), nullable=False)
+    review_id: Mapped[str] = mapped_column(ForeignKey("research_peer_reviews_v282.id", ondelete="CASCADE"), nullable=False)
+    comment_id: Mapped[str] = mapped_column(ForeignKey("research_peer_review_comments_v282.id", ondelete="CASCADE"), nullable=False)
+    response_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    response_text: Mapped[str] = mapped_column(Text, nullable=False)
+    disposition: Mapped[str] = mapped_column(String(80), nullable=False, default="responded")
+    change_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    evidence_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ResearchReplicationStudyRecord(Base):
+    __tablename__ = "research_replication_studies_v282"
+    __table_args__ = (UniqueConstraint("publication_id", "study_key", name="uq_research_replication_study_v282_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    project_entity_id: Mapped[str] = mapped_column(ForeignKey("research_projects.entity_id", ondelete="CASCADE"), nullable=False)
+    publication_id: Mapped[str] = mapped_column(ForeignKey("research_publications_v281.id", ondelete="CASCADE"), nullable=False)
+    study_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    title: Mapped[str] = mapped_column(String(700), nullable=False)
+    replication_type: Mapped[str] = mapped_column(String(80), nullable=False, default="direct")
+    status: Mapped[str] = mapped_column(String(60), nullable=False, default="planned")
+    protocol_ref: Mapped[str | None] = mapped_column(String(1500), nullable=True)
+    preregistration_ref: Mapped[str | None] = mapped_column(String(1500), nullable=True)
+    independent_team_json: Mapped[list] = mapped_column(JSON, default=list)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class ResearchReplicationAttemptRecord(Base):
+    __tablename__ = "research_replication_attempts_v282"
+    __table_args__ = (UniqueConstraint("study_id", "attempt_key", name="uq_research_replication_attempt_v282_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    project_entity_id: Mapped[str] = mapped_column(ForeignKey("research_projects.entity_id", ondelete="CASCADE"), nullable=False)
+    publication_id: Mapped[str] = mapped_column(ForeignKey("research_publications_v281.id", ondelete="CASCADE"), nullable=False)
+    study_id: Mapped[str] = mapped_column(ForeignKey("research_replication_studies_v282.id", ondelete="CASCADE"), nullable=False)
+    attempt_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    status: Mapped[str] = mapped_column(String(60), nullable=False, default="recorded")
+    method_ref: Mapped[str | None] = mapped_column(String(1500), nullable=True)
+    dataset_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    environment_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    execution_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    result_summary: Mapped[str | None] = mapped_column(Text, nullable=True)
+    declared_outcome: Mapped[str] = mapped_column(String(80), nullable=False, default="inconclusive")
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ResearchReplicationComparisonRecord(Base):
+    __tablename__ = "research_replication_comparisons_v282"
+    __table_args__ = (UniqueConstraint("study_id", "comparison_key", name="uq_research_replication_comparison_v282_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    project_entity_id: Mapped[str] = mapped_column(ForeignKey("research_projects.entity_id", ondelete="CASCADE"), nullable=False)
+    publication_id: Mapped[str] = mapped_column(ForeignKey("research_publications_v281.id", ondelete="CASCADE"), nullable=False)
+    study_id: Mapped[str] = mapped_column(ForeignKey("research_replication_studies_v282.id", ondelete="CASCADE"), nullable=False)
+    comparison_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    original_ref: Mapped[str] = mapped_column(String(1500), nullable=False)
+    replication_ref: Mapped[str] = mapped_column(String(1500), nullable=False)
+    metric_name: Mapped[str | None] = mapped_column(String(300), nullable=True)
+    original_value_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    replication_value_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    declared_relation: Mapped[str] = mapped_column(String(80), nullable=False, default="inconclusive")
+    interpretation_text: Mapped[str | None] = mapped_column(Text, nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ResearchRebuttalRecord(Base):
+    __tablename__ = "research_rebuttals_v282"
+    __table_args__ = (UniqueConstraint("publication_id", "rebuttal_key", name="uq_research_rebuttal_v282_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    project_entity_id: Mapped[str] = mapped_column(ForeignKey("research_projects.entity_id", ondelete="CASCADE"), nullable=False)
+    publication_id: Mapped[str] = mapped_column(ForeignKey("research_publications_v281.id", ondelete="CASCADE"), nullable=False)
+    rebuttal_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    title: Mapped[str] = mapped_column(String(700), nullable=False)
+    status: Mapped[str] = mapped_column(String(60), nullable=False, default="draft")
+    target_type: Mapped[str] = mapped_column(String(80), nullable=False, default="publication")
+    target_ref: Mapped[str | None] = mapped_column(String(1500), nullable=True)
+    rebuttal_text: Mapped[str] = mapped_column(Text, nullable=False)
+    author_identity_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class ResearchRebuttalPointRecord(Base):
+    __tablename__ = "research_rebuttal_points_v282"
+    __table_args__ = (UniqueConstraint("rebuttal_id", "point_key", name="uq_research_rebuttal_point_v282_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    project_entity_id: Mapped[str] = mapped_column(ForeignKey("research_projects.entity_id", ondelete="CASCADE"), nullable=False)
+    publication_id: Mapped[str] = mapped_column(ForeignKey("research_publications_v281.id", ondelete="CASCADE"), nullable=False)
+    rebuttal_id: Mapped[str] = mapped_column(ForeignKey("research_rebuttals_v282.id", ondelete="CASCADE"), nullable=False)
+    point_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    point_text: Mapped[str] = mapped_column(Text, nullable=False)
+    target_ref: Mapped[str | None] = mapped_column(String(1500), nullable=True)
+    evidence_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    response_ref: Mapped[str | None] = mapped_column(String(1500), nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ResearchPeerReviewRevisionRecord(Base):
+    __tablename__ = "research_peer_review_revisions_v282"
+    __table_args__ = (UniqueConstraint("review_id", "revision", name="uq_research_peer_review_revision_v282"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    project_entity_id: Mapped[str] = mapped_column(ForeignKey("research_projects.entity_id", ondelete="CASCADE"), nullable=False)
+    publication_id: Mapped[str] = mapped_column(ForeignKey("research_publications_v281.id", ondelete="CASCADE"), nullable=False)
+    review_id: Mapped[str] = mapped_column(ForeignKey("research_peer_reviews_v282.id", ondelete="CASCADE"), nullable=False)
+    revision: Mapped[int] = mapped_column(Integer, nullable=False)
+    state_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    prior_state_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    revised_state_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    change_summary: Mapped[str | None] = mapped_column(Text, nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ResearchPeerReviewSnapshotRecord(Base):
+    __tablename__ = "research_peer_review_snapshots_v282"
+    __table_args__ = (UniqueConstraint("publication_id", "revision", name="uq_research_peer_review_snapshot_v282_revision"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    project_entity_id: Mapped[str] = mapped_column(ForeignKey("research_projects.entity_id", ondelete="CASCADE"), nullable=False)
+    publication_id: Mapped[str] = mapped_column(ForeignKey("research_publications_v281.id", ondelete="CASCADE"), nullable=False)
+    revision: Mapped[int] = mapped_column(Integer, nullable=False)
+    content_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    previous_snapshot_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    state_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+

@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/research-peer-review-replication-rebuttal-v1.schema.json",
+  "title": "Sustainable Catalyst Peer Review, Replication & Rebuttal Intelligence",
+  "type": "object",
+  "required": [
+    "release",
+    "contract",
+    "publication",
+    "reviews",
+    "replication_studies",
+    "rebuttals"
+  ],
+  "properties": {
+    "release": {
+      "const": "2.82.0"
+    },
+    "contract": {
+      "const": "sc.research.peer-review-replication-rebuttal.v1"
+    },
+    "publication": {
+      "type": "object"
+    },
+    "reviews": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "review_comments": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "review_responses": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "replication_studies": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "replication_attempts": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "replication_comparisons": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "rebuttals": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "rebuttal_points": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "snapshots": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    }
+  },
+  "additionalProperties": true
+}
