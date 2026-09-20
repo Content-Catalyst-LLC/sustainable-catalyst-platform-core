@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Sustainable Catalyst Platform Core
  * Description: WordPress connector for Sustainable Catalyst Platform Core registry, graph, evidence, developer, gateway, free live-data, international-law, scientific-data, official-statistics, geospatial, time-series, STAC, map-layer, streaming, alerts, source-reliability, and operational-facility, humanitarian-access, essential-services, and country-evidence federation and reconciliation, and Earth/Ocean/Space scientific-service routing, cross-product exchange, distributed scale-control services, and governance/access/audit, production-certification/recovery, and observability/SLO production-operations services, plus incident-response, change-control, rollback-coordination, continuity, backup-verification, disaster-recovery, and multi-region resilience/failover-coordination, and data-lifecycle/archival-integrity/preservation services, plus Federated Core trusted-node exchange services and capacity forecasting/resource-governance services, plus identity/credential/cryptographic-key lifecycle governance, distributed workload governance, and scientific object storage/processing adapter services, research object/model services, renderer-neutral visual reasoning object services, and visualization specification/renderer registry services, and governed System Maps and Flow Maps services, plus the renderer-neutral visual reasoning runtime/scene graph.
- * Version: 2.84.0
+ * Version: 2.85.0
  * Author: Content Catalyst LLC
  * License: MIT
  */
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('SCPC_VERSION', '2.84.0');
+define('SCPC_VERSION', '2.85.0');
 define('SCPC_OPTION_BACKEND_URL', 'scpc_backend_url');
 define('SCPC_OPTION_READ_KEY', 'scpc_read_key');
 
@@ -1780,4 +1780,13 @@ add_shortcode('sc_platform_core_research_program_status', function () {
     if (!is_array($d)) return '<div class="sc-core-status"><strong>Research Program &amp; Longitudinal Knowledge Graph</strong><br>Unavailable</div>';
     $c = isset($d['counts']) && is_array($d['counts']) ? $d['counts'] : array();
     return '<div class="sc-core-status"><strong>Research Program &amp; Longitudinal Knowledge Graph</strong><br>Platform Core ' . esc_html($d['release'] ?? '2.84.0') . ' · ' . esc_html($c['programs'] ?? 0) . ' programs · ' . esc_html($c['longitudinal_nodes'] ?? 0) . ' graph nodes · ' . esc_html($c['knowledge_states'] ?? 0) . ' knowledge states · descriptive longitudinal governance; priority ranking, auto-linking, funding allocation, forecasting, causal/truth inference remain researcher-directed</div>';
+});
+
+
+// v2.85.0 Research Portfolio & Institutional Knowledge Governance status surface.
+add_shortcode('sc_platform_core_research_portfolio_status', function () {
+    $d = scpc_get_json('/v1/research/portfolios/readiness');
+    if (!is_array($d)) return '<div class="sc-core-status"><strong>Research Portfolio &amp; Institutional Knowledge Governance</strong><br>Unavailable</div>';
+    $c = $d['counts'] ?? array();
+    return '<div class="sc-core-status"><strong>Research Portfolio &amp; Institutional Knowledge Governance</strong><br>Platform Core ' . esc_html($d['release'] ?? '2.85.0') . ' · ' . esc_html($c['portfolios'] ?? 0) . ' portfolios · ' . esc_html($c['program_memberships'] ?? 0) . ' program memberships · ' . esc_html($c['risks'] ?? 0) . ' risks · descriptive institutional governance; ranking, prioritization, resource allocation, optimization, governance decisions, forecasting, and truth inference remain human-directed</div>';
 });

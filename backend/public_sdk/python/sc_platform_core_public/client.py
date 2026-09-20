@@ -982,3 +982,14 @@ PublicApiClient.research_program_graph = _v284_research_program_graph
 PublicApiClient.research_program_timeline = _v284_research_program_timeline
 PublicApiClient.research_program_lineage = _v284_research_program_lineage
 PublicApiClient.research_program_bundle = _v284_research_program_bundle
+
+
+# v2.85.0 Research Portfolio & Institutional Knowledge Governance
+def _v285_research_portfolio_summary(self, portfolio_id: str): return self.request("GET", f"/research/portfolios/{portfolio_id}/summary")
+def _v285_research_portfolio_map(self, portfolio_id: str): return self.request("GET", f"/research/portfolios/{portfolio_id}/map")
+def _v285_research_portfolio_lineage(self, portfolio_id: str): return self.request("GET", f"/research/portfolios/{portfolio_id}/lineage")
+def _v285_research_portfolio_bundle(self, portfolio_id: str): return self.request("GET", f"/research/portfolios/{portfolio_id}/bundle")
+PublicApiClient.research_portfolio_summary=_v285_research_portfolio_summary
+PublicApiClient.research_portfolio_map=_v285_research_portfolio_map
+PublicApiClient.research_portfolio_lineage=_v285_research_portfolio_lineage
+PublicApiClient.research_portfolio_bundle=_v285_research_portfolio_bundle

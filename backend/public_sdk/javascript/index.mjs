@@ -662,3 +662,10 @@ PublicApiClient.prototype.researchProgramGraph=function(programId){return this.r
 PublicApiClient.prototype.researchProgramTimeline=function(programId){return this.request(`/research/programs/${encodeURIComponent(programId)}/timeline`);};
 PublicApiClient.prototype.researchProgramLineage=function(programId){return this.request(`/research/programs/${encodeURIComponent(programId)}/lineage`);};
 PublicApiClient.prototype.researchProgramBundle=function(programId){return this.request(`/research/programs/${encodeURIComponent(programId)}/bundle`);};
+
+
+// v2.85.0 Research Portfolio & Institutional Knowledge Governance
+PublicApiClient.prototype.researchPortfolioSummary=function(portfolioId){return this.request(`/research/portfolios/${encodeURIComponent(portfolioId)}/summary`);};
+PublicApiClient.prototype.researchPortfolioMap=function(portfolioId){return this.request(`/research/portfolios/${encodeURIComponent(portfolioId)}/map`);};
+PublicApiClient.prototype.researchPortfolioLineage=function(portfolioId){return this.request(`/research/portfolios/${encodeURIComponent(portfolioId)}/lineage`);};
+PublicApiClient.prototype.researchPortfolioBundle=function(portfolioId){return this.request(`/research/portfolios/${encodeURIComponent(portfolioId)}/bundle`);};
