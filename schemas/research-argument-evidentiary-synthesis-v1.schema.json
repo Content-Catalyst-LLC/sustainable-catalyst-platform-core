@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/research-argument-evidentiary-synthesis-v1.schema.json",
+  "title": "Sustainable Catalyst Research Argument & Evidentiary Synthesis Contract",
+  "type": "object",
+  "required": ["release", "contract", "argument", "nodes", "edges"],
+  "properties": {
+    "release": {"const": "2.79.0"},
+    "contract": {"const": "sc.research.argument-evidentiary-synthesis.v1"},
+    "argument": {"type": "object"},
+    "nodes": {"type": "array", "items": {"type": "object"}},
+    "edges": {"type": "array", "items": {"type": "object"}},
+    "syntheses": {"type": "array", "items": {"type": "object"}},
+    "synthesis_components": {"type": "array", "items": {"type": "object"}},
+    "counterarguments": {"type": "array", "items": {"type": "object"}},
+    "tensions": {"type": "array", "items": {"type": "object"}},
+    "argument_revisions": {"type": "array", "items": {"type": "object"}},
+    "snapshots": {"type": "array", "items": {"type": "object"}},
+    "argument_map": {"type": "object"}
+  },
+  "additionalProperties": true,
+  "description": "A provenance-aware contract for researcher-authored arguments and evidentiary syntheses. Core records declared relationships and descriptive coverage but does not generate arguments or syntheses, score evidence, rank arguments, resolve tensions, or infer truth."
+}

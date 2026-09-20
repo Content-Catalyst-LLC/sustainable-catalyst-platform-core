@@ -1,0 +1,29 @@
+PLATFORM CORE v2.79.0 — TERMINAL COMMANDS
+
+GIT PUSH / TAG
+==============
+cd ~/Downloads
+rm -rf sc-platform-core-v2.79.0-release
+mkdir -p sc-platform-core-v2.79.0-release
+unzip -q sustainable-catalyst-platform-core-v2.79.0-release-bundle.zip -d sc-platform-core-v2.79.0-release
+cd sc-platform-core-v2.79.0-release
+chmod +x PUSH_PLATFORM_CORE_V2790_FINAL.sh
+./PUSH_PLATFORM_CORE_V2790_FINAL.sh "$PWD/sustainable-catalyst-platform-core-v2.79.0-repository.zip"
+
+BACKEND
+=======
+ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes catalystadmin@94.72.113.77
+cd /opt/sustainable-catalyst/core
+git fetch origin --tags
+git pull --ff-only origin main
+git log -1 --oneline
+git tag --points-at HEAD
+chmod +x DEPLOY_PLATFORM_CORE_V2790_CONTABO.sh
+bash DEPLOY_PLATFORM_CORE_V2790_CONTABO.sh
+
+VERIFY
+======
+docker ps --filter name=sc-core --format 'table {{.Names}}\t{{.Status}}\t{{.Ports}}'
+curl -fsS http://127.0.0.1:8090/health | python3 -m json.tool
+curl -fsS http://127.0.0.1:8090/v1/research/arguments/readiness | python3 -m json.tool
+curl -fsS https://core.sustainablecatalyst.com/health | python3 -m json.tool

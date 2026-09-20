@@ -1,0 +1,7 @@
+tests/test_research_argument_evidentiary_synthesis_v2790.py
+tests/test_partial_0083_recovery_v2790.py
+tests/test_bundle_validator_v2790.py
+tests/test_hypothesis_competing_explanation_v2780.py
+tests/test_partial_0082_recovery_v2780.py
+tests/test_research_intelligence_v2770.py
+tests/test_partial_0081_recovery_v2770.py

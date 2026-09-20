@@ -911,3 +911,12 @@ def _hypothesis_intelligence_comparison(self, set_id: str):
     return self.request("GET", f"/research/hypotheses/sets/{set_id}/comparison")
 PublicApiClient.hypothesis_intelligence_bundle = _hypothesis_intelligence_bundle
 PublicApiClient.hypothesis_intelligence_comparison = _hypothesis_intelligence_comparison
+
+
+# v2.79.0 Research Argument & Evidentiary Synthesis Engine
+def _research_argument_bundle(self, argument_id: str):
+    return self.request("GET", f"/research/arguments/{argument_id}/bundle")
+def _research_argument_map(self, argument_id: str):
+    return self.request("GET", f"/research/arguments/{argument_id}/map")
+PublicApiClient.research_argument_bundle = _research_argument_bundle
+PublicApiClient.research_argument_map = _research_argument_map

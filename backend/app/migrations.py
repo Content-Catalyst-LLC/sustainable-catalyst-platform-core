@@ -168,6 +168,7 @@ MIGRATIONS = [
     ("0079", 'Reproducible research packages with governed manifests, components, artifacts, environments, replay plans, verification/review evidence, and immutable snapshots; Core freezes declared research state but does not execute replay, rerun analyses, validate findings, or certify scientific truth.'),    ("0080", 'Research notebooks with governed sections, ordered entries, cross-research bindings, citations, analytical narratives, revisions, and immutable snapshots; Core preserves context and provenance but does not execute code, generate narrative, fabricate citations, infer conclusions, or publish.'),
     ("0081", 'Finding, claim, interpretation, and evidence-link intelligence with version history, derivation lineage, structured contradiction flags, declared uncertainty/strength metadata, and immutable snapshots; Core records research judgment but does not infer truth, rank claims, or resolve contradictions.'),
     ("0082", 'Hypothesis/competing-explanation intelligence with governed sets, assumptions, predictions, evidence assessments, relations, discrimination gaps, revisions, comparison matrices, and snapshots; Core does not generate, score, rank, select, confirm, reject, or infer truth.'),
+    ("0083", 'Research argument and evidentiary synthesis with governed argument graphs, researcher-authored syntheses, counterarguments, unresolved tensions, revision history, descriptive coverage, and immutable snapshots; Core does not generate, score, rank, resolve, or infer truth.'),
 ]
 
 

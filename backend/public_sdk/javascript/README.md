@@ -205,3 +205,7 @@ Adds public monitoring-bundle access. Detection, threshold optimization, alertin
 ## v2.57.0 — Spatial-Temporal Predictive Intelligence
 
 Read public predictive readiness and governed spatial-temporal study bundles. Core preserves spatial/temporal forecast, observation, propagation, hotspot, evaluation, and package provenance; specialist runtimes perform spatial inference and computation.
+
+## v2.79.0 — Research Argument & Evidentiary Synthesis
+
+Adds public bundle and argument-map helpers for public research projects. The API exposes researcher-declared graph structure and descriptive coverage only; Core does not generate arguments or syntheses, score evidence, rank alternatives, resolve evidentiary tensions, or infer truth.
