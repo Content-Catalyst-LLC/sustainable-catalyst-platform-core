@@ -1,0 +1,16 @@
+tests/test_health.py
+tests/test_unified_research_projects_v2720.py
+tests/test_partial_0076_recovery_v2720.py
+tests/test_research_lineage_v2730.py
+tests/test_partial_0077_recovery_v2730.py
+tests/test_research_methodology_v2740.py
+tests/test_partial_0078_recovery_v2740.py
+tests/test_reproducible_research_v2750.py
+tests/test_partial_0079_recovery_v2750.py
+tests/test_research_notebooks_v2760.py
+tests/test_partial_0080_recovery_v2760.py
+tests/test_research_intelligence_v2770.py
+tests/test_partial_0081_recovery_v2770.py
+tests/test_hypothesis_competing_explanation_v2780.py
+tests/test_partial_0082_recovery_v2780.py
+tests/test_bundle_validator_v2780.py

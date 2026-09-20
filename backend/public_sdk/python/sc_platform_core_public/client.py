@@ -902,3 +902,12 @@ def _research_intelligence_contradiction_candidates(self, project_id: str):
     return self.request("GET", f"/research/intelligence/projects/{project_id}/contradiction-candidates")
 PublicApiClient.research_intelligence_bundle = _research_intelligence_bundle
 PublicApiClient.research_intelligence_contradiction_candidates = _research_intelligence_contradiction_candidates
+
+
+# v2.78.0 Hypothesis & Competing Explanation Engine
+def _hypothesis_intelligence_bundle(self, set_id: str):
+    return self.request("GET", f"/research/hypotheses/sets/{set_id}/bundle")
+def _hypothesis_intelligence_comparison(self, set_id: str):
+    return self.request("GET", f"/research/hypotheses/sets/{set_id}/comparison")
+PublicApiClient.hypothesis_intelligence_bundle = _hypothesis_intelligence_bundle
+PublicApiClient.hypothesis_intelligence_comparison = _hypothesis_intelligence_comparison

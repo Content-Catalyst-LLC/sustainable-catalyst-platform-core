@@ -64,6 +64,7 @@ from .routers import (
     reproducible_research,
     research_notebooks,
     research_intelligence,
+    hypothesis_intelligence,
     visualization_registry,
     system_maps,
     flow_maps,
@@ -303,6 +304,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # v2.77.0 Finding, Claim & Evidence Intelligence.
     app.include_router(research_intelligence.router)
     app.include_router(research_intelligence.public_router)
+    # v2.78.0 Hypothesis & Competing Explanation Engine.
+    app.include_router(hypothesis_intelligence.router)
+    app.include_router(hypothesis_intelligence.public_router)
     # Open Forensics includes v2.51.0 Reproducible Investigation Packages.
     app.include_router(open_forensics.router)
     app.include_router(open_forensics.public_router)

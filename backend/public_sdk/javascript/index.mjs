@@ -618,3 +618,8 @@ export async function researchNotebookBundle(client, notebookId) { return client
 // v2.77.0 Finding, Claim & Evidence Intelligence
 export async function researchIntelligenceBundle(client, projectId) { return client.request(`/research/intelligence/projects/${encodeURIComponent(projectId)}/bundle`); }
 export async function researchIntelligenceContradictionCandidates(client, projectId) { return client.request(`/research/intelligence/projects/${encodeURIComponent(projectId)}/contradiction-candidates`); }
+
+
+// v2.78.0 Hypothesis & Competing Explanation Engine
+export async function hypothesisIntelligenceBundle(client, setId) { return client.request(`/research/hypotheses/sets/${encodeURIComponent(setId)}/bundle`); }
+export async function hypothesisIntelligenceComparison(client, setId) { return client.request(`/research/hypotheses/sets/${encodeURIComponent(setId)}/comparison`); }

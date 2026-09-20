@@ -1,4 +1,4 @@
-# Sustainable Catalyst Platform Core v2.77.0
+# Sustainable Catalyst Platform Core v2.78.0
 
 Current release: **Finding, Claim & Evidence Intelligence**. See `RELEASE_NOTES_V2770.md`.
 

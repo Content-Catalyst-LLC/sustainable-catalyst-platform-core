@@ -16,7 +16,7 @@ Tags: knowledge graph, entity registry, provenance, live data, sustainable catal
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.0
-Stable tag: 2.77.0
+Stable tag: 2.78.0
 License: MIT
 
 WordPress status, live-data gateway, and entity lookup client for Sustainable Catalyst Platform Core.
@@ -252,3 +252,7 @@ Research Notebook & Analytical Narrative status surface and Core 2.76.0 compatib
 
 == 2.77.0 ==
 Finding, Claim & Evidence Intelligence status surface and Core 2.77.0 compatibility. Adds [sc_platform_core_research_intelligence_status].
+
+
+== 2.78.0 ==
+Hypothesis & Competing Explanation Engine status surface and Core 2.78.0 compatibility. Adds [sc_platform_core_hypothesis_engine_status].

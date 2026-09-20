@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/research-hypothesis-competing-explanation-v1.schema.json",
+  "title": "Sustainable Catalyst Research Hypothesis & Competing Explanation Contract",
+  "type": "object",
+  "required": ["release", "contract", "hypothesis_set", "hypotheses"],
+  "properties": {
+    "release": {"const": "2.78.0"},
+    "contract": {"const": "sc.research.hypothesis-competing-explanation.v1"},
+    "hypothesis_set": {"type": "object"},
+    "hypotheses": {"type": "array", "items": {"type": "object"}},
+    "hypothesis_revisions": {"type": "array", "items": {"type": "object"}},
+    "evidence_assessments": {"type": "array", "items": {"type": "object"}},
+    "predictions": {"type": "array", "items": {"type": "object"}},
+    "assumptions": {"type": "array", "items": {"type": "object"}},
+    "hypothesis_relations": {"type": "array", "items": {"type": "object"}},
+    "discrimination_gaps": {"type": "array", "items": {"type": "object"}},
+    "snapshots": {"type": "array", "items": {"type": "object"}}
+  },
+  "additionalProperties": true,
+  "description": "A descriptive, provenance-aware contract for researcher-authored hypotheses and competing explanations. Core does not generate, score, rank, select, confirm, reject, or infer truth or causality."
+}
