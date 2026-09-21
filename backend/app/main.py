@@ -78,6 +78,7 @@ from .routers import (
     research_quality_audit,
     research_workflows,
     research_context_handoffs,
+    research_project_state,
     visualization_registry,
     system_maps,
     flow_maps,
@@ -359,6 +360,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # v2.91.0 Cross-Product Research Context & Handoff Protocol.
     app.include_router(research_context_handoffs.router)
     app.include_router(research_context_handoffs.public_router)
+    # v2.92.0 Research Project State, Versioning & Reproducibility.
+    app.include_router(research_project_state.router)
+    app.include_router(research_project_state.public_router)
     # Open Forensics includes v2.51.0 Reproducible Investigation Packages.
     app.include_router(open_forensics.router)
     app.include_router(open_forensics.public_router)

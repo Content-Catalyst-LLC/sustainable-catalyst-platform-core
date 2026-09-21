@@ -240,3 +240,6 @@ Research Workflow & Orchestration public read methods are available for summary,
 
 
 v2.91.0 adds research context/handoff summary, lineage, and bundle helpers.
+
+## v2.92.0 — Research Project State, Versioning & Reproducibility
+Adds project-state summary, lineage, bundle, and historical-version manifest helpers. Historical manifests are reference-first provenance records; Core does not replay computations or certify reproducibility.

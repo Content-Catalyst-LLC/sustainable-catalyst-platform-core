@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/research-project-state-versioning-v1.schema.json",
+  "title": "Sustainable Catalyst Research Project State, Versioning & Reproducibility",
+  "type": "object",
+  "required": [
+    "state_key",
+    "project_ref",
+    "title"
+  ],
+  "properties": {
+    "state_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "project_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "visibility": {
+      "enum": [
+        "private",
+        "internal",
+        "public"
+      ]
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "bindings": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "environments": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "reconstruction_plan": {
+      "type": "object"
+    },
+    "provenance": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": true
+}

@@ -208,6 +208,7 @@ def health(request: Request):
         "research_quality_bias_methodological_audit_engine": request.app.state.settings.research_quality_bias_methodological_audit_enabled,
         "research_workflow_orchestration_engine": request.app.state.settings.research_workflow_orchestration_enabled,
         "cross_product_research_context_handoff_protocol": request.app.state.settings.cross_product_research_context_handoff_enabled,
+        "research_project_state_versioning_reproducibility": request.app.state.settings.research_project_state_versioning_reproducibility_enabled,
         "open_forensics": request.app.state.settings.open_forensics_enabled,
         "forensic_timeline_event_reconstruction": request.app.state.settings.open_forensics_enabled,
         "forensic_spatial_temporal_evidence_integration": request.app.state.settings.open_forensics_enabled,

@@ -702,3 +702,9 @@ export async function researchWorkflowBundle(client, workflowId) { return client
 export async function researchContextHandoffSummary(client, contextId) { return client.request("GET", `/research/context-handoffs/contexts/${encodeURIComponent(contextId)}/summary`); }
 export async function researchContextHandoffLineage(client, contextId) { return client.request("GET", `/research/context-handoffs/contexts/${encodeURIComponent(contextId)}/lineage`); }
 export async function researchContextHandoffBundle(client, contextId) { return client.request("GET", `/research/context-handoffs/contexts/${encodeURIComponent(contextId)}/bundle`); }
+
+// v2.92.0 Research Project State, Versioning & Reproducibility
+export async function researchProjectStateSummary(client, stateId) { return client.request("GET", `/research/project-state/states/${encodeURIComponent(stateId)}/summary`); }
+export async function researchProjectStateLineage(client, stateId) { return client.request("GET", `/research/project-state/states/${encodeURIComponent(stateId)}/lineage`); }
+export async function researchProjectStateBundle(client, stateId) { return client.request("GET", `/research/project-state/states/${encodeURIComponent(stateId)}/bundle`); }
+export async function researchProjectStateManifest(client, stateId, version) { return client.request("GET", `/research/project-state/states/${encodeURIComponent(stateId)}/versions/${encodeURIComponent(version)}/manifest`); }

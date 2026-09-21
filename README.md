@@ -131,3 +131,6 @@ Core coordinates declared research lifecycle state and cross-product handoffs wi
 
 ### v2.91.0 Cross-Product Research Context & Handoff Protocol
 Preserves project, workflow, protocol, evidence, data, computation, inference, audit, and provenance context across product boundaries using explicit handoff contracts, integrity-aware manifests, acknowledgements, conflicts, revisions, lineage, and immutable snapshots. Core records and verifies declared transfer state; it does not autonomously route or execute research work.
+
+### v2.92.0 Research Project State, Versioning & Reproducibility
+Makes research projects historically reconstructable through immutable hash-linked versions that reference exact sources, data, protocols, computations, environments, visualizations, findings, claims, reviews, workflow/handoff state, and other research objects. Reconstruction is reference-first; Core does not replay or certify research.

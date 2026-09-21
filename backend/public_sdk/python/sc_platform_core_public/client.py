@@ -1045,3 +1045,13 @@ def _v291_research_context_handoff_bundle(self, context_id: str): return self.re
 PublicApiClient.research_context_handoff_summary=_v291_research_context_handoff_summary
 PublicApiClient.research_context_handoff_lineage=_v291_research_context_handoff_lineage
 PublicApiClient.research_context_handoff_bundle=_v291_research_context_handoff_bundle
+
+# v2.92.0 Research Project State, Versioning & Reproducibility
+def _v292_research_project_state_summary(self, state_id: str): return self.request("GET", f"/research/project-state/states/{state_id}/summary")
+def _v292_research_project_state_lineage(self, state_id: str): return self.request("GET", f"/research/project-state/states/{state_id}/lineage")
+def _v292_research_project_state_bundle(self, state_id: str): return self.request("GET", f"/research/project-state/states/{state_id}/bundle")
+def _v292_research_project_state_manifest(self, state_id: str, version: int): return self.request("GET", f"/research/project-state/states/{state_id}/versions/{version}/manifest")
+PublicApiClient.research_project_state_summary=_v292_research_project_state_summary
+PublicApiClient.research_project_state_lineage=_v292_research_project_state_lineage
+PublicApiClient.research_project_state_bundle=_v292_research_project_state_bundle
+PublicApiClient.research_project_state_manifest=_v292_research_project_state_manifest

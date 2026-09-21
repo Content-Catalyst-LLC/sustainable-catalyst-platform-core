@@ -603,3 +603,9 @@ Adds governed research notebooks, ordered sections and entries, cross-research b
 - Added migration `0095` and ten additive context/handoff persistence families.
 - Added context envelopes, object/provenance bindings, state markers, explicit product-to-product handoff protocols, deterministic contract diagnostics, content-addressed packages, acknowledgements, conflicts, revisions, lineage, and immutable snapshots.
 - Preserved strict non-routing, non-execution, non-authorization, non-conflict-resolution, and non-truth-inference boundaries.
+
+## 2.92.0
+- Added Research Project State, Versioning & Reproducibility.
+- Added migration `0096` and ten additive historical project-state persistence families.
+- Added immutable version manifests, exact object/environment references, dependency graphs, named checkpoints, reconstruction plans, attributed verification evidence, revision history, lineage, and hash-chained snapshots.
+- Preserved strict non-replay, non-restore, non-reproducibility-inference, non-certification, and non-truth-inference boundaries.

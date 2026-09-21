@@ -12177,3 +12177,161 @@ class ResearchHandoffSnapshotRecord(Base):
     provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
     created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+# v2.92.0 Research Project State, Versioning & Reproducibility
+class ResearchProjectStateRecord(Base):
+    __tablename__ = "research_project_states_v292"
+    __table_args__ = (UniqueConstraint("state_key", name="uq_research_project_state_v292_key"), Index("ix_research_project_state_v292_project_status", "project_ref", "status"))
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    state_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    project_ref: Mapped[str] = mapped_column(String(500), nullable=False)
+    title: Mapped[str] = mapped_column(String(500), nullable=False)
+    status: Mapped[str] = mapped_column(String(60), nullable=False, default="active")
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="private")
+    current_version: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    latest_version_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+class ResearchProjectStateVersionRecord(Base):
+    __tablename__ = "research_project_state_versions_v292"
+    __table_args__ = (UniqueConstraint("state_id", "version", name="uq_research_project_state_version_v292"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    state_id: Mapped[str] = mapped_column(ForeignKey("research_project_states_v292.id", ondelete="CASCADE"), nullable=False)
+    version: Mapped[int] = mapped_column(Integer, nullable=False)
+    label: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    status: Mapped[str] = mapped_column(String(60), nullable=False, default="draft")
+    summary: Mapped[str | None] = mapped_column(Text, nullable=True)
+    content_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    previous_version_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    frozen_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchProjectStateBindingRecord(Base):
+    __tablename__ = "research_project_state_bindings_v292"
+    __table_args__ = (UniqueConstraint("version_id", "binding_key", name="uq_research_project_state_binding_v292"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    version_id: Mapped[str] = mapped_column(ForeignKey("research_project_state_versions_v292.id", ondelete="CASCADE"), nullable=False)
+    binding_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    product_key: Mapped[str] = mapped_column(String(120), nullable=False)
+    object_type: Mapped[str] = mapped_column(String(120), nullable=False)
+    object_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    object_version_ref: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    content_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    role: Mapped[str] = mapped_column(String(160), nullable=False, default="project_state")
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchProjectStateDependencyRecord(Base):
+    __tablename__ = "research_project_state_dependencies_v292"
+    __table_args__ = (UniqueConstraint("version_id", "dependency_key", name="uq_research_project_state_dependency_v292"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    version_id: Mapped[str] = mapped_column(ForeignKey("research_project_state_versions_v292.id", ondelete="CASCADE"), nullable=False)
+    dependency_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    from_binding_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    to_binding_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    relation: Mapped[str] = mapped_column(String(160), nullable=False)
+    details_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchProjectStateEnvironmentRecord(Base):
+    __tablename__ = "research_project_state_environments_v292"
+    __table_args__ = (UniqueConstraint("version_id", "environment_key", name="uq_research_project_state_environment_v292"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    version_id: Mapped[str] = mapped_column(ForeignKey("research_project_state_versions_v292.id", ondelete="CASCADE"), nullable=False)
+    environment_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    environment_type: Mapped[str] = mapped_column(String(120), nullable=False)
+    environment_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    version_ref: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    content_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
+    details_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchProjectStateCheckpointRecord(Base):
+    __tablename__ = "research_project_state_checkpoints_v292"
+    __table_args__ = (UniqueConstraint("state_id", "checkpoint_key", name="uq_research_project_state_checkpoint_v292"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    state_id: Mapped[str] = mapped_column(ForeignKey("research_project_states_v292.id", ondelete="CASCADE"), nullable=False)
+    version_id: Mapped[str] = mapped_column(ForeignKey("research_project_state_versions_v292.id", ondelete="CASCADE"), nullable=False)
+    checkpoint_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    checkpoint_type: Mapped[str] = mapped_column(String(120), nullable=False)
+    title: Mapped[str] = mapped_column(String(500), nullable=False)
+    status: Mapped[str] = mapped_column(String(60), nullable=False, default="declared")
+    notes: Mapped[str | None] = mapped_column(Text, nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchProjectReconstructionPlanRecord(Base):
+    __tablename__ = "research_project_reconstruction_plans_v292"
+    __table_args__ = (UniqueConstraint("state_id", "plan_key", name="uq_research_project_reconstruction_plan_v292"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    state_id: Mapped[str] = mapped_column(ForeignKey("research_project_states_v292.id", ondelete="CASCADE"), nullable=False)
+    version_id: Mapped[str] = mapped_column(ForeignKey("research_project_state_versions_v292.id", ondelete="CASCADE"), nullable=False)
+    plan_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    status: Mapped[str] = mapped_column(String(60), nullable=False, default="declared")
+    required_binding_keys_json: Mapped[list] = mapped_column(JSON, default=list)
+    required_environment_keys_json: Mapped[list] = mapped_column(JSON, default=list)
+    steps_json: Mapped[list] = mapped_column(JSON, default=list)
+    notes: Mapped[str | None] = mapped_column(Text, nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchProjectReconstructionVerificationRecord(Base):
+    __tablename__ = "research_project_reconstruction_verifications_v292"
+    __table_args__ = (UniqueConstraint("state_id", "verification_key", name="uq_research_project_reconstruction_verification_v292"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    state_id: Mapped[str] = mapped_column(ForeignKey("research_project_states_v292.id", ondelete="CASCADE"), nullable=False)
+    plan_id: Mapped[str] = mapped_column(ForeignKey("research_project_reconstruction_plans_v292.id", ondelete="CASCADE"), nullable=False)
+    version_id: Mapped[str] = mapped_column(ForeignKey("research_project_state_versions_v292.id", ondelete="CASCADE"), nullable=False)
+    verification_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    status: Mapped[str] = mapped_column(String(60), nullable=False, default="unverified")
+    verifier_ref: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    checks_json: Mapped[list] = mapped_column(JSON, default=list)
+    evidence_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    notes: Mapped[str | None] = mapped_column(Text, nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchProjectStateRevisionRecord(Base):
+    __tablename__ = "research_project_state_revisions_v292"
+    __table_args__ = (UniqueConstraint("state_id", "revision", name="uq_research_project_state_revision_v292"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    state_id: Mapped[str] = mapped_column(ForeignKey("research_project_states_v292.id", ondelete="CASCADE"), nullable=False)
+    revision: Mapped[int] = mapped_column(Integer, nullable=False)
+    state_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    prior_state_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    revised_state_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    change_summary: Mapped[str | None] = mapped_column(Text, nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchProjectStateSnapshotRecord(Base):
+    __tablename__ = "research_project_state_snapshots_v292"
+    __table_args__ = (UniqueConstraint("state_id", "revision", name="uq_research_project_state_snapshot_v292"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    state_id: Mapped[str] = mapped_column(ForeignKey("research_project_states_v292.id", ondelete="CASCADE"), nullable=False)
+    revision: Mapped[int] = mapped_column(Integer, nullable=False)
+    content_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    previous_snapshot_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    state_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
