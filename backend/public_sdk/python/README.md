@@ -227,3 +227,7 @@ Adds public summary, lineage, and bundle accessors for governed cross-study synt
 
 ## v2.87.0
 Adds public helpers for computation/analysis execution summaries, declared lineage, and bundles.
+
+
+## v2.88.0 — Unified Findings, Claims & Inference Engine
+Public read methods expose inference summary, declared lineage, and portable bundle endpoints. Inference classifications and confidence declarations remain researcher-authored; Core does not generate or validate inference.

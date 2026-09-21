@@ -11539,3 +11539,146 @@ class ComputationExecutionSnapshotRecord(Base):
     provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
     created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+# v2.88.0 — Unified Findings, Claims & Inference Engine
+class ResearchInferenceRecord(Base):
+    __tablename__ = "research_inferences_v288"
+    __table_args__ = (
+        UniqueConstraint("inference_key", name="uq_research_inference_v288_key"),
+        Index("ix_research_inference_v288_project_type", "project_ref", "inference_type"),
+        Index("ix_research_inference_v288_status", "status"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    inference_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    title: Mapped[str] = mapped_column(String(500), nullable=False)
+    statement_text: Mapped[str] = mapped_column(Text, nullable=False)
+    inference_type: Mapped[str] = mapped_column(String(100), nullable=False)
+    status: Mapped[str] = mapped_column(String(60), nullable=False, default="proposed")
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="private")
+    project_ref: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    protocol_ref: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    execution_ref: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    method_ref: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    source_object_type: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    source_object_ref: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    scope_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    confidence_declaration_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    qualifications_json: Mapped[list] = mapped_column(JSON, default=list)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+class ResearchInferenceClassificationRecord(Base):
+    __tablename__ = "research_inference_classifications_v288"
+    __table_args__ = (UniqueConstraint("inference_id", "classification_key", name="uq_research_inference_classification_v288_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    inference_id: Mapped[str] = mapped_column(ForeignKey("research_inferences_v288.id", ondelete="CASCADE"), nullable=False)
+    classification_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    object_type: Mapped[str] = mapped_column(String(100), nullable=False)
+    object_ref: Mapped[str] = mapped_column(String(500), nullable=False)
+    inference_type: Mapped[str] = mapped_column(String(100), nullable=False)
+    classification_basis: Mapped[str | None] = mapped_column(Text, nullable=True)
+    declared_by: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchInferenceBasisRecord(Base):
+    __tablename__ = "research_inference_basis_bindings_v288"
+    __table_args__ = (UniqueConstraint("inference_id", "basis_key", name="uq_research_inference_basis_v288_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    inference_id: Mapped[str] = mapped_column(ForeignKey("research_inferences_v288.id", ondelete="CASCADE"), nullable=False)
+    basis_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    basis_type: Mapped[str] = mapped_column(String(100), nullable=False)
+    basis_ref: Mapped[str] = mapped_column(String(500), nullable=False)
+    relation: Mapped[str] = mapped_column(String(120), nullable=False)
+    locator: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    declared_strength: Mapped[str | None] = mapped_column(String(80), nullable=True)
+    rationale: Mapped[str | None] = mapped_column(Text, nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchInferenceAssumptionRecord(Base):
+    __tablename__ = "research_inference_assumptions_v288"
+    __table_args__ = (UniqueConstraint("inference_id", "assumption_key", name="uq_research_inference_assumption_v288_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    inference_id: Mapped[str] = mapped_column(ForeignKey("research_inferences_v288.id", ondelete="CASCADE"), nullable=False)
+    assumption_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    statement_text: Mapped[str] = mapped_column(Text, nullable=False)
+    assumption_type: Mapped[str] = mapped_column(String(100), nullable=False, default="declared")
+    source_ref: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchInferenceUncertaintyRecord(Base):
+    __tablename__ = "research_inference_uncertainty_v288"
+    __table_args__ = (UniqueConstraint("inference_id", "uncertainty_key", name="uq_research_inference_uncertainty_v288_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    inference_id: Mapped[str] = mapped_column(ForeignKey("research_inferences_v288.id", ondelete="CASCADE"), nullable=False)
+    uncertainty_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    uncertainty_type: Mapped[str] = mapped_column(String(100), nullable=False)
+    description: Mapped[str] = mapped_column(Text, nullable=False)
+    quantitative_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    source_ref: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchInferenceRelationRecord(Base):
+    __tablename__ = "research_inference_relations_v288"
+    __table_args__ = (UniqueConstraint("inference_id", "relation_key", name="uq_research_inference_relation_v288_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    inference_id: Mapped[str] = mapped_column(ForeignKey("research_inferences_v288.id", ondelete="CASCADE"), nullable=False)
+    relation_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    target_inference_ref: Mapped[str] = mapped_column(String(500), nullable=False)
+    relation: Mapped[str] = mapped_column(String(120), nullable=False)
+    rationale: Mapped[str | None] = mapped_column(Text, nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchInferenceChallengeRecord(Base):
+    __tablename__ = "research_inference_challenges_v288"
+    __table_args__ = (UniqueConstraint("inference_id", "challenge_key", name="uq_research_inference_challenge_v288_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    inference_id: Mapped[str] = mapped_column(ForeignKey("research_inferences_v288.id", ondelete="CASCADE"), nullable=False)
+    challenge_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    challenge_type: Mapped[str] = mapped_column(String(100), nullable=False)
+    statement_text: Mapped[str] = mapped_column(Text, nullable=False)
+    status: Mapped[str] = mapped_column(String(80), nullable=False, default="open")
+    evidence_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    raised_by: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchInferenceRevisionRecord(Base):
+    __tablename__ = "research_inference_revisions_v288"
+    __table_args__ = (UniqueConstraint("inference_id", "revision", name="uq_research_inference_revision_v288_revision"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    inference_id: Mapped[str] = mapped_column(ForeignKey("research_inferences_v288.id", ondelete="CASCADE"), nullable=False)
+    revision: Mapped[int] = mapped_column(Integer, nullable=False)
+    state_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    prior_state_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    revised_state_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    change_summary: Mapped[str | None] = mapped_column(Text, nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchInferenceSnapshotRecord(Base):
+    __tablename__ = "research_inference_snapshots_v288"
+    __table_args__ = (UniqueConstraint("inference_id", "revision", name="uq_research_inference_snapshot_v288_revision"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    inference_id: Mapped[str] = mapped_column(ForeignKey("research_inferences_v288.id", ondelete="CASCADE"), nullable=False)
+    revision: Mapped[int] = mapped_column(Integer, nullable=False)
+    content_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    previous_snapshot_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    state_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)

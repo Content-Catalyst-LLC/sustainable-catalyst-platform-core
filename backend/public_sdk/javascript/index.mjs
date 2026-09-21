@@ -679,3 +679,9 @@ export async function researchProtocolBundle(client, protocolId) { return client
 export async function computationLineageSummary(client, executionId) { return client.request("GET", `/research/computation-lineage/executions/${encodeURIComponent(executionId)}/summary`); }
 export async function computationLineage(client, executionId) { return client.request("GET", `/research/computation-lineage/executions/${encodeURIComponent(executionId)}/lineage`); }
 export async function computationLineageBundle(client, executionId) { return client.request("GET", `/research/computation-lineage/executions/${encodeURIComponent(executionId)}/bundle`); }
+
+
+// v2.88.0 Unified Findings, Claims & Inference Engine
+export async function inferenceSummary(client, inferenceId) { return client.request("GET", `/research/inferences/${encodeURIComponent(inferenceId)}/summary`); }
+export async function inferenceLineage(client, inferenceId) { return client.request("GET", `/research/inferences/${encodeURIComponent(inferenceId)}/lineage`); }
+export async function inferenceBundle(client, inferenceId) { return client.request("GET", `/research/inferences/${encodeURIComponent(inferenceId)}/bundle`); }

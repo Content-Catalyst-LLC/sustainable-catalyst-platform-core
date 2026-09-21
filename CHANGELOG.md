@@ -580,3 +580,10 @@ Adds governed research notebooks, ordered sections and entries, cross-research b
 - Added governed external execution records for Python/R/Julia/SQL/Workbench/ML/container and other runtimes.
 - Added versioned input, parameter, assumption, environment, step, output, research-object binding, cross-execution dependency, verification, revision, lineage, and immutable snapshot contracts.
 - Preserved strict non-execution and non-inference boundaries.
+
+
+## 2.88.0
+- Added Unified Findings, Claims & Inference Engine.
+- Added migration 0092 and nine inference-semantics tables.
+- Added explicit observation/measurement/descriptive/statistical/causal/predictive/interpretive/speculative inference taxonomy.
+- Added declared basis, assumption, uncertainty, relation, challenge, revision, lineage, snapshot, public API, WordPress, and SDK surfaces.

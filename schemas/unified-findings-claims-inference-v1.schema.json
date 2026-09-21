@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/unified-findings-claims-inference-v1.schema.json",
+  "title": "Sustainable Catalyst Unified Findings, Claims & Inference",
+  "type": "object",
+  "required": ["inference_key", "statement_text", "inference_type"],
+  "properties": {
+    "inference_key": {"type": "string", "minLength": 1},
+    "statement_text": {"type": "string", "minLength": 1},
+    "inference_type": {"enum": ["observation","measurement","descriptive_finding","statistical_association","statistical_inference","causal_inference","model_derived_result","prediction","forecast","interpretation","expert_judgment","hypothesis","speculation","conclusion"]},
+    "project_ref": {"type": ["string","null"]},
+    "protocol_ref": {"type": ["string","null"]},
+    "execution_ref": {"type": ["string","null"]},
+    "method_ref": {"type": ["string","null"]},
+    "scope": {"type": "object"},
+    "confidence_declaration": {"type": "object"},
+    "qualifications": {"type": "array"}
+  },
+  "additionalProperties": true
+}

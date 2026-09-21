@@ -1009,3 +1009,12 @@ def _v287_computation_lineage_bundle(self, execution_id: str): return self.reque
 PublicApiClient.computation_lineage_summary=_v287_computation_lineage_summary
 PublicApiClient.computation_lineage=_v287_computation_lineage
 PublicApiClient.computation_lineage_bundle=_v287_computation_lineage_bundle
+
+
+# v2.88.0 Unified Findings, Claims & Inference Engine
+def _v288_inference_summary(self, inference_id: str): return self.request("GET", f"/research/inferences/{inference_id}/summary")
+def _v288_inference_lineage(self, inference_id: str): return self.request("GET", f"/research/inferences/{inference_id}/lineage")
+def _v288_inference_bundle(self, inference_id: str): return self.request("GET", f"/research/inferences/{inference_id}/bundle")
+PublicApiClient.inference_summary=_v288_inference_summary
+PublicApiClient.inference_lineage=_v288_inference_lineage
+PublicApiClient.inference_bundle=_v288_inference_bundle

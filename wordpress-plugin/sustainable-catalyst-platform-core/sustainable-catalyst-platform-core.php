@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Sustainable Catalyst Platform Core
  * Description: WordPress connector for Sustainable Catalyst Platform Core registry, graph, evidence, developer, gateway, free live-data, international-law, scientific-data, official-statistics, geospatial, time-series, STAC, map-layer, streaming, alerts, source-reliability, and operational-facility, humanitarian-access, essential-services, and country-evidence federation and reconciliation, and Earth/Ocean/Space scientific-service routing, cross-product exchange, distributed scale-control services, and governance/access/audit, production-certification/recovery, and observability/SLO production-operations services, plus incident-response, change-control, rollback-coordination, continuity, backup-verification, disaster-recovery, and multi-region resilience/failover-coordination, and data-lifecycle/archival-integrity/preservation services, plus Federated Core trusted-node exchange services and capacity forecasting/resource-governance services, plus identity/credential/cryptographic-key lifecycle governance, distributed workload governance, and scientific object storage/processing adapter services, research object/model services, renderer-neutral visual reasoning object services, and visualization specification/renderer registry services, and governed System Maps and Flow Maps services, plus the renderer-neutral visual reasoning runtime/scene graph.
- * Version: 2.87.0
+ * Version: 2.88.0
  * Author: Content Catalyst LLC
  * License: MIT
  */
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('SCPC_VERSION', '2.87.0');
+define('SCPC_VERSION', '2.88.0');
 define('SCPC_OPTION_BACKEND_URL', 'scpc_backend_url');
 define('SCPC_OPTION_READ_KEY', 'scpc_read_key');
 
@@ -1806,4 +1806,13 @@ add_shortcode('sc_platform_core_computation_lineage_status', function () {
     if (!is_array($d)) return '<div class="sc-core-status"><strong>Computation, Analysis &amp; Execution Lineage</strong><br>Unavailable</div>';
     $c = isset($d['counts']) && is_array($d['counts']) ? $d['counts'] : array();
     return '<div class="sc-core-status"><strong>Computation, Analysis &amp; Execution Lineage</strong><br>Platform Core ' . esc_html($d['release'] ?? '2.87.0') . ' · ' . esc_html($c['executions'] ?? 0) . ' executions · ' . esc_html($c['inputs'] ?? 0) . ' inputs · ' . esc_html($c['outputs'] ?? 0) . ' outputs · provenance/lineage registry only; Python/R/Julia/ML/Workbench execution and result inference remain external</div>';
+});
+
+
+// v2.88.0 Unified Findings, Claims & Inference Engine status surface.
+add_shortcode('sc_platform_core_unified_inference_status', function () {
+    $d = scpc_get_json('/v1/research/inferences/readiness');
+    if (!is_array($d)) return '<div class="sc-core-status"><strong>Unified Findings, Claims &amp; Inference Engine</strong><br>Unavailable</div>';
+    $c = isset($d['counts']) && is_array($d['counts']) ? $d['counts'] : array();
+    return '<div class="sc-core-status"><strong>Unified Findings, Claims &amp; Inference Engine</strong><br>Platform Core ' . esc_html($d['release'] ?? '2.88.0') . ' · ' . esc_html($c['inferences'] ?? 0) . ' inferences · ' . esc_html($c['classifications'] ?? 0) . ' classifications · ' . esc_html($c['basis_bindings'] ?? 0) . ' basis bindings · explicit epistemic semantics; inference generation, causal determination, scoring, validation, ranking, contradiction resolution, and truth determination remain external/researcher-directed</div>';
 });

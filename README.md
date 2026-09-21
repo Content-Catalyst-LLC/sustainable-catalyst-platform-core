@@ -117,3 +117,7 @@ Scientific Study & Investigation Protocol Model: universal protocol registration
 
 ### Platform Core v2.87.0
 Computation, Analysis & Execution Lineage connects externally executed Python, R, Julia, ML, Workbench, container, SQL, and specialist-runtime work back to versioned inputs, parameters, assumptions, environments, steps, outputs, findings/claims, dependencies, verification evidence, revisions, and immutable snapshots. Core records provenance and lineage; execution and scientific inference remain external.
+
+
+## Platform Core v2.88.0 — Unified Findings, Claims & Inference Engine
+Adds an explicit epistemic/inference taxonomy and provenance layer over existing findings, interpretations, claims, conclusions, computation outputs, evidence, assumptions, uncertainty, challenge, and revision records. Core stores researcher-declared inference semantics and does not infer truth, causality, validity, confidence, or evidence ranking.
