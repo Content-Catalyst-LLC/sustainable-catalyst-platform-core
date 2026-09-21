@@ -1036,3 +1036,12 @@ PublicApiClient.research_workflow_summary=_v290_research_workflow_summary
 PublicApiClient.research_workflow_timeline=_v290_research_workflow_timeline
 PublicApiClient.research_workflow_lineage=_v290_research_workflow_lineage
 PublicApiClient.research_workflow_bundle=_v290_research_workflow_bundle
+
+
+# v2.91.0 Cross-Product Research Context & Handoff Protocol
+def _v291_research_context_handoff_summary(self, context_id: str): return self.request("GET", f"/research/context-handoffs/contexts/{context_id}/summary")
+def _v291_research_context_handoff_lineage(self, context_id: str): return self.request("GET", f"/research/context-handoffs/contexts/{context_id}/lineage")
+def _v291_research_context_handoff_bundle(self, context_id: str): return self.request("GET", f"/research/context-handoffs/contexts/{context_id}/bundle")
+PublicApiClient.research_context_handoff_summary=_v291_research_context_handoff_summary
+PublicApiClient.research_context_handoff_lineage=_v291_research_context_handoff_lineage
+PublicApiClient.research_context_handoff_bundle=_v291_research_context_handoff_bundle

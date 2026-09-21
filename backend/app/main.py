@@ -77,6 +77,7 @@ from .routers import (
     unified_inference,
     research_quality_audit,
     research_workflows,
+    research_context_handoffs,
     visualization_registry,
     system_maps,
     flow_maps,
@@ -355,6 +356,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # v2.90.0 governed research lifecycle coordination and cross-product orchestration.
     app.include_router(research_workflows.router)
     app.include_router(research_workflows.public_router)
+    # v2.91.0 Cross-Product Research Context & Handoff Protocol.
+    app.include_router(research_context_handoffs.router)
+    app.include_router(research_context_handoffs.public_router)
     # Open Forensics includes v2.51.0 Reproducible Investigation Packages.
     app.include_router(open_forensics.router)
     app.include_router(open_forensics.public_router)

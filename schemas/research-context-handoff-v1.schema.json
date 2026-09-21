@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/research-context-handoff-v1.schema.json",
+  "title": "Sustainable Catalyst Cross-Product Research Context & Handoff Protocol",
+  "type": "object",
+  "required": [
+    "context_key",
+    "title",
+    "source_product"
+  ],
+  "properties": {
+    "context_key": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "source_product": {
+      "enum": [
+        "core",
+        "library",
+        "research_librarian",
+        "workspace",
+        "research_lab",
+        "workbench",
+        "site_intelligence",
+        "decision_studio",
+        "catalyst_data",
+        "external"
+      ]
+    },
+    "project_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "workflow_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "workflow_stage_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "protocol_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "research_state": {
+      "type": "object"
+    },
+    "object_bindings": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "provenance_bindings": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "state_markers": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "handoff_protocols": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    }
+  },
+  "additionalProperties": true
+}

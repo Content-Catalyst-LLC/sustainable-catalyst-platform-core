@@ -696,3 +696,9 @@ export async function researchWorkflowSummary(client, workflowId) { return clien
 export async function researchWorkflowTimeline(client, workflowId) { return client.request("GET", `/research/workflows/${encodeURIComponent(workflowId)}/timeline`); }
 export async function researchWorkflowLineage(client, workflowId) { return client.request("GET", `/research/workflows/${encodeURIComponent(workflowId)}/lineage`); }
 export async function researchWorkflowBundle(client, workflowId) { return client.request("GET", `/research/workflows/${encodeURIComponent(workflowId)}/bundle`); }
+
+
+// v2.91.0 Cross-Product Research Context & Handoff Protocol
+export async function researchContextHandoffSummary(client, contextId) { return client.request("GET", `/research/context-handoffs/contexts/${encodeURIComponent(contextId)}/summary`); }
+export async function researchContextHandoffLineage(client, contextId) { return client.request("GET", `/research/context-handoffs/contexts/${encodeURIComponent(contextId)}/lineage`); }
+export async function researchContextHandoffBundle(client, contextId) { return client.request("GET", `/research/context-handoffs/contexts/${encodeURIComponent(contextId)}/bundle`); }

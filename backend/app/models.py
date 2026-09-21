@@ -12013,3 +12013,167 @@ class ResearchWorkflowSnapshotRecord(Base):
     provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
     created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+# v2.91.0 Cross-Product Research Context & Handoff Protocol
+class ResearchContextEnvelopeRecord(Base):
+    __tablename__ = "research_context_envelopes_v291"
+    __table_args__ = (UniqueConstraint("context_key", name="uq_research_context_v291_key"), Index("ix_research_context_v291_project_status", "project_ref", "status"))
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    context_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    title: Mapped[str] = mapped_column(String(500), nullable=False)
+    status: Mapped[str] = mapped_column(String(60), nullable=False, default="draft")
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="private")
+    schema_version: Mapped[str] = mapped_column(String(30), nullable=False, default="1.0")
+    source_product: Mapped[str] = mapped_column(String(120), nullable=False)
+    project_ref: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    workflow_ref: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    workflow_stage_ref: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    protocol_ref: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    research_state_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+class ResearchContextObjectBindingRecord(Base):
+    __tablename__ = "research_context_object_bindings_v291"
+    __table_args__ = (UniqueConstraint("context_id", "binding_key", name="uq_research_context_object_v291_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    context_id: Mapped[str] = mapped_column(ForeignKey("research_context_envelopes_v291.id", ondelete="CASCADE"), nullable=False)
+    binding_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    product_key: Mapped[str] = mapped_column(String(120), nullable=False)
+    object_type: Mapped[str] = mapped_column(String(120), nullable=False)
+    object_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    role: Mapped[str] = mapped_column(String(160), nullable=False, default="context")
+    version_ref: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchContextProvenanceBindingRecord(Base):
+    __tablename__ = "research_context_provenance_bindings_v291"
+    __table_args__ = (UniqueConstraint("context_id", "provenance_key", name="uq_research_context_provenance_v291_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    context_id: Mapped[str] = mapped_column(ForeignKey("research_context_envelopes_v291.id", ondelete="CASCADE"), nullable=False)
+    provenance_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    relation: Mapped[str] = mapped_column(String(160), nullable=False)
+    activity_ref: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    agent_ref: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    source_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    details_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchContextStateMarkerRecord(Base):
+    __tablename__ = "research_context_state_markers_v291"
+    __table_args__ = (UniqueConstraint("context_id", "state_key", name="uq_research_context_state_v291_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    context_id: Mapped[str] = mapped_column(ForeignKey("research_context_envelopes_v291.id", ondelete="CASCADE"), nullable=False)
+    state_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    namespace: Mapped[str] = mapped_column(String(160), nullable=False)
+    product_key: Mapped[str] = mapped_column(String(120), nullable=False)
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
+    value_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchHandoffProtocolRecord(Base):
+    __tablename__ = "research_handoff_protocols_v291"
+    __table_args__ = (UniqueConstraint("context_id", "handoff_key", name="uq_research_handoff_protocol_v291_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    context_id: Mapped[str] = mapped_column(ForeignKey("research_context_envelopes_v291.id", ondelete="CASCADE"), nullable=False)
+    handoff_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    from_product: Mapped[str] = mapped_column(String(120), nullable=False)
+    to_product: Mapped[str] = mapped_column(String(120), nullable=False)
+    status: Mapped[str] = mapped_column(String(60), nullable=False, default="planned")
+    transfer_mode: Mapped[str] = mapped_column(String(80), nullable=False, default="reference")
+    required_bindings_json: Mapped[list] = mapped_column(JSON, default=list)
+    required_state_keys_json: Mapped[list] = mapped_column(JSON, default=list)
+    requested_capabilities_json: Mapped[list] = mapped_column(JSON, default=list)
+    redaction_policy_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    integrity_policy_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchHandoffPackageRecord(Base):
+    __tablename__ = "research_handoff_packages_v291"
+    __table_args__ = (UniqueConstraint("context_id", "package_key", name="uq_research_handoff_package_v291_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    context_id: Mapped[str] = mapped_column(ForeignKey("research_context_envelopes_v291.id", ondelete="CASCADE"), nullable=False)
+    protocol_id: Mapped[str] = mapped_column(ForeignKey("research_handoff_protocols_v291.id", ondelete="CASCADE"), nullable=False)
+    package_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    status: Mapped[str] = mapped_column(String(60), nullable=False, default="prepared")
+    manifest_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    content_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    source_context_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    missing_requirements_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchHandoffAcknowledgementRecord(Base):
+    __tablename__ = "research_handoff_acknowledgements_v291"
+    __table_args__ = (UniqueConstraint("context_id", "ack_key", name="uq_research_handoff_ack_v291_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    context_id: Mapped[str] = mapped_column(ForeignKey("research_context_envelopes_v291.id", ondelete="CASCADE"), nullable=False)
+    package_id: Mapped[str] = mapped_column(ForeignKey("research_handoff_packages_v291.id", ondelete="CASCADE"), nullable=False)
+    ack_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    product_key: Mapped[str] = mapped_column(String(120), nullable=False)
+    status: Mapped[str] = mapped_column(String(60), nullable=False, default="received")
+    received_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    integrity_match: Mapped[bool | None] = mapped_column(Boolean, nullable=True)
+    notes: Mapped[str | None] = mapped_column(Text, nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchHandoffConflictRecord(Base):
+    __tablename__ = "research_handoff_conflicts_v291"
+    __table_args__ = (UniqueConstraint("context_id", "conflict_key", name="uq_research_handoff_conflict_v291_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    context_id: Mapped[str] = mapped_column(ForeignKey("research_context_envelopes_v291.id", ondelete="CASCADE"), nullable=False)
+    package_id: Mapped[str | None] = mapped_column(ForeignKey("research_handoff_packages_v291.id", ondelete="SET NULL"), nullable=True)
+    conflict_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    conflict_type: Mapped[str] = mapped_column(String(120), nullable=False)
+    status: Mapped[str] = mapped_column(String(60), nullable=False, default="open")
+    source_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    target_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    details_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    declared_resolution_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchHandoffRevisionRecord(Base):
+    __tablename__ = "research_handoff_revisions_v291"
+    __table_args__ = (UniqueConstraint("context_id", "revision", name="uq_research_handoff_revision_v291_revision"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    context_id: Mapped[str] = mapped_column(ForeignKey("research_context_envelopes_v291.id", ondelete="CASCADE"), nullable=False)
+    revision: Mapped[int] = mapped_column(Integer, nullable=False)
+    state_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    prior_state_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    revised_state_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    change_summary: Mapped[str | None] = mapped_column(Text, nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchHandoffSnapshotRecord(Base):
+    __tablename__ = "research_handoff_snapshots_v291"
+    __table_args__ = (UniqueConstraint("context_id", "revision", name="uq_research_handoff_snapshot_v291_revision"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    context_id: Mapped[str] = mapped_column(ForeignKey("research_context_envelopes_v291.id", ondelete="CASCADE"), nullable=False)
+    revision: Mapped[int] = mapped_column(Integer, nullable=False)
+    content_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    previous_snapshot_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    state_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)

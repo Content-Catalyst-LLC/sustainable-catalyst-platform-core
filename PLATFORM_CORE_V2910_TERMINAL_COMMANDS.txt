@@ -1,0 +1,15 @@
+# Platform Core v2.91.0 terminal commands
+# Git promotion
+cd ~/Downloads/sc-platform-core-v2.91.0-release
+chmod +x PUSH_PLATFORM_CORE_V2910_FINAL.sh
+./PUSH_PLATFORM_CORE_V2910_FINAL.sh "$PWD/sustainable-catalyst-platform-core-v2.91.0-repository.zip"
+
+# Backend deployment
+ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes catalystadmin@94.72.113.77
+cd /opt/sustainable-catalyst/core
+git fetch origin --tags
+git pull --ff-only origin main
+git log -1 --oneline
+git tag --points-at HEAD
+chmod +x DEPLOY_PLATFORM_CORE_V2910_CONTABO.sh
+bash DEPLOY_PLATFORM_CORE_V2910_CONTABO.sh

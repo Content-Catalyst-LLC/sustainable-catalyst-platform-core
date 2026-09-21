@@ -596,3 +596,10 @@ Adds governed research notebooks, ordered sections and entries, cross-research b
 
 ## 2.90.0
 - Added Research Workflow & Orchestration Engine with governed stages, transitions, handoffs, checkpoints, events, policies, lineage, revisions, and snapshots.
+
+
+## 2.91.0
+- Added Cross-Product Research Context & Handoff Protocol.
+- Added migration `0095` and ten additive context/handoff persistence families.
+- Added context envelopes, object/provenance bindings, state markers, explicit product-to-product handoff protocols, deterministic contract diagnostics, content-addressed packages, acknowledgements, conflicts, revisions, lineage, and immutable snapshots.
+- Preserved strict non-routing, non-execution, non-authorization, non-conflict-resolution, and non-truth-inference boundaries.

@@ -237,3 +237,6 @@ Public read methods expose methodological-audit summaries, declared lineage, and
 
 ## v2.90.0
 Research Workflow & Orchestration public read methods are available for summary, timeline, lineage, and bundles.
+
+
+v2.91.0 adds research context/handoff summary, lineage, and bundle helpers.
