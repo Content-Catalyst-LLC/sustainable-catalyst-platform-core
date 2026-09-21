@@ -258,3 +258,6 @@ Public SDK helpers expose declared runtime-contract and project exchange bundles
 
 ## v2.97.0 Platform Research Integration Certification
 Public read helpers expose suite bundles and recorded conformance-run reports.
+
+
+v3.0.0 adds public read helpers for the Unified Research, Scientific Computing & Investigation Runtime.

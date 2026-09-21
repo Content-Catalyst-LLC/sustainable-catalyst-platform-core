@@ -20,7 +20,7 @@ def _int(name: str, default: int) -> int:
 @dataclass(frozen=True)
 class Settings:
     app_name: str = "Sustainable Catalyst Platform Core"
-    version: str = "2.97.0"
+    version: str = "3.0.0"
     environment: str = "development"
     database_url: str = "sqlite:///./platform_core.db"
     write_api_key: str = ""
@@ -53,7 +53,7 @@ class Settings:
     live_data_enabled: bool = True
     live_data_ingest_enabled: bool = True
     live_data_strict_free_sources: bool = True
-    live_data_user_agent: str = "SustainableCatalystPlatformCore/2.97.0 (+https://sustainablecatalyst.com/contact/)"
+    live_data_user_agent: str = "SustainableCatalystPlatformCore/3.0.0 (+https://sustainablecatalyst.com/contact/)"
     live_data_timeout_seconds: int = 20
     live_data_max_response_bytes: int = 12582912
     live_data_raw_payload_max_bytes: int = 1048576
@@ -244,6 +244,7 @@ class Settings:
     scholarly_interoperability_research_packaging_enabled: bool = True
     unified_research_runtime_contract_enabled: bool = True
     platform_research_integration_certification_enabled: bool = True
+    unified_research_scientific_investigation_runtime_enabled: bool = True
     visual_reasoning_runtime_public_metadata_enabled: bool = True
     open_forensics_enabled: bool = True
     open_forensics_public_metadata_enabled: bool = True
@@ -513,6 +514,7 @@ class Settings:
             scholarly_interoperability_research_packaging_enabled=_bool("SC_CORE_SCHOLARLY_INTEROPERABILITY_RESEARCH_PACKAGING_ENABLED", True),
             unified_research_runtime_contract_enabled=_bool("SC_CORE_UNIFIED_RESEARCH_RUNTIME_CONTRACT_ENABLED", True),
             platform_research_integration_certification_enabled=_bool("SC_CORE_PLATFORM_RESEARCH_INTEGRATION_CERTIFICATION_ENABLED", True),
+            unified_research_scientific_investigation_runtime_enabled=_bool("SC_CORE_UNIFIED_RESEARCH_SCIENTIFIC_INVESTIGATION_RUNTIME_ENABLED", True),
             open_forensics_enabled=_bool("SC_CORE_OPEN_FORENSICS_ENABLED", True),
             open_forensics_public_metadata_enabled=_bool("SC_CORE_OPEN_FORENSICS_PUBLIC_METADATA_ENABLED", True),
             predictive_intelligence_enabled=_bool("SC_CORE_PREDICTIVE_INTELLIGENCE_ENABLED", True),

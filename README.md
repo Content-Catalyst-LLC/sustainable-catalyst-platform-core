@@ -151,3 +151,6 @@ Platform Core exposes a stable declared contract for cross-product research obje
 
 ### v2.97.0 Platform Research Integration Certification
 Core can now preserve automated integration-conformance evidence for products consuming the v2.96 unified research runtime contract, including object CRUD/versioning, exchange, trace, state reconstruction, and evidence-backed case results.
+
+## v3.0.0 milestone
+Platform Core now exposes a reference-first Unified Research, Scientific Computing & Investigation Runtime across the Sustainable Catalyst research stack.

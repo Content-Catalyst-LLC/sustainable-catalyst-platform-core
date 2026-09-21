@@ -214,6 +214,7 @@ def health(request: Request):
         "scholarly_interoperability_research_packaging": request.app.state.settings.scholarly_interoperability_research_packaging_enabled,
         "unified_research_runtime_contract": request.app.state.settings.unified_research_runtime_contract_enabled,
         "platform_research_integration_certification": request.app.state.settings.platform_research_integration_certification_enabled,
+        "unified_research_scientific_investigation_runtime": request.app.state.settings.unified_research_scientific_investigation_runtime_enabled,
         "open_forensics": request.app.state.settings.open_forensics_enabled,
         "forensic_timeline_event_reconstruction": request.app.state.settings.open_forensics_enabled,
         "forensic_spatial_temporal_evidence_integration": request.app.state.settings.open_forensics_enabled,

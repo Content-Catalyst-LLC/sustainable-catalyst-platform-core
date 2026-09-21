@@ -1,0 +1,4 @@
+backend/tests/test_unified_research_scientific_investigation_runtime_v3000.py
+backend/tests/test_partial_0102_recovery_v3000.py
+backend/tests/test_platform_research_integration_certification_v2970.py
+backend/tests/test_partial_0101_recovery_v2970.py

@@ -180,8 +180,9 @@ MIGRATIONS = [
     ("0098", 'Research validation/challenge records for alternatives, contradiction tests, counterevidence, sensitivity, robustness, replication, reviewer challenges, responses, revisions, and snapshots; Core records evidence but does not resolve hypotheses, certify validity, rank outcomes, or infer truth.'),
     ("0099", 'Scholarly interoperability packages with governed citations, identifiers, dataset/notebook descriptors, provenance manifests, metadata/export profiles, publication bindings, validation evidence, revisions, and snapshots; Core does not mint IDs, publish, execute notebooks, or certify results.'),
     ("0100", 'Unified research runtime contracts for object types, operations, capabilities, product bindings, exchanges, invocations, results, compatibility, revisions, and snapshots; Core standardizes declared interfaces but does not execute work, auto-route, authorize access, validate results, or infer truth.'),
-    ("0101", 'Integration certification with suites, product targets, conformance cases/results, exchange/trace/reconstruction checks, evidence, findings, revisions, and snapshots; Core records declared conformance but does not invoke products, certify science, rank quality, authorize, or determine truth.'),
+    ("0101", 'Integration certification with suites, product targets, conformance cases/results, exchange/trace/reconstruction checks, evidence, findings, revisions, and snapshots; Core records declared conformance but does not invoke products, certify science, rank quality, authorize, or determine truth.'),    ("0102", 'Unified research/scientific/investigation runtime sessions with project, object, product, execution, visual, validation, package, and handoff bindings plus revisions/snapshots; Core composes declared references but does not execute work, infer conclusions, authorize access, or determine truth.'),
 ]
+
 
 
 

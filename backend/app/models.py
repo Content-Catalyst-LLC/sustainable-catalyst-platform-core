@@ -13303,3 +13303,166 @@ class ResearchIntegrationCertificationSnapshotRecord(Base):
     provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
     created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+# v3.0.0 Unified Research, Scientific Computing & Investigation Runtime
+class UnifiedResearchRuntimeSessionRecord(Base):
+    __tablename__ = "unified_research_runtime_sessions_v300"
+    __table_args__ = (UniqueConstraint("session_key", name="uq_unified_research_runtime_session_v300_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    session_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    title: Mapped[str] = mapped_column(String(400), nullable=False)
+    project_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    status: Mapped[str] = mapped_column(String(80), nullable=False, default="active")
+    workflow_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    project_state_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    runtime_contract_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    certification_suite_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class UnifiedResearchRuntimeObjectBindingRecord(Base):
+    __tablename__ = "unified_research_runtime_object_bindings_v300"
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    session_id: Mapped[str] = mapped_column(ForeignKey("unified_research_runtime_sessions_v300.id", ondelete="CASCADE"), nullable=False)
+    object_type: Mapped[str] = mapped_column(String(180), nullable=False)
+    object_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    version_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    content_hash: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    role: Mapped[str] = mapped_column(String(120), nullable=False, default="context")
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class UnifiedResearchRuntimeProductBindingRecord(Base):
+    __tablename__ = "unified_research_runtime_product_bindings_v300"
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    session_id: Mapped[str] = mapped_column(ForeignKey("unified_research_runtime_sessions_v300.id", ondelete="CASCADE"), nullable=False)
+    product_ref: Mapped[str] = mapped_column(String(500), nullable=False)
+    product_version: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    runtime_binding_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    context_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    declared_capabilities_json: Mapped[list] = mapped_column(JSON, default=list)
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class UnifiedResearchRuntimeExecutionBindingRecord(Base):
+    __tablename__ = "unified_research_runtime_execution_bindings_v300"
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    session_id: Mapped[str] = mapped_column(ForeignKey("unified_research_runtime_sessions_v300.id", ondelete="CASCADE"), nullable=False)
+    execution_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    runtime: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    environment_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    method_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    input_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    output_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class UnifiedResearchRuntimeInvestigationBindingRecord(Base):
+    __tablename__ = "unified_research_runtime_investigation_bindings_v300"
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    session_id: Mapped[str] = mapped_column(ForeignKey("unified_research_runtime_sessions_v300.id", ondelete="CASCADE"), nullable=False)
+    investigation_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    investigation_type: Mapped[str] = mapped_column(String(120), nullable=False, default="general")
+    evidence_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    claim_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    hypothesis_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class UnifiedResearchRuntimeVisualBindingRecord(Base):
+    __tablename__ = "unified_research_runtime_visual_bindings_v300"
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    session_id: Mapped[str] = mapped_column(ForeignKey("unified_research_runtime_sessions_v300.id", ondelete="CASCADE"), nullable=False)
+    visual_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    visual_type: Mapped[str] = mapped_column(String(120), nullable=False, default="visual-research-object")
+    scene_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    view_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    source_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class UnifiedResearchRuntimeValidationBindingRecord(Base):
+    __tablename__ = "unified_research_runtime_validation_bindings_v300"
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    session_id: Mapped[str] = mapped_column(ForeignKey("unified_research_runtime_sessions_v300.id", ondelete="CASCADE"), nullable=False)
+    validation_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    validation_type: Mapped[str] = mapped_column(String(120), nullable=False)
+    target_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    evidence_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    status: Mapped[str] = mapped_column(String(80), nullable=False, default="recorded")
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class UnifiedResearchRuntimePackageBindingRecord(Base):
+    __tablename__ = "unified_research_runtime_package_bindings_v300"
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    session_id: Mapped[str] = mapped_column(ForeignKey("unified_research_runtime_sessions_v300.id", ondelete="CASCADE"), nullable=False)
+    package_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    package_type: Mapped[str] = mapped_column(String(120), nullable=False)
+    version_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    content_hash: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    member_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class UnifiedResearchRuntimeHandoffBindingRecord(Base):
+    __tablename__ = "unified_research_runtime_handoff_bindings_v300"
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    session_id: Mapped[str] = mapped_column(ForeignKey("unified_research_runtime_sessions_v300.id", ondelete="CASCADE"), nullable=False)
+    handoff_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    source_product_ref: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    target_product_ref: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    context_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    status: Mapped[str] = mapped_column(String(80), nullable=False, default="recorded")
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class UnifiedResearchRuntimeMilestoneRecord(Base):
+    __tablename__ = "unified_research_runtime_milestones_v300"
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    session_id: Mapped[str] = mapped_column(ForeignKey("unified_research_runtime_sessions_v300.id", ondelete="CASCADE"), nullable=False)
+    milestone_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    milestone_type: Mapped[str] = mapped_column(String(120), nullable=False)
+    state_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    object_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    note: Mapped[str | None] = mapped_column(Text, nullable=True)
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class UnifiedResearchRuntimeRevisionRecord(Base):
+    __tablename__ = "unified_research_runtime_revisions_v300"
+    __table_args__ = (UniqueConstraint("session_id", "revision", name="uq_unified_research_runtime_revision_v300_session_revision"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    session_id: Mapped[str] = mapped_column(ForeignKey("unified_research_runtime_sessions_v300.id", ondelete="CASCADE"), nullable=False)
+    revision: Mapped[int] = mapped_column(Integer, nullable=False)
+    prior_state_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    revised_state_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    reason: Mapped[str | None] = mapped_column(Text, nullable=True)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class UnifiedResearchRuntimeSnapshotRecord(Base):
+    __tablename__ = "unified_research_runtime_snapshots_v300"
+    __table_args__ = (UniqueConstraint("session_id", "revision", name="uq_unified_research_runtime_snapshot_v300_session_revision"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    session_id: Mapped[str] = mapped_column(ForeignKey("unified_research_runtime_sessions_v300.id", ondelete="CASCADE"), nullable=False)
+    revision: Mapped[int] = mapped_column(Integer, nullable=False)
+    content_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    previous_snapshot_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    state_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)

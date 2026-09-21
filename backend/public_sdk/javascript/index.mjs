@@ -734,3 +734,9 @@ export async function researchRuntimeProjectBundle(client, projectRef) { return 
 // v2.97.0 Platform Research Integration Certification
 export async function researchIntegrationCertificationSuite(client, suiteId) { return client.request("GET", `/research/integration-certification/suites/${encodeURIComponent(suiteId)}/bundle`); }
 export async function researchIntegrationCertificationRun(client, runId) { return client.request("GET", `/research/integration-certification/runs/${encodeURIComponent(runId)}/report`); }
+
+
+// v3.0.0 Unified Research, Scientific Computing & Investigation Runtime
+export async function unifiedResearchRuntimeSummary(client, sessionId) { return client.request("GET", `/research/unified-runtime/sessions/${encodeURIComponent(sessionId)}/summary`); }
+export async function unifiedResearchRuntimeLineage(client, sessionId) { return client.request("GET", `/research/unified-runtime/sessions/${encodeURIComponent(sessionId)}/lineage`); }
+export async function unifiedResearchRuntimeBundle(client, sessionId) { return client.request("GET", `/research/unified-runtime/sessions/${encodeURIComponent(sessionId)}/bundle`); }

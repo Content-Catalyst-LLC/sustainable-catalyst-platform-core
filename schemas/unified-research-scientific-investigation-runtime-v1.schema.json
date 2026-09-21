@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/unified-research-scientific-investigation-runtime-v1.schema.json",
+  "title": "Unified Research, Scientific Computing & Investigation Runtime",
+  "type": "object",
+  "required": [
+    "session_key",
+    "title",
+    "project_ref"
+  ],
+  "properties": {
+    "session_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "project_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "workflow_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "project_state_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "runtime_contract_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "visibility": {
+      "enum": [
+        "internal",
+        "public"
+      ]
+    },
+    "metadata": {
+      "type": "object"
+    },
+    "provenance": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": true
+}

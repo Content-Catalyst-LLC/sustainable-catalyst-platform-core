@@ -1094,3 +1094,12 @@ def _v297_research_integration_certification_suite(self, suite_id: str): return 
 def _v297_research_integration_certification_run(self, run_id: str): return self.request("GET", f"/research/integration-certification/runs/{run_id}/report")
 PublicApiClient.research_integration_certification_suite=_v297_research_integration_certification_suite
 PublicApiClient.research_integration_certification_run=_v297_research_integration_certification_run
+
+
+# v3.0.0 Unified Research, Scientific Computing & Investigation Runtime
+def _v300_unified_research_runtime_summary(self, session_id: str): return self.request("GET", f"/research/unified-runtime/sessions/{session_id}/summary")
+def _v300_unified_research_runtime_lineage(self, session_id: str): return self.request("GET", f"/research/unified-runtime/sessions/{session_id}/lineage")
+def _v300_unified_research_runtime_bundle(self, session_id: str): return self.request("GET", f"/research/unified-runtime/sessions/{session_id}/bundle")
+PublicApiClient.unified_research_runtime_summary=_v300_unified_research_runtime_summary
+PublicApiClient.unified_research_runtime_lineage=_v300_unified_research_runtime_lineage
+PublicApiClient.unified_research_runtime_bundle=_v300_unified_research_runtime_bundle

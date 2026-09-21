@@ -629,3 +629,6 @@ Adds governed research notebooks, ordered sections and entries, cross-research b
 - Added Platform Research Integration Certification with governed conformance suites, product targets, cases/runs/results, exchange/trace/reconstruction checks, evidence, findings, revisions, and immutable snapshots.
 - Added migration 0101 and public read-only certification reports.
 - Clarified that certification is runtime-contract conformance evidence, not scientific-validity, product-quality, authorization, ranking, or truth certification.
+
+## 3.0.0
+- Added Unified Research, Scientific Computing & Investigation Runtime (migration 0102).
