@@ -1,3 +1,6 @@
+== 2.95.0 ==
+Scholarly Interoperability & Research Packaging status surface and Core 2.95.0 compatibility.
+
 == 2.92.0 ==
 Research Project State, Versioning & Reproducibility status surface and Core 2.92.0 compatibility.
 
@@ -28,7 +31,7 @@ Tags: knowledge graph, entity registry, provenance, live data, sustainable catal
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.0
-Stable tag: 2.94.0
+Stable tag: 2.95.0
 License: MIT
 
 WordPress status, live-data gateway, and entity lookup client for Sustainable Catalyst Platform Core.

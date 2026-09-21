@@ -211,6 +211,7 @@ def health(request: Request):
         "research_project_state_versioning_reproducibility": request.app.state.settings.research_project_state_versioning_reproducibility_enabled,
         "research_roles_agents_contributor_provenance": request.app.state.settings.research_roles_agents_contributor_provenance_enabled,
         "research_validation_challenge_engine": request.app.state.settings.research_validation_challenge_engine_enabled,
+        "scholarly_interoperability_research_packaging": request.app.state.settings.scholarly_interoperability_research_packaging_enabled,
         "open_forensics": request.app.state.settings.open_forensics_enabled,
         "forensic_timeline_event_reconstruction": request.app.state.settings.open_forensics_enabled,
         "forensic_spatial_temporal_evidence_integration": request.app.state.settings.open_forensics_enabled,

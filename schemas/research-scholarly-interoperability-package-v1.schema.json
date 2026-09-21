@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/research-scholarly-interoperability-package-v1.schema.json",
+  "title": "Sustainable Catalyst Scholarly Interoperability Package",
+  "type": "object",
+  "required": [
+    "package_key",
+    "project_ref",
+    "package_type",
+    "title"
+  ],
+  "properties": {
+    "package_key": {
+      "type": "string"
+    },
+    "project_ref": {
+      "type": "string"
+    },
+    "package_type": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "package_profile": {
+      "type": "string"
+    },
+    "members": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "citations": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "identifiers": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "datasets": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "notebooks": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "provenance_manifests": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "metadata_profiles": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "export_profiles": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    }
+  },
+  "additionalProperties": true
+}

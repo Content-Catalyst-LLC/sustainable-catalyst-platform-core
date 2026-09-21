@@ -12746,3 +12746,211 @@ class ResearchValidationSnapshotRecord(Base):
     provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
     created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+# v2.95.0 Scholarly Interoperability & Research Packaging
+class ScholarlyResearchPackageRecord(Base):
+    __tablename__ = "scholarly_research_packages_v295"
+    __table_args__ = (UniqueConstraint("package_key", name="uq_scholarly_research_package_v295_key"), Index("ix_scholarly_research_package_v295_project", "project_ref", "package_type"))
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    package_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    project_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    package_type: Mapped[str] = mapped_column(String(120), nullable=False)
+    title: Mapped[str] = mapped_column(String(500), nullable=False)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    package_profile: Mapped[str] = mapped_column(String(120), nullable=False, default="research-compendium")
+    source_publication_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    source_reproducible_package_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    status: Mapped[str] = mapped_column(String(80), nullable=False, default="draft")
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+class ScholarlyPackageMemberRecord(Base):
+    __tablename__ = "scholarly_package_members_v295"
+    __table_args__ = (UniqueConstraint("member_key", name="uq_scholarly_package_member_v295_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    member_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    package_id: Mapped[str] = mapped_column(ForeignKey("scholarly_research_packages_v295.id", ondelete="CASCADE"), nullable=False)
+    project_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    member_type: Mapped[str] = mapped_column(String(120), nullable=False)
+    object_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    object_version_ref: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    content_hash: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    role: Mapped[str] = mapped_column(String(120), nullable=False, default="component")
+    required: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ScholarlyCitationRecord(Base):
+    __tablename__ = "scholarly_citations_v295"
+    __table_args__ = (UniqueConstraint("citation_key", name="uq_scholarly_citation_v295_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    citation_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    package_id: Mapped[str] = mapped_column(ForeignKey("scholarly_research_packages_v295.id", ondelete="CASCADE"), nullable=False)
+    project_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    cited_object_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    citation_format: Mapped[str] = mapped_column(String(80), nullable=False, default="csl-json")
+    locator: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    citation_text: Mapped[str | None] = mapped_column(Text, nullable=True)
+    citation_data_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ScholarlyPersistentIdentifierRecord(Base):
+    __tablename__ = "scholarly_persistent_identifiers_v295"
+    __table_args__ = (UniqueConstraint("identifier_key", name="uq_scholarly_identifier_v295_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    identifier_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    package_id: Mapped[str] = mapped_column(ForeignKey("scholarly_research_packages_v295.id", ondelete="CASCADE"), nullable=False)
+    project_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    object_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    scheme: Mapped[str] = mapped_column(String(80), nullable=False)
+    identifier: Mapped[str] = mapped_column(String(1000), nullable=False)
+    resolver_url: Mapped[str | None] = mapped_column(String(2000), nullable=True)
+    status: Mapped[str] = mapped_column(String(80), nullable=False, default="declared")
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ScholarlyDatasetDescriptorRecord(Base):
+    __tablename__ = "scholarly_dataset_descriptors_v295"
+    __table_args__ = (UniqueConstraint("dataset_key", name="uq_scholarly_dataset_descriptor_v295_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    dataset_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    package_id: Mapped[str] = mapped_column(ForeignKey("scholarly_research_packages_v295.id", ondelete="CASCADE"), nullable=False)
+    project_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    dataset_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    version_ref: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    content_hash: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    media_type: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    schema_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    license_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ScholarlyNotebookDescriptorRecord(Base):
+    __tablename__ = "scholarly_notebook_descriptors_v295"
+    __table_args__ = (UniqueConstraint("notebook_key", name="uq_scholarly_notebook_descriptor_v295_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    notebook_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    package_id: Mapped[str] = mapped_column(ForeignKey("scholarly_research_packages_v295.id", ondelete="CASCADE"), nullable=False)
+    project_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    notebook_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    notebook_format: Mapped[str] = mapped_column(String(120), nullable=False, default="ipynb")
+    version_ref: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    content_hash: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    environment_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    execution_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ScholarlyProvenanceManifestRecord(Base):
+    __tablename__ = "scholarly_provenance_manifests_v295"
+    __table_args__ = (UniqueConstraint("manifest_key", name="uq_scholarly_provenance_manifest_v295_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    manifest_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    package_id: Mapped[str] = mapped_column(ForeignKey("scholarly_research_packages_v295.id", ondelete="CASCADE"), nullable=False)
+    project_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    standard: Mapped[str] = mapped_column(String(120), nullable=False, default="ro-crate")
+    standard_version: Mapped[str | None] = mapped_column(String(80), nullable=True)
+    bindings_json: Mapped[list] = mapped_column(JSON, default=list)
+    manifest_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ScholarlyMetadataProfileRecord(Base):
+    __tablename__ = "scholarly_metadata_profiles_v295"
+    __table_args__ = (UniqueConstraint("profile_key", name="uq_scholarly_metadata_profile_v295_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    profile_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    package_id: Mapped[str] = mapped_column(ForeignKey("scholarly_research_packages_v295.id", ondelete="CASCADE"), nullable=False)
+    project_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    standard: Mapped[str] = mapped_column(String(120), nullable=False)
+    standard_version: Mapped[str | None] = mapped_column(String(80), nullable=True)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ScholarlyExportProfileRecord(Base):
+    __tablename__ = "scholarly_export_profiles_v295"
+    __table_args__ = (UniqueConstraint("export_key", name="uq_scholarly_export_profile_v295_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    export_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    package_id: Mapped[str] = mapped_column(ForeignKey("scholarly_research_packages_v295.id", ondelete="CASCADE"), nullable=False)
+    project_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    export_format: Mapped[str] = mapped_column(String(120), nullable=False)
+    media_type: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    profile: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    filename: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    spec_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    options_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ScholarlyPublicationBindingRecord(Base):
+    __tablename__ = "scholarly_publication_bindings_v295"
+    __table_args__ = (UniqueConstraint("binding_key", name="uq_scholarly_publication_binding_v295_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    binding_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    package_id: Mapped[str] = mapped_column(ForeignKey("scholarly_research_packages_v295.id", ondelete="CASCADE"), nullable=False)
+    project_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    publication_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    object_type: Mapped[str] = mapped_column(String(120), nullable=False)
+    object_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    object_version_ref: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    role: Mapped[str] = mapped_column(String(120), nullable=False, default="supplement")
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ScholarlyInteroperabilityValidationRecord(Base):
+    __tablename__ = "scholarly_interoperability_validations_v295"
+    __table_args__ = (UniqueConstraint("validation_key", name="uq_scholarly_interoperability_validation_v295_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    validation_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    package_id: Mapped[str] = mapped_column(ForeignKey("scholarly_research_packages_v295.id", ondelete="CASCADE"), nullable=False)
+    project_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    validator_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    validation_type: Mapped[str] = mapped_column(String(120), nullable=False)
+    status: Mapped[str] = mapped_column(String(100), nullable=False, default="recorded")
+    evidence_json: Mapped[list] = mapped_column(JSON, default=list)
+    report_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ScholarlyInteroperabilityRevisionRecord(Base):
+    __tablename__ = "scholarly_interoperability_revisions_v295"
+    __table_args__ = (UniqueConstraint("project_ref", "revision", name="uq_scholarly_interop_revision_v295_project_revision"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    project_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    package_id: Mapped[str | None] = mapped_column(ForeignKey("scholarly_research_packages_v295.id", ondelete="SET NULL"), nullable=True)
+    revision: Mapped[int] = mapped_column(Integer, nullable=False)
+    prior_state_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    revised_state_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    reason: Mapped[str | None] = mapped_column(Text, nullable=True)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ScholarlyInteroperabilitySnapshotRecord(Base):
+    __tablename__ = "scholarly_interoperability_snapshots_v295"
+    __table_args__ = (UniqueConstraint("project_ref", "revision", name="uq_scholarly_interop_snapshot_v295_project_revision"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    project_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    revision: Mapped[int] = mapped_column(Integer, nullable=False)
+    content_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    previous_snapshot_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    state_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)

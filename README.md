@@ -1,3 +1,6 @@
+## v2.95.0 — Scholarly Interoperability & Research Packaging
+Adds governed scholarly packages, citations, identifiers, dataset/notebook descriptors, provenance manifests, metadata/export profiles, publication bindings, external validation evidence, revisions, and immutable snapshots without Core-side publishing or certification.
+
 ## v2.94.0 — Research Validation & Challenge Engine
 Adds provenance-aware adversarial research records for alternatives, contradiction/counterevidence, sensitivity/robustness, replication, reviewer challenge, response, revision, and immutable snapshots without Core-side verdicts.
 

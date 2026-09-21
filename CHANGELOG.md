@@ -1,3 +1,8 @@
+## v2.95.0 — Scholarly Interoperability & Research Packaging
+- Added migration 0099 and a consolidated scholarly interoperability/package layer.
+- Added package members, citations, persistent identifier records, dataset/notebook descriptors, provenance manifests, metadata/export profiles, publication bindings, external validation evidence, revisions, and snapshots.
+- Core does not mint identifiers, publish, execute notebooks, transform data, certify reproducibility, validate scientific content, or determine truth.
+
 ## v2.94.0 — Research Validation & Challenge Engine
 Adds provenance-aware adversarial research records for alternatives, contradiction/counterevidence, sensitivity/robustness, replication, reviewer challenge, response, revision, and immutable snapshots without Core-side verdicts.
 

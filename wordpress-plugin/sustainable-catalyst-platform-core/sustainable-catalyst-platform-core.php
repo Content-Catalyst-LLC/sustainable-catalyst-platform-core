@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Sustainable Catalyst Platform Core
  * Description: WordPress connector for Sustainable Catalyst Platform Core registry, graph, evidence, developer, gateway, free live-data, international-law, scientific-data, official-statistics, geospatial, time-series, STAC, map-layer, streaming, alerts, source-reliability, and operational-facility, humanitarian-access, essential-services, and country-evidence federation and reconciliation, and Earth/Ocean/Space scientific-service routing, cross-product exchange, distributed scale-control services, and governance/access/audit, production-certification/recovery, and observability/SLO production-operations services, plus incident-response, change-control, rollback-coordination, continuity, backup-verification, disaster-recovery, and multi-region resilience/failover-coordination, and data-lifecycle/archival-integrity/preservation services, plus Federated Core trusted-node exchange services and capacity forecasting/resource-governance services, plus identity/credential/cryptographic-key lifecycle governance, distributed workload governance, and scientific object storage/processing adapter services, research object/model services, renderer-neutral visual reasoning object services, and visualization specification/renderer registry services, and governed System Maps and Flow Maps services, plus the renderer-neutral visual reasoning runtime/scene graph.
- * Version: 2.94.0
+ * Version: 2.95.0
  * Author: Content Catalyst LLC
  * License: MIT
  */
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('SCPC_VERSION', '2.94.0');
+define('SCPC_VERSION', '2.95.0');
 define('SCPC_OPTION_BACKEND_URL', 'scpc_backend_url');
 define('SCPC_OPTION_READ_KEY', 'scpc_read_key');
 
@@ -1879,3 +1879,12 @@ function sc_platform_core_research_validation_challenge_status_shortcode() {
   return '<div class="sc-platform-core-status" data-core-feature="research-validation-challenge">Research Validation &amp; Challenge Engine · Core v2.94.0</div>';
 }
 add_shortcode('sc_platform_core_research_validation_challenge_status', 'sc_platform_core_research_validation_challenge_status_shortcode');
+
+
+// v2.95.0 Scholarly Interoperability & Research Packaging status.
+add_shortcode('sc_platform_core_scholarly_interoperability_status', function () {
+    $d = scpc_get_json('/v1/research/scholarly-packages/readiness');
+    if (!is_array($d)) return '<div class="sc-core-status"><strong>Scholarly Interoperability &amp; Research Packaging</strong><br>Unavailable</div>';
+    $c = isset($d['counts']) && is_array($d['counts']) ? $d['counts'] : array();
+    return '<div class="sc-core-status"><strong>Scholarly Interoperability &amp; Research Packaging</strong><br>Platform Core ' . esc_html($d['release'] ?? '2.95.0') . ' · ' . esc_html($c['packages'] ?? 0) . ' packages · ' . esc_html($c['citations'] ?? 0) . ' citations · ' . esc_html($c['identifiers'] ?? 0) . ' identifiers · interoperability metadata and packaging only; identifier registration, publishing, notebook execution, scientific validation, and reproducibility certification remain external</div>';
+});

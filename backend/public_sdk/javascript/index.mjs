@@ -719,3 +719,9 @@ export async function researchContributorProvenanceBundle(client, projectRef) { 
 export async function researchValidationChallengeSummary(client, projectRef) { return client.request("GET", `/research/validation-challenges/projects/${encodeURIComponent(projectRef)}/summary`); }
 export async function researchValidationChallengeLineage(client, projectRef) { return client.request("GET", `/research/validation-challenges/projects/${encodeURIComponent(projectRef)}/lineage`); }
 export async function researchValidationChallengeBundle(client, projectRef) { return client.request("GET", `/research/validation-challenges/projects/${encodeURIComponent(projectRef)}/bundle`); }
+
+
+// v2.95.0 Scholarly Interoperability & Research Packaging
+export async function scholarlyPackageSummary(client, projectRef) { return client.request("GET", `/research/scholarly-packages/projects/${encodeURIComponent(projectRef)}/summary`); }
+export async function scholarlyPackageLineage(client, projectRef) { return client.request("GET", `/research/scholarly-packages/projects/${encodeURIComponent(projectRef)}/lineage`); }
+export async function scholarlyPackageBundle(client, projectRef) { return client.request("GET", `/research/scholarly-packages/projects/${encodeURIComponent(projectRef)}/bundle`); }

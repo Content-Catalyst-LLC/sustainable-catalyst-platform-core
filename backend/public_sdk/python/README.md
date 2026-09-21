@@ -249,3 +249,6 @@ Adds public project-state summary, lineage, bundle, and historical-version manif
 
 ## v2.93.0 — Research Roles, Agents & Contributor Provenance Framework
 Adds public project-scoped contributor-provenance summary, lineage, and bundle helpers. Human, AI/software-agent, tool, and organizational attribution remains explicitly declared; Core does not assign authority, decide credit, rank contributors, or execute agents.
+
+## v2.95.0
+Adds public summary, lineage, and bundle helpers for Scholarly Interoperability & Research Packaging.

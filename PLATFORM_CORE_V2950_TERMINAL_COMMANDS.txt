@@ -1,0 +1,8 @@
+# Git promotion
+./PUSH_PLATFORM_CORE_V2950_FINAL.sh "$PWD/sustainable-catalyst-platform-core-v2.95.0-repository.zip"
+
+# Backend deployment
+ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes catalystadmin@94.72.113.77
+cd /opt/sustainable-catalyst/core
+git fetch origin --tags && git pull --ff-only origin main
+bash DEPLOY_PLATFORM_CORE_V2950_CONTABO.sh

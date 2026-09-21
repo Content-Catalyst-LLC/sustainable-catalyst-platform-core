@@ -1072,3 +1072,12 @@ PublicApiClient.research_project_state_manifest=_v292_research_project_state_man
         return self.get(f"/api/v1/research/validation-challenges/projects/{project_ref}/lineage")
     def research_validation_challenge_bundle(self, project_ref: str):
         return self.get(f"/api/v1/research/validation-challenges/projects/{project_ref}/bundle")
+
+
+# v2.95.0 Scholarly Interoperability & Research Packaging
+def _v295_scholarly_package_summary(self, project_ref: str): return self.request("GET", f"/research/scholarly-packages/projects/{project_ref}/summary")
+def _v295_scholarly_package_lineage(self, project_ref: str): return self.request("GET", f"/research/scholarly-packages/projects/{project_ref}/lineage")
+def _v295_scholarly_package_bundle(self, project_ref: str): return self.request("GET", f"/research/scholarly-packages/projects/{project_ref}/bundle")
+PublicApiClient.scholarly_package_summary=_v295_scholarly_package_summary
+PublicApiClient.scholarly_package_lineage=_v295_scholarly_package_lineage
+PublicApiClient.scholarly_package_bundle=_v295_scholarly_package_bundle
