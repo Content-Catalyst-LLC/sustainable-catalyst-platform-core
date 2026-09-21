@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/research-protocol-v1.schema.json",
+  "title": "Sustainable Catalyst Scientific Study & Investigation Protocol",
+  "type": "object",
+  "required": [
+    "protocol_key",
+    "title",
+    "study_type"
+  ],
+  "properties": {
+    "protocol_key": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "study_type": {
+      "enum": [
+        "case_study",
+        "engineering_investigation",
+        "experimental",
+        "forensic_investigation",
+        "literature_review",
+        "mixed_method",
+        "observational",
+        "other",
+        "simulation",
+        "systematic_review"
+      ]
+    },
+    "research_question_text": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "project_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "protocol_version": {
+      "type": "string"
+    },
+    "scope": {
+      "type": "object"
+    },
+    "ethics_governance": {
+      "type": "object"
+    },
+    "reproducibility_requirements": {
+      "type": "array"
+    }
+  },
+  "additionalProperties": true
+}

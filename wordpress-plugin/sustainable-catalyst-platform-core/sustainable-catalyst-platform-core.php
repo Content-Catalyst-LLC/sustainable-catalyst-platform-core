@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Sustainable Catalyst Platform Core
  * Description: WordPress connector for Sustainable Catalyst Platform Core registry, graph, evidence, developer, gateway, free live-data, international-law, scientific-data, official-statistics, geospatial, time-series, STAC, map-layer, streaming, alerts, source-reliability, and operational-facility, humanitarian-access, essential-services, and country-evidence federation and reconciliation, and Earth/Ocean/Space scientific-service routing, cross-product exchange, distributed scale-control services, and governance/access/audit, production-certification/recovery, and observability/SLO production-operations services, plus incident-response, change-control, rollback-coordination, continuity, backup-verification, disaster-recovery, and multi-region resilience/failover-coordination, and data-lifecycle/archival-integrity/preservation services, plus Federated Core trusted-node exchange services and capacity forecasting/resource-governance services, plus identity/credential/cryptographic-key lifecycle governance, distributed workload governance, and scientific object storage/processing adapter services, research object/model services, renderer-neutral visual reasoning object services, and visualization specification/renderer registry services, and governed System Maps and Flow Maps services, plus the renderer-neutral visual reasoning runtime/scene graph.
- * Version: 2.85.0
+ * Version: 2.86.0
  * Author: Content Catalyst LLC
  * License: MIT
  */
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('SCPC_VERSION', '2.85.0');
+define('SCPC_VERSION', '2.86.0');
 define('SCPC_OPTION_BACKEND_URL', 'scpc_backend_url');
 define('SCPC_OPTION_READ_KEY', 'scpc_read_key');
 
@@ -1789,4 +1789,13 @@ add_shortcode('sc_platform_core_research_portfolio_status', function () {
     if (!is_array($d)) return '<div class="sc-core-status"><strong>Research Portfolio &amp; Institutional Knowledge Governance</strong><br>Unavailable</div>';
     $c = $d['counts'] ?? array();
     return '<div class="sc-core-status"><strong>Research Portfolio &amp; Institutional Knowledge Governance</strong><br>Platform Core ' . esc_html($d['release'] ?? '2.85.0') . ' · ' . esc_html($c['portfolios'] ?? 0) . ' portfolios · ' . esc_html($c['program_memberships'] ?? 0) . ' program memberships · ' . esc_html($c['risks'] ?? 0) . ' risks · descriptive institutional governance; ranking, prioritization, resource allocation, optimization, governance decisions, forecasting, and truth inference remain human-directed</div>';
+});
+
+
+// v2.86.0 Scientific Study & Investigation Protocol Model status surface.
+add_shortcode('sc_platform_core_research_protocol_status', function () {
+    $d = scpc_get_json('/v1/research/protocols/readiness');
+    if (!is_array($d)) return '<div class="sc-core-status"><strong>Scientific Study &amp; Investigation Protocol Model</strong><br>Unavailable</div>';
+    $c = $d['counts'] ?? array();
+    return '<div class="sc-core-status"><strong>Scientific Study &amp; Investigation Protocol Model</strong><br>Platform Core ' . esc_html($d['release'] ?? '2.86.0') . ' · ' . esc_html($c['protocols'] ?? 0) . ' protocols · ' . esc_html($c['method_plans'] ?? 0) . ' method plans · ' . esc_html($c['deviations'] ?? 0) . ' deviations · protocol registry and provenance only; execution, data collection, analysis, ethics certification, and truth inference remain external/human-directed</div>';
 });

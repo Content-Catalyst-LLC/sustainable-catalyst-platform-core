@@ -669,3 +669,8 @@ PublicApiClient.prototype.researchPortfolioSummary=function(portfolioId){return 
 PublicApiClient.prototype.researchPortfolioMap=function(portfolioId){return this.request(`/research/portfolios/${encodeURIComponent(portfolioId)}/map`);};
 PublicApiClient.prototype.researchPortfolioLineage=function(portfolioId){return this.request(`/research/portfolios/${encodeURIComponent(portfolioId)}/lineage`);};
 PublicApiClient.prototype.researchPortfolioBundle=function(portfolioId){return this.request(`/research/portfolios/${encodeURIComponent(portfolioId)}/bundle`);};
+
+// v2.86.0 Scientific Study & Investigation Protocol Model
+export async function researchProtocolSummary(client, protocolId) { return client.request("GET", `/research/protocols/${encodeURIComponent(protocolId)}/summary`); }
+export async function researchProtocolLineage(client, protocolId) { return client.request("GET", `/research/protocols/${encodeURIComponent(protocolId)}/lineage`); }
+export async function researchProtocolBundle(client, protocolId) { return client.request("GET", `/research/protocols/${encodeURIComponent(protocolId)}/bundle`); }

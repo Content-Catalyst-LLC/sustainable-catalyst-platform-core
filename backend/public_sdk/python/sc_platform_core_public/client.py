@@ -993,3 +993,11 @@ PublicApiClient.research_portfolio_summary=_v285_research_portfolio_summary
 PublicApiClient.research_portfolio_map=_v285_research_portfolio_map
 PublicApiClient.research_portfolio_lineage=_v285_research_portfolio_lineage
 PublicApiClient.research_portfolio_bundle=_v285_research_portfolio_bundle
+
+# v2.86.0 Scientific Study & Investigation Protocol Model
+def _v286_research_protocol_summary(self, protocol_id: str): return self.request("GET", f"/research/protocols/{protocol_id}/summary")
+def _v286_research_protocol_lineage(self, protocol_id: str): return self.request("GET", f"/research/protocols/{protocol_id}/lineage")
+def _v286_research_protocol_bundle(self, protocol_id: str): return self.request("GET", f"/research/protocols/{protocol_id}/bundle")
+PublicApiClient.research_protocol_summary=_v286_research_protocol_summary
+PublicApiClient.research_protocol_lineage=_v286_research_protocol_lineage
+PublicApiClient.research_protocol_bundle=_v286_research_protocol_bundle

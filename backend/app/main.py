@@ -72,6 +72,7 @@ from .routers import (
     cross_study_synthesis,
     research_programs,
     research_portfolios,
+    research_protocols,
     visualization_registry,
     system_maps,
     flow_maps,
@@ -335,6 +336,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # v2.85.0 Research Portfolio & Institutional Knowledge Governance.
     app.include_router(research_portfolios.router)
     app.include_router(research_portfolios.public_router)
+    # v2.86.0 Scientific Study & Investigation Protocol Model.
+    app.include_router(research_protocols.router)
+    app.include_router(research_protocols.public_router)
     # Open Forensics includes v2.51.0 Reproducible Investigation Packages.
     app.include_router(open_forensics.router)
     app.include_router(open_forensics.public_router)

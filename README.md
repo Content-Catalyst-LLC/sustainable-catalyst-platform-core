@@ -110,3 +110,7 @@ Portable, immutable research package manifests, replay contracts, verification e
 
 ## v2.76.0 — Research Notebook & Analytical Narrative
 Project-scoped analytical notebooks connect methods, runs, evidence, datasets, findings, visualizations, and reproducibility packages into a citable provenance-preserving narrative. Core records state; execution, narrative generation, inference, and publication remain external/human governed.
+
+
+### Platform Core v2.86.0
+Scientific Study & Investigation Protocol Model: universal protocol registration and provenance for scientific, engineering, forensic, literature-review, and mixed-method research.

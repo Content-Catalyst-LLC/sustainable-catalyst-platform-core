@@ -11145,3 +11145,205 @@ class ResearchPortfolioSnapshotRecord(Base):
     provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
     created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+# v2.86.0 — Scientific Study & Investigation Protocol Model
+
+class ScientificResearchProtocolRecord(Base):
+    __tablename__ = "scientific_research_protocols_v286"
+    __table_args__ = (UniqueConstraint("protocol_key", name="uq_scientific_protocol_v286_key"), Index("ix_scientific_protocol_v286_type_status", "study_type", "status"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    protocol_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    title: Mapped[str] = mapped_column(String(500), nullable=False)
+    study_type: Mapped[str] = mapped_column(String(80), nullable=False)
+    status: Mapped[str] = mapped_column(String(60), nullable=False, default="draft")
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="private")
+    project_ref: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    research_question_text: Mapped[str | None] = mapped_column(Text, nullable=True)
+    protocol_version: Mapped[str] = mapped_column(String(80), nullable=False, default="1.0")
+    preregistration_uri: Mapped[str | None] = mapped_column(Text, nullable=True)
+    rationale_text: Mapped[str | None] = mapped_column(Text, nullable=True)
+    scope_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    ethics_governance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    reproducibility_requirements_json: Mapped[list] = mapped_column(JSON, default=list)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+class ScientificProtocolObjectiveRecord(Base):
+    __tablename__ = "scientific_protocol_objectives_v286"
+    __table_args__ = (UniqueConstraint("protocol_id", "objective_key", name="uq_scientific_protocol_objective_v286_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    protocol_id: Mapped[str] = mapped_column(ForeignKey("scientific_research_protocols_v286.id", ondelete="CASCADE"), nullable=False)
+    objective_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    objective_type: Mapped[str] = mapped_column(String(80), nullable=False, default="primary")
+    statement_text: Mapped[str] = mapped_column(Text, nullable=False)
+    hypothesis_or_question_ref: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    success_criteria_json: Mapped[list] = mapped_column(JSON, default=list)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ScientificProtocolScopeUnitRecord(Base):
+    __tablename__ = "scientific_protocol_scope_units_v286"
+    __table_args__ = (UniqueConstraint("protocol_id", "scope_key", name="uq_scientific_protocol_scope_v286_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    protocol_id: Mapped[str] = mapped_column(ForeignKey("scientific_research_protocols_v286.id", ondelete="CASCADE"), nullable=False)
+    scope_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    scope_type: Mapped[str] = mapped_column(String(80), nullable=False)
+    label: Mapped[str] = mapped_column(String(500), nullable=False)
+    inclusion_criteria_json: Mapped[list] = mapped_column(JSON, default=list)
+    exclusion_criteria_json: Mapped[list] = mapped_column(JSON, default=list)
+    boundary_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ScientificProtocolMeasureRecord(Base):
+    __tablename__ = "scientific_protocol_measures_v286"
+    __table_args__ = (UniqueConstraint("protocol_id", "measure_key", name="uq_scientific_protocol_measure_v286_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    protocol_id: Mapped[str] = mapped_column(ForeignKey("scientific_research_protocols_v286.id", ondelete="CASCADE"), nullable=False)
+    measure_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    measure_type: Mapped[str] = mapped_column(String(80), nullable=False)
+    name: Mapped[str] = mapped_column(String(500), nullable=False)
+    operational_definition_text: Mapped[str | None] = mapped_column(Text, nullable=True)
+    unit: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    role: Mapped[str | None] = mapped_column(String(80), nullable=True)
+    measurement_plan_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ScientificProtocolSourcePlanRecord(Base):
+    __tablename__ = "scientific_protocol_source_plans_v286"
+    __table_args__ = (UniqueConstraint("protocol_id", "source_key", name="uq_scientific_protocol_source_v286_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    protocol_id: Mapped[str] = mapped_column(ForeignKey("scientific_research_protocols_v286.id", ondelete="CASCADE"), nullable=False)
+    source_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    source_type: Mapped[str] = mapped_column(String(100), nullable=False)
+    source_ref: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    version_or_date: Mapped[str | None] = mapped_column(String(180), nullable=True)
+    access_plan_text: Mapped[str | None] = mapped_column(Text, nullable=True)
+    selection_criteria_json: Mapped[list] = mapped_column(JSON, default=list)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ScientificProtocolAcquisitionPlanRecord(Base):
+    __tablename__ = "scientific_protocol_acquisition_plans_v286"
+    __table_args__ = (UniqueConstraint("protocol_id", "acquisition_key", name="uq_scientific_protocol_acquisition_v286_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    protocol_id: Mapped[str] = mapped_column(ForeignKey("scientific_research_protocols_v286.id", ondelete="CASCADE"), nullable=False)
+    acquisition_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    acquisition_type: Mapped[str] = mapped_column(String(100), nullable=False)
+    procedure_text: Mapped[str] = mapped_column(Text, nullable=False)
+    sampling_strategy_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    timing_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    quality_controls_json: Mapped[list] = mapped_column(JSON, default=list)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ScientificProtocolMethodPlanRecord(Base):
+    __tablename__ = "scientific_protocol_method_plans_v286"
+    __table_args__ = (UniqueConstraint("protocol_id", "method_key", name="uq_scientific_protocol_method_v286_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    protocol_id: Mapped[str] = mapped_column(ForeignKey("scientific_research_protocols_v286.id", ondelete="CASCADE"), nullable=False)
+    method_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    method_type: Mapped[str] = mapped_column(String(100), nullable=False)
+    method_ref: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    procedure_text: Mapped[str | None] = mapped_column(Text, nullable=True)
+    parameters_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    software_environment_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    planned_inference_type: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ScientificProtocolAssumptionRecord(Base):
+    __tablename__ = "scientific_protocol_assumptions_v286"
+    __table_args__ = (UniqueConstraint("protocol_id", "assumption_key", name="uq_scientific_protocol_assumption_v286_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    protocol_id: Mapped[str] = mapped_column(ForeignKey("scientific_research_protocols_v286.id", ondelete="CASCADE"), nullable=False)
+    assumption_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    assumption_type: Mapped[str] = mapped_column(String(100), nullable=False, default="methodological")
+    statement_text: Mapped[str] = mapped_column(Text, nullable=False)
+    sensitivity_plan_text: Mapped[str | None] = mapped_column(Text, nullable=True)
+    evidence_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ScientificProtocolValidationPlanRecord(Base):
+    __tablename__ = "scientific_protocol_validation_plans_v286"
+    __table_args__ = (UniqueConstraint("protocol_id", "validation_key", name="uq_scientific_protocol_validation_v286_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    protocol_id: Mapped[str] = mapped_column(ForeignKey("scientific_research_protocols_v286.id", ondelete="CASCADE"), nullable=False)
+    validation_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    validation_type: Mapped[str] = mapped_column(String(100), nullable=False)
+    procedure_text: Mapped[str] = mapped_column(Text, nullable=False)
+    acceptance_criteria_json: Mapped[list] = mapped_column(JSON, default=list)
+    challenge_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ScientificProtocolOutputPlanRecord(Base):
+    __tablename__ = "scientific_protocol_output_plans_v286"
+    __table_args__ = (UniqueConstraint("protocol_id", "output_key", name="uq_scientific_protocol_output_v286_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    protocol_id: Mapped[str] = mapped_column(ForeignKey("scientific_research_protocols_v286.id", ondelete="CASCADE"), nullable=False)
+    output_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    output_type: Mapped[str] = mapped_column(String(100), nullable=False)
+    label: Mapped[str] = mapped_column(String(500), nullable=False)
+    target_ref: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    requirements_json: Mapped[list] = mapped_column(JSON, default=list)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ScientificProtocolDeviationRecord(Base):
+    __tablename__ = "scientific_protocol_deviations_v286"
+    __table_args__ = (UniqueConstraint("protocol_id", "deviation_key", name="uq_scientific_protocol_deviation_v286_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    protocol_id: Mapped[str] = mapped_column(ForeignKey("scientific_research_protocols_v286.id", ondelete="CASCADE"), nullable=False)
+    deviation_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    occurred_at: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    deviation_type: Mapped[str] = mapped_column(String(100), nullable=False, default="protocol_change")
+    description_text: Mapped[str] = mapped_column(Text, nullable=False)
+    rationale_text: Mapped[str | None] = mapped_column(Text, nullable=True)
+    affected_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    impact_assessment_text: Mapped[str | None] = mapped_column(Text, nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ScientificProtocolRevisionRecord(Base):
+    __tablename__ = "scientific_protocol_revisions_v286"
+    __table_args__ = (UniqueConstraint("protocol_id", "revision", name="uq_scientific_protocol_revision_v286_revision"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    protocol_id: Mapped[str] = mapped_column(ForeignKey("scientific_research_protocols_v286.id", ondelete="CASCADE"), nullable=False)
+    revision: Mapped[int] = mapped_column(Integer, nullable=False)
+    state_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    prior_state_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    revised_state_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    change_summary: Mapped[str | None] = mapped_column(Text, nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ScientificProtocolSnapshotRecord(Base):
+    __tablename__ = "scientific_protocol_snapshots_v286"
+    __table_args__ = (UniqueConstraint("protocol_id", "revision", name="uq_scientific_protocol_snapshot_v286_revision"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    protocol_id: Mapped[str] = mapped_column(ForeignKey("scientific_research_protocols_v286.id", ondelete="CASCADE"), nullable=False)
+    revision: Mapped[int] = mapped_column(Integer, nullable=False)
+    content_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    previous_snapshot_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    state_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)

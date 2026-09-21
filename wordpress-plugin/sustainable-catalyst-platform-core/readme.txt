@@ -19,7 +19,7 @@ Tags: knowledge graph, entity registry, provenance, live data, sustainable catal
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.0
-Stable tag: 2.85.0
+Stable tag: 2.86.0
 License: MIT
 
 WordPress status, live-data gateway, and entity lookup client for Sustainable Catalyst Platform Core.
@@ -281,3 +281,7 @@ Cross-Study Evidence Synthesis & Meta-Research status surface and Core 2.83.0 co
 
 == 2.84.0 ==
 Research Program & Longitudinal Knowledge Graph status surface and Core 2.84.0 compatibility. Adds governed research programs, cross-project memberships, objectives, milestones, declared longitudinal graph nodes/edges, time-indexed knowledge states, research-evolution events, revisions, lineage, and immutable snapshots. Core does not prioritize research, allocate funding, rank projects, auto-link graphs, forecast program success, infer causality, resolve evidence gaps, or infer truth. Adds [sc_platform_core_research_program_status].
+
+
+== 2.86.0 ==
+Scientific Study & Investigation Protocol Model status surface and Core 2.86.0 compatibility. Adds universal governed protocols for experimental, observational, engineering, forensic, literature-review, systematic-review, mixed-method, simulation, and case-study research with objectives, scope units, measures, source/data plans, acquisition, methods, assumptions, validation, planned outputs, deviations, revisions, lineage, and immutable snapshots. Adds [sc_platform_core_research_protocol_status].

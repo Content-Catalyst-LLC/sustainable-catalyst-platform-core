@@ -571,3 +571,6 @@ Portable, immutable research package manifests, replay contracts, verification e
 
 ## v2.76.0 — Research Notebook & Analytical Narrative
 Adds governed research notebooks, ordered sections and entries, cross-research bindings, citations, analytical narratives, revision records, and immutable snapshots.
+
+## 2.86.0
+- Scientific Study & Investigation Protocol Model with universal declared protocol objects and provenance-aware planning.
