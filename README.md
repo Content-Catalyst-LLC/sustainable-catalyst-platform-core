@@ -114,3 +114,6 @@ Project-scoped analytical notebooks connect methods, runs, evidence, datasets, f
 
 ### Platform Core v2.86.0
 Scientific Study & Investigation Protocol Model: universal protocol registration and provenance for scientific, engineering, forensic, literature-review, and mixed-method research.
+
+### Platform Core v2.87.0
+Computation, Analysis & Execution Lineage connects externally executed Python, R, Julia, ML, Workbench, container, SQL, and specialist-runtime work back to versioned inputs, parameters, assumptions, environments, steps, outputs, findings/claims, dependencies, verification evidence, revisions, and immutable snapshots. Core records provenance and lineage; execution and scientific inference remain external.

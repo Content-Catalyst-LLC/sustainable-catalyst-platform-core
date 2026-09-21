@@ -1001,3 +1001,11 @@ def _v286_research_protocol_bundle(self, protocol_id: str): return self.request(
 PublicApiClient.research_protocol_summary=_v286_research_protocol_summary
 PublicApiClient.research_protocol_lineage=_v286_research_protocol_lineage
 PublicApiClient.research_protocol_bundle=_v286_research_protocol_bundle
+
+# v2.87.0 Computation, Analysis & Execution Lineage
+def _v287_computation_lineage_summary(self, execution_id: str): return self.request("GET", f"/research/computation-lineage/executions/{execution_id}/summary")
+def _v287_computation_lineage(self, execution_id: str): return self.request("GET", f"/research/computation-lineage/executions/{execution_id}/lineage")
+def _v287_computation_lineage_bundle(self, execution_id: str): return self.request("GET", f"/research/computation-lineage/executions/{execution_id}/bundle")
+PublicApiClient.computation_lineage_summary=_v287_computation_lineage_summary
+PublicApiClient.computation_lineage=_v287_computation_lineage
+PublicApiClient.computation_lineage_bundle=_v287_computation_lineage_bundle

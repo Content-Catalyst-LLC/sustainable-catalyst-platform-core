@@ -224,3 +224,6 @@ Adds public read methods for descriptive peer-review summary, declared lineage, 
 
 ## v2.86.0 — Cross-Study Evidence Synthesis & Meta-Research
 Adds public summary, lineage, and bundle accessors for governed cross-study syntheses. Effect estimates and meta-analysis outputs are source-reported or externally computed; Core does not search literature, decide inclusion, calculate/pool effects, score studies, or infer truth.
+
+## v2.87.0
+Adds public helpers for computation/analysis execution summaries, declared lineage, and bundles.

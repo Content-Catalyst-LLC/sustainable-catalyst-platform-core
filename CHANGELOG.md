@@ -574,3 +574,9 @@ Adds governed research notebooks, ordered sections and entries, cross-research b
 
 ## 2.86.0
 - Scientific Study & Investigation Protocol Model with universal declared protocol objects and provenance-aware planning.
+
+## 2.87.0 — Computation, Analysis & Execution Lineage
+- Added migration `0091` and twelve additive execution-lineage persistence families.
+- Added governed external execution records for Python/R/Julia/SQL/Workbench/ML/container and other runtimes.
+- Added versioned input, parameter, assumption, environment, step, output, research-object binding, cross-execution dependency, verification, revision, lineage, and immutable snapshot contracts.
+- Preserved strict non-execution and non-inference boundaries.

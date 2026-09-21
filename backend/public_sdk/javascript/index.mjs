@@ -674,3 +674,8 @@ PublicApiClient.prototype.researchPortfolioBundle=function(portfolioId){return t
 export async function researchProtocolSummary(client, protocolId) { return client.request("GET", `/research/protocols/${encodeURIComponent(protocolId)}/summary`); }
 export async function researchProtocolLineage(client, protocolId) { return client.request("GET", `/research/protocols/${encodeURIComponent(protocolId)}/lineage`); }
 export async function researchProtocolBundle(client, protocolId) { return client.request("GET", `/research/protocols/${encodeURIComponent(protocolId)}/bundle`); }
+
+// v2.87.0 Computation, Analysis & Execution Lineage
+export async function computationLineageSummary(client, executionId) { return client.request("GET", `/research/computation-lineage/executions/${encodeURIComponent(executionId)}/summary`); }
+export async function computationLineage(client, executionId) { return client.request("GET", `/research/computation-lineage/executions/${encodeURIComponent(executionId)}/lineage`); }
+export async function computationLineageBundle(client, executionId) { return client.request("GET", `/research/computation-lineage/executions/${encodeURIComponent(executionId)}/bundle`); }

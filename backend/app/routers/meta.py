@@ -203,6 +203,7 @@ def health(request: Request):
         "research_notebook_analytical_narrative": request.app.state.settings.research_notebook_analytical_narrative_enabled,
         "finding_claim_evidence_intelligence": request.app.state.settings.finding_claim_evidence_intelligence_enabled,
         "scientific_study_investigation_protocol_model": request.app.state.settings.scientific_study_investigation_protocol_enabled,
+        "computation_analysis_execution_lineage": request.app.state.settings.computation_analysis_execution_lineage_enabled,
         "open_forensics": request.app.state.settings.open_forensics_enabled,
         "forensic_timeline_event_reconstruction": request.app.state.settings.open_forensics_enabled,
         "forensic_spatial_temporal_evidence_integration": request.app.state.settings.open_forensics_enabled,

@@ -1,0 +1,4 @@
+# Platform Core v2.87.0 terminal commands
+# Git: ./PUSH_PLATFORM_CORE_V2870_FINAL.sh "$PWD/sustainable-catalyst-platform-core-v2.87.0-repository.zip"
+# VPS: ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes catalystadmin@94.72.113.77
+# Then: cd /opt/sustainable-catalyst/core && git fetch origin --tags && git pull --ff-only origin main && bash DEPLOY_PLATFORM_CORE_V2870_CONTABO.sh

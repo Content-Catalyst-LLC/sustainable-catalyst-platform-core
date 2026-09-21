@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/computation-analysis-execution-lineage-v1.schema.json",
+  "title": "Sustainable Catalyst Computation, Analysis & Execution Lineage",
+  "type": "object",
+  "properties": {
+    "execution": {
+      "type": "object",
+      "required": [
+        "execution_key",
+        "title",
+        "execution_type",
+        "runtime_kind"
+      ],
+      "properties": {
+        "execution_key": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "execution_type": {
+          "type": "string"
+        },
+        "runtime_kind": {
+          "type": "string"
+        },
+        "project_ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "protocol_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "external_run_ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "inputs": {
+      "type": "array"
+    },
+    "parameters": {
+      "type": "array"
+    },
+    "assumptions": {
+      "type": "array"
+    },
+    "environments": {
+      "type": "array"
+    },
+    "steps": {
+      "type": "array"
+    },
+    "outputs": {
+      "type": "array"
+    },
+    "research_bindings": {
+      "type": "array"
+    },
+    "dependencies": {
+      "type": "array"
+    },
+    "verifications": {
+      "type": "array"
+    },
+    "revisions": {
+      "type": "array"
+    },
+    "snapshots": {
+      "type": "array"
+    }
+  },
+  "required": [
+    "execution"
+  ]
+}

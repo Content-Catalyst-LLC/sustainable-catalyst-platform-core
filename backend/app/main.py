@@ -73,6 +73,7 @@ from .routers import (
     research_programs,
     research_portfolios,
     research_protocols,
+    computation_lineage,
     visualization_registry,
     system_maps,
     flow_maps,
@@ -339,6 +340,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # v2.86.0 Scientific Study & Investigation Protocol Model.
     app.include_router(research_protocols.router)
     app.include_router(research_protocols.public_router)
+    # v2.87.0 Computation, Analysis & Execution Lineage.
+    app.include_router(computation_lineage.router)
+    app.include_router(computation_lineage.public_router)
     # Open Forensics includes v2.51.0 Reproducible Investigation Packages.
     app.include_router(open_forensics.router)
     app.include_router(open_forensics.public_router)
