@@ -729,3 +729,8 @@ export async function scholarlyPackageBundle(client, projectRef) { return client
 // v2.96.0 Unified Research Runtime Contract
 export async function researchRuntimeContractBundle(client, contractId) { return client.request("GET", `/research/runtime-contract/contracts/${encodeURIComponent(contractId)}/bundle`); }
 export async function researchRuntimeProjectBundle(client, projectRef) { return client.request("GET", `/research/runtime-contract/projects/${encodeURIComponent(projectRef)}/bundle`); }
+
+
+// v2.97.0 Platform Research Integration Certification
+export async function researchIntegrationCertificationSuite(client, suiteId) { return client.request("GET", `/research/integration-certification/suites/${encodeURIComponent(suiteId)}/bundle`); }
+export async function researchIntegrationCertificationRun(client, runId) { return client.request("GET", `/research/integration-certification/runs/${encodeURIComponent(runId)}/report`); }

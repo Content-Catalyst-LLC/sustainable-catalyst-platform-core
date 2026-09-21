@@ -13131,3 +13131,175 @@ class ResearchRuntimeSnapshotRecord(Base):
     provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
     created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+# v2.97.0 Platform Research Integration Certification
+class ResearchIntegrationCertificationSuiteRecord(Base):
+    __tablename__ = "research_integration_certification_suites_v297"
+    __table_args__ = (UniqueConstraint("suite_key", name="uq_research_integration_cert_suite_v297_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    suite_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    title: Mapped[str] = mapped_column(String(400), nullable=False)
+    contract_ref: Mapped[str] = mapped_column(String(1000), nullable=False, default="sc.research.unified-runtime-contract.v1")
+    contract_version: Mapped[str] = mapped_column(String(80), nullable=False, default="1.0")
+    status: Mapped[str] = mapped_column(String(80), nullable=False, default="active")
+    required_operations_json: Mapped[list] = mapped_column(JSON, default=list)
+    required_capabilities_json: Mapped[list] = mapped_column(JSON, default=list)
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchIntegrationCertificationProductRecord(Base):
+    __tablename__ = "research_integration_certification_products_v297"
+    __table_args__ = (UniqueConstraint("product_key", name="uq_research_integration_cert_product_v297_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    product_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    suite_id: Mapped[str] = mapped_column(ForeignKey("research_integration_certification_suites_v297.id", ondelete="CASCADE"), nullable=False)
+    product_ref: Mapped[str] = mapped_column(String(500), nullable=False)
+    product_version: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    runtime_binding_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    declared_capabilities_json: Mapped[list] = mapped_column(JSON, default=list)
+    declared_object_types_json: Mapped[list] = mapped_column(JSON, default=list)
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchIntegrationCertificationCaseRecord(Base):
+    __tablename__ = "research_integration_certification_cases_v297"
+    __table_args__ = (UniqueConstraint("case_key", name="uq_research_integration_cert_case_v297_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    case_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    suite_id: Mapped[str] = mapped_column(ForeignKey("research_integration_certification_suites_v297.id", ondelete="CASCADE"), nullable=False)
+    operation: Mapped[str] = mapped_column(String(100), nullable=False)
+    object_type: Mapped[str | None] = mapped_column(String(180), nullable=True)
+    requirement: Mapped[str] = mapped_column(Text, nullable=False)
+    required: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    expected_evidence_json: Mapped[list] = mapped_column(JSON, default=list)
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchIntegrationCertificationRunRecord(Base):
+    __tablename__ = "research_integration_certification_runs_v297"
+    __table_args__ = (UniqueConstraint("run_key", name="uq_research_integration_cert_run_v297_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    run_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    suite_id: Mapped[str] = mapped_column(ForeignKey("research_integration_certification_suites_v297.id", ondelete="CASCADE"), nullable=False)
+    product_id: Mapped[str] = mapped_column(ForeignKey("research_integration_certification_products_v297.id", ondelete="CASCADE"), nullable=False)
+    executed_by: Mapped[str] = mapped_column(String(500), nullable=False)
+    environment_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    started_at_text: Mapped[str | None] = mapped_column(String(80), nullable=True)
+    completed_at_text: Mapped[str | None] = mapped_column(String(80), nullable=True)
+    status: Mapped[str] = mapped_column(String(80), nullable=False, default="recorded")
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchIntegrationCertificationCaseResultRecord(Base):
+    __tablename__ = "research_integration_certification_case_results_v297"
+    __table_args__ = (UniqueConstraint("run_id", "case_id", name="uq_research_integration_cert_result_v297_run_case"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    run_id: Mapped[str] = mapped_column(ForeignKey("research_integration_certification_runs_v297.id", ondelete="CASCADE"), nullable=False)
+    case_id: Mapped[str] = mapped_column(ForeignKey("research_integration_certification_cases_v297.id", ondelete="CASCADE"), nullable=False)
+    status: Mapped[str] = mapped_column(String(40), nullable=False)
+    observed_behavior: Mapped[str | None] = mapped_column(Text, nullable=True)
+    evidence_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    executed_by: Mapped[str] = mapped_column(String(500), nullable=False)
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchIntegrationCertificationExchangeCheckRecord(Base):
+    __tablename__ = "research_integration_certification_exchange_checks_v297"
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    run_id: Mapped[str] = mapped_column(ForeignKey("research_integration_certification_runs_v297.id", ondelete="CASCADE"), nullable=False)
+    source_product_ref: Mapped[str] = mapped_column(String(500), nullable=False)
+    target_product_ref: Mapped[str] = mapped_column(String(500), nullable=False)
+    exchange_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    object_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    status: Mapped[str] = mapped_column(String(40), nullable=False)
+    evidence_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchIntegrationCertificationTraceCheckRecord(Base):
+    __tablename__ = "research_integration_certification_trace_checks_v297"
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    run_id: Mapped[str] = mapped_column(ForeignKey("research_integration_certification_runs_v297.id", ondelete="CASCADE"), nullable=False)
+    object_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    trace_type: Mapped[str] = mapped_column(String(100), nullable=False, default="provenance")
+    expected_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    observed_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    status: Mapped[str] = mapped_column(String(40), nullable=False)
+    evidence_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchIntegrationCertificationReproductionCheckRecord(Base):
+    __tablename__ = "research_integration_certification_reproduction_checks_v297"
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    run_id: Mapped[str] = mapped_column(ForeignKey("research_integration_certification_runs_v297.id", ondelete="CASCADE"), nullable=False)
+    project_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    state_version_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    reconstruction_plan_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    status: Mapped[str] = mapped_column(String(40), nullable=False)
+    evidence_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    notes: Mapped[str | None] = mapped_column(Text, nullable=True)
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchIntegrationCertificationEvidenceRecord(Base):
+    __tablename__ = "research_integration_certification_evidence_v297"
+    __table_args__ = (UniqueConstraint("evidence_key", name="uq_research_integration_cert_evidence_v297_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    evidence_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    run_id: Mapped[str] = mapped_column(ForeignKey("research_integration_certification_runs_v297.id", ondelete="CASCADE"), nullable=False)
+    evidence_type: Mapped[str] = mapped_column(String(100), nullable=False)
+    evidence_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    content_hash: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    captured_by: Mapped[str] = mapped_column(String(500), nullable=False)
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchIntegrationCertificationFindingRecord(Base):
+    __tablename__ = "research_integration_certification_findings_v297"
+    __table_args__ = (UniqueConstraint("finding_key", name="uq_research_integration_cert_finding_v297_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    finding_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    run_id: Mapped[str] = mapped_column(ForeignKey("research_integration_certification_runs_v297.id", ondelete="CASCADE"), nullable=False)
+    severity: Mapped[str] = mapped_column(String(40), nullable=False, default="info")
+    category: Mapped[str] = mapped_column(String(120), nullable=False)
+    statement: Mapped[str] = mapped_column(Text, nullable=False)
+    evidence_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    status: Mapped[str] = mapped_column(String(80), nullable=False, default="open")
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchIntegrationCertificationRevisionRecord(Base):
+    __tablename__ = "research_integration_certification_revisions_v297"
+    __table_args__ = (UniqueConstraint("suite_id", "revision", name="uq_research_integration_cert_revision_v297_suite_revision"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    suite_id: Mapped[str] = mapped_column(ForeignKey("research_integration_certification_suites_v297.id", ondelete="CASCADE"), nullable=False)
+    revision: Mapped[int] = mapped_column(Integer, nullable=False)
+    prior_state_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    revised_state_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    reason: Mapped[str | None] = mapped_column(Text, nullable=True)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchIntegrationCertificationSnapshotRecord(Base):
+    __tablename__ = "research_integration_certification_snapshots_v297"
+    __table_args__ = (UniqueConstraint("suite_id", "revision", name="uq_research_integration_cert_snapshot_v297_suite_revision"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    suite_id: Mapped[str] = mapped_column(ForeignKey("research_integration_certification_suites_v297.id", ondelete="CASCADE"), nullable=False)
+    revision: Mapped[int] = mapped_column(Integer, nullable=False)
+    content_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    previous_snapshot_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    state_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)

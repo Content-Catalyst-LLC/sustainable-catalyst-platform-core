@@ -255,3 +255,6 @@ Adds public summary, lineage, and bundle helpers for Scholarly Interoperability 
 
 ## v2.96.0 Unified Research Runtime Contract
 Public SDK helpers expose declared runtime-contract and project exchange bundles. They do not execute specialist work or certify scientific results.
+
+## v2.97.0 Platform Research Integration Certification
+Public read helpers expose suite bundles and recorded conformance-run reports.

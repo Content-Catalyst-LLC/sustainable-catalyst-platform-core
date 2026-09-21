@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/platform-research-integration-certification-v1.schema.json",
+  "title": "Platform Research Integration Certification",
+  "type": "object",
+  "required": [
+    "suite_key",
+    "title",
+    "contract_ref"
+  ],
+  "properties": {
+    "suite_key": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "contract_ref": {
+      "type": "string"
+    },
+    "required_operations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "required_capabilities": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "metadata": {
+      "type": "object"
+    },
+    "provenance": {
+      "type": "object"
+    }
+  }
+}

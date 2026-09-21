@@ -1087,3 +1087,10 @@ def _v296_research_runtime_contract_bundle(self, contract_id: str): return self.
 def _v296_research_runtime_project_bundle(self, project_ref: str): return self.request("GET", f"/research/runtime-contract/projects/{project_ref}/bundle")
 PublicApiClient.research_runtime_contract_bundle=_v296_research_runtime_contract_bundle
 PublicApiClient.research_runtime_project_bundle=_v296_research_runtime_project_bundle
+
+
+# v2.97.0 Platform Research Integration Certification
+def _v297_research_integration_certification_suite(self, suite_id: str): return self.request("GET", f"/research/integration-certification/suites/{suite_id}/bundle")
+def _v297_research_integration_certification_run(self, run_id: str): return self.request("GET", f"/research/integration-certification/runs/{run_id}/report")
+PublicApiClient.research_integration_certification_suite=_v297_research_integration_certification_suite
+PublicApiClient.research_integration_certification_run=_v297_research_integration_certification_run

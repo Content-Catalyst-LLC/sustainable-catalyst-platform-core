@@ -147,3 +147,7 @@ Research Roles, Agents & Contributor Provenance Framework records scoped contrib
 
 ### v2.96.0 Unified Research Runtime Contract
 Platform Core exposes a stable declared contract for cross-product research objects, capabilities, exchange envelopes, invocation/result lineage, and compatibility evidence while specialist execution remains in consuming applications.
+
+
+### v2.97.0 Platform Research Integration Certification
+Core can now preserve automated integration-conformance evidence for products consuming the v2.96 unified research runtime contract, including object CRUD/versioning, exchange, trace, state reconstruction, and evidence-backed case results.
