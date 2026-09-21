@@ -690,3 +690,9 @@ export async function inferenceBundle(client, inferenceId) { return client.reque
 export async function qualityAuditSummary(client, auditId) { return client.request("GET", `/research/quality-audits/${encodeURIComponent(auditId)}/summary`); }
 export async function qualityAuditLineage(client, auditId) { return client.request("GET", `/research/quality-audits/${encodeURIComponent(auditId)}/lineage`); }
 export async function qualityAuditBundle(client, auditId) { return client.request("GET", `/research/quality-audits/${encodeURIComponent(auditId)}/bundle`); }
+
+// v2.90.0 Research Workflow & Orchestration Engine
+export async function researchWorkflowSummary(client, workflowId) { return client.request("GET", `/research/workflows/${encodeURIComponent(workflowId)}/summary`); }
+export async function researchWorkflowTimeline(client, workflowId) { return client.request("GET", `/research/workflows/${encodeURIComponent(workflowId)}/timeline`); }
+export async function researchWorkflowLineage(client, workflowId) { return client.request("GET", `/research/workflows/${encodeURIComponent(workflowId)}/lineage`); }
+export async function researchWorkflowBundle(client, workflowId) { return client.request("GET", `/research/workflows/${encodeURIComponent(workflowId)}/bundle`); }

@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/research-workflow-orchestration-v1.schema.json",
+  "title": "Sustainable Catalyst Research Workflow & Orchestration Contract v1",
+  "type": "object",
+  "required": [
+    "workflow_key",
+    "title"
+  ],
+  "properties": {
+    "workflow_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "workflow_type": {
+      "type": "string",
+      "enum": [
+        "research_lifecycle",
+        "scientific_study",
+        "investigation",
+        "systematic_review",
+        "engineering_analysis",
+        "forensic_investigation",
+        "publication_pipeline",
+        "replication",
+        "custom"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "active",
+        "paused",
+        "completed",
+        "archived"
+      ]
+    },
+    "visibility": {
+      "type": "string",
+      "enum": [
+        "private",
+        "internal",
+        "public"
+      ]
+    },
+    "project_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "protocol_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "program_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "metadata": {
+      "type": "object"
+    },
+    "provenance": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": true
+}

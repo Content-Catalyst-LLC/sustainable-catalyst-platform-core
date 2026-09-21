@@ -593,3 +593,6 @@ Adds governed research notebooks, ordered sections and entries, cross-research b
 - Added migration 0092 and nine inference-semantics tables.
 - Added explicit observation/measurement/descriptive/statistical/causal/predictive/interpretive/speculative inference taxonomy.
 - Added declared basis, assumption, uncertainty, relation, challenge, revision, lineage, snapshot, public API, WordPress, and SDK surfaces.
+
+## 2.90.0
+- Added Research Workflow & Orchestration Engine with governed stages, transitions, handoffs, checkpoints, events, policies, lineage, revisions, and snapshots.

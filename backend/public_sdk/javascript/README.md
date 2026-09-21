@@ -234,3 +234,6 @@ Public read methods expose inference summary, declared lineage, and portable bun
 
 ## v2.89.0 — Research Quality, Bias & Methodological Audit Engine
 Public read methods expose methodological-audit summaries, declared lineage, and complete public audit bundles. Audit results are assessor/external-system declarations; Core does not score research quality or determine methodological truth.
+
+## v2.90.0
+Research Workflow & Orchestration public read methods are available for summary, timeline, lineage, and bundles.

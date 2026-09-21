@@ -1026,3 +1026,13 @@ def _v289_quality_audit_bundle(self, audit_id: str): return self.request("GET", 
 PublicApiClient.quality_audit_summary=_v289_quality_audit_summary
 PublicApiClient.quality_audit_lineage=_v289_quality_audit_lineage
 PublicApiClient.quality_audit_bundle=_v289_quality_audit_bundle
+
+# v2.90.0 Research Workflow & Orchestration Engine
+def _v290_research_workflow_summary(self, workflow_id: str): return self.request("GET", f"/research/workflows/{workflow_id}/summary")
+def _v290_research_workflow_timeline(self, workflow_id: str): return self.request("GET", f"/research/workflows/{workflow_id}/timeline")
+def _v290_research_workflow_lineage(self, workflow_id: str): return self.request("GET", f"/research/workflows/{workflow_id}/lineage")
+def _v290_research_workflow_bundle(self, workflow_id: str): return self.request("GET", f"/research/workflows/{workflow_id}/bundle")
+PublicApiClient.research_workflow_summary=_v290_research_workflow_summary
+PublicApiClient.research_workflow_timeline=_v290_research_workflow_timeline
+PublicApiClient.research_workflow_lineage=_v290_research_workflow_lineage
+PublicApiClient.research_workflow_bundle=_v290_research_workflow_bundle

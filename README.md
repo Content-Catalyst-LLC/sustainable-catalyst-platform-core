@@ -124,3 +124,6 @@ Adds an explicit epistemic/inference taxonomy and provenance layer over existing
 
 ## Platform Core v2.89.0 — Research Quality, Bias & Methodological Audit Engine
 Adds governed methodological-audit objects for systematic audit criteria, declared/external check results, audit findings, evidence bindings, bias and method assessments, responses, lineage, revisions, and immutable snapshots. Core does not infer bias, score research quality, rank studies, certify method/causal validity, certify reproducibility/ethics, reject research, or determine truth.
+
+### v2.90.0 Research Workflow & Orchestration Engine
+Core coordinates declared research lifecycle state and cross-product handoffs without autonomously conducting scientific work.

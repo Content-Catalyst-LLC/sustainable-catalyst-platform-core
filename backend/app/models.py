@@ -11851,3 +11851,165 @@ class ResearchQualityAuditSnapshotRecord(Base):
     created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
 
+
+
+# v2.90.0 Research Workflow & Orchestration Engine
+class ResearchWorkflowRecord(Base):
+    __tablename__ = "research_workflows_v290"
+    __table_args__ = (UniqueConstraint("workflow_key", name="uq_research_workflow_v290_key"), Index("ix_research_workflow_v290_project_status", "project_ref", "status"))
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    workflow_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    title: Mapped[str] = mapped_column(String(500), nullable=False)
+    workflow_type: Mapped[str] = mapped_column(String(120), nullable=False, default="research_lifecycle")
+    status: Mapped[str] = mapped_column(String(60), nullable=False, default="draft")
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="private")
+    project_ref: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    protocol_ref: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    program_ref: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    current_stage_key: Mapped[str | None] = mapped_column(String(180), nullable=True)
+    orchestration_mode: Mapped[str] = mapped_column(String(60), nullable=False, default="governed")
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+class ResearchWorkflowStageRecord(Base):
+    __tablename__ = "research_workflow_stages_v290"
+    __table_args__ = (UniqueConstraint("workflow_id", "stage_key", name="uq_research_workflow_stage_v290_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    workflow_id: Mapped[str] = mapped_column(ForeignKey("research_workflows_v290.id", ondelete="CASCADE"), nullable=False)
+    stage_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    stage_type: Mapped[str] = mapped_column(String(100), nullable=False)
+    ordinal: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    status: Mapped[str] = mapped_column(String(60), nullable=False, default="pending")
+    responsible_product: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    object_ref: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    entry_criteria_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    exit_criteria_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchWorkflowTransitionRecord(Base):
+    __tablename__ = "research_workflow_transitions_v290"
+    __table_args__ = (UniqueConstraint("workflow_id", "transition_key", name="uq_research_workflow_transition_v290_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    workflow_id: Mapped[str] = mapped_column(ForeignKey("research_workflows_v290.id", ondelete="CASCADE"), nullable=False)
+    transition_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    from_stage_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    to_stage_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    status: Mapped[str] = mapped_column(String(60), nullable=False, default="declared")
+    trigger_type: Mapped[str] = mapped_column(String(100), nullable=False, default="manual")
+    condition_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    rationale: Mapped[str | None] = mapped_column(Text, nullable=True)
+    declared_by: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    applied_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchWorkflowContextBindingRecord(Base):
+    __tablename__ = "research_workflow_context_bindings_v290"
+    __table_args__ = (UniqueConstraint("workflow_id", "binding_key", name="uq_research_workflow_context_v290_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    workflow_id: Mapped[str] = mapped_column(ForeignKey("research_workflows_v290.id", ondelete="CASCADE"), nullable=False)
+    binding_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    stage_key: Mapped[str | None] = mapped_column(String(180), nullable=True)
+    product_key: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    object_type: Mapped[str] = mapped_column(String(120), nullable=False)
+    object_ref: Mapped[str] = mapped_column(String(500), nullable=False)
+    relation: Mapped[str] = mapped_column(String(120), nullable=False, default="context")
+    context_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchWorkflowHandoffRecord(Base):
+    __tablename__ = "research_workflow_handoffs_v290"
+    __table_args__ = (UniqueConstraint("workflow_id", "handoff_key", name="uq_research_workflow_handoff_v290_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    workflow_id: Mapped[str] = mapped_column(ForeignKey("research_workflows_v290.id", ondelete="CASCADE"), nullable=False)
+    handoff_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    stage_key: Mapped[str | None] = mapped_column(String(180), nullable=True)
+    from_product: Mapped[str] = mapped_column(String(120), nullable=False)
+    to_product: Mapped[str] = mapped_column(String(120), nullable=False)
+    status: Mapped[str] = mapped_column(String(60), nullable=False, default="planned")
+    context_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    external_handoff_ref: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    acknowledged_by: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchWorkflowCheckpointRecord(Base):
+    __tablename__ = "research_workflow_checkpoints_v290"
+    __table_args__ = (UniqueConstraint("workflow_id", "checkpoint_key", name="uq_research_workflow_checkpoint_v290_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    workflow_id: Mapped[str] = mapped_column(ForeignKey("research_workflows_v290.id", ondelete="CASCADE"), nullable=False)
+    checkpoint_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    stage_key: Mapped[str | None] = mapped_column(String(180), nullable=True)
+    checkpoint_type: Mapped[str] = mapped_column(String(120), nullable=False)
+    status: Mapped[str] = mapped_column(String(60), nullable=False, default="pending")
+    statement_text: Mapped[str] = mapped_column(Text, nullable=False)
+    evidence_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    declared_by: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchWorkflowEventRecord(Base):
+    __tablename__ = "research_workflow_events_v290"
+    __table_args__ = (UniqueConstraint("workflow_id", "event_key", name="uq_research_workflow_event_v290_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    workflow_id: Mapped[str] = mapped_column(ForeignKey("research_workflows_v290.id", ondelete="CASCADE"), nullable=False)
+    event_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    event_type: Mapped[str] = mapped_column(String(120), nullable=False)
+    stage_key: Mapped[str | None] = mapped_column(String(180), nullable=True)
+    actor_ref: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    details_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    observed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchWorkflowPolicyRecord(Base):
+    __tablename__ = "research_workflow_policies_v290"
+    __table_args__ = (UniqueConstraint("workflow_id", "policy_key", name="uq_research_workflow_policy_v290_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    workflow_id: Mapped[str] = mapped_column(ForeignKey("research_workflows_v290.id", ondelete="CASCADE"), nullable=False)
+    policy_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    scope: Mapped[str] = mapped_column(String(80), nullable=False)
+    rule_type: Mapped[str] = mapped_column(String(120), nullable=False)
+    rule_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchWorkflowRevisionRecord(Base):
+    __tablename__ = "research_workflow_revisions_v290"
+    __table_args__ = (UniqueConstraint("workflow_id", "revision", name="uq_research_workflow_revision_v290_revision"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    workflow_id: Mapped[str] = mapped_column(ForeignKey("research_workflows_v290.id", ondelete="CASCADE"), nullable=False)
+    revision: Mapped[int] = mapped_column(Integer, nullable=False)
+    state_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    prior_state_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    revised_state_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    change_summary: Mapped[str | None] = mapped_column(Text, nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchWorkflowSnapshotRecord(Base):
+    __tablename__ = "research_workflow_snapshots_v290"
+    __table_args__ = (UniqueConstraint("workflow_id", "revision", name="uq_research_workflow_snapshot_v290_revision"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    workflow_id: Mapped[str] = mapped_column(ForeignKey("research_workflows_v290.id", ondelete="CASCADE"), nullable=False)
+    revision: Mapped[int] = mapped_column(Integer, nullable=False)
+    content_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    previous_snapshot_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    state_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)

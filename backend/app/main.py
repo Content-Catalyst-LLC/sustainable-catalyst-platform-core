@@ -76,6 +76,7 @@ from .routers import (
     computation_lineage,
     unified_inference,
     research_quality_audit,
+    research_workflows,
     visualization_registry,
     system_maps,
     flow_maps,
@@ -351,6 +352,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # v2.89.0 Research Quality, Bias & Methodological Audit Engine.
     app.include_router(research_quality_audit.router)
     app.include_router(research_quality_audit.public_router)
+    # v2.90.0 governed research lifecycle coordination and cross-product orchestration.
+    app.include_router(research_workflows.router)
+    app.include_router(research_workflows.public_router)
     # Open Forensics includes v2.51.0 Reproducible Investigation Packages.
     app.include_router(open_forensics.router)
     app.include_router(open_forensics.public_router)

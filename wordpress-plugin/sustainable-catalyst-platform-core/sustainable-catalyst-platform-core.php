@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Sustainable Catalyst Platform Core
  * Description: WordPress connector for Sustainable Catalyst Platform Core registry, graph, evidence, developer, gateway, free live-data, international-law, scientific-data, official-statistics, geospatial, time-series, STAC, map-layer, streaming, alerts, source-reliability, and operational-facility, humanitarian-access, essential-services, and country-evidence federation and reconciliation, and Earth/Ocean/Space scientific-service routing, cross-product exchange, distributed scale-control services, and governance/access/audit, production-certification/recovery, and observability/SLO production-operations services, plus incident-response, change-control, rollback-coordination, continuity, backup-verification, disaster-recovery, and multi-region resilience/failover-coordination, and data-lifecycle/archival-integrity/preservation services, plus Federated Core trusted-node exchange services and capacity forecasting/resource-governance services, plus identity/credential/cryptographic-key lifecycle governance, distributed workload governance, and scientific object storage/processing adapter services, research object/model services, renderer-neutral visual reasoning object services, and visualization specification/renderer registry services, and governed System Maps and Flow Maps services, plus the renderer-neutral visual reasoning runtime/scene graph.
- * Version: 2.89.0
+ * Version: 2.90.0
  * Author: Content Catalyst LLC
  * License: MIT
  */
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('SCPC_VERSION', '2.89.0');
+define('SCPC_VERSION', '2.90.0');
 define('SCPC_OPTION_BACKEND_URL', 'scpc_backend_url');
 define('SCPC_OPTION_READ_KEY', 'scpc_read_key');
 
@@ -1824,4 +1824,16 @@ add_shortcode('sc_platform_core_research_quality_audit_status', function () {
     if (!is_array($d)) return '<div class="sc-core-status"><strong>Research Quality, Bias &amp; Methodological Audit Engine</strong><br>Unavailable</div>';
     $c = isset($d['counts']) && is_array($d['counts']) ? $d['counts'] : array();
     return '<div class="sc-core-status"><strong>Research Quality, Bias &amp; Methodological Audit Engine</strong><br>Platform Core ' . esc_html($d['release'] ?? '2.89.0') . ' · ' . esc_html($c['audits'] ?? 0) . ' audits · ' . esc_html($c['checks'] ?? 0) . ' checks · ' . esc_html($c['findings'] ?? 0) . ' audit findings · descriptive/declared methodological audit evidence only; bias inference, quality scoring, ranking, validity certification, and truth determination remain external/human-directed</div>';
+});
+
+
+// v2.90.0 Research Workflow & Orchestration Engine status.
+add_shortcode('sc_platform_core_research_workflow_status', function () {
+    $url = rtrim(SCPC_API_BASE, '/') . '/v1/research/workflows/readiness';
+    $r = wp_remote_get($url, array('timeout' => 8));
+    if (is_wp_error($r)) return '<div class="sc-core-status">Research Workflow Engine unavailable.</div>';
+    $d = json_decode(wp_remote_retrieve_body($r), true);
+    if (!is_array($d)) return '<div class="sc-core-status">Research Workflow Engine unavailable.</div>';
+    $c = isset($d['counts']) && is_array($d['counts']) ? $d['counts'] : array();
+    return '<div class="sc-core-status"><strong>Research Workflow &amp; Orchestration Engine</strong><br>Workflows: '.intval($c['workflows'] ?? 0).' · Stages: '.intval($c['stages'] ?? 0).' · Handoffs: '.intval($c['handoffs'] ?? 0).'</div>';
 });
