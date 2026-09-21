@@ -685,3 +685,8 @@ export async function computationLineageBundle(client, executionId) { return cli
 export async function inferenceSummary(client, inferenceId) { return client.request("GET", `/research/inferences/${encodeURIComponent(inferenceId)}/summary`); }
 export async function inferenceLineage(client, inferenceId) { return client.request("GET", `/research/inferences/${encodeURIComponent(inferenceId)}/lineage`); }
 export async function inferenceBundle(client, inferenceId) { return client.request("GET", `/research/inferences/${encodeURIComponent(inferenceId)}/bundle`); }
+
+// v2.89.0 Research Quality, Bias & Methodological Audit Engine
+export async function qualityAuditSummary(client, auditId) { return client.request("GET", `/research/quality-audits/${encodeURIComponent(auditId)}/summary`); }
+export async function qualityAuditLineage(client, auditId) { return client.request("GET", `/research/quality-audits/${encodeURIComponent(auditId)}/lineage`); }
+export async function qualityAuditBundle(client, auditId) { return client.request("GET", `/research/quality-audits/${encodeURIComponent(auditId)}/bundle`); }

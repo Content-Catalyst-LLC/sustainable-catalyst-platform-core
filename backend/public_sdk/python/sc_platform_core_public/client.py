@@ -1018,3 +1018,11 @@ def _v288_inference_bundle(self, inference_id: str): return self.request("GET", 
 PublicApiClient.inference_summary=_v288_inference_summary
 PublicApiClient.inference_lineage=_v288_inference_lineage
 PublicApiClient.inference_bundle=_v288_inference_bundle
+
+# v2.89.0 Research Quality, Bias & Methodological Audit Engine
+def _v289_quality_audit_summary(self, audit_id: str): return self.request("GET", f"/research/quality-audits/{audit_id}/summary")
+def _v289_quality_audit_lineage(self, audit_id: str): return self.request("GET", f"/research/quality-audits/{audit_id}/lineage")
+def _v289_quality_audit_bundle(self, audit_id: str): return self.request("GET", f"/research/quality-audits/{audit_id}/bundle")
+PublicApiClient.quality_audit_summary=_v289_quality_audit_summary
+PublicApiClient.quality_audit_lineage=_v289_quality_audit_lineage
+PublicApiClient.quality_audit_bundle=_v289_quality_audit_bundle

@@ -231,3 +231,6 @@ Adds public helpers for computation/analysis execution summaries, declared linea
 
 ## v2.88.0 — Unified Findings, Claims & Inference Engine
 Public read methods expose inference summary, declared lineage, and portable bundle endpoints. Inference classifications and confidence declarations remain researcher-authored; Core does not generate or validate inference.
+
+## v2.89.0 — Research Quality, Bias & Methodological Audit Engine
+Public read methods expose methodological-audit summaries, declared lineage, and complete public audit bundles. Audit results are assessor/external-system declarations; Core does not score research quality or determine methodological truth.

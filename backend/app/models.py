@@ -11682,3 +11682,172 @@ class ResearchInferenceSnapshotRecord(Base):
     provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
     created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+# v2.89.0 — Research Quality, Bias & Methodological Audit Engine
+class ResearchQualityAuditRecord(Base):
+    __tablename__ = "research_quality_audits_v289"
+    __table_args__ = (
+        UniqueConstraint("audit_key", name="uq_research_quality_audit_v289_key"),
+        Index("ix_research_quality_audit_v289_project_status", "project_ref", "status"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    audit_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    title: Mapped[str] = mapped_column(String(500), nullable=False)
+    status: Mapped[str] = mapped_column(String(60), nullable=False, default="planned")
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="private")
+    project_ref: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    protocol_ref: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    execution_ref: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    inference_ref: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    publication_ref: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    assessment_framework: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    auditor_ref: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    scope_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+class ResearchQualityAuditSubjectRecord(Base):
+    __tablename__ = "research_quality_audit_subjects_v289"
+    __table_args__ = (UniqueConstraint("audit_id", "subject_key", name="uq_research_quality_audit_subject_v289_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    audit_id: Mapped[str] = mapped_column(ForeignKey("research_quality_audits_v289.id", ondelete="CASCADE"), nullable=False)
+    subject_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    object_type: Mapped[str] = mapped_column(String(100), nullable=False)
+    object_ref: Mapped[str] = mapped_column(String(500), nullable=False)
+    role: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    rationale: Mapped[str | None] = mapped_column(Text, nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchQualityAuditCheckRecord(Base):
+    __tablename__ = "research_quality_audit_checks_v289"
+    __table_args__ = (UniqueConstraint("audit_id", "check_key", name="uq_research_quality_audit_check_v289_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    audit_id: Mapped[str] = mapped_column(ForeignKey("research_quality_audits_v289.id", ondelete="CASCADE"), nullable=False)
+    check_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    check_type: Mapped[str] = mapped_column(String(120), nullable=False)
+    status: Mapped[str] = mapped_column(String(80), nullable=False, default="not_assessed")
+    statement_text: Mapped[str] = mapped_column(Text, nullable=False)
+    assessment_method: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    affected_object_ref: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    result_details_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    declared_by: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchQualityAuditFindingRecord(Base):
+    __tablename__ = "research_quality_audit_findings_v289"
+    __table_args__ = (UniqueConstraint("audit_id", "finding_key", name="uq_research_quality_audit_finding_v289_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    audit_id: Mapped[str] = mapped_column(ForeignKey("research_quality_audits_v289.id", ondelete="CASCADE"), nullable=False)
+    finding_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    category: Mapped[str] = mapped_column(String(120), nullable=False)
+    finding_type: Mapped[str] = mapped_column(String(80), nullable=False, default="concern")
+    status: Mapped[str] = mapped_column(String(80), nullable=False, default="open")
+    statement_text: Mapped[str] = mapped_column(Text, nullable=False)
+    affected_object_type: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    affected_object_ref: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    declared_concern_level: Mapped[str | None] = mapped_column(String(80), nullable=True)
+    rationale: Mapped[str | None] = mapped_column(Text, nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchQualityAuditEvidenceRecord(Base):
+    __tablename__ = "research_quality_audit_evidence_v289"
+    __table_args__ = (UniqueConstraint("audit_id", "evidence_key", name="uq_research_quality_audit_evidence_v289_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    audit_id: Mapped[str] = mapped_column(ForeignKey("research_quality_audits_v289.id", ondelete="CASCADE"), nullable=False)
+    evidence_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    finding_ref: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    evidence_type: Mapped[str] = mapped_column(String(100), nullable=False)
+    evidence_ref: Mapped[str] = mapped_column(String(500), nullable=False)
+    relation: Mapped[str] = mapped_column(String(120), nullable=False)
+    locator: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    rationale: Mapped[str | None] = mapped_column(Text, nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchQualityBiasAssessmentRecord(Base):
+    __tablename__ = "research_quality_bias_assessments_v289"
+    __table_args__ = (UniqueConstraint("audit_id", "bias_key", name="uq_research_quality_bias_assessment_v289_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    audit_id: Mapped[str] = mapped_column(ForeignKey("research_quality_audits_v289.id", ondelete="CASCADE"), nullable=False)
+    bias_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    bias_type: Mapped[str] = mapped_column(String(120), nullable=False)
+    status: Mapped[str] = mapped_column(String(80), nullable=False, default="not_assessed")
+    statement_text: Mapped[str] = mapped_column(Text, nullable=False)
+    direction: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    affected_object_ref: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    mitigation_ref: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    residual_uncertainty: Mapped[str | None] = mapped_column(Text, nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchQualityMethodAssessmentRecord(Base):
+    __tablename__ = "research_quality_method_assessments_v289"
+    __table_args__ = (UniqueConstraint("audit_id", "method_assessment_key", name="uq_research_quality_method_assessment_v289_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    audit_id: Mapped[str] = mapped_column(ForeignKey("research_quality_audits_v289.id", ondelete="CASCADE"), nullable=False)
+    method_assessment_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    method_ref: Mapped[str] = mapped_column(String(500), nullable=False)
+    assessment_type: Mapped[str] = mapped_column(String(120), nullable=False)
+    status: Mapped[str] = mapped_column(String(80), nullable=False, default="not_assessed")
+    statement_text: Mapped[str] = mapped_column(Text, nullable=False)
+    protocol_ref: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    execution_ref: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    evidence_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchQualityAuditResponseRecord(Base):
+    __tablename__ = "research_quality_audit_responses_v289"
+    __table_args__ = (UniqueConstraint("audit_id", "response_key", name="uq_research_quality_audit_response_v289_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    audit_id: Mapped[str] = mapped_column(ForeignKey("research_quality_audits_v289.id", ondelete="CASCADE"), nullable=False)
+    response_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    finding_ref: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    response_type: Mapped[str] = mapped_column(String(100), nullable=False)
+    status: Mapped[str] = mapped_column(String(80), nullable=False, default="recorded")
+    statement_text: Mapped[str] = mapped_column(Text, nullable=False)
+    evidence_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    responder_ref: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchQualityAuditRevisionRecord(Base):
+    __tablename__ = "research_quality_audit_revisions_v289"
+    __table_args__ = (UniqueConstraint("audit_id", "revision", name="uq_research_quality_audit_revision_v289_revision"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    audit_id: Mapped[str] = mapped_column(ForeignKey("research_quality_audits_v289.id", ondelete="CASCADE"), nullable=False)
+    revision: Mapped[int] = mapped_column(Integer, nullable=False)
+    state_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    prior_state_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    revised_state_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    change_summary: Mapped[str | None] = mapped_column(Text, nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchQualityAuditSnapshotRecord(Base):
+    __tablename__ = "research_quality_audit_snapshots_v289"
+    __table_args__ = (UniqueConstraint("audit_id", "revision", name="uq_research_quality_audit_snapshot_v289_revision"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    audit_id: Mapped[str] = mapped_column(ForeignKey("research_quality_audits_v289.id", ondelete="CASCADE"), nullable=False)
+    revision: Mapped[int] = mapped_column(Integer, nullable=False)
+    content_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    previous_snapshot_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    state_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+

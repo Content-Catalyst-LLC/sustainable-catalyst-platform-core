@@ -121,3 +121,6 @@ Computation, Analysis & Execution Lineage connects externally executed Python, R
 
 ## Platform Core v2.88.0 — Unified Findings, Claims & Inference Engine
 Adds an explicit epistemic/inference taxonomy and provenance layer over existing findings, interpretations, claims, conclusions, computation outputs, evidence, assumptions, uncertainty, challenge, and revision records. Core stores researcher-declared inference semantics and does not infer truth, causality, validity, confidence, or evidence ranking.
+
+## Platform Core v2.89.0 — Research Quality, Bias & Methodological Audit Engine
+Adds governed methodological-audit objects for systematic audit criteria, declared/external check results, audit findings, evidence bindings, bias and method assessments, responses, lineage, revisions, and immutable snapshots. Core does not infer bias, score research quality, rank studies, certify method/causal validity, certify reproducibility/ethics, reject research, or determine truth.

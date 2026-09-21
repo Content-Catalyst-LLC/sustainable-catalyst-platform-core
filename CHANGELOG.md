@@ -1,3 +1,9 @@
+## v2.89.0 — Research Quality, Bias & Methodological Audit Engine
+- Added migration 0093 and a governed methodological-audit object model.
+- Added systematic audit criteria covering confounding, selection/measurement bias, missing data, causal language, statistics, uncertainty, citation/evidence traceability, contradictions, protocol deviations, and reproducibility.
+- Added declared bias/method assessments, responses, lineage, revision history, immutable snapshots, public read surfaces, SDK methods, and WordPress status.
+- Core records declared/external audit evidence; it does not score quality, rank studies, certify validity, or determine truth.
+
 ## 2.72.0 — Unified Research Project Object Model
 - Promotes the existing research-project identity into a first-class cross-product research substrate with questions, objectives, typed components, provenance, handoffs, relationships, and immutable snapshots.
 

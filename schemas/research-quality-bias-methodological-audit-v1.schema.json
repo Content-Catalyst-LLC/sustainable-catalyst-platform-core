@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/research-quality-bias-methodological-audit-v1.schema.json",
+  "title": "Sustainable Catalyst Research Quality, Bias & Methodological Audit",
+  "type": "object",
+  "required": [
+    "audit_key",
+    "title"
+  ],
+  "properties": {
+    "audit_key": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "archived",
+        "completed",
+        "in_progress",
+        "planned",
+        "reopened"
+      ]
+    },
+    "visibility": {
+      "enum": [
+        "private",
+        "internal",
+        "public"
+      ]
+    },
+    "project_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "protocol_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "execution_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "inference_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "publication_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "assessment_framework": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "scope": {
+      "type": "object"
+    },
+    "metadata": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": true
+}
