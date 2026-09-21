@@ -243,3 +243,6 @@ v2.91.0 adds `research_context_handoff_summary`, `research_context_handoff_linea
 
 ## v2.92.0 — Research Project State, Versioning & Reproducibility
 Adds public project-state summary, lineage, bundle, and historical-version manifest helpers. Historical manifests are reference-first provenance records; Core does not replay computations or certify reproducibility.
+
+## v2.93.0 — Research Roles, Agents & Contributor Provenance Framework
+Adds public project-scoped contributor-provenance summary, lineage, and bundle helpers. Human, AI/software-agent, tool, and organizational attribution remains explicitly declared; Core does not assign authority, decide credit, rank contributors, or execute agents.

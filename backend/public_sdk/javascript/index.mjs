@@ -708,3 +708,8 @@ export async function researchProjectStateSummary(client, stateId) { return clie
 export async function researchProjectStateLineage(client, stateId) { return client.request("GET", `/research/project-state/states/${encodeURIComponent(stateId)}/lineage`); }
 export async function researchProjectStateBundle(client, stateId) { return client.request("GET", `/research/project-state/states/${encodeURIComponent(stateId)}/bundle`); }
 export async function researchProjectStateManifest(client, stateId, version) { return client.request("GET", `/research/project-state/states/${encodeURIComponent(stateId)}/versions/${encodeURIComponent(version)}/manifest`); }
+
+// v2.93.0 Research Roles, Agents & Contributor Provenance Framework
+export async function researchContributorProvenanceSummary(client, projectRef) { return client.request("GET", `/research/contributors/projects/${encodeURIComponent(projectRef)}/summary`); }
+export async function researchContributorProvenanceLineage(client, projectRef) { return client.request("GET", `/research/contributors/projects/${encodeURIComponent(projectRef)}/lineage`); }
+export async function researchContributorProvenanceBundle(client, projectRef) { return client.request("GET", `/research/contributors/projects/${encodeURIComponent(projectRef)}/bundle`); }

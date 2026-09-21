@@ -79,6 +79,7 @@ from .routers import (
     research_workflows,
     research_context_handoffs,
     research_project_state,
+    research_contributor_provenance,
     visualization_registry,
     system_maps,
     flow_maps,
@@ -363,6 +364,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # v2.92.0 Research Project State, Versioning & Reproducibility.
     app.include_router(research_project_state.router)
     app.include_router(research_project_state.public_router)
+    # v2.93.0 Research Roles, Agents & Contributor Provenance Framework.
+    app.include_router(research_contributor_provenance.router)
+    app.include_router(research_contributor_provenance.public_router)
     # Open Forensics includes v2.51.0 Reproducible Investigation Packages.
     app.include_router(open_forensics.router)
     app.include_router(open_forensics.public_router)

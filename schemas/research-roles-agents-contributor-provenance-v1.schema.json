@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/research-roles-agents-contributor-provenance-v1.schema.json",
+  "title": "Sustainable Catalyst Research Roles, Agents & Contributor Provenance",
+  "type": "object",
+  "required": [
+    "project_ref",
+    "contributors",
+    "contributions"
+  ],
+  "properties": {
+    "project_ref": {
+      "type": "string"
+    },
+    "contributors": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "role_definitions": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "role_assignments": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "contributions": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "agent_profiles": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "agent_actions": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "authorship_assertions": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "responsibility_statements": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "contribution_reviews": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "lineage": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": true
+}

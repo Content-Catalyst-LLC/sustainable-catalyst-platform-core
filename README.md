@@ -134,3 +134,7 @@ Preserves project, workflow, protocol, evidence, data, computation, inference, a
 
 ### v2.92.0 Research Project State, Versioning & Reproducibility
 Makes research projects historically reconstructable through immutable hash-linked versions that reference exact sources, data, protocols, computations, environments, visualizations, findings, claims, reviews, workflow/handoff state, and other research objects. Reconstruction is reference-first; Core does not replay or certify research.
+
+
+### v2.93.0
+Research Roles, Agents & Contributor Provenance Framework records scoped contributor roles, CRediT-style contributions, controlled specialist-agent actions, authorship, responsibility, review, revision, and immutable attribution snapshots.

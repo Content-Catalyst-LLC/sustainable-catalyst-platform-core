@@ -609,3 +609,6 @@ Adds governed research notebooks, ordered sections and entries, cross-research b
 - Added migration `0096` and ten additive historical project-state persistence families.
 - Added immutable version manifests, exact object/environment references, dependency graphs, named checkpoints, reconstruction plans, attributed verification evidence, revision history, lineage, and hash-chained snapshots.
 - Preserved strict non-replay, non-restore, non-reproducibility-inference, non-certification, and non-truth-inference boundaries.
+
+## 2.93.0
+- Added Research Roles, Agents & Contributor Provenance Framework (migration 0097).

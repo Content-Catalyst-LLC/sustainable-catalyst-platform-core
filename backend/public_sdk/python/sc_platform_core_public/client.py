@@ -1055,3 +1055,11 @@ PublicApiClient.research_project_state_summary=_v292_research_project_state_summ
 PublicApiClient.research_project_state_lineage=_v292_research_project_state_lineage
 PublicApiClient.research_project_state_bundle=_v292_research_project_state_bundle
 PublicApiClient.research_project_state_manifest=_v292_research_project_state_manifest
+
+    # v2.93.0 Research Roles, Agents & Contributor Provenance Framework
+    def research_contributor_provenance_summary(self, project_ref):
+        return self.get(f"/api/v1/research/contributors/projects/{project_ref}/summary")
+    def research_contributor_provenance_lineage(self, project_ref):
+        return self.get(f"/api/v1/research/contributors/projects/{project_ref}/lineage")
+    def research_contributor_provenance_bundle(self, project_ref):
+        return self.get(f"/api/v1/research/contributors/projects/{project_ref}/bundle")

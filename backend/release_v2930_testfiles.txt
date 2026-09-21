@@ -1,0 +1,6 @@
+backend/tests/test_research_contributor_provenance_v2930.py
+backend/tests/test_partial_0097_recovery_v2930.py
+backend/tests/test_research_project_state_v2920.py
+backend/tests/test_partial_0096_recovery_v2920.py
+backend/scripts/validate_research_contributor_provenance.py
+scripts/validate_v2930_release.py
