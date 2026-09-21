@@ -1,3 +1,6 @@
+## v2.94.0 — Research Validation & Challenge Engine
+Adds provenance-aware adversarial research records for alternatives, contradiction/counterevidence, sensitivity/robustness, replication, reviewer challenge, response, revision, and immutable snapshots without Core-side verdicts.
+
 # Sustainable Catalyst Platform Core v2.78.0
 
 Current release: **Finding, Claim & Evidence Intelligence**. See `RELEASE_NOTES_V2770.md`.

@@ -1,3 +1,6 @@
+## v2.94.0 — Research Validation & Challenge Engine
+Adds public project summary, lineage, and bundle access for provenance-aware validation/challenge records. Core preserves declared adversarial evidence without issuing scientific verdicts.
+
 ## v2.55.0 — Time-Series Forecasting & Backtesting
 
 Adds public Predictive Intelligence readiness, model discovery, and forecast-provenance bundle helpers. Core preserves provenance and handoff contracts; specialist runtimes perform fitting/inference.

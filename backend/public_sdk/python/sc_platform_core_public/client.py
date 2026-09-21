@@ -1063,3 +1063,12 @@ PublicApiClient.research_project_state_manifest=_v292_research_project_state_man
         return self.get(f"/api/v1/research/contributors/projects/{project_ref}/lineage")
     def research_contributor_provenance_bundle(self, project_ref):
         return self.get(f"/api/v1/research/contributors/projects/{project_ref}/bundle")
+
+
+    # v2.94.0 Research Validation & Challenge Engine
+    def research_validation_challenge_summary(self, project_ref: str):
+        return self.get(f"/api/v1/research/validation-challenges/projects/{project_ref}/summary")
+    def research_validation_challenge_lineage(self, project_ref: str):
+        return self.get(f"/api/v1/research/validation-challenges/projects/{project_ref}/lineage")
+    def research_validation_challenge_bundle(self, project_ref: str):
+        return self.get(f"/api/v1/research/validation-challenges/projects/{project_ref}/bundle")

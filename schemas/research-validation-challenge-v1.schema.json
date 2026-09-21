@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/research-validation-challenge-v1.schema.json",
+  "title": "Sustainable Catalyst Research Validation & Challenge",
+  "type": "object",
+  "properties": {
+    "project_ref": {
+      "type": "string"
+    },
+    "challenge_type": {
+      "enum": [
+        "alternative_hypothesis",
+        "contradiction",
+        "counterevidence",
+        "methodological_challenge",
+        "other",
+        "replication",
+        "reviewer_challenge",
+        "robustness",
+        "sensitivity",
+        "uncertainty_challenge"
+      ]
+    },
+    "target_ref": {
+      "type": "string"
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "provenance": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": true
+}

@@ -1,3 +1,6 @@
+## v2.94.0 — Research Validation & Challenge Engine
+Adds provenance-aware adversarial research records for alternatives, contradiction/counterevidence, sensitivity/robustness, replication, reviewer challenge, response, revision, and immutable snapshots without Core-side verdicts.
+
 ## v2.89.0 — Research Quality, Bias & Methodological Audit Engine
 - Added migration 0093 and a governed methodological-audit object model.
 - Added systematic audit criteria covering confounding, selection/measurement bias, missing data, causal language, statistics, uncertainty, citation/evidence traceability, contradictions, protocol deviations, and reproducibility.

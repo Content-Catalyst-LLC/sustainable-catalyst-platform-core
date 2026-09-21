@@ -713,3 +713,9 @@ export async function researchProjectStateManifest(client, stateId, version) { r
 export async function researchContributorProvenanceSummary(client, projectRef) { return client.request("GET", `/research/contributors/projects/${encodeURIComponent(projectRef)}/summary`); }
 export async function researchContributorProvenanceLineage(client, projectRef) { return client.request("GET", `/research/contributors/projects/${encodeURIComponent(projectRef)}/lineage`); }
 export async function researchContributorProvenanceBundle(client, projectRef) { return client.request("GET", `/research/contributors/projects/${encodeURIComponent(projectRef)}/bundle`); }
+
+
+// v2.94.0 Research Validation & Challenge Engine
+export async function researchValidationChallengeSummary(client, projectRef) { return client.request("GET", `/research/validation-challenges/projects/${encodeURIComponent(projectRef)}/summary`); }
+export async function researchValidationChallengeLineage(client, projectRef) { return client.request("GET", `/research/validation-challenges/projects/${encodeURIComponent(projectRef)}/lineage`); }
+export async function researchValidationChallengeBundle(client, projectRef) { return client.request("GET", `/research/validation-challenges/projects/${encodeURIComponent(projectRef)}/bundle`); }
