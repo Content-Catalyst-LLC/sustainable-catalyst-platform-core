@@ -144,3 +144,6 @@ Makes research projects historically reconstructable through immutable hash-link
 
 ### v2.93.0
 Research Roles, Agents & Contributor Provenance Framework records scoped contributor roles, CRediT-style contributions, controlled specialist-agent actions, authorship, responsibility, review, revision, and immutable attribution snapshots.
+
+### v2.96.0 Unified Research Runtime Contract
+Platform Core exposes a stable declared contract for cross-product research objects, capabilities, exchange envelopes, invocation/result lineage, and compatibility evidence while specialist execution remains in consuming applications.

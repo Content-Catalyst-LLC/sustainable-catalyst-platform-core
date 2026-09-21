@@ -12954,3 +12954,180 @@ class ScholarlyInteroperabilitySnapshotRecord(Base):
     provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
     created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+# v2.96.0 Unified Research Runtime Contract
+class ResearchRuntimeContractRecord(Base):
+    __tablename__ = "research_runtime_contracts_v296"
+    __table_args__ = (UniqueConstraint("contract_key", name="uq_research_runtime_contract_v296_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    contract_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    title: Mapped[str] = mapped_column(String(500), nullable=False)
+    contract_version: Mapped[str] = mapped_column(String(80), nullable=False, default="1.0")
+    status: Mapped[str] = mapped_column(String(80), nullable=False, default="active")
+    schema_version: Mapped[str] = mapped_column(String(80), nullable=False, default="1.0")
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    required_capabilities_json: Mapped[list] = mapped_column(JSON, default=list)
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+class ResearchRuntimeObjectTypeRecord(Base):
+    __tablename__ = "research_runtime_object_types_v296"
+    __table_args__ = (UniqueConstraint("object_type_key", name="uq_research_runtime_object_type_v296_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    object_type_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    contract_id: Mapped[str] = mapped_column(ForeignKey("research_runtime_contracts_v296.id", ondelete="CASCADE"), nullable=False)
+    object_family: Mapped[str] = mapped_column(String(160), nullable=False)
+    schema_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    canonical_api_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    versioning_mode: Mapped[str] = mapped_column(String(80), nullable=False, default="explicit")
+    provenance_required: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchRuntimeOperationRecord(Base):
+    __tablename__ = "research_runtime_operations_v296"
+    __table_args__ = (UniqueConstraint("operation_key", name="uq_research_runtime_operation_v296_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    operation_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    contract_id: Mapped[str] = mapped_column(ForeignKey("research_runtime_contracts_v296.id", ondelete="CASCADE"), nullable=False)
+    operation: Mapped[str] = mapped_column(String(100), nullable=False)
+    object_type_ref: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    method: Mapped[str | None] = mapped_column(String(20), nullable=True)
+    path_template: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    input_schema_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    output_schema_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    idempotent: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    provenance_required: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchRuntimeCapabilityRecord(Base):
+    __tablename__ = "research_runtime_capabilities_v296"
+    __table_args__ = (UniqueConstraint("capability_key", name="uq_research_runtime_capability_v296_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    capability_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    contract_id: Mapped[str] = mapped_column(ForeignKey("research_runtime_contracts_v296.id", ondelete="CASCADE"), nullable=False)
+    capability: Mapped[str] = mapped_column(String(160), nullable=False)
+    level: Mapped[str] = mapped_column(String(80), nullable=False, default="supported")
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchRuntimeProductBindingRecord(Base):
+    __tablename__ = "research_runtime_product_bindings_v296"
+    __table_args__ = (UniqueConstraint("binding_key", name="uq_research_runtime_product_binding_v296_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    binding_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    contract_id: Mapped[str] = mapped_column(ForeignKey("research_runtime_contracts_v296.id", ondelete="CASCADE"), nullable=False)
+    product_ref: Mapped[str] = mapped_column(String(500), nullable=False)
+    product_version: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    adapter_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    supported_capabilities_json: Mapped[list] = mapped_column(JSON, default=list)
+    supported_object_types_json: Mapped[list] = mapped_column(JSON, default=list)
+    status: Mapped[str] = mapped_column(String(80), nullable=False, default="declared")
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchRuntimeExchangeEnvelopeRecord(Base):
+    __tablename__ = "research_runtime_exchange_envelopes_v296"
+    __table_args__ = (UniqueConstraint("exchange_key", name="uq_research_runtime_exchange_v296_key"), Index("ix_research_runtime_exchange_v296_project", "project_ref", "created_at"))
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    exchange_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    contract_id: Mapped[str] = mapped_column(ForeignKey("research_runtime_contracts_v296.id", ondelete="CASCADE"), nullable=False)
+    project_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    source_product_ref: Mapped[str] = mapped_column(String(500), nullable=False)
+    target_product_ref: Mapped[str] = mapped_column(String(500), nullable=False)
+    operation: Mapped[str] = mapped_column(String(100), nullable=False)
+    object_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    context_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    workflow_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    provenance_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    envelope_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    status: Mapped[str] = mapped_column(String(80), nullable=False, default="declared")
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchRuntimeInvocationRecord(Base):
+    __tablename__ = "research_runtime_invocations_v296"
+    __table_args__ = (UniqueConstraint("invocation_key", name="uq_research_runtime_invocation_v296_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    invocation_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    contract_id: Mapped[str] = mapped_column(ForeignKey("research_runtime_contracts_v296.id", ondelete="CASCADE"), nullable=False)
+    project_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    exchange_id: Mapped[str | None] = mapped_column(ForeignKey("research_runtime_exchange_envelopes_v296.id", ondelete="SET NULL"), nullable=True)
+    caller_ref: Mapped[str] = mapped_column(String(500), nullable=False)
+    operation: Mapped[str] = mapped_column(String(100), nullable=False)
+    input_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    runtime_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    status: Mapped[str] = mapped_column(String(80), nullable=False, default="recorded")
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchRuntimeResultBindingRecord(Base):
+    __tablename__ = "research_runtime_result_bindings_v296"
+    __table_args__ = (UniqueConstraint("result_key", name="uq_research_runtime_result_v296_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    result_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    invocation_id: Mapped[str] = mapped_column(ForeignKey("research_runtime_invocations_v296.id", ondelete="CASCADE"), nullable=False)
+    project_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    result_type: Mapped[str] = mapped_column(String(120), nullable=False)
+    object_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    object_version_ref: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    content_hash: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    status: Mapped[str] = mapped_column(String(80), nullable=False, default="declared")
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchRuntimeCompatibilityAssertionRecord(Base):
+    __tablename__ = "research_runtime_compatibility_assertions_v296"
+    __table_args__ = (UniqueConstraint("assertion_key", name="uq_research_runtime_compat_v296_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    assertion_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    contract_id: Mapped[str] = mapped_column(ForeignKey("research_runtime_contracts_v296.id", ondelete="CASCADE"), nullable=False)
+    product_binding_id: Mapped[str] = mapped_column(ForeignKey("research_runtime_product_bindings_v296.id", ondelete="CASCADE"), nullable=False)
+    asserted_by: Mapped[str] = mapped_column(String(500), nullable=False)
+    status: Mapped[str] = mapped_column(String(80), nullable=False, default="declared")
+    checks_json: Mapped[list] = mapped_column(JSON, default=list)
+    evidence_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    report_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchRuntimeRevisionRecord(Base):
+    __tablename__ = "research_runtime_revisions_v296"
+    __table_args__ = (UniqueConstraint("contract_id", "revision", name="uq_research_runtime_revision_v296_contract_revision"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    contract_id: Mapped[str] = mapped_column(ForeignKey("research_runtime_contracts_v296.id", ondelete="CASCADE"), nullable=False)
+    revision: Mapped[int] = mapped_column(Integer, nullable=False)
+    prior_state_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    revised_state_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    reason: Mapped[str | None] = mapped_column(Text, nullable=True)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ResearchRuntimeSnapshotRecord(Base):
+    __tablename__ = "research_runtime_snapshots_v296"
+    __table_args__ = (UniqueConstraint("contract_id", "revision", name="uq_research_runtime_snapshot_v296_contract_revision"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    contract_id: Mapped[str] = mapped_column(ForeignKey("research_runtime_contracts_v296.id", ondelete="CASCADE"), nullable=False)
+    revision: Mapped[int] = mapped_column(Integer, nullable=False)
+    content_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    previous_snapshot_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    state_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)

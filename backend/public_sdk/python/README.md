@@ -252,3 +252,6 @@ Adds public project-scoped contributor-provenance summary, lineage, and bundle h
 
 ## v2.95.0
 Adds public summary, lineage, and bundle helpers for Scholarly Interoperability & Research Packaging.
+
+## v2.96.0 Unified Research Runtime Contract
+Public SDK helpers expose declared runtime-contract and project exchange bundles. They do not execute specialist work or certify scientific results.

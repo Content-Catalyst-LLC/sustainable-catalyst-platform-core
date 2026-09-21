@@ -82,6 +82,7 @@ from .routers import (
     research_contributor_provenance,
     research_validation_challenge,
     scholarly_interoperability,
+    unified_research_runtime,
     visualization_registry,
     system_maps,
     flow_maps,
@@ -374,6 +375,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(research_validation_challenge.public_router)
     app.include_router(scholarly_interoperability.router)
     app.include_router(scholarly_interoperability.public_router)
+    # v2.96.0 Unified Research Runtime Contract.
+    app.include_router(unified_research_runtime.router)
+    app.include_router(unified_research_runtime.public_router)
     # Open Forensics includes v2.51.0 Reproducible Investigation Packages.
     app.include_router(open_forensics.router)
     app.include_router(open_forensics.public_router)

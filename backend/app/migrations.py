@@ -179,6 +179,7 @@ MIGRATIONS = [
     ("0096", 'Research project state/versioning with immutable versions, object/environment bindings, dependencies, checkpoints, reconstruction plans, verification evidence, revisions, and snapshots; Core preserves history but does not replay work, restore state, infer reproducibility, or determine truth.'),    ("0097", 'Research contributor/role provenance with assignments, contributions, agent profiles/actions, authorship, responsibility, reviews, revisions, and snapshots; Core records attribution but does not assign authority, execute agents, decide credit, rank contributors, or infer truth.'),
     ("0098", 'Research validation/challenge records for alternatives, contradiction tests, counterevidence, sensitivity, robustness, replication, reviewer challenges, responses, revisions, and snapshots; Core records evidence but does not resolve hypotheses, certify validity, rank outcomes, or infer truth.'),
     ("0099", 'Scholarly interoperability packages with governed citations, identifiers, dataset/notebook descriptors, provenance manifests, metadata/export profiles, publication bindings, validation evidence, revisions, and snapshots; Core does not mint IDs, publish, execute notebooks, or certify results.'),
+    ("0100", 'Unified research runtime contracts for object types, operations, capabilities, product bindings, exchanges, invocations, results, compatibility, revisions, and snapshots; Core standardizes declared interfaces but does not execute work, auto-route, authorize access, validate results, or infer truth.'),
 ]
 
 

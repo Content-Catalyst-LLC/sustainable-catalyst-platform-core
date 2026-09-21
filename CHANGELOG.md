@@ -620,3 +620,6 @@ Adds governed research notebooks, ordered sections and entries, cross-research b
 
 ## 2.93.0
 - Added Research Roles, Agents & Contributor Provenance Framework (migration 0097).
+
+## 2.96.0 — Unified Research Runtime Contract
+- Added migration 0100 and a stable cross-product research runtime contract covering object types, operations, capabilities, product bindings, exchanges, invocation/result lineage, compatibility evidence, revisions, and snapshots.

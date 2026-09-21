@@ -1,0 +1,4 @@
+backend/tests/test_unified_research_runtime_v2960.py
+backend/tests/test_partial_0100_recovery_v2960.py
+backend/tests/test_scholarly_interoperability_v2950.py
+backend/scripts/validate_unified_research_runtime.py

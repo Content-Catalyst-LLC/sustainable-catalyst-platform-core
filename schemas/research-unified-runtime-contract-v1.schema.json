@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/research-unified-runtime-contract-v1.schema.json",
+  "title": "Sustainable Catalyst Unified Research Runtime Contract",
+  "type": "object",
+  "required": ["contract_key", "contract_version", "object_types", "operations", "capabilities"],
+  "properties": {
+    "contract_key": {"type": "string", "minLength": 1},
+    "contract_version": {"type": "string", "minLength": 1},
+    "object_types": {"type": "array", "items": {"type": "object"}},
+    "operations": {"type": "array", "items": {"type": "object"}},
+    "capabilities": {"type": "array", "items": {"type": "string"}},
+    "product_bindings": {"type": "array", "items": {"type": "object"}},
+    "provenance": {"type": "object"}
+  },
+  "additionalProperties": true
+}

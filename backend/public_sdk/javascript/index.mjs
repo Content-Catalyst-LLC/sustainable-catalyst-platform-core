@@ -725,3 +725,7 @@ export async function researchValidationChallengeBundle(client, projectRef) { re
 export async function scholarlyPackageSummary(client, projectRef) { return client.request("GET", `/research/scholarly-packages/projects/${encodeURIComponent(projectRef)}/summary`); }
 export async function scholarlyPackageLineage(client, projectRef) { return client.request("GET", `/research/scholarly-packages/projects/${encodeURIComponent(projectRef)}/lineage`); }
 export async function scholarlyPackageBundle(client, projectRef) { return client.request("GET", `/research/scholarly-packages/projects/${encodeURIComponent(projectRef)}/bundle`); }
+
+// v2.96.0 Unified Research Runtime Contract
+export async function researchRuntimeContractBundle(client, contractId) { return client.request("GET", `/research/runtime-contract/contracts/${encodeURIComponent(contractId)}/bundle`); }
+export async function researchRuntimeProjectBundle(client, projectRef) { return client.request("GET", `/research/runtime-contract/projects/${encodeURIComponent(projectRef)}/bundle`); }

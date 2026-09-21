@@ -1081,3 +1081,9 @@ def _v295_scholarly_package_bundle(self, project_ref: str): return self.request(
 PublicApiClient.scholarly_package_summary=_v295_scholarly_package_summary
 PublicApiClient.scholarly_package_lineage=_v295_scholarly_package_lineage
 PublicApiClient.scholarly_package_bundle=_v295_scholarly_package_bundle
+
+# v2.96.0 Unified Research Runtime Contract
+def _v296_research_runtime_contract_bundle(self, contract_id: str): return self.request("GET", f"/research/runtime-contract/contracts/{contract_id}/bundle")
+def _v296_research_runtime_project_bundle(self, project_ref: str): return self.request("GET", f"/research/runtime-contract/projects/{project_ref}/bundle")
+PublicApiClient.research_runtime_contract_bundle=_v296_research_runtime_contract_bundle
+PublicApiClient.research_runtime_project_bundle=_v296_research_runtime_project_bundle
