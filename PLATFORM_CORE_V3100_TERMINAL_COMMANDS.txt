@@ -1,0 +1,21 @@
+PLATFORM CORE v3.1.0 — ANALYTICAL RUNTIME PROVIDER CONTRACT
+
+MAC — GIT PROMOTION
+cd ~/Downloads
+rm -rf sc-core-v3.1.0-release
+mkdir -p sc-core-v3.1.0-release
+unzip -q sustainable-catalyst-platform-core-v3.1.0-release-bundle.zip -d sc-core-v3.1.0-release
+cd sc-core-v3.1.0-release
+chmod +x PUSH_PLATFORM_CORE_V3100_FINAL.sh
+./PUSH_PLATFORM_CORE_V3100_FINAL.sh "$PWD/sustainable-catalyst-platform-core-v3.1.0-repository.zip"
+
+CONTABO — BACKEND DEPLOYMENT
+ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes catalystadmin@94.72.113.77
+cd /opt/sustainable-catalyst/core
+chmod +x DEPLOY_PLATFORM_CORE_V3100_CONTABO.sh
+./DEPLOY_PLATFORM_CORE_V3100_CONTABO.sh
+
+VERIFY
+curl -fsS https://core.sustainablecatalyst.com/health | python3 -m json.tool
+curl -fsS https://core.sustainablecatalyst.com/v1/analytics/runtime-providers/readiness | python3 -m json.tool
+curl -fsS https://core.sustainablecatalyst.com/v1/analytics/runtime-providers/providers/catalystanalyticsr | python3 -m json.tool

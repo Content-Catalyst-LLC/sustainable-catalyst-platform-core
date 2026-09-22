@@ -1103,3 +1103,12 @@ def _v300_unified_research_runtime_bundle(self, session_id: str): return self.re
 PublicApiClient.unified_research_runtime_summary=_v300_unified_research_runtime_summary
 PublicApiClient.unified_research_runtime_lineage=_v300_unified_research_runtime_lineage
 PublicApiClient.unified_research_runtime_bundle=_v300_unified_research_runtime_bundle
+
+
+# v3.1.0 Analytical Runtime Provider Contract
+def _v310_analytical_runtime_providers(self): return self.request("GET", "/analytics/runtime-providers/providers")
+def _v310_analytical_runtime_provider(self, provider_ref: str): return self.request("GET", f"/analytics/runtime-providers/providers/{provider_ref}")
+def _v310_analytical_runtime_request_bundle(self, request_ref: str): return self.request("GET", f"/analytics/runtime-providers/requests/{request_ref}/bundle")
+PublicApiClient.analytical_runtime_providers=_v310_analytical_runtime_providers
+PublicApiClient.analytical_runtime_provider=_v310_analytical_runtime_provider
+PublicApiClient.analytical_runtime_request_bundle=_v310_analytical_runtime_request_bundle

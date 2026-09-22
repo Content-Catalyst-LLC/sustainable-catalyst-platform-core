@@ -85,6 +85,7 @@ from .routers import (
     unified_research_runtime,
     platform_research_certification,
     unified_research_scientific_runtime,
+    analytical_runtime_provider,
     visualization_registry,
     system_maps,
     flow_maps,
@@ -386,6 +387,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # v3.0.0 unified research, scientific-computing, and investigation milestone runtime.
     app.include_router(unified_research_scientific_runtime.router)
     app.include_router(unified_research_scientific_runtime.public_router)
+    # v3.1.0 runtime-neutral Analytical Runtime Provider Contract.
+    app.include_router(analytical_runtime_provider.router)
+    app.include_router(analytical_runtime_provider.public_router)
     # Open Forensics includes v2.51.0 Reproducible Investigation Packages.
     app.include_router(open_forensics.router)
     app.include_router(open_forensics.public_router)

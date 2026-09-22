@@ -740,3 +740,9 @@ export async function researchIntegrationCertificationRun(client, runId) { retur
 export async function unifiedResearchRuntimeSummary(client, sessionId) { return client.request("GET", `/research/unified-runtime/sessions/${encodeURIComponent(sessionId)}/summary`); }
 export async function unifiedResearchRuntimeLineage(client, sessionId) { return client.request("GET", `/research/unified-runtime/sessions/${encodeURIComponent(sessionId)}/lineage`); }
 export async function unifiedResearchRuntimeBundle(client, sessionId) { return client.request("GET", `/research/unified-runtime/sessions/${encodeURIComponent(sessionId)}/bundle`); }
+
+
+// v3.1.0 Analytical Runtime Provider Contract
+export async function analyticalRuntimeProviders(client) { return client.request("GET", "/analytics/runtime-providers/providers"); }
+export async function analyticalRuntimeProvider(client, providerRef) { return client.request("GET", `/analytics/runtime-providers/providers/${encodeURIComponent(providerRef)}`); }
+export async function analyticalRuntimeRequestBundle(client, requestRef) { return client.request("GET", `/analytics/runtime-providers/requests/${encodeURIComponent(requestRef)}/bundle`); }

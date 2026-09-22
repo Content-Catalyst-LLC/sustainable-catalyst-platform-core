@@ -1,5 +1,5 @@
 {
-  "release": "3.0.0",
+  "release": "3.1.0",
   "files": [
     {
       "path": ".github/workflows/test.yml",
@@ -227,9 +227,14 @@
       "size": 142
     },
     {
+      "path": "BACKEND_PACKAGE_V3100.md",
+      "sha256": "a9403e285a926edf34ba4bb3aa6999e6bbb58f2e40ba3c92a33ab007d3279eb1",
+      "size": 1027
+    },
+    {
       "path": "CHANGELOG.md",
-      "sha256": "9a79fefab4f4c9caedae9caeec57210cfb267203f11ccb50b30e7522a41104b3",
-      "size": 40578
+      "sha256": "535943c55fc28d78ce0e65d46cb23d3a491eaf7e3b8bf18fb84dfb024afc7858",
+      "size": 41158
     },
     {
       "path": "DEPLOY_PLATFORM_CORE_V2300_CONTABO.sh",
@@ -595,6 +600,11 @@
       "path": "DEPLOY_PLATFORM_CORE_V3000_CONTABO.sh",
       "sha256": "abb14df148180682da54d6a0126ba594d163f7d5529e80c4a297bbed6fd9a7bc",
       "size": 6684
+    },
+    {
+      "path": "DEPLOY_PLATFORM_CORE_V3100_CONTABO.sh",
+      "sha256": "3940a3328e8835d157301abc8b32711a5c952bf489204fd8c6f0b11d5b050616",
+      "size": 4515
     },
     {
       "path": "LICENSE",
@@ -2107,6 +2117,21 @@
       "size": 195
     },
     {
+      "path": "PLATFORM_CORE_V3100_ANALYTICAL_RUNTIME_PROVIDER_AUDIT.md",
+      "sha256": "2055839a8dc275838878cc80c4daf13da31f4ae78b05116d91de88ed3b61c57a",
+      "size": 1139
+    },
+    {
+      "path": "PLATFORM_CORE_V3100_INSTALL_AND_TEST.md",
+      "sha256": "ff7b6fb628b94c0ca8b270f62bb1169ca99e1d7c9f717a482e5c9f554f6c4c1d",
+      "size": 412
+    },
+    {
+      "path": "PLATFORM_CORE_V3100_TERMINAL_COMMANDS.txt",
+      "sha256": "9d52309bea43adb4751d4322cd216bb398e9377b54a8b69d3dafb25b2d5606c3",
+      "size": 980
+    },
+    {
       "path": "PUSH_PLATFORM_CORE_V2100_FINAL.sh",
       "sha256": "975d09509f4e5f7d2f1d5ba3c482f3603f48f2b40cc45437317fa133bbf09389",
       "size": 7337
@@ -2617,9 +2642,14 @@
       "size": 3015
     },
     {
+      "path": "PUSH_PLATFORM_CORE_V3100_FINAL.sh",
+      "sha256": "9d04a5fbc90396d29b1f1d4e14ea12d8c3bc641d7340cdabc1eb16b2b0e04eba",
+      "size": 2405
+    },
+    {
       "path": "README.md",
-      "sha256": "10f4aaf3fa36d7d5a5221ddf6dbaceff7939c325a00bce2de9d373309f304aca",
-      "size": 12810
+      "sha256": "6877da5fe77e1b5df3035e17d9f4a669be968152c2a9cd86b82e4440effbe308",
+      "size": 13352
     },
     {
       "path": "RELEASE_NOTES_V2100.md",
@@ -3157,6 +3187,11 @@
       "size": 441
     },
     {
+      "path": "RELEASE_NOTES_V3100.md",
+      "sha256": "d5e90167cbf46e54f36c7f7d33943918282ae74311858aa1a9bddbdfe8fea5bf",
+      "size": 890
+    },
+    {
       "path": "TEST_RESULTS.txt",
       "sha256": "f7dc80cc041621594389e5634dd9655fadac96d6ee884f828a0ff6c5d88b6e0c",
       "size": 2287
@@ -3223,8 +3258,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "sha256": "5c333923f6264d9b492534caf84b37cc9bd8e3e197ab34555c0032af575f344b",
-      "size": 37052
+      "sha256": "3e383deaae0a9c00767deb93483fb90059c08d87256ad08418aebcf2ccce00ef",
+      "size": 37240
     },
     {
       "path": "backend/app/connectors/__init__.py",
@@ -3268,18 +3303,18 @@
     },
     {
       "path": "backend/app/main.py",
-      "sha256": "9e6f4ff82753261dff0095865978e9b4951c2cdf86951fcff3d3ceacc47d3495",
-      "size": 24286
+      "sha256": "3f5ba6e0beb40190059c7ce77e571efafb0b5db1b603ad096315cf03f81b1b3f",
+      "size": 24511
     },
     {
       "path": "backend/app/migrations.py",
-      "sha256": "93960d82a27c089125551a4eb675485414bb1ba7ba4bc2436df95154e939faf5",
-      "size": 87637
+      "sha256": "bcfe4a2905f91e72de5e4764a0c532d211cd8b8fdd596c3f5b19ed0faf651bed",
+      "size": 90539
     },
     {
       "path": "backend/app/models.py",
-      "sha256": "9bf124abd03562d18666d07acec27f69ff24c6d95a9b201332c6a06bb2a2480d",
-      "size": 994370
+      "sha256": "0e4524763ed750bd9b3988bb4c3a356d7f1f9c6320384823932907f2bda3ecef",
+      "size": 1004646
     },
     {
       "path": "backend/app/predicate_catalog.py",
@@ -3300,6 +3335,11 @@
       "path": "backend/app/routers/__init__.py",
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
       "size": 0
+    },
+    {
+      "path": "backend/app/routers/analytical_runtime_provider.py",
+      "sha256": "d9df20dff6bf5b56c313c97a763330fe397267dfb10726af62be63fc2c5d5c75",
+      "size": 4824
     },
     {
       "path": "backend/app/routers/capacity.py",
@@ -3815,6 +3855,11 @@
       "path": "backend/app/services/__init__.py",
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
       "size": 0
+    },
+    {
+      "path": "backend/app/services/analytical_runtime_provider.py",
+      "sha256": "9b7f27288fc93bfd757960ea0bc8fac1c5e078878da7cf59a4a36ae056224109",
+      "size": 10321
     },
     {
       "path": "backend/app/services/capacity.py",
@@ -5138,12 +5183,12 @@
     },
     {
       "path": "backend/public_sdk/javascript/index.mjs",
-      "sha256": "d6c91e31d19cd25ceceb2b8fde8ec788d19847d4bddafeac461c44ab8c52e22f",
-      "size": 42124
+      "sha256": "65a24c2e6a4cc29c58a7f49f33e6c009f7cec44dd0ea66d5cca9df90ac9d47c3",
+      "size": 42675
     },
     {
       "path": "backend/public_sdk/javascript/package.json",
-      "sha256": "94edd009c9bce4da323f1f5a87473843bb24134b02588dfad66993a7d6faed30",
+      "sha256": "84171c9d44b6df8ac75bb000f725b9a74613f8ddf6e603bde3d4eae50a50e0a7",
       "size": 215
     },
     {
@@ -5163,7 +5208,7 @@
     },
     {
       "path": "backend/public_sdk/python/pyproject.toml",
-      "sha256": "31f4fdd04b70ca81d17f375b6acce03a049fa1e39f32b001fd867a7639264624",
+      "sha256": "fed35d1609c48542d255522509b11062440229a33d20dc5606f4a06d6de057f7",
       "size": 372
     },
     {
@@ -5173,8 +5218,8 @@
     },
     {
       "path": "backend/public_sdk/python/sc_platform_core_public/client.py",
-      "sha256": "36b287ef629900e9f8c36116a9d01f097ebc8901bfef4b846d41148708f59b00",
-      "size": 55158
+      "sha256": "24ab3a36510ab532ac58128f7b0f5614ebf148c6296930437aa28ed07456035e",
+      "size": 55877
     },
     {
       "path": "backend/public_sdk/v260/javascript/README.md",
@@ -5475,6 +5520,11 @@
       "path": "backend/scripts/sync_live_data.py",
       "sha256": "d7ae05cb7e8b1161d61e862f7059f75799e943e33ab706fe3a2a606ff911f416",
       "size": 2433
+    },
+    {
+      "path": "backend/scripts/validate_analytical_runtime_provider.py",
+      "sha256": "5c9f6ef309f8d8cf230d6bdf191b0c6b96a1a09d389e52d41abb6183b67c721f",
+      "size": 1230
     },
     {
       "path": "backend/scripts/validate_analytical_visualization_grammar.py",
@@ -5945,6 +5995,11 @@
       "path": "backend/tests/conftest.py",
       "sha256": "7f31ee7c70b6f559efc9ca561298931dfb06116f824d561eef5b204323f627b9",
       "size": 914
+    },
+    {
+      "path": "backend/tests/test_analytical_runtime_provider_v3100.py",
+      "sha256": "9ece8991d86cc41d294de4f63fb22e33a860e045741f28bba9427619e6ce5bc6",
+      "size": 3298
     },
     {
       "path": "backend/tests/test_analytical_visualization_grammar_v2630.py",
@@ -7522,6 +7577,11 @@
       "size": 1031
     },
     {
+      "path": "deploy_and_validate_platform_core_v3_1_0_macos.sh",
+      "sha256": "1cb9315650731e36932644091ea77c4e717748589626abb5686d7e7fc29feed7",
+      "size": 238
+    },
+    {
       "path": "deployment/docker-compose.gateway.example.yml",
       "sha256": "0261f986bb593433d0b67ea499ca14db6d31530451d2fb010c7a2a1eacfc3b0e",
       "size": 1671
@@ -8477,6 +8537,11 @@
       "size": 71
     },
     {
+      "path": "platform-core-v3100.env.example",
+      "sha256": "63fcda114845461e6da1f157374a075ab649b8cd6aac00f480271fab828f41a4",
+      "size": 318
+    },
+    {
       "path": "render.yaml",
       "sha256": "c39b796604f69e75453924c81dfcba7eb41ab0984ab745d6ffe57c97a7bafbc0",
       "size": 12027
@@ -8505,6 +8570,11 @@
       "path": "schemas/alert-rule-v1.schema.json",
       "sha256": "cae297ef9972211497f4c0969e238d011cc16318df8a3761d8bab5d81568b4ae",
       "size": 563
+    },
+    {
+      "path": "schemas/analytical-runtime-provider-v1.schema.json",
+      "sha256": "aa061d7f9bbaa989fd09edfc53dfe049a0e637dd2904a520c6e7f90ae528aa98",
+      "size": 2623
     },
     {
       "path": "schemas/analytical-visualization-grammar-v1.schema.json",
@@ -10132,6 +10202,11 @@
       "size": 694
     },
     {
+      "path": "scripts/build_v3100_manifest.py",
+      "sha256": "70cc27371c316ce1101384c55bf9686951248b3d7e893c1e94ba0d71f9d30c30",
+      "size": 713
+    },
+    {
       "path": "scripts/scan_push_safe_secrets.py",
       "sha256": "a8e4c9275f8cae71fa2be43d236a45891690f91c4efbc1e1aff3a28827d3d134",
       "size": 3412
@@ -10642,19 +10717,24 @@
       "size": 3299
     },
     {
+      "path": "scripts/validate_v3100_release.py",
+      "sha256": "f33fe9298d8c56b4a2e40d87d87432a02faadae4adac4fa357fa028b0d97e714",
+      "size": 2969
+    },
+    {
       "path": "wordpress-plugin/sustainable-catalyst-platform-core/assets/platform-core.css",
       "sha256": "617e78d421fa4e7b9be5c414b806e89345b3f4bca5b93d2e2790ed88a48475ba",
       "size": 1991
     },
     {
       "path": "wordpress-plugin/sustainable-catalyst-platform-core/readme.txt",
-      "sha256": "f77196f57782a6a1b29487b192fe97b4a88e24aae20631d6c0211496ccb75a20",
+      "sha256": "4f240cabab9fc7e54d7c1f2914d32c17646e10204177f55711c20cfb05d8f681",
       "size": 17297
     },
     {
       "path": "wordpress-plugin/sustainable-catalyst-platform-core/sustainable-catalyst-platform-core.php",
-      "sha256": "92c05e386685c34e788f45220579b72dd5f5a5719f75d6640f1296f9bd44206f",
-      "size": 134019
+      "sha256": "9ee136997a23cdf9ac4f0bf7804b6164a9ef8d9e160ca1c861f7b5b6fec21757",
+      "size": 134091
     }
   ]
 }

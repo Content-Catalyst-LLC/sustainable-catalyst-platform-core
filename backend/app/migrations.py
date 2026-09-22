@@ -180,7 +180,7 @@ MIGRATIONS = [
     ("0098", 'Research validation/challenge records for alternatives, contradiction tests, counterevidence, sensitivity, robustness, replication, reviewer challenges, responses, revisions, and snapshots; Core records evidence but does not resolve hypotheses, certify validity, rank outcomes, or infer truth.'),
     ("0099", 'Scholarly interoperability packages with governed citations, identifiers, dataset/notebook descriptors, provenance manifests, metadata/export profiles, publication bindings, validation evidence, revisions, and snapshots; Core does not mint IDs, publish, execute notebooks, or certify results.'),
     ("0100", 'Unified research runtime contracts for object types, operations, capabilities, product bindings, exchanges, invocations, results, compatibility, revisions, and snapshots; Core standardizes declared interfaces but does not execute work, auto-route, authorize access, validate results, or infer truth.'),
-    ("0101", 'Integration certification with suites, product targets, conformance cases/results, exchange/trace/reconstruction checks, evidence, findings, revisions, and snapshots; Core records declared conformance but does not invoke products, certify science, rank quality, authorize, or determine truth.'),    ("0102", 'Unified research/scientific/investigation runtime sessions with project, object, product, execution, visual, validation, package, and handoff bindings plus revisions/snapshots; Core composes declared references but does not execute work, infer conclusions, authorize access, or determine truth.'),
+    ("0101", 'Integration certification with suites, product targets, conformance cases/results, exchange/trace/reconstruction checks, evidence, findings, revisions, and snapshots; Core records declared conformance but does not invoke products, certify science, rank quality, authorize, or determine truth.'),    ("0102", 'Unified research/scientific/investigation runtime sessions with project, object, product, execution, visual, validation, package, and handoff bindings plus revisions/snapshots; Core composes declared references but does not execute work, infer conclusions, authorize access, or determine truth.'),    ("0103", 'Analytical runtime provider registry, capabilities, execution requests/results, environments, artifacts, diagnostics, and reproduction references; Core governs declared contracts while Workspace/specialist runtimes execute computation.'),
 ]
 
 
@@ -500,6 +500,48 @@ def _seed_observability_slos(database: Database) -> int:
         session.commit()
     return created
 
+
+def _seed_analytical_runtime_providers(database: Database) -> tuple[int, int]:
+    from .models import AnalyticalRuntimeProviderRecord, AnalyticalCapabilityRecord
+    providers_created = 0
+    capabilities_created = 0
+    with database.session_factory() as session:
+        provider = session.scalar(select(AnalyticalRuntimeProviderRecord).where(AnalyticalRuntimeProviderRecord.provider_key == "catalystanalyticsr"))
+        if provider is None:
+            provider = AnalyticalRuntimeProviderRecord(
+                provider_key="catalystanalyticsr",
+                name="Catalyst Analytics R",
+                provider_version="2.0.1",
+                runtime="r",
+                execution_host="workspace",
+                status="active",
+                contract_ref="sc.core.analytical-runtime-provider.v1",
+                transport_mode="hosted",
+                invocation_mode="workspace-managed",
+                visibility="public",
+                metadata_json={
+                    "package":"catalystanalyticsr",
+                    "core_release":"3.1.0",
+                    "workspace_is_execution_host": True,
+                    "core_executes_provider": False,
+                    "transport_server_required_in_provider": False
+                },
+            )
+            session.add(provider); session.flush(); providers_created += 1
+        capabilities = [
+            ("scenario_simulation","simulation"),("uncertainty_analysis","uncertainty"),("sensitivity_analysis","uncertainty"),
+            ("econometrics","statistics"),("causal_inference","causal"),("policy_evaluation","policy"),
+            ("forecasting","predictive"),("model_validation","validation"),("climate_accounting","sustainability"),
+            ("natural_capital","sustainability"),("inclusive_wealth","sustainability"),("distribution_analysis","statistics")
+        ]
+        for key, category in capabilities:
+            existing = session.scalar(select(AnalyticalCapabilityRecord).where(AnalyticalCapabilityRecord.provider_id == provider.id, AnalyticalCapabilityRecord.capability_key == key))
+            if existing is None:
+                session.add(AnalyticalCapabilityRecord(provider_id=provider.id, capability_key=key, category=category, method_refs_json=[], input_types_json=["dataset","model","parameter_set"], output_types_json=["analytical_result"], status="active", visibility="public", metadata_json={"provider":"catalystanalyticsr","provider_version":"2.0.1"}))
+                capabilities_created += 1
+        session.commit()
+    return providers_created, capabilities_created
+
 def run_migrations(database: Database) -> list[str]:
     Base.metadata.create_all(database.engine)
     applied: list[str] = []
@@ -518,6 +560,7 @@ def run_migrations(database: Database) -> list[str]:
     _seed_observability_slos(database)
     _seed_scientific_object_fabric(database)
     _seed_renderer_registry(database)
+    _seed_analytical_runtime_providers(database)
     return applied
 
 def migration_status(database: Database) -> dict:

@@ -632,3 +632,11 @@ Adds governed research notebooks, ordered sections and entries, cross-research b
 
 ## 3.0.0
 - Added Unified Research, Scientific Computing & Investigation Runtime (migration 0102).
+
+
+## 3.1.0
+- Added the Analytical Runtime Provider Contract and migration 0103.
+- Registered Catalyst Analytics R 2.0.1 as the first analytical provider, executed through Workspace.
+- Added capability, request/result, environment, artifact, diagnostic, and reproduction-reference records.
+- Added public provider discovery surfaces, SDK helpers, WordPress status surface, release validation, and VPS deployment gates.
+- Preserved the Core execution boundary: Core does not execute R, Python, Julia, infer statistical significance, certify scientific validity, or determine truth.

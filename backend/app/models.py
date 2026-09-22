@@ -13466,3 +13466,136 @@ class UnifiedResearchRuntimeSnapshotRecord(Base):
     provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
     created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+# v3.1.0 Analytical Runtime Provider Contract
+class AnalyticalRuntimeProviderRecord(Base):
+    __tablename__ = "analytical_runtime_providers_v310"
+    __table_args__ = (UniqueConstraint("provider_key", name="uq_analytical_runtime_provider_v310_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    provider_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    name: Mapped[str] = mapped_column(String(500), nullable=False)
+    provider_version: Mapped[str] = mapped_column(String(80), nullable=False)
+    runtime: Mapped[str] = mapped_column(String(80), nullable=False)
+    execution_host: Mapped[str] = mapped_column(String(180), nullable=False)
+    status: Mapped[str] = mapped_column(String(80), nullable=False, default="active")
+    contract_ref: Mapped[str] = mapped_column(String(1000), nullable=False, default="sc.core.analytical-runtime-provider.v1")
+    transport_mode: Mapped[str] = mapped_column(String(120), nullable=False, default="hosted")
+    invocation_mode: Mapped[str] = mapped_column(String(120), nullable=False, default="workspace-managed")
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="public")
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+class AnalyticalCapabilityRecord(Base):
+    __tablename__ = "analytical_capabilities_v310"
+    __table_args__ = (UniqueConstraint("provider_id", "capability_key", name="uq_analytical_capability_v310_provider_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    provider_id: Mapped[str] = mapped_column(ForeignKey("analytical_runtime_providers_v310.id", ondelete="CASCADE"), nullable=False)
+    capability_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    category: Mapped[str] = mapped_column(String(120), nullable=False, default="analysis")
+    method_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    input_types_json: Mapped[list] = mapped_column(JSON, default=list)
+    output_types_json: Mapped[list] = mapped_column(JSON, default=list)
+    status: Mapped[str] = mapped_column(String(80), nullable=False, default="active")
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="public")
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class AnalyticalExecutionRequestRecord(Base):
+    __tablename__ = "analytical_execution_requests_v310"
+    __table_args__ = (UniqueConstraint("request_key", name="uq_analytical_execution_request_v310_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    request_key: Mapped[str] = mapped_column(String(180), nullable=False)
+    provider_id: Mapped[str] = mapped_column(ForeignKey("analytical_runtime_providers_v310.id", ondelete="RESTRICT"), nullable=False)
+    session_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    analysis_type: Mapped[str] = mapped_column(String(180), nullable=False)
+    method_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    runtime: Mapped[str] = mapped_column(String(80), nullable=False)
+    execution_host: Mapped[str] = mapped_column(String(180), nullable=False)
+    input_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    parameters_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    reproducibility_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    external_execution_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    status: Mapped[str] = mapped_column(String(80), nullable=False, default="declared")
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class AnalyticalRuntimeEnvironmentRecord(Base):
+    __tablename__ = "analytical_runtime_environments_v310"
+    __table_args__ = (UniqueConstraint("environment_ref", name="uq_analytical_runtime_environment_v310_ref"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    environment_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    provider_id: Mapped[str] = mapped_column(ForeignKey("analytical_runtime_providers_v310.id", ondelete="RESTRICT"), nullable=False)
+    runtime: Mapped[str] = mapped_column(String(80), nullable=False)
+    runtime_version: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    package_manifest_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    container_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    lockfile_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    content_hash: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class AnalyticalExecutionResultRecord(Base):
+    __tablename__ = "analytical_execution_results_v310"
+    __table_args__ = (UniqueConstraint("result_ref", name="uq_analytical_execution_result_v310_ref"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    request_id: Mapped[str] = mapped_column(ForeignKey("analytical_execution_requests_v310.id", ondelete="CASCADE"), nullable=False)
+    result_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    external_execution_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    environment_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    status: Mapped[str] = mapped_column(String(80), nullable=False, default="recorded")
+    output_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    estimate_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    uncertainty_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    diagnostic_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    artifact_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class AnalyticalArtifactRecord(Base):
+    __tablename__ = "analytical_artifacts_v310"
+    __table_args__ = (UniqueConstraint("artifact_ref", name="uq_analytical_artifact_v310_ref"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    request_id: Mapped[str] = mapped_column(ForeignKey("analytical_execution_requests_v310.id", ondelete="CASCADE"), nullable=False)
+    artifact_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    artifact_type: Mapped[str] = mapped_column(String(120), nullable=False)
+    media_type: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    storage_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    content_hash: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class StatisticalDiagnosticRecord(Base):
+    __tablename__ = "statistical_diagnostics_v310"
+    __table_args__ = (UniqueConstraint("diagnostic_ref", name="uq_statistical_diagnostic_v310_ref"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    request_id: Mapped[str] = mapped_column(ForeignKey("analytical_execution_requests_v310.id", ondelete="CASCADE"), nullable=False)
+    diagnostic_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    diagnostic_type: Mapped[str] = mapped_column(String(180), nullable=False)
+    status: Mapped[str] = mapped_column(String(80), nullable=False, default="recorded")
+    metrics_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    messages_json: Mapped[list] = mapped_column(JSON, default=list)
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class AnalyticalReproductionReferenceRecord(Base):
+    __tablename__ = "analytical_reproduction_references_v310"
+    __table_args__ = (UniqueConstraint("reproduction_ref", name="uq_analytical_reproduction_reference_v310_ref"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    request_id: Mapped[str] = mapped_column(ForeignKey("analytical_execution_requests_v310.id", ondelete="CASCADE"), nullable=False)
+    reproduction_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    environment_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    code_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    random_seed: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    input_snapshot_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    status: Mapped[str] = mapped_column(String(80), nullable=False, default="declared")
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)

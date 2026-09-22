@@ -154,3 +154,7 @@ Core can now preserve automated integration-conformance evidence for products co
 
 ## v3.0.0 milestone
 Platform Core now exposes a reference-first Unified Research, Scientific Computing & Investigation Runtime across the Sustainable Catalyst research stack.
+
+
+## v3.1.0 analytical runtime provider milestone
+Platform Core v3.1.0 introduces a runtime-neutral analytical provider contract. Core registers provider capabilities, analytical execution requests/results, runtime-environment provenance, artifacts, diagnostics, and reproduction references without executing specialist computation. Catalyst Analytics R 2.0.1 is seeded as the first provider (`runtime=r`, `execution_host=workspace`). Workspace remains responsible for execution isolation, resource policy, job state, and runtime invocation.

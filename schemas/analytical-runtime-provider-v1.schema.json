@@ -1,0 +1,127 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/analytical-runtime-provider-v1.schema.json",
+  "title": "Analytical Runtime Provider Contract",
+  "type": "object",
+  "required": [
+    "provider_key",
+    "provider_version",
+    "runtime",
+    "execution_host"
+  ],
+  "properties": {
+    "provider_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "provider_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "runtime": {
+      "type": "string",
+      "minLength": 1
+    },
+    "execution_host": {
+      "type": "string",
+      "minLength": 1
+    },
+    "capabilities": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "core_executes_provider": {
+      "const": false
+    }
+  },
+  "additionalProperties": true,
+  "definitions": {
+    "execution_request": {
+      "type": "object",
+      "required": [
+        "request_key",
+        "provider_ref",
+        "analysis_type",
+        "input_refs"
+      ],
+      "properties": {
+        "request_key": {
+          "type": "string"
+        },
+        "provider_ref": {
+          "type": "string"
+        },
+        "analysis_type": {
+          "type": "string"
+        },
+        "method_ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "input_refs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "parameters": {
+          "type": "object"
+        },
+        "reproducibility": {
+          "type": "object"
+        }
+      },
+      "additionalProperties": true
+    },
+    "execution_result": {
+      "type": "object",
+      "required": [
+        "request_ref",
+        "result_ref"
+      ],
+      "properties": {
+        "request_ref": {
+          "type": "string"
+        },
+        "result_ref": {
+          "type": "string"
+        },
+        "output_refs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "estimate_refs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "uncertainty_refs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "diagnostic_refs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "artifact_refs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": true
+    }
+  }
+}
