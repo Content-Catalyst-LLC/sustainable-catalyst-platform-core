@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/statistical-reasoning-object-model-v1.schema.json",
+  "title": "Platform Core Statistical Reasoning Object Model",
+  "type": "object",
+  "required": [
+    "reasoning_ref",
+    "result_ref",
+    "source_bundle_ref",
+    "source_contract",
+    "analysis_ref",
+    "review_status",
+    "evidence_only",
+    "human_review_required"
+  ],
+  "properties": {
+    "reasoning_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "result_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_bundle_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_contract": {
+      "const": "sc.analytics-r.statistical-diagnostics-validation.v1"
+    },
+    "analysis_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "model_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "review_status": {
+      "enum": [
+        "unreviewed",
+        "in_review",
+        "reviewed"
+      ]
+    },
+    "diagnostics": {
+      "type": "array"
+    },
+    "assumptions": {
+      "type": "array"
+    },
+    "robustness_evidence": {
+      "type": "array"
+    },
+    "model_comparisons": {
+      "type": "array"
+    },
+    "coefficients": {
+      "type": "array"
+    },
+    "intervals": {
+      "type": "array"
+    },
+    "interpretations": {
+      "type": "array"
+    },
+    "evidence_only": {
+      "const": true
+    },
+    "human_review_required": {
+      "const": true
+    }
+  },
+  "additionalProperties": true
+}

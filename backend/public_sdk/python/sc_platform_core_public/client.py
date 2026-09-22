@@ -1056,22 +1056,21 @@ PublicApiClient.research_project_state_lineage=_v292_research_project_state_line
 PublicApiClient.research_project_state_bundle=_v292_research_project_state_bundle
 PublicApiClient.research_project_state_manifest=_v292_research_project_state_manifest
 
-    # v2.93.0 Research Roles, Agents & Contributor Provenance Framework
-    def research_contributor_provenance_summary(self, project_ref):
-        return self.get(f"/api/v1/research/contributors/projects/{project_ref}/summary")
-    def research_contributor_provenance_lineage(self, project_ref):
-        return self.get(f"/api/v1/research/contributors/projects/{project_ref}/lineage")
-    def research_contributor_provenance_bundle(self, project_ref):
-        return self.get(f"/api/v1/research/contributors/projects/{project_ref}/bundle")
+# v2.93.0 Research Roles, Agents & Contributor Provenance Framework
+def _v293_research_contributor_provenance_summary(self, project_ref: str): return self.request("GET", f"/research/contributors/projects/{project_ref}/summary")
+def _v293_research_contributor_provenance_lineage(self, project_ref: str): return self.request("GET", f"/research/contributors/projects/{project_ref}/lineage")
+def _v293_research_contributor_provenance_bundle(self, project_ref: str): return self.request("GET", f"/research/contributors/projects/{project_ref}/bundle")
+PublicApiClient.research_contributor_provenance_summary=_v293_research_contributor_provenance_summary
+PublicApiClient.research_contributor_provenance_lineage=_v293_research_contributor_provenance_lineage
+PublicApiClient.research_contributor_provenance_bundle=_v293_research_contributor_provenance_bundle
 
-
-    # v2.94.0 Research Validation & Challenge Engine
-    def research_validation_challenge_summary(self, project_ref: str):
-        return self.get(f"/api/v1/research/validation-challenges/projects/{project_ref}/summary")
-    def research_validation_challenge_lineage(self, project_ref: str):
-        return self.get(f"/api/v1/research/validation-challenges/projects/{project_ref}/lineage")
-    def research_validation_challenge_bundle(self, project_ref: str):
-        return self.get(f"/api/v1/research/validation-challenges/projects/{project_ref}/bundle")
+# v2.94.0 Research Validation & Challenge Engine
+def _v294_research_validation_challenge_summary(self, project_ref: str): return self.request("GET", f"/research/validation-challenges/projects/{project_ref}/summary")
+def _v294_research_validation_challenge_lineage(self, project_ref: str): return self.request("GET", f"/research/validation-challenges/projects/{project_ref}/lineage")
+def _v294_research_validation_challenge_bundle(self, project_ref: str): return self.request("GET", f"/research/validation-challenges/projects/{project_ref}/bundle")
+PublicApiClient.research_validation_challenge_summary=_v294_research_validation_challenge_summary
+PublicApiClient.research_validation_challenge_lineage=_v294_research_validation_challenge_lineage
+PublicApiClient.research_validation_challenge_bundle=_v294_research_validation_challenge_bundle
 
 
 # v2.95.0 Scholarly Interoperability & Research Packaging
@@ -1120,3 +1119,13 @@ def _v320_analytical_result_lineage(self, result_ref: str): return self.request(
 PublicApiClient.analytical_result_readiness=_v320_analytical_result_readiness
 PublicApiClient.analytical_result_bundle=_v320_analytical_result_bundle
 PublicApiClient.analytical_result_lineage=_v320_analytical_result_lineage
+
+
+# v3.3.0 Statistical Reasoning Object Model
+def _statistical_reasoning_readiness(self):
+    return self.request("GET", "/analytics/statistical-reasoning/readiness")
+def _statistical_reasoning_bundle(self, reasoning_ref: str):
+    from urllib.parse import quote
+    return self.request("GET", f"/analytics/statistical-reasoning/{quote(reasoning_ref, safe='')}/bundle")
+PublicApiClient.statistical_reasoning_readiness = _statistical_reasoning_readiness
+PublicApiClient.statistical_reasoning_bundle = _statistical_reasoning_bundle

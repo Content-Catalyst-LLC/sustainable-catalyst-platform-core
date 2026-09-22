@@ -12,20 +12,20 @@ def request(s,key="analysis-1",visibility="public"):
     return provider_svc.create_request(s,{"request_key":key,"provider_ref":"catalystanalyticsr","analysis_type":"uncertainty_analysis","method_ref":"run_uncertainty","input_refs":["dataset:1"],"reproducibility":{"seed":42},"visibility":visibility})
 
 def envelope(key="analysis-1",result_ref="result:1",visibility="public"):
-    return {"schema_version":"1.0.0","result_type":"catalyst_analytics_r_core_result","core_contract":"sc.core.analytical-runtime-provider.v1","request_ref":key,"result_ref":result_ref,"provider_ref":"catalystanalyticsr","provider_version":"2.1.0","runtime":"r","execution_host":"workspace","analysis_type":"uncertainty_analysis","method_ref":"run_uncertainty","external_execution_ref":"workspace-run:1","workspace_receipt_ref":"workspace-receipt:1","environment_ref":"env:r:1","status":"completed","output_refs":["object:1"],"estimate_refs":["estimate:1"],"uncertainty_refs":["uncertainty:1"],"diagnostic_refs":["diag:1"],"artifact_refs":["artifact:1"],"warnings":[],"errors":[],"native_result":{"summary":"provider-native summary"},"provenance":{"package":{"name":"catalystanalyticsr","version":"2.1.0"}},"completed_at":"2026-09-22T04:00:00Z","visibility":visibility,"boundary":{"core_records_result_but_does_not_execute":True,"workspace_execution_required":True,"result_does_not_certify_scientific_validity":True,"human_review_required":True}}
+    return {"schema_version":"1.0.0","result_type":"catalyst_analytics_r_core_result","core_contract":"sc.core.analytical-runtime-provider.v1","request_ref":key,"result_ref":result_ref,"provider_ref":"catalystanalyticsr","provider_version":"2.2.0","runtime":"r","execution_host":"workspace","analysis_type":"uncertainty_analysis","method_ref":"run_uncertainty","external_execution_ref":"workspace-run:1","workspace_receipt_ref":"workspace-receipt:1","environment_ref":"env:r:1","status":"completed","output_refs":["object:1"],"estimate_refs":["estimate:1"],"uncertainty_refs":["uncertainty:1"],"diagnostic_refs":["diag:1"],"artifact_refs":["artifact:1"],"warnings":[],"errors":[],"native_result":{"summary":"provider-native summary"},"provenance":{"package":{"name":"catalystanalyticsr","version":"2.2.0"}},"completed_at":"2026-09-22T04:00:00Z","visibility":visibility,"boundary":{"core_records_result_but_does_not_execute":True,"workspace_execution_required":True,"result_does_not_certify_scientific_validity":True,"human_review_required":True}}
 
 def test_migration_seed_and_provider_promotion(tmp_path):
     db,s=session(tmp_path); st=migration_status(db); r=svc.readiness(s)
     assert "0104" in st["applied"] and st["pending"]==[]
-    assert r["release"]=="3.2.0" and r["contract"]=="sc.core.analytical-result-provenance.v1"
-    assert r["catalyst_analytics_r_version"]=="2.1.0" and r["workspace_adapter_release"]=="3.5.0"
+    assert r["release"]=="3.3.0" and r["contract"]=="sc.core.analytical-result-provenance.v1"
+    assert r["catalyst_analytics_r_version"]=="2.2.0" and r["workspace_adapter_release"]=="3.9.1"
     provider=s.scalar(select(AnalyticalRuntimeProviderRecord).where(AnalyticalRuntimeProviderRecord.provider_key=="catalystanalyticsr"))
-    assert provider.provider_version=="2.1.0" and provider.metadata_json["core_release"]=="3.2.0"
+    assert provider.provider_version=="2.2.0" and provider.metadata_json["core_release"]=="3.3.0"
     s.close()
 
 def test_ingest_idempotent_and_lineage_snapshot(tmp_path):
     db,s=session(tmp_path); req=request(s)
-    provider_svc.record_environment(s,{"provider_ref":"catalystanalyticsr","environment_ref":"env:r:1","runtime":"r","package_manifest":{"catalystanalyticsr":"2.1.0"},"visibility":"public"})
+    provider_svc.record_environment(s,{"provider_ref":"catalystanalyticsr","environment_ref":"env:r:1","runtime":"r","package_manifest":{"catalystanalyticsr":"2.2.0"},"visibility":"public"})
     provider_svc.record_artifact(s,{"request_ref":req["id"],"artifact_ref":"artifact:1","artifact_type":"json","visibility":"public"})
     provider_svc.record_diagnostic(s,{"request_ref":req["id"],"diagnostic_ref":"diag:1","diagnostic_type":"runtime","visibility":"public"})
     provider_svc.record_reproduction(s,{"request_ref":req["id"],"reproduction_ref":"repro:1","environment_ref":"env:r:1","random_seed":42,"visibility":"public"})

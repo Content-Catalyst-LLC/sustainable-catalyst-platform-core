@@ -1,3 +1,6 @@
+== 3.3.0 ==
+* Adds Statistical Reasoning Object Model status and Analytics R 2.2 diagnostics visibility.
+
 == 3.2.0 ==
 Analytical Result & Provenance Integration status surface with first-class result lineage, estimates, uncertainty objects, and immutable snapshots.
 
@@ -40,7 +43,7 @@ Tags: knowledge graph, entity registry, provenance, live data, sustainable catal
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.0
-Stable tag: 3.2.0
+Stable tag: 3.3.0
 License: MIT
 
 WordPress status, live-data gateway, and entity lookup client for Sustainable Catalyst Platform Core.

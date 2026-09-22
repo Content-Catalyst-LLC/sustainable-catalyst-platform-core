@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Sustainable Catalyst Platform Core
  * Description: WordPress connector for Sustainable Catalyst Platform Core registry, graph, evidence, developer, gateway, free live-data, international-law, scientific-data, official-statistics, geospatial, time-series, STAC, map-layer, streaming, alerts, source-reliability, and operational-facility, humanitarian-access, essential-services, and country-evidence federation and reconciliation, and Earth/Ocean/Space scientific-service routing, cross-product exchange, distributed scale-control services, and governance/access/audit, production-certification/recovery, and observability/SLO production-operations services, plus incident-response, change-control, rollback-coordination, continuity, backup-verification, disaster-recovery, and multi-region resilience/failover-coordination, and data-lifecycle/archival-integrity/preservation services, plus Federated Core trusted-node exchange services and capacity forecasting/resource-governance services, plus identity/credential/cryptographic-key lifecycle governance, distributed workload governance, and scientific object storage/processing adapter services, research object/model services, renderer-neutral visual reasoning object services, and visualization specification/renderer registry services, and governed System Maps and Flow Maps services, plus the renderer-neutral visual reasoning runtime/scene graph and analytical result/provenance integration.
- * Version: 3.2.0
+ * Version: 3.3.0
  * Author: Content Catalyst LLC
  * License: MIT
  */
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('SCPC_VERSION', '3.2.0');
+define('SCPC_VERSION', '3.3.0');
 define('SCPC_OPTION_BACKEND_URL', 'scpc_backend_url');
 define('SCPC_OPTION_READ_KEY', 'scpc_read_key');
 
@@ -119,6 +119,7 @@ function scpc_render_settings_page() {
         <code>[sc_platform_core_causal_systems_status]</code><br />
         <code>[sc_platform_core_analytical_runtime_status]</code><br />
         <code>[sc_platform_core_analytical_result_status]</code><br />
+        <code>[sc_platform_core_statistical_reasoning_status]</code><br />
         <code>[sc_platform_core_entity id="sc:product:workbench"]</code><br />
         <code>[sc_platform_core_relationships id="sc:product:research-librarian"]</code><br />
         <code>[sc_knowledge_explorer]</code><br />
@@ -1923,7 +1924,7 @@ function scpc_analytical_result_status_shortcode() {
     ob_start(); ?>
     <section class="scpc-card">
         <p class="scpc-kicker">Analytical Result &amp; Provenance Integration</p>
-        <h3>Platform Core v3.2 analytical evidence layer</h3>
+        <h3>Platform Core v3.3 analytical evidence layer</h3>
         <p><strong>Status:</strong> Online · <strong>Catalyst Analytics R:</strong> <?php echo esc_html($version); ?> · <strong>Results:</strong> <?php echo esc_html(number_format_i18n($results)); ?> · <strong>Snapshots:</strong> <?php echo esc_html(number_format_i18n($snapshots)); ?></p>
         <p class="scpc-meta">Core records analytical results, provenance, uncertainty, diagnostics, and reproducibility references. Computation remains in governed specialist runtimes such as Workspace.</p>
     </section>
@@ -1931,3 +1932,14 @@ function scpc_analytical_result_status_shortcode() {
 }
 add_shortcode('sc_platform_core_analytical_result_status', 'scpc_analytical_result_status_shortcode');
 
+
+
+// v3.3.0 Statistical Reasoning Object Model status.
+function scpc_statistical_reasoning_status_shortcode() {
+    $ready = scpc_api_get('/v1/analytics/statistical-reasoning/readiness');
+    if (is_wp_error($ready)) return '<div class="scpc-card scpc-error"><strong>Statistical reasoning unavailable</strong><p>' . esc_html($ready->get_error_message()) . '</p></div>';
+    $counts = isset($ready['counts']) && is_array($ready['counts']) ? $ready['counts'] : array();
+    $provider = sanitize_text_field($ready['catalyst_analytics_r_version'] ?? 'unknown');
+    return '<section class="scpc-card"><p class="scpc-kicker">Statistical Reasoning Object Model</p><h3>Platform Core v3.3 statistical evidence layer</h3><p><strong>Status:</strong> Online · <strong>Catalyst Analytics R:</strong> ' . esc_html($provider) . ' · <strong>Reasoning objects:</strong> ' . intval($counts['reasoning_objects'] ?? 0) . ' · <strong>Diagnostics:</strong> ' . intval($counts['diagnostics'] ?? 0) . ' · <strong>Interpretations:</strong> ' . intval($counts['interpretations'] ?? 0) . '</p><p class="scpc-meta">Diagnostics, assumptions, robustness evidence, comparisons, coefficients, and intervals are recorded as evidence. Core does not certify validity, infer statistical significance, select a preferred model, or replace human interpretation.</p></section>';
+}
+add_shortcode('sc_platform_core_statistical_reasoning_status', 'scpc_statistical_reasoning_status_shortcode');

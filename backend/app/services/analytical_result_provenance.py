@@ -11,7 +11,7 @@ from ..models import (
     AnalyticalLineageBindingRecord, AnalyticalResultIngestionReceiptRecord, AnalyticalResultSnapshotRecord,
 )
 
-RELEASE = "3.2.0"
+RELEASE = "3.3.0"
 PROVIDER_CONTRACT = "sc.core.analytical-runtime-provider.v1"
 RESULT_CONTRACT = "sc.core.analytical-result-provenance.v1"
 CATALYST_R_RESULT_TYPE = "catalyst_analytics_r_core_result"
@@ -73,7 +73,7 @@ def readiness(db:Session):
     out={
         "release":RELEASE,"contract":RESULT_CONTRACT,"provider_contract":PROVIDER_CONTRACT,"migration_0104_applied":True,
         "catalyst_analytics_r_registered":provider is not None,"catalyst_analytics_r_version":provider.provider_version if provider else None,
-        "workspace_adapter_release":"3.5.0","workspace_is_execution_host":True,
+        "workspace_adapter_release":"3.9.1","workspace_is_execution_host":True,
         "counts":{"results":count(AnalyticalResultObjectRecord),"estimates":count(AnalyticalEstimateRecord),"uncertainty_objects":count(AnalyticalUncertaintyObjectRecord),"lineage_bindings":count(AnalyticalLineageBindingRecord),"ingestion_receipts":count(AnalyticalResultIngestionReceiptRecord),"snapshots":count(AnalyticalResultSnapshotRecord)},
         "first_class_result_objects":True,"estimate_objects":True,"uncertainty_objects":True,"lineage_bindings":True,"immutable_result_snapshots":True,"idempotent_workspace_ingestion":True,
         "core_records_results_but_does_not_execute":True,"human_review_required":True,"scientific_validity_not_certified_by_core":True,

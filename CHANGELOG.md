@@ -1,3 +1,10 @@
+# v3.3.0 — Statistical Reasoning Object Model
+
+- Added first-class statistical reasoning, diagnostic, assumption, robustness, model-comparison, coefficient, interval, interpretation, and snapshot records.
+- Added governed ingestion of Catalyst Analytics R v2.2.0 diagnostics through Workspace v3.9.1.
+- Added migration 0105 and promoted the provider registry baseline to Analytics R 2.2.0 / Workspace 3.9.1.
+- Preserved evidence-only boundaries: Core does not infer significance, certify validity, select models, infer causality, or determine truth.
+
 # v3.2.0 — Analytical Result & Provenance Integration
 
 - Added first-class analytical result, estimate, uncertainty, lineage, ingestion receipt, and immutable snapshot records.

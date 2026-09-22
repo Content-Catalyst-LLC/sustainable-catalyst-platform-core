@@ -7,7 +7,7 @@ from ..models import (
     StatisticalDiagnosticRecord, AnalyticalReproductionReferenceRecord,
 )
 
-RELEASE = "3.2.0"
+RELEASE = "3.3.0"
 CONTRACT = "sc.core.analytical-runtime-provider.v1"
 FORBIDDEN = (
     "execute_analysis_by_core", "execute_r_by_core", "execute_python_by_core", "execute_julia_by_core",

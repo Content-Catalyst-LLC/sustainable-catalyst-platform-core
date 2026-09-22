@@ -13723,3 +13723,158 @@ class AnalyticalResultSnapshotRecord(Base):
     created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
 
+
+
+# v3.3.0 Statistical Reasoning Object Model
+class StatisticalReasoningObjectRecord(Base):
+    __tablename__ = "statistical_reasoning_objects_v330"
+    __table_args__ = (
+        UniqueConstraint("reasoning_ref", name="uq_statistical_reasoning_v330_ref"),
+        UniqueConstraint("source_bundle_ref", name="uq_statistical_reasoning_v330_source_bundle"),
+        Index("ix_statistical_reasoning_v330_result", "result_id", "created_at"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    reasoning_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    result_id: Mapped[str] = mapped_column(ForeignKey("analytical_result_objects_v320.id", ondelete="CASCADE"), nullable=False)
+    source_bundle_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    source_contract: Mapped[str] = mapped_column(String(255), nullable=False)
+    analysis_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    model_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    source_status: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    review_status: Mapped[str] = mapped_column(String(80), nullable=False, default="unreviewed")
+    summary_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    limitations_json: Mapped[list] = mapped_column(JSON, default=list)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    evidence_fingerprint: Mapped[str] = mapped_column(String(64), nullable=False)
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class StatisticalDiagnosticEvidenceRecord(Base):
+    __tablename__ = "statistical_diagnostic_evidence_v330"
+    __table_args__ = (UniqueConstraint("reasoning_id", "diagnostic_ref", name="uq_statistical_diagnostic_v330_ref"), Index("ix_statistical_diagnostic_v330_reasoning", "reasoning_id", "diagnostic_type"))
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    reasoning_id: Mapped[str] = mapped_column(ForeignKey("statistical_reasoning_objects_v330.id", ondelete="CASCADE"), nullable=False)
+    diagnostic_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    diagnostic_type: Mapped[str] = mapped_column(String(120), nullable=False)
+    name: Mapped[str] = mapped_column(String(500), nullable=False)
+    observed_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    reference_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    operator: Mapped[str | None] = mapped_column(String(40), nullable=True)
+    p_value: Mapped[float | None] = mapped_column(Float, nullable=True)
+    method_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    units: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    evidence_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    notes_json: Mapped[list] = mapped_column(JSON, default=list)
+    boundary_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class StatisticalAssumptionRecordV330(Base):
+    __tablename__ = "statistical_assumptions_v330"
+    __table_args__ = (UniqueConstraint("reasoning_id", "assumption_ref", name="uq_statistical_assumption_v330_ref"), Index("ix_statistical_assumption_v330_reasoning", "reasoning_id", "status"))
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    reasoning_id: Mapped[str] = mapped_column(ForeignKey("statistical_reasoning_objects_v330.id", ondelete="CASCADE"), nullable=False)
+    assumption_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    label: Mapped[str] = mapped_column(String(500), nullable=False)
+    statement: Mapped[str] = mapped_column(Text, nullable=False)
+    status: Mapped[str] = mapped_column(String(80), nullable=False)
+    evidence_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    limitations_json: Mapped[list] = mapped_column(JSON, default=list)
+    boundary_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class StatisticalRobustnessEvidenceRecord(Base):
+    __tablename__ = "statistical_robustness_evidence_v330"
+    __table_args__ = (UniqueConstraint("reasoning_id", "robustness_ref", name="uq_statistical_robustness_v330_ref"), Index("ix_statistical_robustness_v330_reasoning", "reasoning_id", "created_at"))
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    reasoning_id: Mapped[str] = mapped_column(ForeignKey("statistical_reasoning_objects_v330.id", ondelete="CASCADE"), nullable=False)
+    robustness_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    method_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    target_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    result_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    evidence_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    limitations_json: Mapped[list] = mapped_column(JSON, default=list)
+    boundary_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class StatisticalModelComparisonRecord(Base):
+    __tablename__ = "statistical_model_comparisons_v330"
+    __table_args__ = (UniqueConstraint("reasoning_id", "comparison_ref", name="uq_statistical_comparison_v330_ref"), Index("ix_statistical_comparison_v330_reasoning", "reasoning_id", "created_at"))
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    reasoning_id: Mapped[str] = mapped_column(ForeignKey("statistical_reasoning_objects_v330.id", ondelete="CASCADE"), nullable=False)
+    comparison_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    model_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    criteria_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    evidence_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    notes_json: Mapped[list] = mapped_column(JSON, default=list)
+    boundary_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class StatisticalCoefficientRecord(Base):
+    __tablename__ = "statistical_coefficients_v330"
+    __table_args__ = (UniqueConstraint("reasoning_id", "coefficient_ref", name="uq_statistical_coefficient_v330_ref"), Index("ix_statistical_coefficient_v330_reasoning", "reasoning_id", "term"))
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    reasoning_id: Mapped[str] = mapped_column(ForeignKey("statistical_reasoning_objects_v330.id", ondelete="CASCADE"), nullable=False)
+    coefficient_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    term: Mapped[str] = mapped_column(String(500), nullable=False)
+    estimate: Mapped[float | None] = mapped_column(Float, nullable=True)
+    standard_error: Mapped[float | None] = mapped_column(Float, nullable=True)
+    statistic: Mapped[float | None] = mapped_column(Float, nullable=True)
+    p_value: Mapped[float | None] = mapped_column(Float, nullable=True)
+    unit: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    interval_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    evidence_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class StatisticalIntervalRecord(Base):
+    __tablename__ = "statistical_intervals_v330"
+    __table_args__ = (UniqueConstraint("reasoning_id", "interval_ref", name="uq_statistical_interval_v330_ref"), Index("ix_statistical_interval_v330_reasoning", "reasoning_id", "interval_type"))
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    reasoning_id: Mapped[str] = mapped_column(ForeignKey("statistical_reasoning_objects_v330.id", ondelete="CASCADE"), nullable=False)
+    interval_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    interval_type: Mapped[str] = mapped_column(String(120), nullable=False)
+    level: Mapped[float | None] = mapped_column(Float, nullable=True)
+    lower: Mapped[float | None] = mapped_column(Float, nullable=True)
+    upper: Mapped[float | None] = mapped_column(Float, nullable=True)
+    method_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    unit: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    target_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    evidence_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class StatisticalInterpretationRecord(Base):
+    __tablename__ = "statistical_interpretations_v330"
+    __table_args__ = (UniqueConstraint("reasoning_id", "interpretation_ref", name="uq_statistical_interpretation_v330_ref"), Index("ix_statistical_interpretation_v330_reasoning", "reasoning_id", "created_at"))
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    reasoning_id: Mapped[str] = mapped_column(ForeignKey("statistical_reasoning_objects_v330.id", ondelete="CASCADE"), nullable=False)
+    interpretation_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    interpretation_type: Mapped[str] = mapped_column(String(120), nullable=False, default="researcher_interpretation")
+    statement: Mapped[str] = mapped_column(Text, nullable=False)
+    author_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    evidence_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    limitations_json: Mapped[list] = mapped_column(JSON, default=list)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    human_authored: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class StatisticalReasoningSnapshotRecord(Base):
+    __tablename__ = "statistical_reasoning_snapshots_v330"
+    __table_args__ = (UniqueConstraint("snapshot_ref", name="uq_statistical_reasoning_snapshot_v330_ref"), Index("ix_statistical_reasoning_snapshot_v330_reasoning", "reasoning_id", "created_at"))
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    snapshot_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    reasoning_id: Mapped[str] = mapped_column(ForeignKey("statistical_reasoning_objects_v330.id", ondelete="CASCADE"), nullable=False)
+    snapshot_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    previous_snapshot_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    state_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)

@@ -751,3 +751,8 @@ export async function analyticalRuntimeRequestBundle(client, requestRef) { retur
 export async function analyticalResultReadiness(client) { return client.request("GET", "/analytics/results/readiness"); }
 export async function analyticalResultBundle(client, resultRef) { return client.request("GET", `/analytics/results/${encodeURIComponent(resultRef)}/bundle`); }
 export async function analyticalResultLineage(client, resultRef) { return client.request("GET", `/analytics/results/${encodeURIComponent(resultRef)}/lineage`); }
+
+
+// v3.3.0 Statistical Reasoning Object Model
+export async function statisticalReasoningReadiness(client) { return client.request("/analytics/statistical-reasoning/readiness"); }
+export async function statisticalReasoningBundle(client, reasoningRef) { return client.request(`/analytics/statistical-reasoning/${encodeURIComponent(reasoningRef)}/bundle`); }

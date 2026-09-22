@@ -1,0 +1,33 @@
+{
+  "reasoning_ref": "statistical-reasoning:diagnostics-policy-regression-001",
+  "result_ref": "result:policy-regression-001",
+  "source_bundle_ref": "diagnostics:policy-regression-001",
+  "source_contract": "sc.analytics-r.statistical-diagnostics-validation.v1",
+  "analysis_ref": "analysis:policy-regression-001",
+  "model_ref": "model:policy-regression-001",
+  "review_status": "unreviewed",
+  "diagnostics": [
+    {
+      "diagnostic_ref": "diagnostic:bp",
+      "diagnostic_type": "assumption_test",
+      "name": "Breusch-Pagan statistic",
+      "observed": {
+        "value": 4.1
+      },
+      "p_value": 0.129
+    }
+  ],
+  "assumptions": [
+    {
+      "assumption_ref": "assumption:parallel-trends",
+      "status": "not_assessed"
+    }
+  ],
+  "robustness_evidence": [],
+  "model_comparisons": [],
+  "coefficients": [],
+  "intervals": [],
+  "interpretations": [],
+  "evidence_only": true,
+  "human_review_required": true
+}

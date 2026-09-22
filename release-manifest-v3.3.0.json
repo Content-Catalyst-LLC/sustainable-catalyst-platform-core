@@ -1,0 +1,24 @@
+{
+  "catalyst_analytics_r": "2.2.0",
+  "core_contract": "sc.core.statistical-reasoning-object-model.v1",
+  "files": {
+    "backend/app/config.py": "5d722c5f2c71039a54ca8fab0d31cb620b0c6ec65c7954d9ac579e59eab65ed6",
+    "backend/app/main.py": "51795016971f741b4fde365d2a184a6ddccf0e57e84157a5f1272360eebc1915",
+    "backend/app/migrations.py": "636c722b72ab71093e51cf1ed01d39d7fa188e202e4ae36fb8909c1d53f7190f",
+    "backend/app/models.py": "b6bb019289e77b322cfaf6008a70d45d8b43bcf0484121eb137616b13727b41a",
+    "backend/app/routers/statistical_reasoning.py": "0c8432cf534047df05fa7a645cabc5d62deadc56926870805e1c99ca4f4059b2",
+    "backend/app/services/statistical_reasoning.py": "aff26c4bfd632314a843d85f1c34ea9c533a29bd862ac903aa75e82ca323b2d7",
+    "backend/scripts/run_v3300_release_tests.py": "890678c995aa5ab3d4820f6931b2dfee37b84fe63877f499dbe3d6e31ff61a44",
+    "backend/scripts/validate_statistical_reasoning.py": "9b8fd071faeec124cc0d7cee4072a6731c4a1ddc7794e6bde66b948f8120818a",
+    "backend/tests/test_statistical_reasoning_v3300.py": "68f0d0100dfbb0fe94ae2c4d3b554a3fdff5faf4b178db4cabeb25e7409db6b2",
+    "examples/statistical_reasoning_object_v330.json": "1773932f6a370179d5eecaa195353a74401836a4c6f863d548c0dff8d07eb2dd",
+    "schemas/statistical-reasoning-object-model-v1.schema.json": "cc0d26d764c353bd1331c3b5c1d862d30c6315d6a623cb8b195f6460274e8243",
+    "scripts/validate_v3300_release.py": "e4fafcf6788c6c7b5a856b1243fdaa4f1c66fd0b03e182829044053d265b71e2",
+    "wordpress-plugin/sustainable-catalyst-platform-core/sustainable-catalyst-platform-core.php": "18641424e2c98b40d3f78eb02d5a2921eca3036c63aa6b215359f3228b1eaa0a"
+  },
+  "migration": "0105",
+  "release": "3.3.0",
+  "source_contract": "sc.analytics-r.statistical-diagnostics-validation.v1",
+  "title": "Statistical Reasoning Object Model",
+  "workspace_adapter": "3.9.1"
+}

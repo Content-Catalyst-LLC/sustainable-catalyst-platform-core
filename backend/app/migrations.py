@@ -182,6 +182,7 @@ MIGRATIONS = [
     ("0100", 'Unified research runtime contracts for object types, operations, capabilities, product bindings, exchanges, invocations, results, compatibility, revisions, and snapshots; Core standardizes declared interfaces but does not execute work, auto-route, authorize access, validate results, or infer truth.'),
     ("0101", 'Integration certification with suites, product targets, conformance cases/results, exchange/trace/reconstruction checks, evidence, findings, revisions, and snapshots; Core records declared conformance but does not invoke products, certify science, rank quality, authorize, or determine truth.'),    ("0102", 'Unified research/scientific/investigation runtime sessions with project, object, product, execution, visual, validation, package, and handoff bindings plus revisions/snapshots; Core composes declared references but does not execute work, infer conclusions, authorize access, or determine truth.'),    ("0103", 'Analytical runtime provider registry, capabilities, execution requests/results, environments, artifacts, diagnostics, and reproduction references; Core governs declared contracts while Workspace/specialist runtimes execute computation.'),
     ("0104", 'Analytical result and provenance integration with first-class result, estimate, uncertainty, lineage, ingestion-receipt, and immutable snapshot records; Core records governed outputs without executing analysis or certifying scientific validity.'),
+    ("0105", 'Statistical reasoning object model with diagnostics, assumptions, robustness evidence, model comparisons, coefficients, intervals, researcher interpretations, and immutable snapshots; Core records statistical evidence without certifying validity, significance, causality, or preferred models.'),
 ]
 
 
@@ -512,7 +513,7 @@ def _seed_analytical_runtime_providers(database: Database) -> tuple[int, int]:
             provider = AnalyticalRuntimeProviderRecord(
                 provider_key="catalystanalyticsr",
                 name="Catalyst Analytics R",
-                provider_version="2.1.0",
+                provider_version="2.2.0",
                 runtime="r",
                 execution_host="workspace",
                 status="active",
@@ -522,20 +523,21 @@ def _seed_analytical_runtime_providers(database: Database) -> tuple[int, int]:
                 visibility="public",
                 metadata_json={
                     "package":"catalystanalyticsr",
-                    "core_release":"3.2.0",
-                    "workspace_adapter_release":"3.5.0",
+                    "core_release":"3.3.0",
+                    "workspace_adapter_release":"3.9.1",
                     "workspace_is_execution_host": True,
                     "core_executes_provider": False,
-                    "transport_server_required_in_provider": False
+                    "transport_server_required_in_provider": False,
+                    "diagnostics_contract":"sc.analytics-r.statistical-diagnostics-validation.v1"
                 },
             )
             session.add(provider); session.flush(); providers_created += 1
         else:
-            provider.provider_version = "2.1.0"
+            provider.provider_version = "2.2.0"
             provider.runtime = "r"
             provider.execution_host = "workspace"
             provider.contract_ref = "sc.core.analytical-runtime-provider.v1"
-            provider.metadata_json = {**(provider.metadata_json or {}), "package":"catalystanalyticsr", "core_release":"3.2.0", "workspace_adapter_release":"3.5.0", "workspace_is_execution_host":True, "core_executes_provider":False, "transport_server_required_in_provider":False}
+            provider.metadata_json = {**(provider.metadata_json or {}), "package":"catalystanalyticsr", "core_release":"3.3.0", "workspace_adapter_release":"3.9.1", "workspace_is_execution_host":True, "core_executes_provider":False, "transport_server_required_in_provider":False, "diagnostics_contract":"sc.analytics-r.statistical-diagnostics-validation.v1"}
         capabilities = [
             ("scenario_simulation","simulation",["run_catalyst_scenario","run_scenarios"],"active"),
             ("uncertainty_analysis","uncertainty",["run_uncertainty","uncertainty_summary","uncertainty_probabilities"],"active"),
@@ -552,7 +554,7 @@ def _seed_analytical_runtime_providers(database: Database) -> tuple[int, int]:
         ]
         for key, category, method_refs, provider_status in capabilities:
             existing = session.scalar(select(AnalyticalCapabilityRecord).where(AnalyticalCapabilityRecord.provider_id == provider.id, AnalyticalCapabilityRecord.capability_key == key))
-            meta={"provider":"catalystanalyticsr","provider_version":"2.1.0","provider_capability_status":provider_status}
+            meta={"provider":"catalystanalyticsr","provider_version":"2.2.0","provider_capability_status":provider_status}
             if existing is None:
                 session.add(AnalyticalCapabilityRecord(provider_id=provider.id, capability_key=key, category=category, method_refs_json=method_refs, input_types_json=["dataset","model","parameter_set"], output_types_json=["analytical_result"], status="active", visibility="public", metadata_json=meta))
                 capabilities_created += 1
