@@ -181,6 +181,7 @@ MIGRATIONS = [
     ("0099", 'Scholarly interoperability packages with governed citations, identifiers, dataset/notebook descriptors, provenance manifests, metadata/export profiles, publication bindings, validation evidence, revisions, and snapshots; Core does not mint IDs, publish, execute notebooks, or certify results.'),
     ("0100", 'Unified research runtime contracts for object types, operations, capabilities, product bindings, exchanges, invocations, results, compatibility, revisions, and snapshots; Core standardizes declared interfaces but does not execute work, auto-route, authorize access, validate results, or infer truth.'),
     ("0101", 'Integration certification with suites, product targets, conformance cases/results, exchange/trace/reconstruction checks, evidence, findings, revisions, and snapshots; Core records declared conformance but does not invoke products, certify science, rank quality, authorize, or determine truth.'),    ("0102", 'Unified research/scientific/investigation runtime sessions with project, object, product, execution, visual, validation, package, and handoff bindings plus revisions/snapshots; Core composes declared references but does not execute work, infer conclusions, authorize access, or determine truth.'),    ("0103", 'Analytical runtime provider registry, capabilities, execution requests/results, environments, artifacts, diagnostics, and reproduction references; Core governs declared contracts while Workspace/specialist runtimes execute computation.'),
+    ("0104", 'Analytical result and provenance integration with first-class result, estimate, uncertainty, lineage, ingestion-receipt, and immutable snapshot records; Core records governed outputs without executing analysis or certifying scientific validity.'),
 ]
 
 
@@ -511,7 +512,7 @@ def _seed_analytical_runtime_providers(database: Database) -> tuple[int, int]:
             provider = AnalyticalRuntimeProviderRecord(
                 provider_key="catalystanalyticsr",
                 name="Catalyst Analytics R",
-                provider_version="2.0.1",
+                provider_version="2.1.0",
                 runtime="r",
                 execution_host="workspace",
                 status="active",
@@ -521,24 +522,43 @@ def _seed_analytical_runtime_providers(database: Database) -> tuple[int, int]:
                 visibility="public",
                 metadata_json={
                     "package":"catalystanalyticsr",
-                    "core_release":"3.1.0",
+                    "core_release":"3.2.0",
+                    "workspace_adapter_release":"3.5.0",
                     "workspace_is_execution_host": True,
                     "core_executes_provider": False,
                     "transport_server_required_in_provider": False
                 },
             )
             session.add(provider); session.flush(); providers_created += 1
+        else:
+            provider.provider_version = "2.1.0"
+            provider.runtime = "r"
+            provider.execution_host = "workspace"
+            provider.contract_ref = "sc.core.analytical-runtime-provider.v1"
+            provider.metadata_json = {**(provider.metadata_json or {}), "package":"catalystanalyticsr", "core_release":"3.2.0", "workspace_adapter_release":"3.5.0", "workspace_is_execution_host":True, "core_executes_provider":False, "transport_server_required_in_provider":False}
         capabilities = [
-            ("scenario_simulation","simulation"),("uncertainty_analysis","uncertainty"),("sensitivity_analysis","uncertainty"),
-            ("econometrics","statistics"),("causal_inference","causal"),("policy_evaluation","policy"),
-            ("forecasting","predictive"),("model_validation","validation"),("climate_accounting","sustainability"),
-            ("natural_capital","sustainability"),("inclusive_wealth","sustainability"),("distribution_analysis","statistics")
+            ("scenario_simulation","simulation",["run_catalyst_scenario","run_scenarios"],"active"),
+            ("uncertainty_analysis","uncertainty",["run_uncertainty","uncertainty_summary","uncertainty_probabilities"],"active"),
+            ("sensitivity_analysis","uncertainty",["local_sensitivity","global_sensitivity","sensitivity_jacobian"],"active"),
+            ("econometrics","statistics",["fit_policy_regression","panel_regression"],"active"),
+            ("causal_inference","causal",["difference_in_differences","event_study","interrupted_time_series","synthetic_control"],"active"),
+            ("policy_evaluation","policy",["policy_evaluation_analysis","policy_effect_summary"],"active"),
+            ("forecasting","predictive",["scenario_projection"],"projection_only"),
+            ("model_validation","validation",["validate_model_fit","model_validation_analysis","solver_benchmark","stability_assessment"],"active"),
+            ("climate_accounting","sustainability",["climate_accounting"],"active"),
+            ("natural_capital","sustainability",["natural_capital_account"],"active"),
+            ("inclusive_wealth","sustainability",["inclusive_wealth_account"],"active"),
+            ("distribution_analysis","statistics",["distributional_analysis","intergenerational_analysis"],"active")
         ]
-        for key, category in capabilities:
+        for key, category, method_refs, provider_status in capabilities:
             existing = session.scalar(select(AnalyticalCapabilityRecord).where(AnalyticalCapabilityRecord.provider_id == provider.id, AnalyticalCapabilityRecord.capability_key == key))
+            meta={"provider":"catalystanalyticsr","provider_version":"2.1.0","provider_capability_status":provider_status}
             if existing is None:
-                session.add(AnalyticalCapabilityRecord(provider_id=provider.id, capability_key=key, category=category, method_refs_json=[], input_types_json=["dataset","model","parameter_set"], output_types_json=["analytical_result"], status="active", visibility="public", metadata_json={"provider":"catalystanalyticsr","provider_version":"2.0.1"}))
+                session.add(AnalyticalCapabilityRecord(provider_id=provider.id, capability_key=key, category=category, method_refs_json=method_refs, input_types_json=["dataset","model","parameter_set"], output_types_json=["analytical_result"], status="active", visibility="public", metadata_json=meta))
                 capabilities_created += 1
+            else:
+                existing.method_refs_json=method_refs
+                existing.metadata_json={**(existing.metadata_json or {}), **meta}
         session.commit()
     return providers_created, capabilities_created
 

@@ -158,3 +158,6 @@ Platform Core now exposes a reference-first Unified Research, Scientific Computi
 
 ## v3.1.0 analytical runtime provider milestone
 Platform Core v3.1.0 introduces a runtime-neutral analytical provider contract. Core registers provider capabilities, analytical execution requests/results, runtime-environment provenance, artifacts, diagnostics, and reproduction references without executing specialist computation. Catalyst Analytics R 2.0.1 is seeded as the first provider (`runtime=r`, `execution_host=workspace`). Workspace remains responsible for execution isolation, resource policy, job state, and runtime invocation.
+
+## Platform Core v3.2.0 — Analytical Result & Provenance Integration
+Core can now ingest `sc.core.analytical-runtime-provider.v1` result envelopes from governed execution hosts such as Workspace, preserve provider/runtime/environment/execution lineage, create first-class estimate and uncertainty objects, retain diagnostic/artifact/reproduction references, and freeze immutable result snapshots. Core records and relates analytical evidence; it does not execute statistical code or certify scientific validity.

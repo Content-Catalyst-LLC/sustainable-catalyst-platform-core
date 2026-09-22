@@ -13599,3 +13599,127 @@ class AnalyticalReproductionReferenceRecord(Base):
     visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
     metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+# v3.2.0 Analytical Result & Provenance Integration
+class AnalyticalResultObjectRecord(Base):
+    __tablename__ = "analytical_result_objects_v320"
+    __table_args__ = (
+        UniqueConstraint("result_ref", name="uq_analytical_result_object_v320_ref"),
+        Index("ix_analytical_result_v320_request", "request_id", "created_at"),
+        Index("ix_analytical_result_v320_external_execution", "external_execution_ref"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    result_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    request_id: Mapped[str] = mapped_column(ForeignKey("analytical_execution_requests_v310.id", ondelete="CASCADE"), nullable=False)
+    provider_id: Mapped[str] = mapped_column(ForeignKey("analytical_runtime_providers_v310.id", ondelete="RESTRICT"), nullable=False)
+    provider_version: Mapped[str] = mapped_column(String(80), nullable=False)
+    core_contract: Mapped[str] = mapped_column(String(255), nullable=False, default="sc.core.analytical-runtime-provider.v1")
+    analysis_type: Mapped[str] = mapped_column(String(180), nullable=False)
+    method_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    external_execution_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    workspace_receipt_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    environment_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    status: Mapped[str] = mapped_column(String(80), nullable=False, default="recorded")
+    output_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    estimate_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    uncertainty_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    diagnostic_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    artifact_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    warnings_json: Mapped[list] = mapped_column(JSON, default=list)
+    errors_json: Mapped[list] = mapped_column(JSON, default=list)
+    native_summary_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    result_fingerprint: Mapped[str] = mapped_column(String(64), nullable=False)
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
+    completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class AnalyticalEstimateRecord(Base):
+    __tablename__ = "analytical_estimates_v320"
+    __table_args__ = (
+        UniqueConstraint("estimate_ref", name="uq_analytical_estimate_v320_ref"),
+        Index("ix_analytical_estimate_v320_result", "result_id", "created_at"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    result_id: Mapped[str] = mapped_column(ForeignKey("analytical_result_objects_v320.id", ondelete="CASCADE"), nullable=False)
+    estimate_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    estimate_type: Mapped[str] = mapped_column(String(180), nullable=False)
+    name: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    value_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    unit: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    uncertainty_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    status: Mapped[str] = mapped_column(String(80), nullable=False, default="recorded")
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class AnalyticalUncertaintyObjectRecord(Base):
+    __tablename__ = "analytical_uncertainty_objects_v320"
+    __table_args__ = (
+        UniqueConstraint("uncertainty_ref", name="uq_analytical_uncertainty_v320_ref"),
+        Index("ix_analytical_uncertainty_v320_result", "result_id", "created_at"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    result_id: Mapped[str] = mapped_column(ForeignKey("analytical_result_objects_v320.id", ondelete="CASCADE"), nullable=False)
+    uncertainty_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    uncertainty_type: Mapped[str] = mapped_column(String(180), nullable=False)
+    distribution_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    level: Mapped[float | None] = mapped_column(Float, nullable=True)
+    summary_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    parameters_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    status: Mapped[str] = mapped_column(String(80), nullable=False, default="recorded")
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class AnalyticalLineageBindingRecord(Base):
+    __tablename__ = "analytical_lineage_bindings_v320"
+    __table_args__ = (
+        UniqueConstraint("result_id", "binding_type", "source_ref", "target_ref", name="uq_analytical_lineage_v320_edge"),
+        Index("ix_analytical_lineage_v320_result", "result_id", "binding_type"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    result_id: Mapped[str] = mapped_column(ForeignKey("analytical_result_objects_v320.id", ondelete="CASCADE"), nullable=False)
+    binding_type: Mapped[str] = mapped_column(String(120), nullable=False)
+    source_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    target_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    content_hash: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class AnalyticalResultIngestionReceiptRecord(Base):
+    __tablename__ = "analytical_result_ingestion_receipts_v320"
+    __table_args__ = (
+        UniqueConstraint("receipt_key", name="uq_analytical_ingestion_receipt_v320_key"),
+        Index("ix_analytical_ingestion_v320_result", "result_id", "created_at"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    receipt_key: Mapped[str] = mapped_column(String(255), nullable=False)
+    result_id: Mapped[str] = mapped_column(ForeignKey("analytical_result_objects_v320.id", ondelete="CASCADE"), nullable=False)
+    workspace_receipt_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    external_execution_ref: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    payload_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    outcome: Mapped[str] = mapped_column(String(80), nullable=False, default="recorded")
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
+    metadata_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class AnalyticalResultSnapshotRecord(Base):
+    __tablename__ = "analytical_result_snapshots_v320"
+    __table_args__ = (
+        UniqueConstraint("snapshot_ref", name="uq_analytical_result_snapshot_v320_ref"),
+        Index("ix_analytical_result_snapshot_v320_result", "result_id", "created_at"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    snapshot_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    result_id: Mapped[str] = mapped_column(ForeignKey("analytical_result_objects_v320.id", ondelete="CASCADE"), nullable=False)
+    snapshot_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    previous_snapshot_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    state_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+

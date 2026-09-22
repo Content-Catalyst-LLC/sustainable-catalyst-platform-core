@@ -1,5 +1,5 @@
 {
-  "release": "3.1.0",
+  "release": "3.2.0",
   "files": [
     {
       "path": ".github/workflows/test.yml",
@@ -232,9 +232,14 @@
       "size": 1027
     },
     {
+      "path": "BACKEND_PACKAGE_V3200.md",
+      "sha256": "39e4b788a148da680dfa5d3f62708eada2b2456ed1971699085fd1d3cd950b89",
+      "size": 209
+    },
+    {
       "path": "CHANGELOG.md",
-      "sha256": "535943c55fc28d78ce0e65d46cb23d3a491eaf7e3b8bf18fb84dfb024afc7858",
-      "size": 41158
+      "sha256": "35d9471ea529098ee5b17456d1f441cc765882b9854f739182413f1a47295233",
+      "size": 41774
     },
     {
       "path": "DEPLOY_PLATFORM_CORE_V2300_CONTABO.sh",
@@ -605,6 +610,11 @@
       "path": "DEPLOY_PLATFORM_CORE_V3100_CONTABO.sh",
       "sha256": "3940a3328e8835d157301abc8b32711a5c952bf489204fd8c6f0b11d5b050616",
       "size": 4515
+    },
+    {
+      "path": "DEPLOY_PLATFORM_CORE_V3200_CONTABO.sh",
+      "sha256": "11d864f70490fdb52a2af6e3f8e6853b57ea0f943013b01375c0f13025c242fb",
+      "size": 4505
     },
     {
       "path": "LICENSE",
@@ -2132,6 +2142,21 @@
       "size": 980
     },
     {
+      "path": "PLATFORM_CORE_V3200_ANALYTICAL_RESULT_PROVENANCE_AUDIT.md",
+      "sha256": "2cf2efe678852c1db1999d6c0083f05bf6d31c6aca265e005b7010b893fad464",
+      "size": 627
+    },
+    {
+      "path": "PLATFORM_CORE_V3200_INSTALL_AND_TEST.md",
+      "sha256": "f4e92a56c8259b5f07caaf5810d648a15822ad48d6f65dbae552b7f942eef565",
+      "size": 361
+    },
+    {
+      "path": "PLATFORM_CORE_V3200_TERMINAL_COMMANDS.txt",
+      "sha256": "bcb2b005b81e2732936d398bb34fa1d39a5870fc0c84bf83cf1968305af48802",
+      "size": 866
+    },
+    {
       "path": "PUSH_PLATFORM_CORE_V2100_FINAL.sh",
       "sha256": "975d09509f4e5f7d2f1d5ba3c482f3603f48f2b40cc45437317fa133bbf09389",
       "size": 7337
@@ -2647,9 +2672,14 @@
       "size": 2405
     },
     {
+      "path": "PUSH_PLATFORM_CORE_V3200_FINAL.sh",
+      "sha256": "03e5ee23682bc138f8559b82b6cba1d738041c305edbd57288b846929dc0b93d",
+      "size": 2460
+    },
+    {
       "path": "README.md",
-      "sha256": "6877da5fe77e1b5df3035e17d9f4a669be968152c2a9cd86b82e4440effbe308",
-      "size": 13352
+      "sha256": "bf16b22f48ffd9bb440e27a920392a00370db49847d9a8493c39081e262d5561",
+      "size": 13867
     },
     {
       "path": "RELEASE_NOTES_V2100.md",
@@ -3192,6 +3222,11 @@
       "size": 890
     },
     {
+      "path": "RELEASE_NOTES_V3200.md",
+      "sha256": "4a11ff88a0a4113169c4483267f8f64adef041ef2726235499a35afd69ba15c3",
+      "size": 1447
+    },
+    {
       "path": "TEST_RESULTS.txt",
       "sha256": "f7dc80cc041621594389e5634dd9655fadac96d6ee884f828a0ff6c5d88b6e0c",
       "size": 2287
@@ -3258,8 +3293,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "sha256": "3e383deaae0a9c00767deb93483fb90059c08d87256ad08418aebcf2ccce00ef",
-      "size": 37240
+      "sha256": "8edb1a536437c186305fb3090c4ceb55934dc607d755adfe5d09c9f18a7278d7",
+      "size": 37440
     },
     {
       "path": "backend/app/connectors/__init__.py",
@@ -3303,18 +3338,18 @@
     },
     {
       "path": "backend/app/main.py",
-      "sha256": "3f5ba6e0beb40190059c7ce77e571efafb0b5db1b603ad096315cf03f81b1b3f",
-      "size": 24511
+      "sha256": "4b1733413298d6097288b0e6de74decf6d11493728f4a961423584e976308d3d",
+      "size": 24729
     },
     {
       "path": "backend/app/migrations.py",
-      "sha256": "bcfe4a2905f91e72de5e4764a0c532d211cd8b8fdd596c3f5b19ed0faf651bed",
-      "size": 90539
+      "sha256": "86be1b215b947b4547f3f4e51372ff33eae3f670ed313f0616c3ff7535974ef8",
+      "size": 92465
     },
     {
       "path": "backend/app/models.py",
-      "sha256": "0e4524763ed750bd9b3988bb4c3a356d7f1f9c6320384823932907f2bda3ecef",
-      "size": 1004646
+      "sha256": "d658122d830b1f04ccd5f4ff480f8c9ceaabc50e367442e66d5a0337f50bf6f1",
+      "size": 1013455
     },
     {
       "path": "backend/app/predicate_catalog.py",
@@ -3335,6 +3370,11 @@
       "path": "backend/app/routers/__init__.py",
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
       "size": 0
+    },
+    {
+      "path": "backend/app/routers/analytical_result_provenance.py",
+      "sha256": "100adb29739ebc36879f267e846a65b073849e7b854a154a5661da62c125c084",
+      "size": 3758
     },
     {
       "path": "backend/app/routers/analytical_runtime_provider.py",
@@ -3857,8 +3897,13 @@
       "size": 0
     },
     {
+      "path": "backend/app/services/analytical_result_provenance.py",
+      "sha256": "d17c49cb46b4f9bd92293104838163f68607c9a6698ee7bceb55a1ccf5dabaca",
+      "size": 19040
+    },
+    {
       "path": "backend/app/services/analytical_runtime_provider.py",
-      "sha256": "9b7f27288fc93bfd757960ea0bc8fac1c5e078878da7cf59a4a36ae056224109",
+      "sha256": "73ef3aa53be09a86eb0d0c86eafda39e01f2816950c84e79b70249b809b7b1ea",
       "size": 10321
     },
     {
@@ -5183,12 +5228,12 @@
     },
     {
       "path": "backend/public_sdk/javascript/index.mjs",
-      "sha256": "65a24c2e6a4cc29c58a7f49f33e6c009f7cec44dd0ea66d5cca9df90ac9d47c3",
-      "size": 42675
+      "sha256": "786f452af95066a2e33df941071b2d3a067182a4835cfee8f712f8b3cdbf793b",
+      "size": 43173
     },
     {
       "path": "backend/public_sdk/javascript/package.json",
-      "sha256": "84171c9d44b6df8ac75bb000f725b9a74613f8ddf6e603bde3d4eae50a50e0a7",
+      "sha256": "b5776339564e517c00d3ae6af31f708b1be7f39da556500d20e16db33c49aed5",
       "size": 215
     },
     {
@@ -5208,7 +5253,7 @@
     },
     {
       "path": "backend/public_sdk/python/pyproject.toml",
-      "sha256": "fed35d1609c48542d255522509b11062440229a33d20dc5606f4a06d6de057f7",
+      "sha256": "4946577cab7c161643c3d01b01b1391e2ae5f133a54d3d38615aeb081292dd41",
       "size": 372
     },
     {
@@ -5218,8 +5263,8 @@
     },
     {
       "path": "backend/public_sdk/python/sc_platform_core_public/client.py",
-      "sha256": "24ab3a36510ab532ac58128f7b0f5614ebf148c6296930437aa28ed07456035e",
-      "size": 55877
+      "sha256": "138cb1f2ef896c138cc6cfe352fec62c63d21d5be421c2d292a8ff2cf14cfa15",
+      "size": 56518
     },
     {
       "path": "backend/public_sdk/v260/javascript/README.md",
@@ -5512,6 +5557,11 @@
       "size": 1287
     },
     {
+      "path": "backend/scripts/run_v3200_release_tests.py",
+      "sha256": "5871a172ed72a3a3180e888719af2500af223df9f2ef5b41221afad5469af036",
+      "size": 864
+    },
+    {
       "path": "backend/scripts/seed_registry.py",
       "sha256": "8a9c373f43fab3d73b3addd20230401632fd34c52628427e7ead87f7dc8b768d",
       "size": 1605
@@ -5522,9 +5572,14 @@
       "size": 2433
     },
     {
+      "path": "backend/scripts/validate_analytical_result_provenance.py",
+      "sha256": "a3461744e743d9effe9a14500e982d8378e88a7272042bb6a1feb560b6338f3d",
+      "size": 3682
+    },
+    {
       "path": "backend/scripts/validate_analytical_runtime_provider.py",
-      "sha256": "5c9f6ef309f8d8cf230d6bdf191b0c6b96a1a09d389e52d41abb6183b67c721f",
-      "size": 1230
+      "sha256": "398df68385a359889a7130462e92c098e891f50ee474244701213a76580b819c",
+      "size": 1254
     },
     {
       "path": "backend/scripts/validate_analytical_visualization_grammar.py",
@@ -5997,8 +6052,13 @@
       "size": 914
     },
     {
+      "path": "backend/tests/test_analytical_result_provenance_v3200.py",
+      "sha256": "69d56435bda7d3ae10eea77dd6a74a8d29602dd68bb2e5195dfe87f952ef0832",
+      "size": 6479
+    },
+    {
       "path": "backend/tests/test_analytical_runtime_provider_v3100.py",
-      "sha256": "9ece8991d86cc41d294de4f63fb22e33a860e045741f28bba9427619e6ce5bc6",
+      "sha256": "92180fc099a0ffc18a3d0ac9cec07eb65b220e242e7304b61b7ed28ce04c6daf",
       "size": 3298
     },
     {
@@ -8542,6 +8602,11 @@
       "size": 318
     },
     {
+      "path": "platform-core-v3200.env.example",
+      "sha256": "dac5bece9c865ba49fd346b61ffc1713069b009b8e93bc2051fbf93d23fac9ca",
+      "size": 190
+    },
+    {
       "path": "render.yaml",
       "sha256": "c39b796604f69e75453924c81dfcba7eb41ab0984ab745d6ffe57c97a7bafbc0",
       "size": 12027
@@ -8570,6 +8635,11 @@
       "path": "schemas/alert-rule-v1.schema.json",
       "sha256": "cae297ef9972211497f4c0969e238d011cc16318df8a3761d8bab5d81568b4ae",
       "size": 563
+    },
+    {
+      "path": "schemas/analytical-result-provenance-v1.schema.json",
+      "sha256": "9885f68053148506fcc69ab9e6d928f7c24ba2732988cf980023fa950c74e289",
+      "size": 3155
     },
     {
       "path": "schemas/analytical-runtime-provider-v1.schema.json",
@@ -10207,6 +10277,11 @@
       "size": 713
     },
     {
+      "path": "scripts/build_v3200_manifest.py",
+      "sha256": "8d24bc58e77700898d1297322e6b713df1816e05ca9e5f54ab4557d02f6db324",
+      "size": 713
+    },
+    {
       "path": "scripts/scan_push_safe_secrets.py",
       "sha256": "a8e4c9275f8cae71fa2be43d236a45891690f91c4efbc1e1aff3a28827d3d134",
       "size": 3412
@@ -10722,19 +10797,24 @@
       "size": 2969
     },
     {
+      "path": "scripts/validate_v3200_release.py",
+      "sha256": "18374d8b7b2035a223672ecc9a9fb41af868609bfb2a4d840cbf1939c311f7ae",
+      "size": 2865
+    },
+    {
       "path": "wordpress-plugin/sustainable-catalyst-platform-core/assets/platform-core.css",
       "sha256": "617e78d421fa4e7b9be5c414b806e89345b3f4bca5b93d2e2790ed88a48475ba",
       "size": 1991
     },
     {
       "path": "wordpress-plugin/sustainable-catalyst-platform-core/readme.txt",
-      "sha256": "4f240cabab9fc7e54d7c1f2914d32c17646e10204177f55711c20cfb05d8f681",
-      "size": 17297
+      "sha256": "61b1a97a0216d22e80489c350f0c12d9bc2cb93348facc76513a9f802afa49c0",
+      "size": 17458
     },
     {
       "path": "wordpress-plugin/sustainable-catalyst-platform-core/sustainable-catalyst-platform-core.php",
-      "sha256": "9ee136997a23cdf9ac4f0bf7804b6164a9ef8d9e160ca1c861f7b5b6fec21757",
-      "size": 134091
+      "sha256": "facec5cd322a3165b197918b087aeadeb35bc8012172cf579945bb8c6f34cf40",
+      "size": 135762
     }
   ]
 }

@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name: Sustainable Catalyst Platform Core
- * Description: WordPress connector for Sustainable Catalyst Platform Core registry, graph, evidence, developer, gateway, free live-data, international-law, scientific-data, official-statistics, geospatial, time-series, STAC, map-layer, streaming, alerts, source-reliability, and operational-facility, humanitarian-access, essential-services, and country-evidence federation and reconciliation, and Earth/Ocean/Space scientific-service routing, cross-product exchange, distributed scale-control services, and governance/access/audit, production-certification/recovery, and observability/SLO production-operations services, plus incident-response, change-control, rollback-coordination, continuity, backup-verification, disaster-recovery, and multi-region resilience/failover-coordination, and data-lifecycle/archival-integrity/preservation services, plus Federated Core trusted-node exchange services and capacity forecasting/resource-governance services, plus identity/credential/cryptographic-key lifecycle governance, distributed workload governance, and scientific object storage/processing adapter services, research object/model services, renderer-neutral visual reasoning object services, and visualization specification/renderer registry services, and governed System Maps and Flow Maps services, plus the renderer-neutral visual reasoning runtime/scene graph.
- * Version: 3.1.0
+ * Description: WordPress connector for Sustainable Catalyst Platform Core registry, graph, evidence, developer, gateway, free live-data, international-law, scientific-data, official-statistics, geospatial, time-series, STAC, map-layer, streaming, alerts, source-reliability, and operational-facility, humanitarian-access, essential-services, and country-evidence federation and reconciliation, and Earth/Ocean/Space scientific-service routing, cross-product exchange, distributed scale-control services, and governance/access/audit, production-certification/recovery, and observability/SLO production-operations services, plus incident-response, change-control, rollback-coordination, continuity, backup-verification, disaster-recovery, and multi-region resilience/failover-coordination, and data-lifecycle/archival-integrity/preservation services, plus Federated Core trusted-node exchange services and capacity forecasting/resource-governance services, plus identity/credential/cryptographic-key lifecycle governance, distributed workload governance, and scientific object storage/processing adapter services, research object/model services, renderer-neutral visual reasoning object services, and visualization specification/renderer registry services, and governed System Maps and Flow Maps services, plus the renderer-neutral visual reasoning runtime/scene graph and analytical result/provenance integration.
+ * Version: 3.2.0
  * Author: Content Catalyst LLC
  * License: MIT
  */
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('SCPC_VERSION', '3.1.0');
+define('SCPC_VERSION', '3.2.0');
 define('SCPC_OPTION_BACKEND_URL', 'scpc_backend_url');
 define('SCPC_OPTION_READ_KEY', 'scpc_read_key');
 
@@ -118,6 +118,7 @@ function scpc_render_settings_page() {
         <code>[sc_platform_core_uncertainty_compute_status]</code><br />
         <code>[sc_platform_core_causal_systems_status]</code><br />
         <code>[sc_platform_core_analytical_runtime_status]</code><br />
+        <code>[sc_platform_core_analytical_result_status]</code><br />
         <code>[sc_platform_core_entity id="sc:product:workbench"]</code><br />
         <code>[sc_platform_core_relationships id="sc:product:research-librarian"]</code><br />
         <code>[sc_knowledge_explorer]</code><br />
@@ -1909,3 +1910,24 @@ function sc_platform_core_research_integration_certification_status() {
     return '<div class="sc-core-status"><strong>Platform Research Integration Certification</strong><br>Platform Core ' . esc_html($d['release'] ?? '2.97.0') . ' · ' . esc_html($c['suites'] ?? 0) . ' suites · ' . esc_html($c['runs'] ?? 0) . ' runs · ' . esc_html($c['case_results'] ?? 0) . ' case results · runtime-contract conformance evidence only; scientific validity, product quality, authorization, ranking, and truth remain outside Core</div>';
 }
 add_shortcode('sc_platform_core_research_integration_certification_status', 'sc_platform_core_research_integration_certification_status');
+
+function scpc_analytical_result_status_shortcode() {
+    $ready = scpc_api_get('/v1/analytics/results/readiness');
+    if (is_wp_error($ready)) {
+        return '<div class="scpc-card scpc-error"><strong>Analytical result provenance unavailable</strong><p>' . esc_html($ready->get_error_message()) . '</p></div>';
+    }
+    $version = isset($ready['catalyst_analytics_r_version']) ? sanitize_text_field($ready['catalyst_analytics_r_version']) : 'unknown';
+    $counts = isset($ready['counts']) && is_array($ready['counts']) ? $ready['counts'] : [];
+    $results = isset($counts['results']) ? intval($counts['results']) : 0;
+    $snapshots = isset($counts['snapshots']) ? intval($counts['snapshots']) : 0;
+    ob_start(); ?>
+    <section class="scpc-card">
+        <p class="scpc-kicker">Analytical Result &amp; Provenance Integration</p>
+        <h3>Platform Core v3.2 analytical evidence layer</h3>
+        <p><strong>Status:</strong> Online · <strong>Catalyst Analytics R:</strong> <?php echo esc_html($version); ?> · <strong>Results:</strong> <?php echo esc_html(number_format_i18n($results)); ?> · <strong>Snapshots:</strong> <?php echo esc_html(number_format_i18n($snapshots)); ?></p>
+        <p class="scpc-meta">Core records analytical results, provenance, uncertainty, diagnostics, and reproducibility references. Computation remains in governed specialist runtimes such as Workspace.</p>
+    </section>
+    <?php return ob_get_clean();
+}
+add_shortcode('sc_platform_core_analytical_result_status', 'scpc_analytical_result_status_shortcode');
+

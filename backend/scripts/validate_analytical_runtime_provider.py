@@ -12,10 +12,10 @@ with tempfile.TemporaryDirectory() as d:
     with db.session_factory() as s:
         st=migration_status(db); r=svc.readiness(s); p=svc.provider_bundle(s,"catalystanalyticsr",True)
         assert "0103" in st["applied"] and st["pending"]==[],st
-        assert r["release"]=="3.1.0" and r["catalyst_analytics_r_version"]=="2.0.1",r
+        assert r["release"]=="3.2.0" and r["catalyst_analytics_r_version"]=="2.1.0",r
         assert p["provider"]["runtime"]=="r" and p["execution_host"]=="workspace",p
         assert len(p["capabilities"])>=12,p
         req=svc.create_request(s,{"request_key":"validator","provider_ref":"catalystanalyticsr","analysis_type":"forecasting","input_refs":["dataset:test"]})
         assert req["runtime"]=="r" and req["execution_host"]=="workspace"
         assert r["execute_r_by_core"] is False and r["execute_analysis_by_core"] is False
-print("PASS - Platform Core v3.1.0 Analytical Runtime Provider Contract")
+print("PASS - Platform Core v3.1-compatible Analytical Runtime Provider Contract on Core v3.2.0")

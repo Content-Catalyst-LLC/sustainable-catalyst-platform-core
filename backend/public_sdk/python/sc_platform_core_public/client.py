@@ -1112,3 +1112,11 @@ def _v310_analytical_runtime_request_bundle(self, request_ref: str): return self
 PublicApiClient.analytical_runtime_providers=_v310_analytical_runtime_providers
 PublicApiClient.analytical_runtime_provider=_v310_analytical_runtime_provider
 PublicApiClient.analytical_runtime_request_bundle=_v310_analytical_runtime_request_bundle
+
+# v3.2.0 Analytical Result & Provenance Integration
+def _v320_analytical_result_readiness(self): return self.request("GET", "/analytics/results/readiness")
+def _v320_analytical_result_bundle(self, result_ref: str): return self.request("GET", f"/analytics/results/{result_ref}/bundle")
+def _v320_analytical_result_lineage(self, result_ref: str): return self.request("GET", f"/analytics/results/{result_ref}/lineage")
+PublicApiClient.analytical_result_readiness=_v320_analytical_result_readiness
+PublicApiClient.analytical_result_bundle=_v320_analytical_result_bundle
+PublicApiClient.analytical_result_lineage=_v320_analytical_result_lineage

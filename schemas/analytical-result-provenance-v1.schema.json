@@ -1,0 +1,160 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/analytical-result-provenance-v1.json",
+  "title": "Sustainable Catalyst Platform Core Analytical Result & Provenance Envelope",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "schema_version",
+    "result_type",
+    "core_contract",
+    "request_ref",
+    "result_ref",
+    "provider_ref",
+    "provider_version",
+    "runtime",
+    "execution_host",
+    "analysis_type",
+    "status",
+    "output_refs",
+    "estimate_refs",
+    "uncertainty_refs",
+    "diagnostic_refs",
+    "artifact_refs",
+    "provenance",
+    "boundary"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "result_type": {
+      "type": "string",
+      "minLength": 1
+    },
+    "core_contract": {
+      "const": "sc.core.analytical-runtime-provider.v1"
+    },
+    "request_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "result_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "provider_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "provider_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "runtime": {
+      "type": "string",
+      "minLength": 1
+    },
+    "execution_host": {
+      "type": "string",
+      "minLength": 1
+    },
+    "analysis_type": {
+      "type": "string",
+      "minLength": 1
+    },
+    "method_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "external_execution_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "workspace_receipt_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "environment_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "status": {
+      "enum": [
+        "recorded",
+        "completed",
+        "failed"
+      ]
+    },
+    "output_refs": {
+      "$ref": "#/$defs/refs"
+    },
+    "estimate_refs": {
+      "$ref": "#/$defs/refs"
+    },
+    "uncertainty_refs": {
+      "$ref": "#/$defs/refs"
+    },
+    "diagnostic_refs": {
+      "$ref": "#/$defs/refs"
+    },
+    "artifact_refs": {
+      "$ref": "#/$defs/refs"
+    },
+    "warnings": {
+      "$ref": "#/$defs/refs"
+    },
+    "errors": {
+      "$ref": "#/$defs/refs"
+    },
+    "provenance": {
+      "type": "object"
+    },
+    "native_result": {},
+    "completed_at": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "boundary": {
+      "type": "object",
+      "required": [
+        "core_records_result_but_does_not_execute",
+        "workspace_execution_required",
+        "human_review_required"
+      ],
+      "properties": {
+        "core_records_result_but_does_not_execute": {
+          "const": true
+        },
+        "workspace_execution_required": {
+          "const": true
+        },
+        "human_review_required": {
+          "const": true
+        },
+        "result_does_not_certify_scientific_validity": {
+          "type": "boolean"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  }
+}

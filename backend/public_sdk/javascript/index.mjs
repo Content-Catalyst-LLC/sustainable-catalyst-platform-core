@@ -746,3 +746,8 @@ export async function unifiedResearchRuntimeBundle(client, sessionId) { return c
 export async function analyticalRuntimeProviders(client) { return client.request("GET", "/analytics/runtime-providers/providers"); }
 export async function analyticalRuntimeProvider(client, providerRef) { return client.request("GET", `/analytics/runtime-providers/providers/${encodeURIComponent(providerRef)}`); }
 export async function analyticalRuntimeRequestBundle(client, requestRef) { return client.request("GET", `/analytics/runtime-providers/requests/${encodeURIComponent(requestRef)}/bundle`); }
+
+// v3.2.0 Analytical Result & Provenance Integration
+export async function analyticalResultReadiness(client) { return client.request("GET", "/analytics/results/readiness"); }
+export async function analyticalResultBundle(client, resultRef) { return client.request("GET", `/analytics/results/${encodeURIComponent(resultRef)}/bundle`); }
+export async function analyticalResultLineage(client, resultRef) { return client.request("GET", `/analytics/results/${encodeURIComponent(resultRef)}/lineage`); }

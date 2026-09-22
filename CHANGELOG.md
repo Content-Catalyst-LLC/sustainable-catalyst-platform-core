@@ -1,3 +1,11 @@
+# v3.2.0 — Analytical Result & Provenance Integration
+
+- Added first-class analytical result, estimate, uncertainty, lineage, ingestion receipt, and immutable snapshot records.
+- Added governed ingestion of Catalyst Analytics R v2.1.0 Core result envelopes from Workspace v3.5.0.
+- Added deterministic payload/provenance fingerprints and idempotent replay protection.
+- Promoted the seeded Catalyst Analytics R provider registry baseline to 2.1.0 without changing migration 0103.
+- Added migration 0104 and public-safe result bundle/lineage APIs, SDK methods, WordPress status surface, and deployment validation.
+
 ## v2.95.0 — Scholarly Interoperability & Research Packaging
 - Added migration 0099 and a consolidated scholarly interoperability/package layer.
 - Added package members, citations, persistent identifier records, dataset/notebook descriptors, provenance manifests, metadata/export profiles, publication bindings, external validation evidence, revisions, and snapshots.
