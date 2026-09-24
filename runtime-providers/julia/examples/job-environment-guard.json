@@ -1,0 +1,9 @@
+{
+  "job_id": "julia-v020-environment-guard",
+  "operation": "sum",
+  "inputs": {"values": [10, 20, 30]},
+  "expected_environment_fingerprint_sha256": "REPLACE_WITH_CURRENT_ENVIRONMENT_FINGERPRINT",
+  "provenance": {
+    "purpose": "demonstrate deterministic environment guard"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/julia-environment-v1.schema.json",
+  "title": "Catalyst Julia Runtime Environment v1",
+  "type": "object",
+  "required": ["schema_version", "identity", "project", "manifest", "dependencies", "fingerprints", "reproducibility"],
+  "properties": {
+    "schema_version": {"const": "sc.environment.v1"},
+    "identity": {"type": "object"},
+    "project": {"type": "object"},
+    "manifest": {"type": "object"},
+    "dependencies": {"type": "array"},
+    "platform": {"type": "object"},
+    "julia": {"type": "object"},
+    "environment_variables": {"type": "object"},
+    "fingerprints": {
+      "type": "object",
+      "required": ["environment_sha256", "host_sha256"]
+    },
+    "reproducibility": {"type": "object"}
+  }
+}

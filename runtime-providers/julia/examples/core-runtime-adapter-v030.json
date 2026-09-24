@@ -1,0 +1,86 @@
+{
+  "adapter_id": "adapter:catalyst-julia-runtime",
+  "adapter_contract": "sc.core.runtime-adapter.v1",
+  "runtime": {
+    "runtime_id": "catalyst-julia-runtime",
+    "runtime_kind": "language",
+    "language": "julia",
+    "implementation": "Julia",
+    "runtime_version": "1.13.0",
+    "provider_version": "0.3.0",
+    "service_name": "catalyst-julia-runtime",
+    "contract_versions": [
+      "sc.core.computational-runtime-object.v1",
+      "sc.core.runtime-adapter.v1",
+      "sc.execution.v1",
+      "sc.environment.v1"
+    ],
+    "status": "active",
+    "execution_host": "contabo-vps"
+  },
+  "provider_contracts": [
+    "sc.execution.v1",
+    "sc.environment.v1"
+  ],
+  "transport": "http",
+  "invocation_mode": "governed-service",
+  "service_ref": "catalyst-julia-runtime",
+  "methods": [
+    {
+      "name": "health",
+      "required": true,
+      "idempotent": true
+    },
+    {
+      "name": "version",
+      "required": true,
+      "idempotent": true
+    },
+    {
+      "name": "capabilities",
+      "required": true,
+      "idempotent": true
+    },
+    {
+      "name": "prepare",
+      "required": true,
+      "idempotent": true
+    },
+    {
+      "name": "execute",
+      "required": true,
+      "idempotent": false
+    },
+    {
+      "name": "cancel",
+      "required": true,
+      "idempotent": true
+    },
+    {
+      "name": "inspect",
+      "required": true,
+      "idempotent": true
+    },
+    {
+      "name": "collect_results",
+      "required": true,
+      "idempotent": true
+    },
+    {
+      "name": "collect_artifacts",
+      "required": true,
+      "idempotent": true
+    },
+    {
+      "name": "diagnose",
+      "required": true,
+      "idempotent": true
+    }
+  ],
+  "status": "registered",
+  "metadata": {
+    "reference_adapter": true,
+    "core_executes_runtime_directly": false,
+    "execution_mode": "synchronous-governed-operation"
+  }
+}

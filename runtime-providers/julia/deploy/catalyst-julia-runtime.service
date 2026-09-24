@@ -1,0 +1,23 @@
+[Unit]
+Description=Sustainable Catalyst Julia Runtime v0.3.0
+After=network.target
+
+[Service]
+Type=simple
+User=catalystadmin
+Group=catalystadmin
+WorkingDirectory=/opt/sustainable-catalyst/julia-runtime/runtime
+Environment=SC_JULIA_HOST=127.0.0.1
+Environment=SC_JULIA_PORT=18093
+Environment=JULIA_DEPOT_PATH=/opt/sustainable-catalyst/julia-runtime/.julia-depot
+ExecStart=/usr/local/bin/julia --project=/opt/sustainable-catalyst/julia-runtime/runtime /opt/sustainable-catalyst/julia-runtime/runtime/bin/server.jl
+Restart=on-failure
+RestartSec=3
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/sustainable-catalyst/julia-runtime
+
+[Install]
+WantedBy=multi-user.target

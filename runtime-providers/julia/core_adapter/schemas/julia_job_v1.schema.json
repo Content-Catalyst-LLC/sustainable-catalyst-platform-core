@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/julia-job-v1.schema.json",
+  "title": "Catalyst Julia Runtime Job v1",
+  "type": "object",
+  "required": ["operation"],
+  "properties": {
+    "job_id": {"type": "string", "minLength": 1},
+    "operation": {"enum": ["identity", "sum", "mean", "matrix_multiply"]},
+    "inputs": {"type": "object"},
+    "parameters": {"type": "object"},
+    "provenance": {"type": "object"},
+    "expected_environment_fingerprint_sha256": {
+      "type": "string",
+      "pattern": "^[a-fA-F0-9]{64}$"
+    }
+  },
+  "additionalProperties": true
+}

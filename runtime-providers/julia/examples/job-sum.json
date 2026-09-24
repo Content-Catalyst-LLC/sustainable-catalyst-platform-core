@@ -1,0 +1,16 @@
+{
+  "job_id": "example-sum",
+  "operation": "sum",
+  "inputs": {
+    "values": [
+      1,
+      2,
+      3,
+      4
+    ]
+  },
+  "parameters": {},
+  "provenance": {
+    "research_object_id": "example:dataset:1"
+  }
+}

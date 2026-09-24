@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/julia-result-v1.schema.json",
+  "title": "Catalyst Julia Runtime Result v1",
+  "type": "object",
+  "required": [
+    "execution_id",
+    "job_id",
+    "status",
+    "runtime",
+    "input_hash_sha256",
+    "environment_fingerprint_sha256",
+    "result"
+  ],
+  "properties": {
+    "execution_id": {"type": "string"},
+    "job_id": {"type": "string"},
+    "status": {"const": "succeeded"},
+    "runtime": {"type": "object"},
+    "input_hash_sha256": {"type": "string", "pattern": "^[a-fA-F0-9]{64}$"},
+    "environment_fingerprint_sha256": {"type": "string", "pattern": "^[a-fA-F0-9]{64}$"},
+    "environment_lock_state": {"enum": ["locked", "unlocked"]},
+    "provenance": {"type": "object"},
+    "result": {}
+  },
+  "additionalProperties": true
+}
