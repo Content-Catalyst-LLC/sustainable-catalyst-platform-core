@@ -321,7 +321,7 @@ def contract_document() -> dict[str, Any]:
         },
         "reference_runtime": {
             "runtime_id": "catalyst-julia-runtime",
-            "provider_version": "0.2.0",
+            "provider_version": "0.3.0",
             "environment_contract": "sc.environment.v1",
             "execution_contract": "sc.execution.v1",
             "core_adapter_target": CONTRACT_VERSION,

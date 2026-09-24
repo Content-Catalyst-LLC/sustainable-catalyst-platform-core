@@ -1,0 +1,114 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/execution-environment-provenance-v1.schema.json",
+  "title": "Sustainable Catalyst Execution Environment & Dependency Provenance",
+  "type": "object",
+  "required": [
+    "provenance_id",
+    "environment"
+  ],
+  "properties": {
+    "provenance_id": {
+      "type": "string",
+      "minLength": 2
+    },
+    "environment": {
+      "type": "object"
+    },
+    "captured_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "capture_source": {
+      "enum": [
+        "runtime-provider",
+        "workspace",
+        "core",
+        "container",
+        "manual",
+        "import"
+      ]
+    },
+    "reproducibility_status": {
+      "enum": [
+        "locked",
+        "partially-locked",
+        "observed",
+        "unresolved"
+      ]
+    },
+    "lockfiles": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "dependency_edges": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "interpreter_or_compiler": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "container_image_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "container_image_digest": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^(?:sha256:)?[0-9a-f]{64}$"
+    },
+    "os_release": {
+      "type": "object"
+    },
+    "hardware_profile": {
+      "type": "object"
+    },
+    "environment_variables_redacted": {
+      "type": "object"
+    },
+    "runtime_flags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "parent_environment_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "provenance": {
+      "type": "object"
+    },
+    "metadata": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "x-sustainable-catalyst": {
+    "release": "3.24.0",
+    "contract": "sc.core.execution-environment-provenance.v1",
+    "reference_runtime": "catalyst-julia-runtime@0.3.0",
+    "reference_adapter_status": "registered",
+    "core_installs_dependencies": false,
+    "core_executes_runtime_directly": false
+  }
+}

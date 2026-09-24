@@ -1,0 +1,43 @@
+{
+  "provenance_id": "envprov:catalyst-julia-runtime:v0.3.0",
+  "environment": {
+    "environment_id": "catalyst-julia-runtime:production",
+    "runtime_id": "catalyst-julia-runtime",
+    "schema_version": "sc.environment.v1",
+    "runtime_version": "1.13.0",
+    "platform": "linux",
+    "architecture": "x86_64",
+    "os_name": "ubuntu",
+    "os_version": "24.04",
+    "metadata": {
+      "provider_version": "0.3.0",
+      "adapter_contract": "sc.core.runtime-adapter.v1",
+      "adapter_status": "registered"
+    }
+  },
+  "capture_source": "runtime-provider",
+  "reproducibility_status": "locked",
+  "lockfiles": [],
+  "dependencies": [],
+  "dependency_edges": [],
+  "interpreter_or_compiler": {
+    "name": "julia",
+    "kind": "interpreter",
+    "version": "1.13.0",
+    "source": "catalyst-julia-runtime"
+  },
+  "os_release": {},
+  "hardware_profile": {},
+  "environment_variables_redacted": {},
+  "runtime_flags": [],
+  "provenance": {
+    "provider_version": "0.3.0",
+    "adapter_id": "adapter:catalyst-julia-runtime",
+    "environment_endpoint": "/v1/environment",
+    "environment_fingerprint_endpoint": "/v1/environment/fingerprint"
+  },
+  "metadata": {
+    "reference_runtime": true,
+    "live_hashes_required_for_execution_reproduction": true
+  }
+}

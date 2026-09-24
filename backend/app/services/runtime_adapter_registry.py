@@ -128,7 +128,7 @@ def _julia_reference_adapter() -> RuntimeAdapterDescriptor:
         language="julia",
         implementation="Julia",
         runtime_version="1.13.0",
-        provider_version="0.2.0",
+        provider_version="0.3.0",
         service_name="catalyst-julia-runtime",
         contract_versions=[
             OBJECT_CONTRACT_VERSION,
@@ -137,11 +137,11 @@ def _julia_reference_adapter() -> RuntimeAdapterDescriptor:
         ],
         capabilities=[capability],
         execution_host="contabo-vps",
-        status="contract-only",
+        status="active",
         metadata={
             "reference_runtime": True,
-            "next_provider_target": "Catalyst Julia Runtime v0.3.0",
-            "adapter_integration_state": "awaiting-v0.3-core-adapter",
+            "provider_release": "Catalyst Julia Runtime v0.3.0",
+            "adapter_integration_state": "native-v0.3-core-adapter",
         },
     )
     return RuntimeAdapterDescriptor(
@@ -151,7 +151,7 @@ def _julia_reference_adapter() -> RuntimeAdapterDescriptor:
         transport="http",
         invocation_mode="governed-service",
         service_ref="catalyst-julia-runtime",
-        status="contract-only",
+        status="registered",
         metadata={
             "reference_adapter": True,
             "core_executes_runtime_directly": False,
@@ -326,7 +326,7 @@ def contract_document() -> dict[str, Any]:
             "runtime_id": "catalyst-julia-runtime",
             "provider_version": "0.2.0",
             "status": "contract-only",
-            "next_provider_target": "Catalyst Julia Runtime v0.3.0",
+            "provider_release": "Catalyst Julia Runtime v0.3.0",
         },
         "legacy_bridge": {
             "contract": "sc.core.analytical-runtime-provider.v1",
