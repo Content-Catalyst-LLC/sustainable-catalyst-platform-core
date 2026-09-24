@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/computational-runtime-object-v1.schema.json",
+  "title": "Sustainable Catalyst Computational Runtime Object Contract",
+  "description": "Language-neutral Core contract for runtimes, environments, capabilities, dependencies, executions, results and artifacts.",
+  "type": "object",
+  "required": [
+    "contract",
+    "object_type",
+    "object"
+  ],
+  "properties": {
+    "contract": {
+      "const": "sc.core.computational-runtime-object.v1"
+    },
+    "object_type": {
+      "enum": [
+        "runtime",
+        "environment",
+        "capability",
+        "dependency",
+        "execution_request",
+        "execution_run",
+        "execution_result",
+        "artifact"
+      ]
+    },
+    "object": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "x-sustainable-catalyst": {
+    "release": "3.22.0",
+    "reference_runtime": "catalyst-julia-runtime@0.2.0",
+    "environment_contract": "sc.environment.v1",
+    "execution_contract": "sc.execution.v1",
+    "core_executes_runtime": false
+  }
+}

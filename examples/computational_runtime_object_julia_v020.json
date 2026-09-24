@@ -1,0 +1,41 @@
+{
+  "contract": "sc.core.computational-runtime-object.v1",
+  "object_type": "runtime",
+  "object": {
+    "runtime_id": "catalyst-julia-runtime",
+    "runtime_kind": "language",
+    "language": "julia",
+    "implementation": "Julia",
+    "runtime_version": "1.13.0",
+    "provider_version": "0.2.0",
+    "service_name": "catalyst-julia-runtime",
+    "contract_versions": [
+      "sc.core.computational-runtime-object.v1",
+      "sc.execution.v1",
+      "sc.environment.v1"
+    ],
+    "capabilities": [
+      {
+        "capability_key": "allowlisted-operations",
+        "category": "compute",
+        "operations": [
+          "identity",
+          "sum",
+          "mean",
+          "matrix_multiply"
+        ],
+        "input_types": [
+          "json"
+        ],
+        "output_types": [
+          "json"
+        ],
+        "deterministic": true,
+        "arbitrary_code_execution": false,
+        "shell_execution": false,
+        "package_installation": false
+      }
+    ],
+    "status": "active"
+  }
+}
