@@ -184,6 +184,7 @@ MIGRATIONS = [
     ("0104", 'Analytical result and provenance integration with first-class result, estimate, uncertainty, lineage, ingestion-receipt, and immutable snapshot records; Core records governed outputs without executing analysis or certifying scientific validity.'),
     ("0105", 'Statistical reasoning object model with diagnostics, assumptions, robustness evidence, model comparisons, coefficients, intervals, researcher interpretations, and immutable snapshots; Core records statistical evidence without certifying validity, significance, causality, or preferred models.'),
     ("0106", "Platform Core v3.20.0 — Unified Investigation Workspace"),
+    ("0107", "Platform Core v3.20.0.1 — Investigation Workspace Schema & Release Identity Repair"),
 ]
 
 
