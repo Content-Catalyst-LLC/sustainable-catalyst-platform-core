@@ -89,6 +89,7 @@ from .routers import (
     analytical_result_provenance,
     statistical_reasoning,
     computational_runtime_objects,
+    runtime_adapter_registry,
     uncertainty_probabilistic_evidence,
     visualization_registry,
     system_maps,
@@ -403,6 +404,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # v3.22.0 language-neutral Computational Runtime Object Model.
     app.include_router(computational_runtime_objects.router)
     app.include_router(computational_runtime_objects.public_router)
+    # v3.23.0 Runtime Adapter Contract & Capability Registry.
+    app.include_router(runtime_adapter_registry.router)
+    app.include_router(runtime_adapter_registry.public_router)
     app.include_router(uncertainty_probabilistic_evidence.router)
     app.include_router(uncertainty_probabilistic_evidence.public_router)
     # Open Forensics includes v2.51.0 Reproducible Investigation Packages.

@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/runtime-adapter-v1.schema.json",
+  "title": "Sustainable Catalyst Runtime Adapter Contract",
+  "type": "object",
+  "required": [
+    "adapter_id",
+    "runtime",
+    "adapter_contract",
+    "methods"
+  ],
+  "properties": {
+    "adapter_id": {
+      "type": "string",
+      "minLength": 2
+    },
+    "runtime": {
+      "type": "object"
+    },
+    "adapter_contract": {
+      "const": "sc.core.runtime-adapter.v1"
+    },
+    "provider_contracts": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "transport": {
+      "enum": [
+        "http",
+        "local-process",
+        "container",
+        "workspace-managed",
+        "library",
+        "contract-only"
+      ]
+    },
+    "invocation_mode": {
+      "type": "string"
+    },
+    "service_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "methods": {
+      "type": "array",
+      "minItems": 10,
+      "items": {
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "enum": [
+              "health",
+              "version",
+              "capabilities",
+              "prepare",
+              "execute",
+              "cancel",
+              "inspect",
+              "collect_results",
+              "collect_artifacts",
+              "diagnose"
+            ]
+          },
+          "required": {
+            "type": "boolean"
+          },
+          "asynchronous": {
+            "type": "boolean"
+          },
+          "idempotent": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "metadata": {
+            "type": "object"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "status": {
+      "enum": [
+        "registered",
+        "contract-only",
+        "degraded",
+        "offline",
+        "retired"
+      ]
+    },
+    "metadata": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "x-sustainable-catalyst": {
+    "release": "3.23.0",
+    "depends_on": "sc.core.computational-runtime-object.v1",
+    "reference_adapter": "adapter:catalyst-julia-runtime@0.2.0",
+    "autonomous_provider_selection": false,
+    "core_executes_runtime_directly": false
+  }
+}

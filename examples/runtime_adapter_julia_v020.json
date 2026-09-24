@@ -1,0 +1,73 @@
+{
+  "adapter_id": "adapter:catalyst-julia-runtime",
+  "adapter_contract": "sc.core.runtime-adapter.v1",
+  "runtime": {
+    "runtime_id": "catalyst-julia-runtime",
+    "runtime_kind": "language",
+    "language": "julia",
+    "implementation": "Julia",
+    "runtime_version": "1.13.0",
+    "provider_version": "0.2.0",
+    "service_name": "catalyst-julia-runtime",
+    "contract_versions": [
+      "sc.core.computational-runtime-object.v1",
+      "sc.execution.v1",
+      "sc.environment.v1"
+    ],
+    "status": "contract-only"
+  },
+  "provider_contracts": [
+    "sc.execution.v1",
+    "sc.environment.v1"
+  ],
+  "transport": "http",
+  "invocation_mode": "governed-service",
+  "service_ref": "catalyst-julia-runtime",
+  "methods": [
+    {
+      "name": "health",
+      "required": true
+    },
+    {
+      "name": "version",
+      "required": true
+    },
+    {
+      "name": "capabilities",
+      "required": true
+    },
+    {
+      "name": "prepare",
+      "required": true
+    },
+    {
+      "name": "execute",
+      "required": true
+    },
+    {
+      "name": "cancel",
+      "required": true
+    },
+    {
+      "name": "inspect",
+      "required": true
+    },
+    {
+      "name": "collect_results",
+      "required": true
+    },
+    {
+      "name": "collect_artifacts",
+      "required": true
+    },
+    {
+      "name": "diagnose",
+      "required": true
+    }
+  ],
+  "status": "contract-only",
+  "metadata": {
+    "reference_adapter": true,
+    "next_provider_target": "Catalyst Julia Runtime v0.3.0"
+  }
+}
