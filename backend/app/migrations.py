@@ -183,6 +183,7 @@ MIGRATIONS = [
     ("0101", 'Integration certification with suites, product targets, conformance cases/results, exchange/trace/reconstruction checks, evidence, findings, revisions, and snapshots; Core records declared conformance but does not invoke products, certify science, rank quality, authorize, or determine truth.'),    ("0102", 'Unified research/scientific/investigation runtime sessions with project, object, product, execution, visual, validation, package, and handoff bindings plus revisions/snapshots; Core composes declared references but does not execute work, infer conclusions, authorize access, or determine truth.'),    ("0103", 'Analytical runtime provider registry, capabilities, execution requests/results, environments, artifacts, diagnostics, and reproduction references; Core governs declared contracts while Workspace/specialist runtimes execute computation.'),
     ("0104", 'Analytical result and provenance integration with first-class result, estimate, uncertainty, lineage, ingestion-receipt, and immutable snapshot records; Core records governed outputs without executing analysis or certifying scientific validity.'),
     ("0105", 'Statistical reasoning object model with diagnostics, assumptions, robustness evidence, model comparisons, coefficients, intervals, researcher interpretations, and immutable snapshots; Core records statistical evidence without certifying validity, significance, causality, or preferred models.'),
+    ("0106", "Platform Core v3.20.0 — Unified Investigation Workspace"),
 ]
 
 

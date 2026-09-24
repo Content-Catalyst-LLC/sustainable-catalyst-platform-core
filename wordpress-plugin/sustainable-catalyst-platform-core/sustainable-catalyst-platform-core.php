@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Sustainable Catalyst Platform Core
  * Description: WordPress connector for Sustainable Catalyst Platform Core registry, graph, evidence, developer, gateway, free live-data, international-law, scientific-data, official-statistics, geospatial, time-series, STAC, map-layer, streaming, alerts, source-reliability, and operational-facility, humanitarian-access, essential-services, and country-evidence federation and reconciliation, and Earth/Ocean/Space scientific-service routing, cross-product exchange, distributed scale-control services, and governance/access/audit, production-certification/recovery, and observability/SLO production-operations services, plus incident-response, change-control, rollback-coordination, continuity, backup-verification, disaster-recovery, and multi-region resilience/failover-coordination, and data-lifecycle/archival-integrity/preservation services, plus Federated Core trusted-node exchange services and capacity forecasting/resource-governance services, plus identity/credential/cryptographic-key lifecycle governance, distributed workload governance, and scientific object storage/processing adapter services, research object/model services, renderer-neutral visual reasoning object services, and visualization specification/renderer registry services, and governed System Maps and Flow Maps services, plus the renderer-neutral visual reasoning runtime/scene graph and analytical result/provenance integration.
- * Version: 3.3.0
+ * Version: 3.20.0
  * Author: Content Catalyst LLC
  * License: MIT
  */
@@ -1925,7 +1925,9 @@ function scpc_analytical_result_status_shortcode() {
     <section class="scpc-card">
         <p class="scpc-kicker">Analytical Result &amp; Provenance Integration</p>
         <h3>Platform Core v3.3 analytical evidence layer</h3>
-        <p><strong>Status:</strong> Online · <strong>Catalyst Analytics R:</strong> <?php echo esc_html($version); ?> · <strong>Results:</strong> <?php echo esc_html(number_format_i18n($results)); ?> · <strong>Snapshots:</strong> <?php echo esc_html(number_format_i18n($snapshots)); ?></p>
+        <p><strong>Status:</strong> Online · <strong>Catalyst Analytics R:</strong> <?php echo esc_html($version); ?> · <strong>Results:</strong> <?php echo esc_html(number_format_i18n($results)); ?> · <strong>Snapshots:</strong> <?php echo esc_html(number_format_i18n($snapshots)); 
+require_once __DIR__ . '/includes/class-sc-core-investigation-workspace.php';
+?></p>
         <p class="scpc-meta">Core records analytical results, provenance, uncertainty, diagnostics, and reproducibility references. Computation remains in governed specialist runtimes such as Workspace.</p>
     </section>
     <?php return ob_get_clean();

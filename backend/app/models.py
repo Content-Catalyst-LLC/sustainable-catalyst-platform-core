@@ -13878,3 +13878,67 @@ class StatisticalReasoningSnapshotRecord(Base):
     visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
     created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+# SC_CORE_V3_20_0_UNIFIED_INVESTIGATION_WORKSPACE
+from datetime import datetime as _SC320DateTime
+from sqlalchemy import DateTime as _SC320DT, Integer as _SC320Int, String as _SC320Str, Text as _SC320Text
+from sqlalchemy.orm import Mapped as _SC320Mapped, mapped_column as _sc320_col
+
+class InvestigationWorkspace(Base):
+    __tablename__ = "investigation_workspaces"
+    id: _SC320Mapped[str] = _sc320_col(_SC320Str(64), primary_key=True)
+    title: _SC320Mapped[str] = _sc320_col(_SC320Str(300), nullable=False)
+    description: _SC320Mapped[str | None] = _sc320_col(_SC320Text, nullable=True)
+    status: _SC320Mapped[str] = _sc320_col(_SC320Str(40), nullable=False, default="active")
+    domain: _SC320Mapped[str | None] = _sc320_col(_SC320Str(120), nullable=True)
+    created_at: _SC320Mapped[_SC320DateTime] = _sc320_col(_SC320DT, nullable=False, default=_SC320DateTime.utcnow)
+    updated_at: _SC320Mapped[_SC320DateTime] = _sc320_col(_SC320DT, nullable=False, default=_SC320DateTime.utcnow)
+
+class InvestigationWorkspaceObject(Base):
+    __tablename__ = "investigation_workspace_objects"
+    id: _SC320Mapped[str] = _sc320_col(_SC320Str(64), primary_key=True)
+    investigation_id: _SC320Mapped[str] = _sc320_col(_SC320Str(64), nullable=False, index=True)
+    object_type: _SC320Mapped[str] = _sc320_col(_SC320Str(80), nullable=False, index=True)
+    external_id: _SC320Mapped[str | None] = _sc320_col(_SC320Str(180), nullable=True)
+    label: _SC320Mapped[str] = _sc320_col(_SC320Str(300), nullable=False)
+    payload_json: _SC320Mapped[str] = _sc320_col(_SC320Text, nullable=False, default="{}")
+    provenance_json: _SC320Mapped[str] = _sc320_col(_SC320Text, nullable=False, default="{}")
+    created_at: _SC320Mapped[_SC320DateTime] = _sc320_col(_SC320DT, nullable=False, default=_SC320DateTime.utcnow)
+
+class InvestigationWorkspaceRelation(Base):
+    __tablename__ = "investigation_workspace_relations"
+    id: _SC320Mapped[str] = _sc320_col(_SC320Str(64), primary_key=True)
+    investigation_id: _SC320Mapped[str] = _sc320_col(_SC320Str(64), nullable=False, index=True)
+    source_object_id: _SC320Mapped[str] = _sc320_col(_SC320Str(64), nullable=False, index=True)
+    target_object_id: _SC320Mapped[str] = _sc320_col(_SC320Str(64), nullable=False, index=True)
+    relation_type: _SC320Mapped[str] = _sc320_col(_SC320Str(100), nullable=False)
+    confidence: _SC320Mapped[int | None] = _sc320_col(_SC320Int, nullable=True)
+    rationale: _SC320Mapped[str | None] = _sc320_col(_SC320Text, nullable=True)
+    payload_json: _SC320Mapped[str] = _sc320_col(_SC320Text, nullable=False, default="{}")
+    created_at: _SC320Mapped[_SC320DateTime] = _sc320_col(_SC320DT, nullable=False, default=_SC320DateTime.utcnow)
+
+class InvestigationWorkspaceView(Base):
+    __tablename__ = "investigation_workspace_views"
+    id: _SC320Mapped[str] = _sc320_col(_SC320Str(64), primary_key=True)
+    investigation_id: _SC320Mapped[str] = _sc320_col(_SC320Str(64), nullable=False, index=True)
+    name: _SC320Mapped[str] = _sc320_col(_SC320Str(200), nullable=False)
+    view_type: _SC320Mapped[str] = _sc320_col(_SC320Str(80), nullable=False)
+    specification_json: _SC320Mapped[str] = _sc320_col(_SC320Text, nullable=False, default="{}")
+    created_at: _SC320Mapped[_SC320DateTime] = _sc320_col(_SC320DT, nullable=False, default=_SC320DateTime.utcnow)
+
+class InvestigationWorkspaceSnapshot(Base):
+    __tablename__ = "investigation_workspace_snapshots"
+    id: _SC320Mapped[str] = _sc320_col(_SC320Str(64), primary_key=True)
+    investigation_id: _SC320Mapped[str] = _sc320_col(_SC320Str(64), nullable=False, index=True)
+    manifest_json: _SC320Mapped[str] = _sc320_col(_SC320Text, nullable=False)
+    manifest_sha256: _SC320Mapped[str] = _sc320_col(_SC320Str(64), nullable=False, index=True)
+    created_at: _SC320Mapped[_SC320DateTime] = _sc320_col(_SC320DT, nullable=False, default=_SC320DateTime.utcnow)
+
+class InvestigationWorkspaceHandoff(Base):
+    __tablename__ = "investigation_workspace_handoffs"
+    id: _SC320Mapped[str] = _sc320_col(_SC320Str(64), primary_key=True)
+    investigation_id: _SC320Mapped[str] = _sc320_col(_SC320Str(64), nullable=False, index=True)
+    target_product: _SC320Mapped[str] = _sc320_col(_SC320Str(100), nullable=False)
+    bundle_json: _SC320Mapped[str] = _sc320_col(_SC320Text, nullable=False)
+    created_at: _SC320Mapped[_SC320DateTime] = _sc320_col(_SC320DT, nullable=False, default=_SC320DateTime.utcnow)

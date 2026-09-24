@@ -422,6 +422,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(trust_admin.router)
     app.include_router(workflows.router)
 
+    from .routers import investigation_workspace as _sc320_investigation_workspace
+    app.include_router(_sc320_investigation_workspace.router)
+
     return app
 
 
