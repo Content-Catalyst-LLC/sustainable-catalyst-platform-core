@@ -1,0 +1,14 @@
+GIT PUSH:
+cd ~/Downloads
+rm -rf sc-core-v3.21.0-release
+mkdir -p sc-core-v3.21.0-release
+unzip -q sustainable-catalyst-platform-core-v3.21.0-release-bundle.zip -d sc-core-v3.21.0-release
+cd sc-core-v3.21.0-release
+chmod +x PUSH_PLATFORM_CORE_V3210_FINAL.sh
+./PUSH_PLATFORM_CORE_V3210_FINAL.sh "$PWD/sustainable-catalyst-platform-core-v3.21.0-repository.zip"
+
+BACKEND DEPLOY:
+scp -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes DEPLOY_PLATFORM_CORE_V3210_CONTABO.sh catalystadmin@94.72.113.77:/tmp/
+ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes catalystadmin@94.72.113.77
+chmod +x /tmp/DEPLOY_PLATFORM_CORE_V3210_CONTABO.sh
+/tmp/DEPLOY_PLATFORM_CORE_V3210_CONTABO.sh

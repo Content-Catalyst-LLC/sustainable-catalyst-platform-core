@@ -13942,3 +13942,111 @@ class InvestigationWorkspaceHandoff(Base):
     target_product: _SC320Mapped[str] = _sc320_col(_SC320Str(100), nullable=False)
     bundle_json: _SC320Mapped[str] = _sc320_col(_SC320Text, nullable=False)
     created_at: _SC320Mapped[_SC320DateTime] = _sc320_col(_SC320DT, nullable=False, default=_SC320DateTime.utcnow)
+
+
+# v3.21.0 Uncertainty & Probabilistic Evidence Integration
+class UncertaintyEvidenceStudyRecord(Base):
+    __tablename__ = "uncertainty_evidence_studies_v3210"
+    __table_args__ = (UniqueConstraint("study_ref", name="uq_uncertainty_evidence_v3210_ref"), UniqueConstraint("source_fingerprint", name="uq_uncertainty_evidence_v3210_fingerprint"), Index("ix_uncertainty_evidence_v3210_result", "result_id", "created_at"))
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    study_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    result_id: Mapped[str] = mapped_column(ForeignKey("analytical_result_objects_v320.id", ondelete="CASCADE"), nullable=False)
+    statistical_reasoning_id: Mapped[str | None] = mapped_column(ForeignKey("statistical_reasoning_objects_v330.id", ondelete="SET NULL"), nullable=True)
+    analysis_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    method: Mapped[str] = mapped_column(String(120), nullable=False)
+    source_contract: Mapped[str] = mapped_column(String(255), nullable=False)
+    source_fingerprint: Mapped[str] = mapped_column(String(64), nullable=False)
+    source_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    limitations_json: Mapped[list] = mapped_column(JSON, default=list)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    boundary_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    review_status: Mapped[str] = mapped_column(String(80), nullable=False, default="unreviewed")
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class UncertaintyDistributionEvidenceRecord(Base):
+    __tablename__ = "uncertainty_distribution_evidence_v3210"
+    __table_args__ = (UniqueConstraint("study_id","distribution_ref", name="uq_uncertainty_distribution_v3210_ref"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    study_id: Mapped[str] = mapped_column(ForeignKey("uncertainty_evidence_studies_v3210.id", ondelete="CASCADE"), nullable=False, index=True)
+    distribution_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    target_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    distribution_type: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    parameters_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    summary_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    unit: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class ProbabilisticSummaryEvidenceRecord(Base):
+    __tablename__ = "probabilistic_summary_evidence_v3210"
+    __table_args__ = (UniqueConstraint("study_id","summary_ref", name="uq_probabilistic_summary_v3210_ref"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    study_id: Mapped[str] = mapped_column(ForeignKey("uncertainty_evidence_studies_v3210.id", ondelete="CASCADE"), nullable=False, index=True)
+    summary_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    target_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    metric: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    statistics_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    probability_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    sample_size: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class SensitivityIndexEvidenceRecord(Base):
+    __tablename__ = "sensitivity_index_evidence_v3210"
+    __table_args__ = (UniqueConstraint("study_id","sensitivity_ref", name="uq_sensitivity_index_v3210_ref"), Index("ix_sensitivity_index_v3210_target", "study_id","target_ref","metric"))
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    study_id: Mapped[str] = mapped_column(ForeignKey("uncertainty_evidence_studies_v3210.id", ondelete="CASCADE"), nullable=False)
+    sensitivity_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    target_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    metric: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    first_order: Mapped[float | None] = mapped_column(Float, nullable=True)
+    total_order: Mapped[float | None] = mapped_column(Float, nullable=True)
+    elementary_effect_mean: Mapped[float | None] = mapped_column(Float, nullable=True)
+    elementary_effect_abs_mean: Mapped[float | None] = mapped_column(Float, nullable=True)
+    elementary_effect_sd: Mapped[float | None] = mapped_column(Float, nullable=True)
+    variance: Mapped[float | None] = mapped_column(Float, nullable=True)
+    sample_size: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    estimator_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    evidence_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class UncertaintyEnsembleEvidenceRecord(Base):
+    __tablename__ = "uncertainty_ensemble_evidence_v3210"
+    __table_args__ = (UniqueConstraint("study_id","ensemble_ref", name="uq_uncertainty_ensemble_v3210_ref"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    study_id: Mapped[str] = mapped_column(ForeignKey("uncertainty_evidence_studies_v3210.id", ondelete="CASCADE"), nullable=False, index=True)
+    ensemble_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    member_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    weights_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    statistics_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class UncertaintyEvidenceInterpretationRecord(Base):
+    __tablename__ = "uncertainty_evidence_interpretations_v3210"
+    __table_args__ = (UniqueConstraint("study_id","interpretation_ref", name="uq_uncertainty_interpretation_v3210_ref"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    study_id: Mapped[str] = mapped_column(ForeignKey("uncertainty_evidence_studies_v3210.id", ondelete="CASCADE"), nullable=False, index=True)
+    interpretation_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    statement: Mapped[str] = mapped_column(Text, nullable=False)
+    author_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    evidence_refs_json: Mapped[list] = mapped_column(JSON, default=list)
+    limitations_json: Mapped[list] = mapped_column(JSON, default=list)
+    human_authored: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+class UncertaintyEvidenceSnapshotRecord(Base):
+    __tablename__ = "uncertainty_evidence_snapshots_v3210"
+    __table_args__ = (UniqueConstraint("snapshot_ref", name="uq_uncertainty_snapshot_v3210_ref"), Index("ix_uncertainty_snapshot_v3210_study", "study_id","created_at"))
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    snapshot_ref: Mapped[str] = mapped_column(String(1000), nullable=False)
+    study_id: Mapped[str] = mapped_column(ForeignKey("uncertainty_evidence_studies_v3210.id", ondelete="CASCADE"), nullable=False)
+    snapshot_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    previous_snapshot_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    state_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    visibility: Mapped[str] = mapped_column(String(30), nullable=False, default="internal")
+    created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="operator")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)

@@ -20,7 +20,7 @@ def _int(name: str, default: int) -> int:
 @dataclass(frozen=True)
 class Settings:
     app_name: str = "Sustainable Catalyst Platform Core"
-    version: str = "3.20.0.1"
+    version: str = "3.21.0"
     environment: str = "development"
     database_url: str = "sqlite:///./platform_core.db"
     write_api_key: str = ""
@@ -248,6 +248,7 @@ class Settings:
     analytical_runtime_provider_contract_enabled: bool = True
     analytical_result_provenance_integration_enabled: bool = True
     statistical_reasoning_object_model_enabled: bool = True
+    uncertainty_probabilistic_evidence_enabled: bool = True
     visual_reasoning_runtime_public_metadata_enabled: bool = True
     open_forensics_enabled: bool = True
     open_forensics_public_metadata_enabled: bool = True
@@ -521,6 +522,7 @@ class Settings:
             analytical_runtime_provider_contract_enabled=_bool("SC_CORE_ANALYTICAL_RUNTIME_PROVIDER_CONTRACT_ENABLED", True),
             analytical_result_provenance_integration_enabled=_bool("SC_CORE_ANALYTICAL_RESULT_PROVENANCE_INTEGRATION_ENABLED", True),
             statistical_reasoning_object_model_enabled=_bool("SC_CORE_STATISTICAL_REASONING_OBJECT_MODEL_ENABLED", True),
+            uncertainty_probabilistic_evidence_enabled=_bool("SC_CORE_UNCERTAINTY_PROBABILISTIC_EVIDENCE_ENABLED", True),
             open_forensics_enabled=_bool("SC_CORE_OPEN_FORENSICS_ENABLED", True),
             open_forensics_public_metadata_enabled=_bool("SC_CORE_OPEN_FORENSICS_PUBLIC_METADATA_ENABLED", True),
             predictive_intelligence_enabled=_bool("SC_CORE_PREDICTIVE_INTELLIGENCE_ENABLED", True),

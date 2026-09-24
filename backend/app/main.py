@@ -88,6 +88,7 @@ from .routers import (
     analytical_runtime_provider,
     analytical_result_provenance,
     statistical_reasoning,
+    uncertainty_probabilistic_evidence,
     visualization_registry,
     system_maps,
     flow_maps,
@@ -398,6 +399,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # v3.3.0 Statistical Reasoning Object Model.
     app.include_router(statistical_reasoning.router)
     app.include_router(statistical_reasoning.public_router)
+    app.include_router(uncertainty_probabilistic_evidence.router)
+    app.include_router(uncertainty_probabilistic_evidence.public_router)
     # Open Forensics includes v2.51.0 Reproducible Investigation Packages.
     app.include_router(open_forensics.router)
     app.include_router(open_forensics.public_router)

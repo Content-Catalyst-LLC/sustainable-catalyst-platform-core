@@ -87,6 +87,7 @@ from .models import (
     UnifiedResearchRuntimeHandoffRecord, UnifiedResearchProjectSnapshotRecord,
     ResearchLineageGraphRecord, ResearchLineageNodeRecord, ResearchLineageEdgeRecord, ResearchLineageActivityRecord,
     ResearchLineageTransformationRecord, ResearchLineageSourceBindingRecord, ResearchLineageTraceRecord, ResearchLineageSnapshotRecord,
+    UncertaintyEvidenceStudyRecord, UncertaintyDistributionEvidenceRecord, ProbabilisticSummaryEvidenceRecord, SensitivityIndexEvidenceRecord, UncertaintyEnsembleEvidenceRecord, UncertaintyEvidenceInterpretationRecord, UncertaintyEvidenceSnapshotRecord,
 )
 from .predicate_catalog import DEFAULT_PREDICATES
 from .api_plan_catalog import DEFAULT_API_PLANS
@@ -185,6 +186,7 @@ MIGRATIONS = [
     ("0105", 'Statistical reasoning object model with diagnostics, assumptions, robustness evidence, model comparisons, coefficients, intervals, researcher interpretations, and immutable snapshots; Core records statistical evidence without certifying validity, significance, causality, or preferred models.'),
     ("0106", "Platform Core v3.20.0 — Unified Investigation Workspace"),
     ("0107", "Platform Core v3.20.0.1 — Investigation Workspace Schema & Release Identity Repair"),
+    ("0108", "Platform Core v3.21.0 — Uncertainty & Probabilistic Evidence Integration"),
 ]
 
 

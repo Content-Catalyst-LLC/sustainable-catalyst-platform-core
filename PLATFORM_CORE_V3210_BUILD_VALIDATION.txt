@@ -1,0 +1,13 @@
+Platform Core v3.21.0 — Uncertainty & Probabilistic Evidence Integration
+Baseline: uploaded Platform Core v3.20.0.1 main repository
+Migration: 0108
+Core contract: sc.core.uncertainty-probabilistic-evidence.v1
+Source contract: sc.analytics-r.uncertainty-sensitivity-runtime.v1
+Focused v3.21 tests: 5/5 PASS
+v3.2 analytical result + v3.3 statistical reasoning targeted regression: 10/10 PASS
+Aggregate targeted suite: 15/15 PASS
+Python compilation: PASS
+WordPress PHP syntax: PASS
+Release contract: PASS
+Boundary: Core does not execute uncertainty analysis, infer causality, rank parameters, select policy, certify validity, or determine truth.
+Production provider seed remains Analytics R 2.2.0 / Workspace 3.9.1 until a separate Workspace provider promotion occurs. v3.21 targets Analytics R 2.3.0 evidence contract without silently changing production provider identity.
