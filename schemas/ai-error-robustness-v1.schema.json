@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/ai-error-robustness-v1.schema.json",
+  "title": "Sustainable Catalyst AI Error Analysis, Robustness & Failure Taxonomy",
+  "type": "object",
+  "required": [
+    "failure_taxonomy",
+    "error_observations",
+    "slice_definitions",
+    "slice_results",
+    "robustness_tests",
+    "robustness_runs",
+    "failure_clusters",
+    "error_analysis_report"
+  ],
+  "properties": {
+    "failure_taxonomy": {
+      "type": "object"
+    },
+    "error_observations": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "slice_definitions": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "slice_results": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "robustness_tests": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "robustness_runs": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "failure_clusters": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "error_analysis_report": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "x-sustainable-catalyst": {
+    "release": "3.33.0",
+    "contract": "sc.core.ai-error-robustness.v1",
+    "core_executes_robustness_tests": false,
+    "core_certifies_model_robustness": false
+  }
+}

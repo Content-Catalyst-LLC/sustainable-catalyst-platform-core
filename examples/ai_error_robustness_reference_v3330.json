@@ -1,0 +1,8 @@
+{
+  "failure_taxonomy_id": "failure-taxonomy:sc-ai:v1",
+  "ai_model_version_ref": "ai-model-version:reference-classifier:1.0.0",
+  "robustness_test_id": "robustness-test:reference-classifier-noise:v1",
+  "robustness_run_id": "robustness-run:reference-classifier-noise:001",
+  "error_analysis_report_id": "error-analysis-report:reference-classifier:v1",
+  "contract": "sc.core.ai-error-robustness.v1"
+}
