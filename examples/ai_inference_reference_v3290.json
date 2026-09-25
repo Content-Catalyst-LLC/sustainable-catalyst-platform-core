@@ -1,0 +1,53 @@
+{
+  "inference_run_id": "inference-run:reference-scientific-regressor:001",
+  "status": "completed",
+  "ai_model_ref": "ai-model:reference-scientific-regressor",
+  "ai_model_version_ref": "ai-model-version:reference-scientific-regressor:1.0.0",
+  "computational_job_ref": "job:reference-inference-001",
+  "execution_result_ref": "result:reference-inference-001",
+  "runtime_environment_ref": "environment:reference-python",
+  "provider_ref": "provider:sustainable-catalyst-local",
+  "provider_model_identifier": "reference-scientific-regressor@1.0.0",
+  "operation": "predict",
+  "inputs": [
+    {
+      "input_id": "inference-input:reference-row-001",
+      "input_kind": "tabular",
+      "name": "reference-row",
+      "value": {
+        "x1": 1.5,
+        "x2": 3.25
+      },
+      "content_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "metadata": {}
+    }
+  ],
+  "parameter_set": {
+    "parameter_set_id": "inference-parameters:reference-001",
+    "parameters": {
+      "output": "scalar"
+    },
+    "random_seed": 429,
+    "deterministic_requested": true,
+    "metadata": {}
+  },
+  "artifacts": [
+    {
+      "ai_artifact_id": "ai-artifact:reference-prediction-001",
+      "artifact_kind": "prediction",
+      "inference_run_ref": "inference-run:reference-scientific-regressor:001",
+      "ai_model_ref": "ai-model:reference-scientific-regressor",
+      "ai_model_version_ref": "ai-model-version:reference-scientific-regressor:1.0.0",
+      "execution_result_ref": "result:reference-inference-001",
+      "source_input_refs": [
+        "inference-input:reference-row-001"
+      ],
+      "content_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "scalar_value": 7.8125,
+      "provenance": {},
+      "metadata": {}
+    }
+  ],
+  "provenance": {},
+  "metadata": {}
+}

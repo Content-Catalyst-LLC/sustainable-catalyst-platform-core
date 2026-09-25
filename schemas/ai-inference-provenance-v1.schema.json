@@ -1,0 +1,120 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/ai-inference-provenance-v1.schema.json",
+  "title": "Sustainable Catalyst Inference Run & AI Artifact Provenance",
+  "type": "object",
+  "required": [
+    "inference_run_id",
+    "status",
+    "ai_model_ref",
+    "ai_model_version_ref",
+    "computational_job_ref",
+    "operation",
+    "inputs",
+    "artifacts"
+  ],
+  "properties": {
+    "inference_run_id": {
+      "type": "string",
+      "minLength": 2
+    },
+    "status": {
+      "enum": [
+        "declared",
+        "queued",
+        "running",
+        "completed",
+        "failed",
+        "cancelled"
+      ]
+    },
+    "ai_model_ref": {
+      "type": "string"
+    },
+    "ai_model_version_ref": {
+      "type": "string"
+    },
+    "computational_job_ref": {
+      "type": "string"
+    },
+    "execution_result_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "runtime_environment_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "provider_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "provider_model_identifier": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "operation": {
+      "type": "string"
+    },
+    "inputs": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "parameter_set": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "prompt_version_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "retrieval_context_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "usage": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "provenance": {
+      "type": "object"
+    },
+    "metadata": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "x-sustainable-catalyst": {
+    "release": "3.29.0",
+    "contract": "sc.core.ai-inference-provenance.v1",
+    "ai_model_contract": "sc.core.ai-model.v1",
+    "training_lineage_contract": "sc.core.ai-training-lineage.v1",
+    "computational_job_contract": "sc.core.computational-job.v1",
+    "duplicates_runtime_artifact_model": false,
+    "core_executes_inference": false
+  }
+}

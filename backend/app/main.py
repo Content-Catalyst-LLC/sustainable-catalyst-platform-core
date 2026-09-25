@@ -95,6 +95,7 @@ from .routers import (
     julia_runtime_integration,
     ai_model_objects,
     ai_training_lineage,
+    ai_inference_provenance,
     uncertainty_probabilistic_evidence,
     visualization_registry,
     system_maps,
@@ -426,6 +427,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # v3.28.0 Dataset, Feature Set & Training Lineage.
     app.include_router(ai_training_lineage.router)
     app.include_router(ai_training_lineage.public_router)
+    # v3.29.0 Inference Run & AI Artifact Provenance.
+    app.include_router(ai_inference_provenance.router)
+    app.include_router(ai_inference_provenance.public_router)
     app.include_router(uncertainty_probabilistic_evidence.router)
     app.include_router(uncertainty_probabilistic_evidence.public_router)
     # Open Forensics includes v2.51.0 Reproducible Investigation Packages.
