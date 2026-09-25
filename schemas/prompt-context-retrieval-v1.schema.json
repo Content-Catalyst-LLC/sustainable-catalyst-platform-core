@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/prompt-context-retrieval-v1.schema.json",
+  "title": "Sustainable Catalyst Prompt, Context & Retrieval Object Model",
+  "type": "object",
+  "required": [
+    "prompt_binding",
+    "retrieval_queries",
+    "retrieval_result_sets",
+    "context_assembly"
+  ],
+  "properties": {
+    "prompt_binding": {
+      "type": "object"
+    },
+    "retrieval_queries": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "retrieval_result_sets": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "context_assembly": {
+      "type": "object"
+    },
+    "inference_run_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "ai_model_version_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "metadata": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "x-sustainable-catalyst": {
+    "release": "3.30.0",
+    "contract": "sc.core.prompt-context-retrieval.v1",
+    "ai_inference_contract": "sc.core.ai-inference-provenance.v1",
+    "knowledge_library_owns_retrieval_execution": true,
+    "core_duplicates_vector_index": false,
+    "core_executes_retrieval": false
+  }
+}

@@ -1,0 +1,78 @@
+{
+  "prompt_binding": {
+    "prompt": {
+      "prompt_id": "prompt:research-evidence-synthesis",
+      "name": "Research Evidence Synthesis",
+      "variables": [
+        {
+          "variable_id": "prompt-var:question",
+          "name": "question",
+          "data_type": "string",
+          "required": true,
+          "metadata": {}
+        }
+      ],
+      "model_family_constraints": [],
+      "provenance": {},
+      "metadata": {}
+    },
+    "prompt_version": {
+      "prompt_version_id": "prompt-version:research-evidence-synthesis:1.0.0",
+      "prompt_id": "prompt:research-evidence-synthesis",
+      "version": "1.0.0",
+      "messages": [
+        {
+          "message_id": "prompt-message:user",
+          "ordinal": 1,
+          "role": "user",
+          "template": "Question: {{question}}",
+          "variable_refs": [
+            "prompt-var:question"
+          ],
+          "metadata": {}
+        }
+      ],
+      "variable_schema_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "rendered_content_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "provenance": {},
+      "metadata": {}
+    }
+  },
+  "retrieval_queries": [
+    {
+      "retrieval_query_id": "retrieval-query:reference-evidence-001",
+      "query_text": "What evidence supports the reference research finding?",
+      "strategy": "hybrid",
+      "corpus_refs": [
+        "knowledge-library:reference-corpus"
+      ],
+      "source_scope_refs": [],
+      "filters": {},
+      "top_k": 3,
+      "embedding_model_version_ref": "ai-model-version:reference-embedding:1.0.0",
+      "reranker_model_version_ref": "ai-model-version:reference-reranker:1.0.0",
+      "computational_job_ref": "job:reference-retrieval-001",
+      "provenance": {},
+      "metadata": {}
+    }
+  ],
+  "retrieval_result_sets": [],
+  "context_assembly": {
+    "context_assembly_id": "context-assembly:reference-evidence-001",
+    "prompt_version_ref": "prompt-version:research-evidence-synthesis:1.0.0",
+    "retrieval_query_refs": [
+      "retrieval-query:reference-evidence-001"
+    ],
+    "retrieval_result_set_refs": [],
+    "items": [],
+    "assembly_policy": "evidence-priority",
+    "max_context_tokens": 4096,
+    "total_context_tokens": 0,
+    "truncation_applied": false,
+    "provenance": {},
+    "metadata": {}
+  },
+  "inference_run_ref": "inference-run:reference-rag-001",
+  "ai_model_version_ref": "ai-model-version:reference-research-model:1.0.0",
+  "metadata": {}
+}

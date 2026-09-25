@@ -1,15 +1,30 @@
-# Platform Core v3.3.0 — Statistical Reasoning Object Model
+# Platform Core v3.30.0 — Prompt, Context & Retrieval Object Model
 
-Platform Core v3.3.0 turns statistical evidence into first-class governed Core objects. It integrates Catalyst Analytics R v2.2.0 statistical diagnostics through Workspace v3.9.1 while keeping computation outside Core.
+Added:
+- `sc.core.prompt-context-retrieval.v1`
+- stable PromptTemplate identity
+- immutable PromptVersion identity
+- prompt variable schemas
+- ordered message templates
+- prompt-version bindings
+- RetrievalQuery
+- embedding-model version binding
+- reranker-model version binding
+- RetrievedItem
+- retrieval/rerank scores
+- citation preservation
+- RetrievalResultSet
+- retrieval index/version refs
+- ContextItem
+- ordered ContextAssembly
+- context token-budget provenance
+- RetrievalContextBundle
+- inference-run binding
+- Knowledge Library / Research Librarian product boundaries
+- public prompt/context/retrieval contract endpoint
+- 29 focused release tests
 
-## Adds
-- statistical reasoning objects bound explicitly to v3.2 analytical results
-- diagnostic evidence, assumptions, robustness evidence, and model-comparison evidence
-- coefficients and interval objects
-- human-authored interpretation records with provenance
-- immutable statistical reasoning snapshots
-- ingestion for `sc.analytics-r.statistical-diagnostics-validation.v1`
-- public read-only readiness and reasoning bundles
+No database migration is introduced.
 
-## Boundaries
-Core does not infer statistical significance, certify scientific validity, select a preferred model, infer causality, rank models, or determine truth. P-values and thresholds remain evidence requiring contextual human interpretation.
+Next:
+Platform Core v3.31.0 — AI Evaluation & Benchmark Object System.
