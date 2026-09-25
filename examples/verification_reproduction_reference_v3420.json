@@ -1,0 +1,10 @@
+{
+  "package_id": "reproduction-package:reference-r-julia:v1",
+  "plan_id": "reproduction-plan:reference-r-julia:v1",
+  "attempt_id": "reproduction-attempt:reference-r-julia:001",
+  "environment_package": "environment-package:reference-r-julia:v1",
+  "workflow": "cross-runtime-workflow:reference-r-julia:v1",
+  "verification_outcome": "passed",
+  "comparison_status": "equivalent",
+  "contract": "sc.core.verification-reproduction-engine.v1"
+}

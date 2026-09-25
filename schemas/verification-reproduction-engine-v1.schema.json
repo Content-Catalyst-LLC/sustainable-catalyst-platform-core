@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/verification-reproduction-engine-v1.schema.json",
+  "title": "Sustainable Catalyst Verification & Reproduction Engine",
+  "type": "object",
+  "required": [
+    "package_id",
+    "plan",
+    "attempts"
+  ],
+  "properties": {
+    "package_id": {
+      "type": "string"
+    },
+    "plan": {
+      "type": "object"
+    },
+    "attempts": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "reports": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "comparisons": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "source_object_refs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "additionalProperties": true,
+  "x-sustainable-catalyst": {
+    "release": "3.42.0",
+    "contract": "sc.core.verification-reproduction-engine.v1",
+    "execution_owner": "workspace-or-execution-host",
+    "core_executes_reproduction": false,
+    "equivalence_requires_evidence": true
+  }
+}
