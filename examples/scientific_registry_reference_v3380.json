@@ -1,0 +1,7 @@
+{
+  "registry_id": "scientific-registry:stat-package:reference-regression:v1",
+  "snapshot_id": "scientific-registry-snapshot:reference-regression:v1",
+  "package_id": "scientific-registry-package:reference-regression:v1",
+  "source_contract": "sc.core.statistical-analysis-object.v1",
+  "contract": "sc.core.scientific-result-artifact-registry.v1"
+}

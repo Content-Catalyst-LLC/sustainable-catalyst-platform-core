@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/scientific-result-artifact-registry-v1.schema.json",
+  "title": "Sustainable Catalyst Scientific Result & Artifact Registry",
+  "type": "object",
+  "required": [
+    "package_id",
+    "registry",
+    "snapshot"
+  ],
+  "properties": {
+    "package_id": {
+      "type": "string"
+    },
+    "registry": {
+      "type": "object"
+    },
+    "snapshot": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "x-sustainable-catalyst": {
+    "release": "3.38.0",
+    "contract": "sc.core.scientific-result-artifact-registry.v1",
+    "source_payload_reference_mode": true,
+    "core_duplicates_source_payloads": false
+  }
+}
