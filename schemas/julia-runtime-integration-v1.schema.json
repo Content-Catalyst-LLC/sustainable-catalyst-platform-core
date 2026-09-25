@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/julia-runtime-integration-v1.schema.json",
+  "title": "Sustainable Catalyst Julia Runtime Core Integration",
+  "type": "object",
+  "properties": {
+    "adapter_id": {
+      "const": "adapter:catalyst-julia-runtime"
+    },
+    "runtime_id": {
+      "const": "catalyst-julia-runtime"
+    },
+    "provider_version": {
+      "const": "0.3.0"
+    },
+    "integration_contract": {
+      "const": "sc.core.julia-runtime-integration.v1"
+    },
+    "status": {
+      "const": "registered"
+    },
+    "arbitrary_code_execution": {
+      "const": false
+    },
+    "shell_execution": {
+      "const": false
+    },
+    "package_installation": {
+      "const": false
+    }
+  }
+}

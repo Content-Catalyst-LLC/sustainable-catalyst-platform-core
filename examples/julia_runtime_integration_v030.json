@@ -1,0 +1,10 @@
+{
+  "adapter_id": "adapter:catalyst-julia-runtime",
+  "runtime_id": "catalyst-julia-runtime",
+  "provider_version": "0.3.0",
+  "integration_contract": "sc.core.julia-runtime-integration.v1",
+  "status": "registered",
+  "arbitrary_code_execution": false,
+  "shell_execution": false,
+  "package_installation": false
+}
