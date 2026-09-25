@@ -1,0 +1,9 @@
+{
+  "ai_model_version_ref": "ai-model-version:reference-classifier:1.0.0",
+  "calibration_assessment_id": "calibration-assessment:reference:current",
+  "drift_signal_id": "drift-signal:prediction-probability-js",
+  "monitoring_policy_id": "monitoring-policy:reference-classifier:v1",
+  "monitoring_snapshot_id": "monitoring-snapshot:reference:current",
+  "overall_risk_level": "high",
+  "contract": "sc.core.ai-calibration-drift-risk.v1"
+}

@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/ai-calibration-drift-risk-v1.schema.json",
+  "title": "Sustainable Catalyst AI Calibration, Drift & Risk Monitoring",
+  "type": "object",
+  "required": [
+    "windows",
+    "calibration_assessments",
+    "drift_signals",
+    "drift_observations",
+    "risk_indicators",
+    "risk_observations",
+    "monitoring_policy",
+    "monitoring_snapshots"
+  ],
+  "properties": {
+    "windows": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "calibration_assessments": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "drift_signals": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "drift_observations": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "risk_indicators": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "risk_observations": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "monitoring_policy": {
+      "type": "object"
+    },
+    "monitoring_snapshots": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "x-sustainable-catalyst": {
+    "release": "3.34.0",
+    "contract": "sc.core.ai-calibration-drift-risk.v1",
+    "core_executes_monitoring_jobs": false,
+    "core_performs_background_scheduling": false,
+    "core_autonomously_retrains_models": false
+  }
+}
