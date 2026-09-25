@@ -1,0 +1,9 @@
+{
+  "analysis_plan_id": "stat-plan:reference-regression:v1",
+  "analysis_result_id": "stat-result:reference-regression:001",
+  "package_id": "stat-package:reference-regression:v1",
+  "runtime_id": "sc-runtime-r",
+  "runtime_version": "1.0.0",
+  "runtime_operation": "linear_regression",
+  "contract": "sc.core.statistical-analysis-object.v1"
+}

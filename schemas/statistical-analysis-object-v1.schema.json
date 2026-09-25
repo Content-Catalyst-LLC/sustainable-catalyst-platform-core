@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/statistical-analysis-object-v1.schema.json",
+  "title": "Sustainable Catalyst Statistical Analysis Object Model",
+  "type": "object",
+  "required": [
+    "package_id",
+    "plan",
+    "results"
+  ],
+  "properties": {
+    "package_id": {
+      "type": "string"
+    },
+    "plan": {
+      "type": "object"
+    },
+    "results": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "source_object_refs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "result_artifact_refs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "additionalProperties": true,
+  "x-sustainable-catalyst": {
+    "release": "3.37.0",
+    "contract": "sc.core.statistical-analysis-object.v1",
+    "reference_runtime": "sc-runtime-r@1.0.0",
+    "core_executes_statistical_methods": false,
+    "core_selects_statistical_method": false
+  }
+}
