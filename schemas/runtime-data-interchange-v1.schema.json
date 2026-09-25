@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/runtime-data-interchange-v1.schema.json",
+  "title": "Sustainable Catalyst Runtime Data Interchange",
+  "type": "object",
+  "required": [
+    "bundle_id",
+    "profiles",
+    "transfers"
+  ],
+  "properties": {
+    "bundle_id": {
+      "type": "string"
+    },
+    "profiles": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "transfers": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "source_object_refs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "metadata": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": true,
+  "x-sustainable-catalyst": {
+    "release": "3.39.0",
+    "contract": "sc.core.runtime-data-interchange.v1",
+    "candidate_discovery_only": true,
+    "core_executes_conversion": false,
+    "arrow_parquet_contract_support": true,
+    "arrow_parquet_native_provider_support_claimed": false
+  }
+}

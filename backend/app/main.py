@@ -105,6 +105,7 @@ from .routers import (
     r_runtime_migration,
     statistical_analysis,
     scientific_registry,
+    runtime_data_interchange,
     uncertainty_probabilistic_evidence,
     visualization_registry,
     system_maps,
@@ -466,6 +467,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # v3.38.0 Scientific Result & Artifact Registry.
     app.include_router(scientific_registry.router)
     app.include_router(scientific_registry.public_router)
+    # v3.39.0 Runtime Data Interchange.
+    app.include_router(runtime_data_interchange.router)
+    app.include_router(runtime_data_interchange.public_router)
     app.include_router(uncertainty_probabilistic_evidence.router)
     app.include_router(uncertainty_probabilistic_evidence.public_router)
     # Open Forensics includes v2.51.0 Reproducible Investigation Packages.

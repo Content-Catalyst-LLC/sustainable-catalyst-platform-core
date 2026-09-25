@@ -1,0 +1,8 @@
+{
+  "bundle_id": "runtime-data-interchange-bundle:reference-r-julia:v1",
+  "source_runtime": "sc-runtime-r@1.0.0",
+  "target_runtime": "catalyst-julia-runtime@0.3.0",
+  "reference_format": "json",
+  "logical_data_ref": "logical-data:reference-regression-table:v1",
+  "contract": "sc.core.runtime-data-interchange.v1"
+}
