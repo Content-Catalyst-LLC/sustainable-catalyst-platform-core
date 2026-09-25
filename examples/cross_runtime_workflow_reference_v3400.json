@@ -1,0 +1,9 @@
+{
+  "workflow_id": "cross-runtime-workflow:reference-r-julia:v1",
+  "workflow_run_id": "cross-runtime-workflow-run:reference-r-julia:001",
+  "package_id": "cross-runtime-workflow-package:reference-r-julia:v1",
+  "r_runtime": "sc-runtime-r@1.0.0",
+  "julia_runtime": "catalyst-julia-runtime@0.3.0",
+  "handoff": "interchange-transfer:r-to-julia:reference-regression:v1",
+  "contract": "sc.core.cross-runtime-research-workflow.v1"
+}

@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/cross-runtime-research-workflow-v1.schema.json",
+  "title": "Sustainable Catalyst Cross-Runtime Research Workflow",
+  "type": "object",
+  "required": [
+    "package_id",
+    "definition",
+    "run"
+  ],
+  "properties": {
+    "package_id": {
+      "type": "string"
+    },
+    "definition": {
+      "type": "object"
+    },
+    "run": {
+      "type": "object"
+    },
+    "scientific_registry_refs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "interchange_bundle_refs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "source_object_refs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "metadata": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": true,
+  "x-sustainable-catalyst": {
+    "release": "3.40.0",
+    "contract": "sc.core.cross-runtime-research-workflow.v1",
+    "core_schedules_jobs": false,
+    "core_executes_runtime_steps": false,
+    "orchestration_owner": "workspace-or-execution-host"
+  }
+}
