@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/reproducible-environment-package-v1.schema.json",
+  "title": "Sustainable Catalyst Reproducible Environment Package",
+  "type": "object",
+  "required": [
+    "bundle_id",
+    "packages"
+  ],
+  "properties": {
+    "bundle_id": {
+      "type": "string"
+    },
+    "packages": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "reproduction_requests": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "compatibility_reports": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "verifications": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "source_object_refs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "additionalProperties": true,
+  "x-sustainable-catalyst": {
+    "release": "3.41.0",
+    "contract": "sc.core.reproducible-environment-package.v1",
+    "secret_values_embedded": false,
+    "core_executes_environment_builds": false,
+    "build_owner": "workspace-or-execution-host"
+  }
+}

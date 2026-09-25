@@ -1,0 +1,9 @@
+{
+  "bundle_id": "environment-package-bundle:reference-r-julia:v1",
+  "environment_package_id": "environment-package:reference-r-julia:v1",
+  "r_runtime": "sc-runtime-r@1.0.0",
+  "julia_runtime": "catalyst-julia-runtime@0.3.0",
+  "platform": "Ubuntu 24.04 amd64",
+  "source_workflow": "cross-runtime-workflow:reference-r-julia:v1",
+  "contract": "sc.core.reproducible-environment-package.v1"
+}

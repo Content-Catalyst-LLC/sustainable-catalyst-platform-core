@@ -107,6 +107,7 @@ from .routers import (
     scientific_registry,
     runtime_data_interchange,
     cross_runtime_workflows,
+    reproducible_environments,
     uncertainty_probabilistic_evidence,
     visualization_registry,
     system_maps,
@@ -474,6 +475,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # v3.40.0 Cross-Runtime Research Workflow.
     app.include_router(cross_runtime_workflows.router)
     app.include_router(cross_runtime_workflows.public_router)
+    # v3.41.0 Reproducible Environment Packages.
+    app.include_router(reproducible_environments.router)
+    app.include_router(reproducible_environments.public_router)
     app.include_router(uncertainty_probabilistic_evidence.router)
     app.include_router(uncertainty_probabilistic_evidence.public_router)
     # Open Forensics includes v2.51.0 Reproducible Investigation Packages.
