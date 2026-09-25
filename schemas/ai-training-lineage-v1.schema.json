@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/ai-training-lineage-v1.schema.json",
+  "title": "Sustainable Catalyst Dataset, Feature Set & Training Lineage",
+  "type": "object",
+  "required": [
+    "dataset_bindings",
+    "feature_sets",
+    "training_lineage"
+  ],
+  "properties": {
+    "dataset_bindings": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "feature_sets": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "training_lineage": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "x-sustainable-catalyst": {
+    "release": "3.28.0",
+    "contract": "sc.core.ai-training-lineage.v1",
+    "ai_model_contract": "sc.core.ai-model.v1",
+    "computational_job_contract": "sc.core.computational-job.v1",
+    "environment_contract": "sc.core.execution-environment-provenance.v1",
+    "duplicates_generic_dataset_registry": false,
+    "core_trains_models": false
+  }
+}

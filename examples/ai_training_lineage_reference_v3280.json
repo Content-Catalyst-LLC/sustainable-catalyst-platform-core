@@ -1,0 +1,87 @@
+{
+  "dataset_bindings": [
+    {
+      "dataset": {
+        "dataset_id": "dataset:reference-scientific-regression",
+        "name": "Reference Scientific Regression Dataset",
+        "modality": "tabular",
+        "source_refs": [
+          "source:reference-observations"
+        ],
+        "knowledge_library_refs": [],
+        "provenance": {},
+        "metadata": {}
+      },
+      "dataset_version": {
+        "dataset_version_id": "dataset-version:reference-scientific-regression:v1",
+        "dataset_id": "dataset:reference-scientific-regression",
+        "version": "v1",
+        "row_count": 1000,
+        "column_count": 5,
+        "content_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "schema_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "runtime_environment_ref": "environment:reference-python",
+        "creation_job_ref": "job:reference-dataset-preparation",
+        "artifacts": [],
+        "provenance": {},
+        "metadata": {}
+      }
+    }
+  ],
+  "feature_sets": [
+    {
+      "feature_set_id": "feature-set:reference-scientific-regression:v1",
+      "dataset_version_ref": "dataset-version:reference-scientific-regression:v1",
+      "version": "v1",
+      "features": [
+        {
+          "feature_id": "feature:x1",
+          "name": "x1",
+          "data_type": "float64",
+          "source_field_refs": [],
+          "nullable": true,
+          "metadata": {}
+        },
+        {
+          "feature_id": "feature:y",
+          "name": "y",
+          "data_type": "float64",
+          "semantic_type": "target",
+          "source_field_refs": [],
+          "nullable": true,
+          "metadata": {}
+        }
+      ],
+      "target_feature_refs": [
+        "feature:y"
+      ],
+      "feature_order_significant": false,
+      "provenance": {},
+      "metadata": {}
+    }
+  ],
+  "training_lineage": {
+    "training_lineage_id": "training-lineage:reference-scientific-regressor:1.0.0",
+    "ai_model_ref": "ai-model:reference-scientific-regressor",
+    "ai_model_version_ref": "ai-model-version:reference-scientific-regressor:1.0.0",
+    "training_job_ref": "job:reference-model-training",
+    "runtime_environment_ref": "environment:reference-python",
+    "source_dataset_version_refs": [
+      "dataset-version:reference-scientific-regression:v1"
+    ],
+    "feature_set_ref": "feature-set:reference-scientific-regression:v1",
+    "splits": [],
+    "transformations": [],
+    "random_seed": 427,
+    "hyperparameters": {
+      "learning_rate": 0.05
+    },
+    "framework": "reference",
+    "framework_version": "1.0",
+    "output_artifact_refs": [
+      "artifact:reference-scientific-regressor:weights"
+    ],
+    "provenance": {},
+    "metadata": {}
+  }
+}
