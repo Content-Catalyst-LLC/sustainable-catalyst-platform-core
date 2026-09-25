@@ -159,6 +159,77 @@ def _julia_reference_adapter() -> RuntimeAdapterDescriptor:
     )
 
 
+
+def _r_runtime_adapter() -> RuntimeAdapterDescriptor:
+    capability = RuntimeCapability(
+        capability_key="governed-statistical-analysis",
+        category="statistics",
+        operations=[
+            "descriptive_summary",
+            "quantile_summary",
+            "correlation_matrix",
+            "linear_regression",
+            "t_test",
+            "one_way_anova",
+        ],
+        input_types=["json", "array", "table", "scalar"],
+        output_types=["json", "scalar", "table"],
+        deterministic=True,
+        arbitrary_code_execution=False,
+        shell_execution=False,
+        package_installation=False,
+        metadata={
+            "provider_contract": "sc.core.r-runtime-migration.v1",
+            "environment_contract": "sc.environment.v1",
+            "legacy_provider_alias": "catalyst-analytics-r",
+        },
+    )
+    runtime = RuntimeDescriptor(
+        runtime_id="sc-runtime-r",
+        runtime_kind=RuntimeKind.language,
+        language="r",
+        implementation="R",
+        runtime_version="system-managed",
+        provider_version="1.0.0",
+        service_name="sc-r-runtime",
+        contract_versions=[
+            OBJECT_CONTRACT_VERSION,
+            ADAPTER_CONTRACT_VERSION,
+            "sc.core.r-runtime-migration.v1",
+            "sc.environment.v1",
+        ],
+        capabilities=[capability],
+        execution_host="contabo-vps",
+        status="active",
+        metadata={
+            "canonical_runtime": True,
+            "provider_release": "Sustainable Catalyst R Runtime v1.0.0",
+            "legacy_provider_id": "catalyst-analytics-r",
+            "legacy_provider_version": "2.0.1",
+            "legacy_alias_resolution": True,
+            "arbitrary_r_source": False,
+            "runtime_package_install": False,
+        },
+    )
+    return RuntimeAdapterDescriptor(
+        adapter_id="adapter:sc-runtime-r",
+        runtime=runtime,
+        provider_contracts=[
+            "sc.core.r-runtime-migration.v1",
+            "sc.core.analytical-runtime-provider.v1",
+            "sc.environment.v1",
+        ],
+        transport="http",
+        invocation_mode="governed-service",
+        service_ref="sc-r-runtime",
+        status="registered",
+        metadata={
+            "core_executes_runtime_directly": False,
+            "migration_source": "catalyst-analytics-r@2.0.1",
+            "endpoint": "http://127.0.0.1:18094",
+        },
+    )
+
 def legacy_analytical_provider_to_adapter(
     provider: dict[str, Any],
     capabilities: list[dict[str, Any]] | None = None,
@@ -224,6 +295,7 @@ class RuntimeAdapterRegistry:
     def __init__(self):
         self._adapters: dict[str, RuntimeAdapterDescriptor] = {}
         self.register(_julia_reference_adapter())
+        self.register(_r_runtime_adapter())
 
     def register(self, adapter: RuntimeAdapterDescriptor) -> RuntimeAdapterDescriptor:
         self._adapters[adapter.adapter_id] = adapter

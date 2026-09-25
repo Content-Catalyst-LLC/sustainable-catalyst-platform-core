@@ -102,6 +102,7 @@ from .routers import (
     ai_error_robustness,
     ai_calibration_drift_risk,
     ai_research_object_system,
+    r_runtime_migration,
     uncertainty_probabilistic_evidence,
     visualization_registry,
     system_maps,
@@ -454,6 +455,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # v3.35.0 Unified AI Research Object System.
     app.include_router(ai_research_object_system.router)
     app.include_router(ai_research_object_system.public_router)
+    # v3.36.0 Analytics R Migration / R Runtime 1.0.
+    app.include_router(r_runtime_migration.router)
+    app.include_router(r_runtime_migration.public_router)
     app.include_router(uncertainty_probabilistic_evidence.router)
     app.include_router(uncertainty_probabilistic_evidence.public_router)
     # Open Forensics includes v2.51.0 Reproducible Investigation Packages.

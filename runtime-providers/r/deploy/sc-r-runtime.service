@@ -1,0 +1,17 @@
+[Unit]
+Description=Sustainable Catalyst R Runtime
+After=network.target
+
+[Service]
+Type=simple
+User=catalystadmin
+Group=catalystadmin
+WorkingDirectory=/opt/sustainable-catalyst/r-runtime
+Environment=SC_R_RUNTIME_HOST=127.0.0.1
+Environment=SC_R_RUNTIME_PORT=18094
+ExecStart=/opt/sustainable-catalyst/r-runtime/.venv/bin/uvicorn app.server:app --host 127.0.0.1 --port 18094
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

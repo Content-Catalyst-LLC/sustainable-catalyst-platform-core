@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/r-runtime-migration-v1.schema.json",
+  "title": "Sustainable Catalyst Analytics R Migration / R Runtime 1.0",
+  "type": "object",
+  "required": [
+    "migration_plan",
+    "runtime_registration",
+    "source_ai_research_contract",
+    "core_release"
+  ],
+  "properties": {
+    "migration_plan": {
+      "type": "object"
+    },
+    "runtime_registration": {
+      "type": "object"
+    },
+    "source_ai_research_contract": {
+      "type": "string"
+    },
+    "core_release": {
+      "const": "3.36.0"
+    }
+  },
+  "additionalProperties": false,
+  "x-sustainable-catalyst": {
+    "release": "3.36.0",
+    "contract": "sc.core.r-runtime-migration.v1",
+    "legacy_provider": "catalyst-analytics-r@2.0.1",
+    "canonical_runtime": "sc-runtime-r@1.0.0",
+    "adapter": "adapter:sc-runtime-r",
+    "destructive_migration": false
+  }
+}
