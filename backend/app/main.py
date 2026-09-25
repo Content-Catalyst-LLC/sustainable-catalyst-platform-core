@@ -101,6 +101,7 @@ from .routers import (
     ai_experiment_reproducibility,
     ai_error_robustness,
     ai_calibration_drift_risk,
+    ai_research_object_system,
     uncertainty_probabilistic_evidence,
     visualization_registry,
     system_maps,
@@ -450,6 +451,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # v3.34.0 AI Calibration, Drift & Risk Monitoring.
     app.include_router(ai_calibration_drift_risk.router)
     app.include_router(ai_calibration_drift_risk.public_router)
+    # v3.35.0 Unified AI Research Object System.
+    app.include_router(ai_research_object_system.router)
+    app.include_router(ai_research_object_system.public_router)
     app.include_router(uncertainty_probabilistic_evidence.router)
     app.include_router(uncertainty_probabilistic_evidence.public_router)
     # Open Forensics includes v2.51.0 Reproducible Investigation Packages.

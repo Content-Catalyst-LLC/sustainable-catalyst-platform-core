@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/ai-research-object-system-v1.schema.json",
+  "title": "Sustainable Catalyst Unified AI Research Object System",
+  "type": "object",
+  "required": [
+    "manifest",
+    "registry",
+    "graph",
+    "snapshot",
+    "packages"
+  ],
+  "properties": {
+    "manifest": {
+      "type": "object"
+    },
+    "registry": {
+      "type": "object"
+    },
+    "graph": {
+      "type": "object"
+    },
+    "snapshot": {
+      "type": "object"
+    },
+    "packages": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "x-sustainable-catalyst": {
+    "release": "3.35.0",
+    "contract": "sc.core.ai-research-object-system.v1",
+    "source_contract_count": 8,
+    "reference_only_payload_mode": true,
+    "core_duplicates_source_payloads": false,
+    "core_executes_ai_jobs": false
+  }
+}

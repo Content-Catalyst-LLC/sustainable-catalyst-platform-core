@@ -1,0 +1,10 @@
+{
+  "manifest_id": "ai-research-system-manifest:v1",
+  "registry_id": "ai-research-object-registry:reference:v1",
+  "graph_id": "ai-research-relationship-graph:reference:v1",
+  "snapshot_id": "ai-research-snapshot:reference:v1",
+  "package_id": "ai-research-package:reference-classifier:v1",
+  "registered_object_count": 13,
+  "relationship_count": 17,
+  "contract": "sc.core.ai-research-object-system.v1"
+}
