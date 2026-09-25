@@ -1,0 +1,122 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/computational-job-v1.schema.json",
+  "title": "Sustainable Catalyst Unified Computational Job",
+  "type": "object",
+  "required": [
+    "job_id",
+    "state",
+    "request",
+    "provider_binding"
+  ],
+  "properties": {
+    "job_id": {
+      "type": "string",
+      "minLength": 2
+    },
+    "state": {
+      "enum": [
+        "declared",
+        "queued",
+        "preparing",
+        "running",
+        "completed",
+        "failed",
+        "cancelled"
+      ]
+    },
+    "priority": {
+      "enum": [
+        "low",
+        "normal",
+        "high",
+        "urgent"
+      ]
+    },
+    "request": {
+      "type": "object"
+    },
+    "provider_binding": {
+      "type": "object"
+    },
+    "environment_requirement": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "retry_policy": {
+      "type": "object"
+    },
+    "idempotency_key": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "attempts": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "events": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "result": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "declared_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "submitted_by": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "workflow_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "project_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "provenance": {
+      "type": "object"
+    },
+    "metadata": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "x-sustainable-catalyst": {
+    "release": "3.25.0",
+    "contract": "sc.core.computational-job.v1",
+    "reference_runtime": "catalyst-julia-runtime@0.3.0",
+    "core_is_execution_host": false,
+    "provider_selection": "explicit-only"
+  }
+}

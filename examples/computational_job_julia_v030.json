@@ -1,0 +1,76 @@
+{
+  "job_id": "job:julia-v030-matrix-proof",
+  "state": "declared",
+  "priority": "normal",
+  "request": {
+    "request_id": "request:julia-v030-matrix-proof",
+    "runtime_id": "catalyst-julia-runtime",
+    "operation": "matrix_multiply",
+    "inputs": {
+      "a": [
+        [
+          1,
+          2
+        ],
+        [
+          3,
+          4
+        ]
+      ],
+      "b": [
+        [
+          5,
+          6
+        ],
+        [
+          7,
+          8
+        ]
+      ]
+    },
+    "parameters": {},
+    "random_seed": 325,
+    "provenance": {
+      "purpose": "Platform Core v3.25.0 unified computational job proof"
+    }
+  },
+  "provider_binding": {
+    "adapter_id": "adapter:catalyst-julia-runtime",
+    "runtime_id": "catalyst-julia-runtime",
+    "provider_version": "0.3.0",
+    "capability_key": "governed-numeric-compute",
+    "operation": "matrix_multiply",
+    "execution_host": "contabo-vps",
+    "transport": "http",
+    "selection_mode": "reproduction-pinned",
+    "selection_provenance": {
+      "core_registry_release": "3.24.0",
+      "adapter_status": "registered"
+    }
+  },
+  "environment_requirement": {
+    "runtime_id": "catalyst-julia-runtime",
+    "runtime_version": "1.13.0",
+    "reproducibility_status": "locked",
+    "required_dependencies": [],
+    "required_lockfile_hashes": [],
+    "require_resolved_dependency_graph": false
+  },
+  "retry_policy": {
+    "max_attempts": 1,
+    "retry_on_states": [
+      "failed"
+    ],
+    "backoff_seconds": 0.0,
+    "metadata": {}
+  },
+  "attempts": [],
+  "events": [],
+  "artifacts": [],
+  "submitted_by": "platform-core-release-validation",
+  "provenance": {
+    "reference_job": true,
+    "provider_release": "Catalyst Julia Runtime v0.3.0"
+  },
+  "metadata": {}
+}
