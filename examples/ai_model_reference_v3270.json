@@ -1,0 +1,59 @@
+{
+  "model": {
+    "model_id": "ai-model:reference-scientific-regressor",
+    "name": "Reference Scientific Regressor",
+    "family": "Sustainable Catalyst Reference Models",
+    "model_kind": "classical-ml",
+    "provider": {
+      "provider_id": "provider:sustainable-catalyst-local",
+      "name": "Sustainable Catalyst Local Runtime",
+      "provider_kind": "local",
+      "organization": "Content Catalyst LLC",
+      "metadata": {}
+    },
+    "status": "registered",
+    "capabilities": [
+      {
+        "capability_key": "supervised-regression",
+        "task": "regression",
+        "input_modalities": [
+          "tabular"
+        ],
+        "output_modalities": [
+          "scalar"
+        ],
+        "metadata": {}
+      }
+    ],
+    "research_model_ref": "research-model:reference-scientific-regressor",
+    "predictive_model_ref": "predictive-model:reference-scientific-regressor",
+    "provenance": {
+      "purpose": "Platform Core v3.27.0 AI model contract proof"
+    },
+    "metadata": {}
+  },
+  "model_version": {
+    "model_version_id": "ai-model-version:reference-scientific-regressor:1.0.0",
+    "model_id": "ai-model:reference-scientific-regressor",
+    "version": "1.0.0",
+    "status": "registered",
+    "architecture": "gradient-boosted-regression",
+    "framework": "reference",
+    "framework_version": "1.0",
+    "parameter_count": 1000,
+    "precision": "float64",
+    "weights_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "config_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "training_dataset_refs": [
+      "dataset-version:reference-training:v1"
+    ],
+    "evaluation_dataset_refs": [
+      "dataset-version:reference-evaluation:v1"
+    ],
+    "source_commit": "reference-commit",
+    "runtime_environment_ref": "environment:reference-python",
+    "artifacts": [],
+    "provenance": {},
+    "metadata": {}
+  }
+}

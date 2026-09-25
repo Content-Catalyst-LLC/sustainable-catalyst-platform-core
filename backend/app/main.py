@@ -93,6 +93,7 @@ from .routers import (
     execution_environment_provenance,
     computational_job_runtime,
     julia_runtime_integration,
+    ai_model_objects,
     uncertainty_probabilistic_evidence,
     visualization_registry,
     system_maps,
@@ -418,6 +419,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(computational_job_runtime.public_router)
     app.include_router(julia_runtime_integration.router)
     app.include_router(julia_runtime_integration.public_router)
+    # v3.27.0 AI Model & Model-Version Object Model.
+    app.include_router(ai_model_objects.router)
+    app.include_router(ai_model_objects.public_router)
     app.include_router(uncertainty_probabilistic_evidence.router)
     app.include_router(uncertainty_probabilistic_evidence.public_router)
     # Open Forensics includes v2.51.0 Reproducible Investigation Packages.

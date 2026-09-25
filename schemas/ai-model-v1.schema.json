@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/ai-model-v1.schema.json",
+  "title": "Sustainable Catalyst AI Model and Model Version",
+  "type": "object",
+  "required": [
+    "model_id",
+    "name",
+    "model_kind",
+    "provider"
+  ],
+  "properties": {
+    "model_id": {
+      "type": "string",
+      "minLength": 2
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "family": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "model_kind": {
+      "enum": [
+        "classical-ml",
+        "neural-network",
+        "foundation-model",
+        "embedding-model",
+        "reranker",
+        "generative-model",
+        "multimodal-model",
+        "scientific-ml",
+        "hybrid"
+      ]
+    },
+    "provider": {
+      "type": "object"
+    },
+    "status": {
+      "enum": [
+        "draft",
+        "registered",
+        "active",
+        "deprecated",
+        "retired"
+      ]
+    },
+    "capabilities": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "research_model_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "predictive_model_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "parent_model_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "description": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "provenance": {
+      "type": "object"
+    },
+    "metadata": {
+      "type": "object"
+    }
+  }
+}
