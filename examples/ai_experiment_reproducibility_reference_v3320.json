@@ -1,0 +1,8 @@
+{
+  "experiment_id": "ai-experiment:reference-classifier-comparison:v1",
+  "reproducibility_package_id": "repro-package:reference-classifier-comparison:v1",
+  "baseline_condition": "condition:baseline",
+  "candidate_condition": "condition:candidate",
+  "assessment": "exact",
+  "contract": "sc.core.ai-experiment-reproducibility.v1"
+}

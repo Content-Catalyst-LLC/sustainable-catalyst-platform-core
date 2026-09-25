@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/ai-experiment-reproducibility-v1.schema.json",
+  "title": "Sustainable Catalyst AI Experiment & Reproducibility Package",
+  "type": "object",
+  "required": [
+    "experiment",
+    "run_bindings",
+    "reproducibility_package",
+    "reproduction_attempts",
+    "assessments"
+  ],
+  "properties": {
+    "experiment": {
+      "type": "object"
+    },
+    "run_bindings": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "reproducibility_package": {
+      "type": "object"
+    },
+    "reproduction_attempts": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "assessments": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "x-sustainable-catalyst": {
+    "release": "3.32.0",
+    "contract": "sc.core.ai-experiment-reproducibility.v1",
+    "core_executes_experiments": false,
+    "core_selects_winning_condition": false
+  }
+}

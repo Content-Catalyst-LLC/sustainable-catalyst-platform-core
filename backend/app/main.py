@@ -98,6 +98,7 @@ from .routers import (
     ai_inference_provenance,
     prompt_context_retrieval,
     ai_evaluation_benchmark,
+    ai_experiment_reproducibility,
     uncertainty_probabilistic_evidence,
     visualization_registry,
     system_maps,
@@ -438,6 +439,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # v3.31.0 AI Evaluation & Benchmark Object System.
     app.include_router(ai_evaluation_benchmark.router)
     app.include_router(ai_evaluation_benchmark.public_router)
+    # v3.32.0 AI Experiment & Reproducibility Packages.
+    app.include_router(ai_experiment_reproducibility.router)
+    app.include_router(ai_experiment_reproducibility.public_router)
     app.include_router(uncertainty_probabilistic_evidence.router)
     app.include_router(uncertainty_probabilistic_evidence.public_router)
     # Open Forensics includes v2.51.0 Reproducible Investigation Packages.
