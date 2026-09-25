@@ -97,6 +97,7 @@ from .routers import (
     ai_training_lineage,
     ai_inference_provenance,
     prompt_context_retrieval,
+    ai_evaluation_benchmark,
     uncertainty_probabilistic_evidence,
     visualization_registry,
     system_maps,
@@ -434,6 +435,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # v3.30.0 Prompt, Context & Retrieval Object Model.
     app.include_router(prompt_context_retrieval.router)
     app.include_router(prompt_context_retrieval.public_router)
+    # v3.31.0 AI Evaluation & Benchmark Object System.
+    app.include_router(ai_evaluation_benchmark.router)
+    app.include_router(ai_evaluation_benchmark.public_router)
     app.include_router(uncertainty_probabilistic_evidence.router)
     app.include_router(uncertainty_probabilistic_evidence.public_router)
     # Open Forensics includes v2.51.0 Reproducible Investigation Packages.

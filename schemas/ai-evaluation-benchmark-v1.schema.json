@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/ai-evaluation-benchmark-v1.schema.json",
+  "title": "Sustainable Catalyst AI Evaluation & Benchmark Object System",
+  "type": "object",
+  "required": [
+    "benchmark",
+    "evaluation_cases",
+    "evaluation_run",
+    "benchmark_result"
+  ],
+  "properties": {
+    "benchmark": {
+      "type": "object"
+    },
+    "evaluation_cases": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "evaluation_run": {
+      "type": "object"
+    },
+    "benchmark_result": {
+      "type": "object"
+    },
+    "comparison": {
+      "type": [
+        "object",
+        "null"
+      ]
+    }
+  },
+  "additionalProperties": false,
+  "x-sustainable-catalyst": {
+    "release": "3.31.0",
+    "contract": "sc.core.ai-evaluation-benchmark.v1",
+    "core_executes_evaluation": false,
+    "core_selects_best_model": false
+  }
+}

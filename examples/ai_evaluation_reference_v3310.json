@@ -1,0 +1,6 @@
+{
+  "benchmark_id": "benchmark:reference-classification:v1",
+  "evaluation_run_id": "evaluation-run:reference-classifier:001",
+  "model_version": "ai-model-version:reference-classifier:1.0.0",
+  "contract": "sc.core.ai-evaluation-benchmark.v1"
+}

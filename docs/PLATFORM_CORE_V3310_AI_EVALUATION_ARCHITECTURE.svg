@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000">
+<defs><style>
+.t{font:700 34px Arial;fill:#111}.s{font:400 18px Arial;fill:#444}.h{font:700 20px Arial;fill:#111}.x{font:400 16px Arial;fill:#333}.b{fill:#fff;stroke:#111;stroke-width:2;rx:18}.g{fill:#f7f7f7;stroke:#333;stroke-width:2;rx:18}.a{fill:#8b1e2d;stroke:#8b1e2d;rx:16}.aw{font:700 18px Arial;fill:#fff}.ln{stroke:#111;stroke-width:2.4;fill:none;marker-end:url(#m)}
+</style><marker id="m" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#111"/></marker></defs>
+<rect width="1600" height="1000" fill="#fff"/>
+<text class="t" x="70" y="60">Platform Core v3.31.0 — AI Evaluation &amp; Benchmark Object System</text>
+<text class="s" x="70" y="94">sc.core.ai-evaluation-benchmark.v1</text>
+<rect class="b" x="70" y="150" width="300" height="135"/><text class="h" x="95" y="187">AIModelVersion</text><text class="x" x="95" y="220">Exact evaluated model</text><text class="x" x="95" y="248">Training + provider lineage</text>
+<rect class="b" x="455" y="150" width="320" height="135"/><text class="h" x="480" y="187">BenchmarkDefinition</text><text class="x" x="480" y="220">Dataset version + ground truth</text><text class="x" x="480" y="248">Metric definitions + benchmark version</text>
+<rect class="b" x="860" y="150" width="300" height="135"/><text class="h" x="885" y="187">EvaluationCase</text><text class="x" x="885" y="220">Sample / input identity</text><text class="x" x="885" y="248">Expected output + slices</text>
+<path class="ln" d="M370 218 L445 218"/><path class="ln" d="M775 218 L850 218"/>
+<rect class="g" x="70" y="375" width="300" height="155"/><text class="h" x="95" y="412">AIInferenceRun</text><text class="x" x="95" y="445">Observed output provenance</text><text class="x" x="95" y="473">AI artifact references</text><text class="x" x="95" y="501">Prompt / retrieval lineage</text>
+<rect class="g" x="455" y="375" width="320" height="155"/><text class="h" x="480" y="412">EvaluationRun</text><text class="x" x="480" y="445">Benchmark fingerprint</text><text class="x" x="480" y="473">Computational job + environment</text><text class="x" x="480" y="501">Cases + aggregate metrics</text>
+<rect class="g" x="860" y="375" width="300" height="155"/><text class="h" x="885" y="412">MetricResult</text><text class="x" x="885" y="445">Value + pass state</text><text class="x" x="885" y="473">Sample count</text><text class="x" x="885" y="501">Confidence interval</text>
+<path class="ln" d="M220 285 L220 365"/><path class="ln" d="M615 285 L615 365"/><path class="ln" d="M1010 285 L1010 365"/><path class="ln" d="M370 452 L445 452"/><path class="ln" d="M775 452 L850 452"/>
+<rect class="a" x="455" y="625" width="320" height="90"/><text class="aw" x="520" y="664">BenchmarkResult</text><text class="aw" x="500" y="695">Reproducible evaluation evidence</text><path class="ln" d="M615 530 L615 615"/>
+<rect class="b" x="860" y="610" width="430" height="120"/><text class="h" x="885" y="648">ModelBenchmarkComparison</text><text class="x" x="885" y="681">Comparable evidence across model versions</text><text class="x" x="885" y="709">Descriptive only — Core selects no winner</text><path class="ln" d="M775 670 L850 670"/>
+<rect x="70" y="815" width="1220" height="110" fill="#faf7f5" stroke="#8b1e2d" stroke-width="2" rx="16"/>
+<text class="h" x="95" y="850">Execution boundary</text><text class="x" x="95" y="882">Research Lab executes evaluation workflows • Workspace/runtime providers execute jobs</text><text class="x" x="95" y="910">Platform Core owns benchmark identity, metric identity, provenance, lineage, and exchange contracts.</text>
+<rect class="b" x="1330" y="150" width="210" height="580"/><text class="h" x="1352" y="190">AI Engineering</text><text class="x" x="1352" y="230">v3.27 Models</text><text class="x" x="1352" y="265">v3.28 Training</text><text class="x" x="1352" y="300">v3.29 Inference</text><text class="x" x="1352" y="335">v3.30 RAG Context</text><text class="x" x="1352" y="370">v3.31 Evaluation</text><text class="x" x="1352" y="430">Next:</text><text class="x" x="1352" y="465">v3.32 Experiment &amp;</text><text class="x" x="1352" y="492">Reproducibility</text>
+</svg>
