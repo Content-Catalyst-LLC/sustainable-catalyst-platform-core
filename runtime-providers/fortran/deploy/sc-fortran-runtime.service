@@ -1,0 +1,22 @@
+[Unit]
+Description=Sustainable Catalyst Fortran Runtime
+After=network.target
+
+[Service]
+Type=simple
+User=catalystadmin
+Group=catalystadmin
+WorkingDirectory=/opt/sustainable-catalyst/fortran-runtime
+Environment=SC_FORTRAN_RUNTIME_HOST=127.0.0.1
+Environment=SC_FORTRAN_RUNTIME_PORT=18099
+Environment=SC_FORTRAN_GFORTRAN_VERSION=13.3.0
+Environment=SC_FORTRAN_GFORTRAN_PACKAGE_VERSION=13.3.0-6ubuntu2~24.04.1
+Environment=SC_FORTRAN_GFORTRAN_BIN=/usr/bin/gfortran-13
+Environment=SC_FORTRAN_ARTIFACT_ROOT=/var/lib/sc-fortran-runtime/artifacts
+Environment=SC_FORTRAN_WORK_ROOT=/var/lib/sc-fortran-runtime/work
+ExecStart=/opt/sustainable-catalyst/fortran-runtime/.venv/bin/uvicorn app.server:app --host 127.0.0.1 --port 18099
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

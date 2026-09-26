@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/fortran-runtime-v1.schema.json",
+  "title": "Sustainable Catalyst Fortran Runtime",
+  "type": "object",
+  "required": [
+    "bundle_id",
+    "registration",
+    "environment_package",
+    "security_policy",
+    "reference_request",
+    "result_contract"
+  ],
+  "additionalProperties": true,
+  "x-sustainable-catalyst": {
+    "release": "3.50.0",
+    "contract": "sc.core.fortran-runtime.v1",
+    "runtime_id": "sc-runtime-fortran",
+    "provider_version": "1.0.0",
+    "gfortran_version": "13.3.0",
+    "gfortran_package_version": "13.3.0-6ubuntu2~24.04.1",
+    "arbitrary_fortran_source": false
+  }
+}

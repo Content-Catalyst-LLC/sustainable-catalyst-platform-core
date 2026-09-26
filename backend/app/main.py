@@ -116,6 +116,7 @@ from .routers import (
     octave_runtime,
     gretl_hansl_runtime,
     haskell_runtime,
+    fortran_runtime,
     uncertainty_probabilistic_evidence,
     visualization_registry,
     system_maps,
@@ -510,6 +511,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # v3.49.0 Haskell Runtime.
     app.include_router(haskell_runtime.router)
     app.include_router(haskell_runtime.public_router)
+    # v3.50.0 Fortran Runtime.
+    app.include_router(fortran_runtime.router)
+    app.include_router(fortran_runtime.public_router)
     app.include_router(uncertainty_probabilistic_evidence.router)
     app.include_router(uncertainty_probabilistic_evidence.public_router)
     # Open Forensics includes v2.51.0 Reproducible Investigation Packages.

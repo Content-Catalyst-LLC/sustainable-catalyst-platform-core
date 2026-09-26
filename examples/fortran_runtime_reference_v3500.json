@@ -1,0 +1,10 @@
+{
+  "bundle_id": "fortran-runtime-bundle:reference:v1",
+  "runtime_id": "sc-runtime-fortran",
+  "provider_version": "1.0.0",
+  "gfortran_version": "13.3.0",
+  "operation": "dot_product",
+  "environment_package": "environment-package:fortran-runtime:v1",
+  "security_policy": "runtime-security-policy:fortran-runtime-standard:v1",
+  "contract": "sc.core.fortran-runtime.v1"
+}
