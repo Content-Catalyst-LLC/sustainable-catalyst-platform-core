@@ -183,7 +183,7 @@ def build_hansl_script(
     lines = [
         "set echo off",
         "set messages off",
-        f'open "{csv_path}" --csv',
+        f'open "{csv_path}"',
     ]
 
     if operation in {"ols", "robust_ols", "logit", "probit"}:

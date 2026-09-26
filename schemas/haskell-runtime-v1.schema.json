@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/haskell-runtime-v1.schema.json",
+  "title": "Sustainable Catalyst Haskell Runtime",
+  "type": "object",
+  "required": [
+    "bundle_id",
+    "registration",
+    "environment_package",
+    "security_policy",
+    "reference_request",
+    "result_contract"
+  ],
+  "additionalProperties": true,
+  "x-sustainable-catalyst": {
+    "release": "3.49.0",
+    "contract": "sc.core.haskell-runtime.v1",
+    "runtime_id": "sc-runtime-haskell",
+    "provider_version": "1.0.0",
+    "ghc_version": "9.4.7",
+    "ghc_package_version": "9.4.7-3",
+    "arbitrary_haskell_source": false
+  }
+}

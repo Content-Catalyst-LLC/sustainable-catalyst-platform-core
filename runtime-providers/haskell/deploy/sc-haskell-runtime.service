@@ -1,0 +1,23 @@
+[Unit]
+Description=Sustainable Catalyst Haskell Runtime
+After=network.target
+
+[Service]
+Type=simple
+User=catalystadmin
+Group=catalystadmin
+WorkingDirectory=/opt/sustainable-catalyst/haskell-runtime
+Environment=SC_HASKELL_RUNTIME_HOST=127.0.0.1
+Environment=SC_HASKELL_RUNTIME_PORT=18098
+Environment=SC_HASKELL_GHC_VERSION=9.4.7
+Environment=SC_HASKELL_GHC_PACKAGE_VERSION=9.4.7-3
+Environment=SC_HASKELL_GHC_BIN=/usr/bin/ghc
+Environment=SC_HASKELL_RUNGHC_BIN=/usr/bin/runghc
+Environment=SC_HASKELL_ARTIFACT_ROOT=/var/lib/sc-haskell-runtime/artifacts
+Environment=SC_HASKELL_WORK_ROOT=/var/lib/sc-haskell-runtime/work
+ExecStart=/opt/sustainable-catalyst/haskell-runtime/.venv/bin/uvicorn app.server:app --host 127.0.0.1 --port 18098
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

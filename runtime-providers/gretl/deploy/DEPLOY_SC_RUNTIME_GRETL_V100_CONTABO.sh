@@ -11,7 +11,7 @@ echo "=== SUSTAINABLE CATALYST GRETL/HANSL RUNTIME v1.0.0 DEPLOYMENT ==="
 
 sudo apt-get update
 
-CANDIDATE="$(apt-cache policy gretl | awk '/Candidate:/ {print $2; exit}')"
+CANDIDATE="$(apt-cache policy gretl | awk '/Candidate:/ {candidate=$2} END {print candidate}')"
 [[ "$CANDIDATE" == "$EXPECTED_PACKAGE_VERSION" ]] || {
   echo "ERROR: expected Ubuntu 24.04 gretl candidate $EXPECTED_PACKAGE_VERSION, got $CANDIDATE"
   exit 1

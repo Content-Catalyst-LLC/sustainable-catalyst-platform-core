@@ -450,6 +450,76 @@ def _gretl_runtime_adapter() -> RuntimeAdapterDescriptor:
         },
     )
 
+
+def _haskell_runtime_adapter() -> RuntimeAdapterDescriptor:
+    capability = RuntimeCapability(
+        capability_key="bounded-typed-functional-compute",
+        category="functional-computing",
+        operations=[
+            "gcd", "lcm", "rational_reduce", "factorial", "fibonacci",
+            "binomial_coefficient", "integer_power", "graph_reachable",
+        ],
+        input_types=["json", "integer", "integer-pair", "graph-edge-list"],
+        output_types=["json", "exact-integer", "exact-rational", "boolean", "diagnostics"],
+        deterministic=True,
+        arbitrary_code_execution=False,
+        shell_execution=False,
+        package_installation=False,
+        metadata={
+            "provider_contract": "sc.core.haskell-runtime.v1",
+            "environment_contract": "sc.core.reproducible-environment-package.v1",
+            "native_runtime": "GHC",
+            "native_runtime_version": "9.4.7",
+            "native_package_version": "9.4.7-3",
+            "language": "haskell",
+        },
+    )
+    runtime = RuntimeDescriptor(
+        runtime_id="sc-runtime-haskell",
+        runtime_kind=RuntimeKind.language,
+        language="haskell",
+        implementation="GHC",
+        runtime_version="9.4.7",
+        provider_version="1.0.0",
+        service_name="sc-haskell-runtime",
+        contract_versions=[
+            OBJECT_CONTRACT_VERSION, ADAPTER_CONTRACT_VERSION,
+            "sc.core.haskell-runtime.v1",
+            "sc.core.reproducible-environment-package.v1",
+            "sc.core.runtime-security-governance.v1",
+        ],
+        capabilities=[capability],
+        execution_host="contabo-vps",
+        status="active",
+        metadata={
+            "canonical_runtime": True,
+            "provider_release": "Sustainable Catalyst Haskell Runtime v1.0.0",
+            "arbitrary_haskell_source": False,
+            "shell_execution": False,
+            "runtime_package_install": False,
+        },
+    )
+    return RuntimeAdapterDescriptor(
+        adapter_id="adapter:sc-runtime-haskell",
+        runtime=runtime,
+        provider_contracts=[
+            "sc.core.haskell-runtime.v1",
+            "sc.core.reproducible-environment-package.v1",
+            "sc.core.runtime-security-governance.v1",
+        ],
+        transport="http",
+        invocation_mode="governed-service",
+        service_ref="sc-haskell-runtime",
+        status="registered",
+        metadata={
+            "core_executes_runtime_directly": False,
+            "endpoint": "http://127.0.0.1:18098",
+            "native_runtime": "GHC",
+            "native_runtime_version": "9.4.7",
+            "language": "haskell",
+        },
+    )
+
 def legacy_analytical_provider_to_adapter(
     provider: dict[str, Any],
     capabilities: list[dict[str, Any]] | None = None,
@@ -519,6 +589,7 @@ class RuntimeAdapterRegistry:
         self.register(_stan_runtime_adapter())
         self.register(_octave_runtime_adapter())
         self.register(_gretl_runtime_adapter())
+        self.register(_haskell_runtime_adapter())
 
     def register(self, adapter: RuntimeAdapterDescriptor) -> RuntimeAdapterDescriptor:
         self._adapters[adapter.adapter_id] = adapter

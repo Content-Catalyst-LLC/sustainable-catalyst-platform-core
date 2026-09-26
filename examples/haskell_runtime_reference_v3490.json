@@ -1,0 +1,14 @@
+{
+  "bundle_id": "haskell-runtime-bundle:reference:v1",
+  "runtime_id": "sc-runtime-haskell",
+  "provider_version": "1.0.0",
+  "ghc_version": "9.4.7",
+  "operation": "rational_reduce",
+  "input": {
+    "numerator": 42,
+    "denominator": 56
+  },
+  "environment_package": "environment-package:haskell-runtime:v1",
+  "security_policy": "runtime-security-policy:haskell-runtime-standard:v1",
+  "contract": "sc.core.haskell-runtime.v1"
+}
