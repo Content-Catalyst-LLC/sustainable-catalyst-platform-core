@@ -1,0 +1,12 @@
+{
+  "runtime_id": "sc-runtime-jvm",
+  "operation": "parallel_sum",
+  "values": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "expected_sum": 15
+}

@@ -1,0 +1,28 @@
+[Unit]
+Description=Sustainable Catalyst JVM Runtime
+After=network.target
+
+[Service]
+Type=simple
+User=catalystadmin
+Group=catalystadmin
+WorkingDirectory=/opt/sustainable-catalyst/jvm-runtime
+Environment=SC_JVM_RUNTIME_HOST=127.0.0.1
+Environment=SC_JVM_RUNTIME_PORT=18105
+Environment=SC_JVM_MAJOR_VERSION=21
+Environment=SC_JAVA_BIN=/usr/bin/java
+Environment=SC_JAVAC_BIN=/usr/bin/javac
+Environment=SC_JVM_ARTIFACT_ROOT=/var/lib/sc-jvm-runtime/artifacts
+Environment=SC_JVM_WORK_ROOT=/var/lib/sc-jvm-runtime/work
+ExecStart=/opt/sustainable-catalyst/jvm-runtime/.venv/bin/uvicorn app.server:app --host 127.0.0.1 --port 18105
+Restart=on-failure
+RestartSec=3
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/sc-jvm-runtime /opt/sustainable-catalyst/jvm-runtime
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+
+[Install]
+WantedBy=multi-user.target

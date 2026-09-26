@@ -1,0 +1,8 @@
+Platform Core v3.56.0 — JVM Runtime
+CONTRACT=sc.core.jvm-runtime.v1
+RUNTIME_ID=sc-runtime-jvm
+ADAPTER_ID=adapter:sc-runtime-jvm
+PROVIDER_VERSION=1.0.0
+JVM_MAJOR_VERSION=21
+RUNTIME_KIND=execution-target
+DATABASE_MIGRATION=none

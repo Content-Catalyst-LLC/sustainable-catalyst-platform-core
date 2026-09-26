@@ -614,6 +614,11 @@ def _prolog_runtime_adapter() -> RuntimeAdapterDescriptor:
     runtime = RuntimeDescriptor(runtime_id="sc-runtime-prolog",runtime_kind=RuntimeKind.language,language="prolog",implementation="SWI-Prolog",runtime_version="9.0.4",provider_version="1.0.0",service_name="sc-prolog-runtime",contract_versions=[OBJECT_CONTRACT_VERSION,ADAPTER_CONTRACT_VERSION,"sc.core.prolog-runtime.v1","sc.core.reproducible-environment-package.v1","sc.core.runtime-security-governance.v1"],capabilities=[capability],execution_host="contabo-vps",status="active",metadata={"canonical_runtime":True,"provider_release":"Sustainable Catalyst Prolog Runtime v1.0.0","arbitrary_prolog_source":False,"shell_execution":False,"runtime_package_install":False,"provider_generated_programs":True})
     return RuntimeAdapterDescriptor(adapter_id="adapter:sc-runtime-prolog",runtime=runtime,provider_contracts=["sc.core.prolog-runtime.v1","sc.core.reproducible-environment-package.v1","sc.core.runtime-security-governance.v1"],transport="http",invocation_mode="governed-service",service_ref="sc-prolog-runtime",status="registered",metadata={"core_executes_runtime_directly":False,"endpoint":"http://127.0.0.1:18104","native_runtime":"SWI-Prolog","native_runtime_version":"9.0.4","language":"prolog"})
 
+def _jvm_runtime_adapter() -> RuntimeAdapterDescriptor:
+    capability = RuntimeCapability(capability_key="managed-jvm-execution",category="managed-vm",operations=["jvm_runtime_info","parallel_sum","parallel_map_affine","matrix_row_sums","graph_bfs","batch_sha256"],input_types=["json","numeric-vector","matrix","graph","string-batch"],output_types=["json","scalar","vector","distance-vector","hash-batch","diagnostics"],deterministic=True,arbitrary_code_execution=False,shell_execution=False,package_installation=False,metadata={"provider_contract":"sc.core.jvm-runtime.v1","environment_contract":"sc.core.reproducible-environment-package.v1","native_runtime":"OpenJDK JVM","native_runtime_version":"21","provider_generated_bootstrap_java":True,"language_profiles_deferred_to":"3.56.1"})
+    runtime = RuntimeDescriptor(runtime_id="sc-runtime-jvm",runtime_kind=RuntimeKind.execution_target,language="jvm-bytecode",implementation="OpenJDK JVM",runtime_version="21",provider_version="1.0.0",service_name="sc-jvm-runtime",contract_versions=[OBJECT_CONTRACT_VERSION,ADAPTER_CONTRACT_VERSION,"sc.core.jvm-runtime.v1","sc.core.reproducible-environment-package.v1","sc.core.runtime-security-governance.v1"],capabilities=[capability],execution_host="contabo-vps",status="active",metadata={"canonical_runtime":True,"provider_release":"Sustainable Catalyst JVM Runtime v1.0.0","arbitrary_jvm_bytecode":False,"caller_classpath":False,"runtime_dependency_install":False,"language_profiles_deferred_to":"3.56.1"})
+    return RuntimeAdapterDescriptor(adapter_id="adapter:sc-runtime-jvm",runtime=runtime,provider_contracts=["sc.core.jvm-runtime.v1","sc.core.reproducible-environment-package.v1","sc.core.runtime-security-governance.v1"],transport="http",invocation_mode="governed-service",service_ref="sc-jvm-runtime",status="registered",metadata={"core_executes_runtime_directly":False,"endpoint":"http://127.0.0.1:18105","native_runtime":"OpenJDK JVM","native_runtime_version":"21","language":"jvm-bytecode"})
+
 def legacy_analytical_provider_to_adapter(
     provider: dict[str, Any],
     capabilities: list[dict[str, Any]] | None = None,
@@ -690,6 +695,7 @@ class RuntimeAdapterRegistry:
         self.register(_go_runtime_adapter())
         self.register(_python_runtime_adapter())
         self.register(_prolog_runtime_adapter())
+        self.register(_jvm_runtime_adapter())
 
     def register(self, adapter: RuntimeAdapterDescriptor) -> RuntimeAdapterDescriptor:
         self._adapters[adapter.adapter_id] = adapter
