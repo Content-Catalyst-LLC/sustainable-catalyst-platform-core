@@ -27,6 +27,9 @@ REFERENCE_R_ADAPTER = "adapter:sc-runtime-r"
 REFERENCE_JULIA_RUNTIME = "catalyst-julia-runtime"
 REFERENCE_JULIA_VERSION = "0.3.0"
 REFERENCE_JULIA_ADAPTER = "adapter:catalyst-julia-runtime"
+REFERENCE_STAN_RUNTIME = "sc-runtime-stan"
+REFERENCE_STAN_VERSION = "1.0.0"
+REFERENCE_STAN_ADAPTER = "adapter:sc-runtime-stan"
 
 
 class ProductId(str, Enum):
@@ -68,6 +71,9 @@ class RuntimeCapability(str, Enum):
     workflow_execution = "workflow-execution"
     reproduction = "reproduction"
     verification = "verification"
+    probabilistic_modeling = "probabilistic-modeling"
+    bayesian_inference = "bayesian-inference"
+    posterior_sampling = "posterior-sampling"
 
 
 class RuntimeAvailability(str, Enum):
@@ -532,11 +538,44 @@ def reference_runtime_catalog() -> UnifiedRuntimeCatalog:
                 isolation_profile_ref="isolation-profile:research-runtime-standard:v1",
                 metadata={"provider_contract": "sc.core.julia-runtime-integration.v1"},
             ),
+            UnifiedRuntimeCatalogEntry(
+                catalog_entry_id="runtime-catalog-entry:sc-runtime-stan:1.0.0",
+                runtime_ref=REFERENCE_STAN_RUNTIME,
+                runtime_version=REFERENCE_STAN_VERSION,
+                runtime_adapter_ref=REFERENCE_STAN_ADAPTER,
+                language="Stan",
+                capabilities=[
+                    RuntimeCapability.probabilistic_modeling,
+                    RuntimeCapability.bayesian_inference,
+                    RuntimeCapability.posterior_sampling,
+                    RuntimeCapability.workflow_execution,
+                    RuntimeCapability.reproduction,
+                    RuntimeCapability.verification,
+                ],
+                operations=[
+                    "compile_model",
+                    "sample",
+                    "optimize",
+                    "variational",
+                    "diagnose",
+                ],
+                readable_formats=["json", "stan"],
+                writable_formats=["json", "csv"],
+                environment_package_ref="environment-package:stan-runtime:v1",
+                security_policy_ref="runtime-security-policy:stan-runtime-standard:v1",
+                isolation_profile_ref="isolation-profile:stan-runtime-standard:v1",
+                metadata={
+                    "provider_contract": "sc.core.stan-runtime.v1",
+                    "native_runtime": "CmdStan",
+                    "native_runtime_version": "2.36.0",
+                },
+            ),
         ],
         generated_from_refs=[
             "runtime-adapter-registry:platform-core",
             "runtime-data-interchange-bundle:reference-r-julia:v1",
             "runtime-security-governance-bundle:reference:v1",
+            "stan-runtime-bundle:reference:v1",
         ],
         metadata={
             "selection_owner": "calling-product-or-workspace",
@@ -544,65 +583,106 @@ def reference_runtime_catalog() -> UnifiedRuntimeCatalog:
         },
     )
 
-
 def reference_product_profiles() -> list[ProductRuntimeIntegrationProfile]:
     all_r_ops = [
         "descriptive_summary", "quantile_summary", "correlation_matrix",
         "linear_regression", "t_test", "one_way_anova",
     ]
     all_julia_ops = ["identity", "sum", "mean", "matrix_multiply"]
+    all_stan_ops = [
+        "compile_model", "sample", "optimize", "variational", "diagnose",
+    ]
     return [
         ProductRuntimeIntegrationProfile(
             product_profile_id="product-runtime-profile:workspace:v1",
             product_id=ProductId.workspace,
-            integration_version="1.0.0",
+            integration_version="1.1.0",
             allowed_actions=[
                 RuntimeAction.execute, RuntimeAction.statistical_analysis,
                 RuntimeAction.workflow, RuntimeAction.interchange,
                 RuntimeAction.reproduce, RuntimeAction.verify, RuntimeAction.inspect,
             ],
-            allowed_runtime_refs=[REFERENCE_R_RUNTIME, REFERENCE_JULIA_RUNTIME],
-            allowed_operations={REFERENCE_R_RUNTIME: all_r_ops, REFERENCE_JULIA_RUNTIME: all_julia_ops},
+            allowed_runtime_refs=[
+                REFERENCE_R_RUNTIME,
+                REFERENCE_JULIA_RUNTIME,
+                REFERENCE_STAN_RUNTIME,
+            ],
+            allowed_operations={
+                REFERENCE_R_RUNTIME: all_r_ops,
+                REFERENCE_JULIA_RUNTIME: all_julia_ops,
+                REFERENCE_STAN_RUNTIME: all_stan_ops,
+            },
             required_capabilities=[RuntimeCapability.workflow_execution],
             default_execution_host_ref="workspace-execution-host:primary",
-            api_scopes=["runtime:catalog", "runtime:resolve", "runtime:invoke", "runtime:receipt", "runtime:reproduce"],
-            source_product_contract_refs=["workspace-runtime-orchestration"],
+            api_scopes=[
+                "runtime:catalog", "runtime:resolve", "runtime:invoke",
+                "runtime:receipt", "runtime:reproduce",
+            ],
+            source_product_contract_refs=[
+                "workspace-runtime-orchestration",
+                "sc.core.stan-runtime.v1",
+            ],
             metadata={"role": "primary-runtime-orchestrator"},
         ),
         ProductRuntimeIntegrationProfile(
             product_profile_id="product-runtime-profile:research-lab:v1",
             product_id=ProductId.research_lab,
-            integration_version="1.0.0",
+            integration_version="1.1.0",
             allowed_actions=[
                 RuntimeAction.execute, RuntimeAction.statistical_analysis,
                 RuntimeAction.interchange, RuntimeAction.verify, RuntimeAction.inspect,
             ],
-            allowed_runtime_refs=[REFERENCE_R_RUNTIME, REFERENCE_JULIA_RUNTIME],
-            allowed_operations={REFERENCE_R_RUNTIME: all_r_ops, REFERENCE_JULIA_RUNTIME: all_julia_ops},
-            required_capabilities=[RuntimeCapability.statistical_analysis, RuntimeCapability.numerical_compute],
+            allowed_runtime_refs=[
+                REFERENCE_R_RUNTIME,
+                REFERENCE_JULIA_RUNTIME,
+                REFERENCE_STAN_RUNTIME,
+            ],
+            allowed_operations={
+                REFERENCE_R_RUNTIME: all_r_ops,
+                REFERENCE_JULIA_RUNTIME: all_julia_ops,
+                REFERENCE_STAN_RUNTIME: all_stan_ops,
+            },
+            required_capabilities=[
+                RuntimeCapability.statistical_analysis,
+                RuntimeCapability.numerical_compute,
+                RuntimeCapability.bayesian_inference,
+            ],
             default_execution_host_ref="workspace-execution-host:primary",
-            api_scopes=["runtime:catalog", "runtime:resolve", "runtime:invoke", "runtime:receipt"],
-            source_product_contract_refs=["research-lab-computational-analysis"],
-            metadata={"role": "scientific-analysis-client"},
+            api_scopes=[
+                "runtime:catalog", "runtime:resolve", "runtime:invoke", "runtime:receipt",
+            ],
+            source_product_contract_refs=[
+                "research-lab-computational-analysis",
+                "sc.core.stan-runtime.v1",
+            ],
+            metadata={
+                "role": "scientific-analysis-client",
+                "stan_runtime_enabled": True,
+            },
         ),
         ProductRuntimeIntegrationProfile(
             product_profile_id="product-runtime-profile:workbench:v1",
             product_id=ProductId.workbench,
             integration_version="1.0.0",
-            allowed_actions=[RuntimeAction.execute, RuntimeAction.interchange, RuntimeAction.inspect],
+            allowed_actions=[
+                RuntimeAction.execute, RuntimeAction.interchange, RuntimeAction.inspect,
+            ],
             allowed_runtime_refs=[REFERENCE_R_RUNTIME, REFERENCE_JULIA_RUNTIME],
             allowed_operations={
-                REFERENCE_R_RUNTIME: ["descriptive_summary", "correlation_matrix", "linear_regression"],
+                REFERENCE_R_RUNTIME: [
+                    "descriptive_summary", "correlation_matrix", "linear_regression",
+                ],
                 REFERENCE_JULIA_RUNTIME: all_julia_ops,
             },
             required_capabilities=[RuntimeCapability.numerical_compute],
             default_execution_host_ref="workspace-execution-host:primary",
-            api_scopes=["runtime:catalog", "runtime:resolve", "runtime:invoke", "runtime:receipt"],
+            api_scopes=[
+                "runtime:catalog", "runtime:resolve", "runtime:invoke", "runtime:receipt",
+            ],
             source_product_contract_refs=["workbench-computational-prototyping"],
             metadata={"role": "engineering-compute-client"},
         ),
     ]
-
 
 def resolve_runtime_request(*, catalog: UnifiedRuntimeCatalog, profile: ProductRuntimeIntegrationProfile, request: UnifiedRuntimeRequest, resolution_id: str | None = None) -> UnifiedRuntimeResolution:
     reasons: list[str] = []

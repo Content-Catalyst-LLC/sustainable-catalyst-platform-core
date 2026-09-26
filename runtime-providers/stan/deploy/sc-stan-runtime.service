@@ -1,0 +1,21 @@
+[Unit]
+Description=Sustainable Catalyst Stan Runtime
+After=network.target
+
+[Service]
+Type=simple
+User=catalystadmin
+Group=catalystadmin
+WorkingDirectory=/opt/sustainable-catalyst/stan-runtime
+Environment=SC_STAN_RUNTIME_HOST=127.0.0.1
+Environment=SC_STAN_RUNTIME_PORT=18095
+Environment=SC_STAN_CMDSTAN_VERSION=2.36.0
+Environment=SC_STAN_CMDSTAN_HOME=/opt/sustainable-catalyst/stan-runtime/.cmdstan/cmdstan-2.36.0
+Environment=SC_STAN_ARTIFACT_ROOT=/var/lib/sc-stan-runtime/artifacts
+Environment=SC_STAN_MODEL_ROOT=/var/lib/sc-stan-runtime/models
+ExecStart=/opt/sustainable-catalyst/stan-runtime/.venv/bin/uvicorn app.server:app --host 127.0.0.1 --port 18095
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

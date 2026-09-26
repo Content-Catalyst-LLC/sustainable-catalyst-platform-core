@@ -230,6 +230,79 @@ def _r_runtime_adapter() -> RuntimeAdapterDescriptor:
         },
     )
 
+
+def _stan_runtime_adapter() -> RuntimeAdapterDescriptor:
+    capability = RuntimeCapability(
+        capability_key="governed-bayesian-inference",
+        category="probabilistic-modeling",
+        operations=[
+            "compile_model",
+            "sample",
+            "optimize",
+            "variational",
+            "diagnose",
+        ],
+        input_types=["json", "stan-model", "table", "scalar"],
+        output_types=["json", "csv", "posterior-samples", "diagnostics"],
+        deterministic=False,
+        arbitrary_code_execution=False,
+        shell_execution=False,
+        package_installation=False,
+        metadata={
+            "provider_contract": "sc.core.stan-runtime.v1",
+            "environment_contract": "sc.core.reproducible-environment-package.v1",
+            "native_runtime": "CmdStan",
+            "native_runtime_version": "2.36.0",
+            "seeded_reproducibility": True,
+        },
+    )
+    runtime = RuntimeDescriptor(
+        runtime_id="sc-runtime-stan",
+        runtime_kind=RuntimeKind.domain,
+        language="stan",
+        implementation="CmdStan",
+        runtime_version="2.36.0",
+        provider_version="1.0.0",
+        service_name="sc-stan-runtime",
+        contract_versions=[
+            OBJECT_CONTRACT_VERSION,
+            ADAPTER_CONTRACT_VERSION,
+            "sc.core.stan-runtime.v1",
+            "sc.core.reproducible-environment-package.v1",
+            "sc.core.runtime-security-governance.v1",
+        ],
+        capabilities=[capability],
+        execution_host="contabo-vps",
+        status="active",
+        metadata={
+            "canonical_runtime": True,
+            "provider_release": "Sustainable Catalyst Stan Runtime v1.0.0",
+            "arbitrary_shell": False,
+            "runtime_package_install": False,
+            "stan_include_directives": False,
+            "multi_chain_parallel_v1": False,
+        },
+    )
+    return RuntimeAdapterDescriptor(
+        adapter_id="adapter:sc-runtime-stan",
+        runtime=runtime,
+        provider_contracts=[
+            "sc.core.stan-runtime.v1",
+            "sc.core.reproducible-environment-package.v1",
+            "sc.core.runtime-security-governance.v1",
+        ],
+        transport="http",
+        invocation_mode="governed-service",
+        service_ref="sc-stan-runtime",
+        status="registered",
+        metadata={
+            "core_executes_runtime_directly": False,
+            "endpoint": "http://127.0.0.1:18095",
+            "native_runtime": "CmdStan",
+            "native_runtime_version": "2.36.0",
+        },
+    )
+
 def legacy_analytical_provider_to_adapter(
     provider: dict[str, Any],
     capabilities: list[dict[str, Any]] | None = None,
@@ -296,6 +369,7 @@ class RuntimeAdapterRegistry:
         self._adapters: dict[str, RuntimeAdapterDescriptor] = {}
         self.register(_julia_reference_adapter())
         self.register(_r_runtime_adapter())
+        self.register(_stan_runtime_adapter())
 
     def register(self, adapter: RuntimeAdapterDescriptor) -> RuntimeAdapterDescriptor:
         self._adapters[adapter.adapter_id] = adapter

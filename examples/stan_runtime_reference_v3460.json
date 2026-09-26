@@ -1,0 +1,10 @@
+{
+  "bundle_id": "stan-runtime-bundle:reference:v1",
+  "runtime_id": "sc-runtime-stan",
+  "provider_version": "1.0.0",
+  "cmdstan_version": "2.36.0",
+  "operation": "sample",
+  "environment_package": "environment-package:stan-runtime:v1",
+  "security_policy": "runtime-security-policy:stan-runtime-standard:v1",
+  "contract": "sc.core.stan-runtime.v1"
+}

@@ -112,6 +112,7 @@ from .routers import (
     runtime_security,
     unified_runtime,
     runtime_fabric_certification,
+    stan_runtime,
     uncertainty_probabilistic_evidence,
     visualization_registry,
     system_maps,
@@ -494,6 +495,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # v3.45.0 Runtime Fabric Production Certification.
     app.include_router(runtime_fabric_certification.router)
     app.include_router(runtime_fabric_certification.public_router)
+    # v3.46.0 Stan Runtime.
+    app.include_router(stan_runtime.router)
+    app.include_router(stan_runtime.public_router)
     app.include_router(uncertainty_probabilistic_evidence.router)
     app.include_router(uncertainty_probabilistic_evidence.public_router)
     # Open Forensics includes v2.51.0 Reproducible Investigation Packages.

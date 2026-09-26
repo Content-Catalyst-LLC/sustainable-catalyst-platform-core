@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/stan-runtime-v1.schema.json",
+  "title": "Sustainable Catalyst Stan Runtime",
+  "type": "object",
+  "required": [
+    "bundle_id",
+    "registration",
+    "environment_package",
+    "security_policy",
+    "reference_request",
+    "result_contract"
+  ],
+  "properties": {
+    "bundle_id": {
+      "type": "string"
+    },
+    "registration": {
+      "type": "object"
+    },
+    "environment_package": {
+      "type": "object"
+    },
+    "security_policy": {
+      "type": "object"
+    },
+    "reference_request": {
+      "type": "object"
+    },
+    "result_contract": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": true,
+  "x-sustainable-catalyst": {
+    "release": "3.46.0",
+    "contract": "sc.core.stan-runtime.v1",
+    "runtime_id": "sc-runtime-stan",
+    "provider_version": "1.0.0",
+    "cmdstan_version": "2.36.0",
+    "core_executes_stan": false,
+    "arbitrary_shell": false
+  }
+}
