@@ -118,6 +118,7 @@ from .routers import (
     haskell_runtime,
     fortran_runtime,
     c_cpp_runtime,
+    rust_runtime,
     uncertainty_probabilistic_evidence,
     visualization_registry,
     system_maps,
@@ -518,6 +519,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # v3.51.0 C/C++ Runtime.
     app.include_router(c_cpp_runtime.router)
     app.include_router(c_cpp_runtime.public_router)
+    # v3.52.0 Rust Runtime.
+    app.include_router(rust_runtime.router)
+    app.include_router(rust_runtime.public_router)
     app.include_router(uncertainty_probabilistic_evidence.router)
     app.include_router(uncertainty_probabilistic_evidence.public_router)
     # Open Forensics includes v2.51.0 Reproducible Investigation Packages.

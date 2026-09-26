@@ -1,0 +1,11 @@
+{
+  "bundle_id": "rust-runtime-bundle:reference:v1",
+  "runtime_id": "sc-runtime-rust",
+  "provider_version": "1.0.0",
+  "rustc_version": "1.75.0",
+  "edition": "2021",
+  "operation": "prefix_sum",
+  "environment_package": "environment-package:rust-runtime:v1",
+  "security_policy": "runtime-security-policy:rust-runtime-standard:v1",
+  "contract": "sc.core.rust-runtime.v1"
+}

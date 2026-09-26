@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/rust-runtime-v1.schema.json",
+  "title": "Sustainable Catalyst Rust Runtime",
+  "type": "object",
+  "required": [
+    "bundle_id",
+    "registration",
+    "environment_package",
+    "security_policy",
+    "reference_request",
+    "result_contract"
+  ],
+  "additionalProperties": true,
+  "x-sustainable-catalyst": {
+    "release": "3.52.0",
+    "contract": "sc.core.rust-runtime.v1",
+    "runtime_id": "sc-runtime-rust",
+    "provider_version": "1.0.0",
+    "rustc_version": "1.75.0",
+    "rustc_package_version": "1.75.0+dfsg0ubuntu1-0ubuntu7.4",
+    "edition": "2021",
+    "arbitrary_rust_source": false,
+    "unsafe_code": false
+  }
+}

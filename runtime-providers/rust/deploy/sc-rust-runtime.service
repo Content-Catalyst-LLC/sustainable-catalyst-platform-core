@@ -1,0 +1,25 @@
+[Unit]
+Description=Sustainable Catalyst Rust Runtime
+After=network.target
+
+[Service]
+Type=simple
+User=catalystadmin
+Group=catalystadmin
+WorkingDirectory=/opt/sustainable-catalyst/rust-runtime
+Environment=SC_RUST_RUNTIME_HOST=127.0.0.1
+Environment=SC_RUST_RUNTIME_PORT=18101
+Environment=SC_RUSTC_VERSION=1.75.0
+Environment=SC_RUST_PACKAGE_VERSION=1.75.0+dfsg0ubuntu1-0ubuntu7.4
+Environment=SC_CARGO_VERSION=1.75.0
+Environment=SC_CARGO_PACKAGE_VERSION=1.75.0+dfsg0ubuntu1-0ubuntu7.4
+Environment=SC_RUSTC_BIN=/usr/bin/rustc
+Environment=SC_CARGO_BIN=/usr/bin/cargo
+Environment=SC_RUST_ARTIFACT_ROOT=/var/lib/sc-rust-runtime/artifacts
+Environment=SC_RUST_WORK_ROOT=/var/lib/sc-rust-runtime/work
+ExecStart=/opt/sustainable-catalyst/rust-runtime/.venv/bin/uvicorn app.server:app --host 127.0.0.1 --port 18101
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

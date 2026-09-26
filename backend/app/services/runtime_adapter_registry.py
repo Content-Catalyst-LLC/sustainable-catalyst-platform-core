@@ -573,6 +573,32 @@ def _cpp_runtime_adapter() -> RuntimeAdapterDescriptor:
         metadata={"core_executes_runtime_directly":False,"endpoint":"http://127.0.0.1:18100","native_runtime":"GCC/G++","native_runtime_version":"13.3.0","language":"c-cpp","language_profiles":["c11","cpp17"]},
     )
 
+def _rust_runtime_adapter() -> RuntimeAdapterDescriptor:
+    capability = RuntimeCapability(
+        capability_key="bounded-safe-native-systems",
+        category="safe-native-systems",
+        operations=["prefix_sum","moving_average","connected_components","topological_sort","levenshtein_distance","fnv1a_64"],
+        input_types=["json","integer-vector","numeric-vector","graph","text"],
+        output_types=["json","integer-vector","numeric-vector","integer-scalar","hex64","diagnostics"],
+        deterministic=True,
+        arbitrary_code_execution=False,
+        shell_execution=False,
+        package_installation=False,
+        metadata={"provider_contract":"sc.core.rust-runtime.v1","environment_contract":"sc.core.reproducible-environment-package.v1","native_runtime":"rustc","native_runtime_version":"1.75.0","native_package_version":"1.75.0+dfsg0ubuntu1-0ubuntu7.4","edition":"2021","unsafe_code":False},
+    )
+    runtime = RuntimeDescriptor(
+        runtime_id="sc-runtime-rust", runtime_kind=RuntimeKind.language, language="rust", implementation="rustc", runtime_version="1.75.0", provider_version="1.0.0", service_name="sc-rust-runtime",
+        contract_versions=[OBJECT_CONTRACT_VERSION,ADAPTER_CONTRACT_VERSION,"sc.core.rust-runtime.v1","sc.core.reproducible-environment-package.v1","sc.core.runtime-security-governance.v1"],
+        capabilities=[capability], execution_host="contabo-vps", status="active",
+        metadata={"canonical_runtime":True,"provider_release":"Sustainable Catalyst Rust Runtime v1.0.0","arbitrary_rust_source":False,"unsafe_code":False,"shell_execution":False,"runtime_package_install":False,"provider_managed_compilation":True},
+    )
+    return RuntimeAdapterDescriptor(
+        adapter_id="adapter:sc-runtime-rust", runtime=runtime,
+        provider_contracts=["sc.core.rust-runtime.v1","sc.core.reproducible-environment-package.v1","sc.core.runtime-security-governance.v1"],
+        transport="http", invocation_mode="governed-service", service_ref="sc-rust-runtime", status="registered",
+        metadata={"core_executes_runtime_directly":False,"endpoint":"http://127.0.0.1:18101","native_runtime":"rustc","native_runtime_version":"1.75.0","language":"rust","edition":"2021","unsafe_code":False},
+    )
+
 def legacy_analytical_provider_to_adapter(
     provider: dict[str, Any],
     capabilities: list[dict[str, Any]] | None = None,
@@ -645,6 +671,7 @@ class RuntimeAdapterRegistry:
         self.register(_haskell_runtime_adapter())
         self.register(_fortran_runtime_adapter())
         self.register(_cpp_runtime_adapter())
+        self.register(_rust_runtime_adapter())
 
     def register(self, adapter: RuntimeAdapterDescriptor) -> RuntimeAdapterDescriptor:
         self._adapters[adapter.adapter_id] = adapter
