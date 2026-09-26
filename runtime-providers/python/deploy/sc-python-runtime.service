@@ -1,0 +1,30 @@
+[Unit]
+Description=Sustainable Catalyst Python Runtime
+After=network.target
+
+[Service]
+Type=simple
+User=catalystadmin
+Group=catalystadmin
+WorkingDirectory=/opt/sustainable-catalyst/python-runtime
+Environment=SC_PYTHON_RUNTIME_HOST=127.0.0.1
+Environment=SC_PYTHON_RUNTIME_PORT=18103
+Environment=SC_PYTHON_VERSION=3.12.3
+Environment=SC_PYTHON_BIN=/usr/bin/python3.12
+Environment=SC_PYTHON_ARTIFACT_ROOT=/var/lib/sc-python-runtime/artifacts
+Environment=SC_PYTHON_WORK_ROOT=/var/lib/sc-python-runtime/work
+Environment=PYTHONHASHSEED=0
+ExecStart=/opt/sustainable-catalyst/python-runtime/.venv/bin/uvicorn app.server:app --host 127.0.0.1 --port 18103
+Restart=on-failure
+RestartSec=3
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+IPAddressDeny=any
+IPAddressAllow=localhost
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+ReadWritePaths=/var/lib/sc-python-runtime
+
+[Install]
+WantedBy=multi-user.target

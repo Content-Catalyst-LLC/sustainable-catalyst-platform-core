@@ -604,6 +604,11 @@ def _go_runtime_adapter() -> RuntimeAdapterDescriptor:
     runtime = RuntimeDescriptor(runtime_id="sc-runtime-go",runtime_kind=RuntimeKind.language,language="go",implementation="Go",runtime_version="1.22.2",provider_version="1.0.0",service_name="sc-go-runtime",contract_versions=[OBJECT_CONTRACT_VERSION,ADAPTER_CONTRACT_VERSION,"sc.core.go-runtime.v1","sc.core.reproducible-environment-package.v1","sc.core.runtime-security-governance.v1"],capabilities=[capability],execution_host="contabo-vps",status="active",metadata={"canonical_runtime":True,"provider_release":"Sustainable Catalyst Go Runtime v1.0.0","arbitrary_go_source":False,"external_module_downloads":False,"shell_execution":False,"runtime_package_install":False,"provider_managed_compilation":True})
     return RuntimeAdapterDescriptor(adapter_id="adapter:sc-runtime-go",runtime=runtime,provider_contracts=["sc.core.go-runtime.v1","sc.core.reproducible-environment-package.v1","sc.core.runtime-security-governance.v1"],transport="http",invocation_mode="governed-service",service_ref="sc-go-runtime",status="registered",metadata={"core_executes_runtime_directly":False,"endpoint":"http://127.0.0.1:18102","native_runtime":"Go","native_runtime_version":"1.22.2","language":"go"})
 
+def _python_runtime_adapter() -> RuntimeAdapterDescriptor:
+    capability = RuntimeCapability(capability_key="bounded-general-scientific-python",category="general-scientific",operations=["descriptive_summary","linear_regression","matrix_multiply","standardize","bootstrap_mean_ci","token_frequency"],input_types=["json","numeric-vector","matrix","text"],output_types=["json","scalar","numeric-vector","matrix","table","diagnostics"],deterministic=True,arbitrary_code_execution=False,shell_execution=False,package_installation=False,metadata={"provider_contract":"sc.core.python-runtime.v1","environment_contract":"sc.core.reproducible-environment-package.v1","native_runtime":"CPython","native_runtime_version":"3.12.3","isolated_mode":True,"site_imports_disabled_for_jobs":True,"job_network_access":False})
+    runtime = RuntimeDescriptor(runtime_id="sc-runtime-python",runtime_kind=RuntimeKind.language,language="python",implementation="CPython",runtime_version="3.12.3",provider_version="1.0.0",service_name="sc-python-runtime",contract_versions=[OBJECT_CONTRACT_VERSION,ADAPTER_CONTRACT_VERSION,"sc.core.python-runtime.v1","sc.core.reproducible-environment-package.v1","sc.core.runtime-security-governance.v1"],capabilities=[capability],execution_host="contabo-vps",status="active",metadata={"canonical_runtime":True,"provider_release":"Sustainable Catalyst Python Runtime v1.0.0","arbitrary_python_source":False,"shell_execution":False,"runtime_package_install":False,"job_network_access":False,"provider_managed_execution":True})
+    return RuntimeAdapterDescriptor(adapter_id="adapter:sc-runtime-python",runtime=runtime,provider_contracts=["sc.core.python-runtime.v1","sc.core.reproducible-environment-package.v1","sc.core.runtime-security-governance.v1"],transport="http",invocation_mode="governed-service",service_ref="sc-python-runtime",status="registered",metadata={"core_executes_runtime_directly":False,"endpoint":"http://127.0.0.1:18103","native_runtime":"CPython","native_runtime_version":"3.12.3","language":"python"})
+
 def legacy_analytical_provider_to_adapter(
     provider: dict[str, Any],
     capabilities: list[dict[str, Any]] | None = None,
@@ -678,6 +683,7 @@ class RuntimeAdapterRegistry:
         self.register(_cpp_runtime_adapter())
         self.register(_rust_runtime_adapter())
         self.register(_go_runtime_adapter())
+        self.register(_python_runtime_adapter())
 
     def register(self, adapter: RuntimeAdapterDescriptor) -> RuntimeAdapterDescriptor:
         self._adapters[adapter.adapter_id] = adapter

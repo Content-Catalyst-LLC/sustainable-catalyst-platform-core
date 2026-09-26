@@ -120,6 +120,7 @@ from .routers import (
     c_cpp_runtime,
     rust_runtime,
     go_runtime,
+    python_runtime,
     uncertainty_probabilistic_evidence,
     visualization_registry,
     system_maps,
@@ -526,6 +527,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # v3.53.0 Go Runtime.
     app.include_router(go_runtime.router)
     app.include_router(go_runtime.public_router)
+    # v3.54.0 Python Runtime Core Integration.
+    app.include_router(python_runtime.router)
+    app.include_router(python_runtime.public_router)
     app.include_router(uncertainty_probabilistic_evidence.router)
     app.include_router(uncertainty_probabilistic_evidence.public_router)
     # Open Forensics includes v2.51.0 Reproducible Investigation Packages.

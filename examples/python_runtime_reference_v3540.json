@@ -1,0 +1,16 @@
+{
+  "bundle_id": "python-runtime-bundle:reference:v1",
+  "runtime_id": "sc-runtime-python",
+  "adapter_id": "adapter:sc-runtime-python",
+  "provider_version": "1.0.0",
+  "python_version": "3.12.3",
+  "reference_operation": "descriptive_summary",
+  "environment_package_ref": "environment-package:python-runtime:v1",
+  "security_policy_ref": "runtime-security-policy:python-runtime-standard:v1",
+  "boundaries": {
+    "arbitrary_python_source": false,
+    "shell_execution": false,
+    "runtime_package_install": false,
+    "job_network_access": false
+  }
+}
