@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/gretl-hansl-runtime-v1.schema.json",
+  "title": "Sustainable Catalyst gretl/hansl Runtime",
+  "type": "object",
+  "required": [
+    "bundle_id",
+    "registration",
+    "environment_package",
+    "security_policy",
+    "reference_request",
+    "result_contract"
+  ],
+  "additionalProperties": true,
+  "x-sustainable-catalyst": {
+    "release": "3.48.0",
+    "contract": "sc.core.gretl-hansl-runtime.v1",
+    "runtime_id": "sc-runtime-gretl",
+    "provider_version": "1.0.0",
+    "gretl_version": "2023c",
+    "gretl_package_version": "2023c-2.1build3",
+    "arbitrary_hansl_source": false
+  }
+}

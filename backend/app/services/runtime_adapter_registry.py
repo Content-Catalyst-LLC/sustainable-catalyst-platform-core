@@ -375,6 +375,81 @@ def _octave_runtime_adapter() -> RuntimeAdapterDescriptor:
         },
     )
 
+
+def _gretl_runtime_adapter() -> RuntimeAdapterDescriptor:
+    capability = RuntimeCapability(
+        capability_key="bounded-econometrics",
+        category="econometrics",
+        operations=[
+            "ols",
+            "robust_ols",
+            "logit",
+            "probit",
+            "descriptive_summary",
+            "correlation_matrix",
+        ],
+        input_types=["json", "table", "series", "scalar"],
+        output_types=["json", "econometric-result", "transcript", "diagnostics"],
+        deterministic=False,
+        arbitrary_code_execution=False,
+        shell_execution=False,
+        package_installation=False,
+        metadata={
+            "provider_contract": "sc.core.gretl-hansl-runtime.v1",
+            "environment_contract": "sc.core.reproducible-environment-package.v1",
+            "native_runtime": "gretl",
+            "native_runtime_version": "2023c",
+            "native_package_version": "2023c-2.1build3",
+            "language": "hansl",
+        },
+    )
+    runtime = RuntimeDescriptor(
+        runtime_id="sc-runtime-gretl",
+        runtime_kind=RuntimeKind.domain,
+        language="hansl",
+        implementation="gretl",
+        runtime_version="2023c",
+        provider_version="1.0.0",
+        service_name="sc-gretl-runtime",
+        contract_versions=[
+            OBJECT_CONTRACT_VERSION,
+            ADAPTER_CONTRACT_VERSION,
+            "sc.core.gretl-hansl-runtime.v1",
+            "sc.core.reproducible-environment-package.v1",
+            "sc.core.runtime-security-governance.v1",
+        ],
+        capabilities=[capability],
+        execution_host="contabo-vps",
+        status="active",
+        metadata={
+            "canonical_runtime": True,
+            "provider_release": "Sustainable Catalyst gretl/hansl Runtime v1.0.0",
+            "arbitrary_hansl_source": False,
+            "shell_execution": False,
+            "runtime_package_install": False,
+        },
+    )
+    return RuntimeAdapterDescriptor(
+        adapter_id="adapter:sc-runtime-gretl",
+        runtime=runtime,
+        provider_contracts=[
+            "sc.core.gretl-hansl-runtime.v1",
+            "sc.core.reproducible-environment-package.v1",
+            "sc.core.runtime-security-governance.v1",
+        ],
+        transport="http",
+        invocation_mode="governed-service",
+        service_ref="sc-gretl-runtime",
+        status="registered",
+        metadata={
+            "core_executes_runtime_directly": False,
+            "endpoint": "http://127.0.0.1:18097",
+            "native_runtime": "gretl",
+            "native_runtime_version": "2023c",
+            "language": "hansl",
+        },
+    )
+
 def legacy_analytical_provider_to_adapter(
     provider: dict[str, Any],
     capabilities: list[dict[str, Any]] | None = None,
@@ -443,6 +518,7 @@ class RuntimeAdapterRegistry:
         self.register(_r_runtime_adapter())
         self.register(_stan_runtime_adapter())
         self.register(_octave_runtime_adapter())
+        self.register(_gretl_runtime_adapter())
 
     def register(self, adapter: RuntimeAdapterDescriptor) -> RuntimeAdapterDescriptor:
         self._adapters[adapter.adapter_id] = adapter

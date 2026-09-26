@@ -33,6 +33,9 @@ REFERENCE_STAN_ADAPTER = "adapter:sc-runtime-stan"
 REFERENCE_OCTAVE_RUNTIME = "sc-runtime-octave"
 REFERENCE_OCTAVE_VERSION = "1.0.0"
 REFERENCE_OCTAVE_ADAPTER = "adapter:sc-runtime-octave"
+REFERENCE_GRETL_RUNTIME = "sc-runtime-gretl"
+REFERENCE_GRETL_VERSION = "1.0.0"
+REFERENCE_GRETL_ADAPTER = "adapter:sc-runtime-gretl"
 
 
 class ProductId(str, Enum):
@@ -79,6 +82,7 @@ class RuntimeCapability(str, Enum):
     posterior_sampling = "posterior-sampling"
     linear_algebra = "linear-algebra"
     signal_processing = "signal-processing"
+    econometrics = "econometrics"
 
 
 class RuntimeAvailability(str, Enum):
@@ -585,10 +589,36 @@ def reference_runtime_catalog() -> UnifiedRuntimeCatalog:
                 environment_package_ref="environment-package:octave-runtime:v1",
                 security_policy_ref="runtime-security-policy:octave-runtime-standard:v1",
                 isolation_profile_ref="isolation-profile:octave-runtime-standard:v1",
+                metadata={"provider_contract": "sc.core.octave-runtime.v1"},
+            ),
+            UnifiedRuntimeCatalogEntry(
+                catalog_entry_id="runtime-catalog-entry:sc-runtime-gretl:1.0.0",
+                runtime_ref=REFERENCE_GRETL_RUNTIME,
+                runtime_version=REFERENCE_GRETL_VERSION,
+                runtime_adapter_ref=REFERENCE_GRETL_ADAPTER,
+                language="hansl",
+                capabilities=[
+                    RuntimeCapability.statistical_analysis,
+                    RuntimeCapability.regression,
+                    RuntimeCapability.econometrics,
+                    RuntimeCapability.workflow_execution,
+                    RuntimeCapability.reproduction,
+                    RuntimeCapability.verification,
+                ],
+                operations=[
+                    "ols", "robust_ols", "logit", "probit",
+                    "descriptive_summary", "correlation_matrix",
+                ],
+                readable_formats=["json", "csv"],
+                writable_formats=["json", "txt"],
+                environment_package_ref="environment-package:gretl-hansl-runtime:v1",
+                security_policy_ref="runtime-security-policy:gretl-hansl-runtime-standard:v1",
+                isolation_profile_ref="isolation-profile:gretl-hansl-runtime-standard:v1",
                 metadata={
-                    "provider_contract": "sc.core.octave-runtime.v1",
-                    "native_runtime": "GNU Octave",
-                    "native_runtime_version": "8.4.0",
+                    "provider_contract": "sc.core.gretl-hansl-runtime.v1",
+                    "native_runtime": "gretl",
+                    "native_runtime_version": "2023c",
+                    "native_package_version": "2023c-2.1build3",
                 },
             ),
         ],
@@ -598,6 +628,7 @@ def reference_runtime_catalog() -> UnifiedRuntimeCatalog:
             "runtime-security-governance-bundle:reference:v1",
             "stan-runtime-bundle:reference:v1",
             "octave-runtime-bundle:reference:v1",
+            "gretl-hansl-runtime-bundle:reference:v1",
         ],
         metadata={
             "selection_owner": "calling-product-or-workspace",
@@ -616,11 +647,15 @@ def reference_product_profiles() -> list[ProductRuntimeIntegrationProfile]:
         "matrix_multiply", "linear_solve", "eigenvalues",
         "svd", "fft", "polynomial_roots",
     ]
+    all_gretl_ops = [
+        "ols", "robust_ols", "logit", "probit",
+        "descriptive_summary", "correlation_matrix",
+    ]
     return [
         ProductRuntimeIntegrationProfile(
             product_profile_id="product-runtime-profile:workspace:v1",
             product_id=ProductId.workspace,
-            integration_version="1.2.0",
+            integration_version="1.3.0",
             allowed_actions=[
                 RuntimeAction.execute, RuntimeAction.statistical_analysis,
                 RuntimeAction.workflow, RuntimeAction.interchange,
@@ -629,12 +664,14 @@ def reference_product_profiles() -> list[ProductRuntimeIntegrationProfile]:
             allowed_runtime_refs=[
                 REFERENCE_R_RUNTIME, REFERENCE_JULIA_RUNTIME,
                 REFERENCE_STAN_RUNTIME, REFERENCE_OCTAVE_RUNTIME,
+                REFERENCE_GRETL_RUNTIME,
             ],
             allowed_operations={
                 REFERENCE_R_RUNTIME: all_r_ops,
                 REFERENCE_JULIA_RUNTIME: all_julia_ops,
                 REFERENCE_STAN_RUNTIME: all_stan_ops,
                 REFERENCE_OCTAVE_RUNTIME: all_octave_ops,
+                REFERENCE_GRETL_RUNTIME: all_gretl_ops,
             },
             required_capabilities=[RuntimeCapability.workflow_execution],
             default_execution_host_ref="workspace-execution-host:primary",
@@ -646,13 +683,14 @@ def reference_product_profiles() -> list[ProductRuntimeIntegrationProfile]:
                 "workspace-runtime-orchestration",
                 "sc.core.stan-runtime.v1",
                 "sc.core.octave-runtime.v1",
+                "sc.core.gretl-hansl-runtime.v1",
             ],
             metadata={"role": "primary-runtime-orchestrator"},
         ),
         ProductRuntimeIntegrationProfile(
             product_profile_id="product-runtime-profile:research-lab:v1",
             product_id=ProductId.research_lab,
-            integration_version="1.2.0",
+            integration_version="1.3.0",
             allowed_actions=[
                 RuntimeAction.execute, RuntimeAction.statistical_analysis,
                 RuntimeAction.interchange, RuntimeAction.verify, RuntimeAction.inspect,
@@ -660,18 +698,21 @@ def reference_product_profiles() -> list[ProductRuntimeIntegrationProfile]:
             allowed_runtime_refs=[
                 REFERENCE_R_RUNTIME, REFERENCE_JULIA_RUNTIME,
                 REFERENCE_STAN_RUNTIME, REFERENCE_OCTAVE_RUNTIME,
+                REFERENCE_GRETL_RUNTIME,
             ],
             allowed_operations={
                 REFERENCE_R_RUNTIME: all_r_ops,
                 REFERENCE_JULIA_RUNTIME: all_julia_ops,
                 REFERENCE_STAN_RUNTIME: all_stan_ops,
                 REFERENCE_OCTAVE_RUNTIME: all_octave_ops,
+                REFERENCE_GRETL_RUNTIME: all_gretl_ops,
             },
             required_capabilities=[
                 RuntimeCapability.statistical_analysis,
                 RuntimeCapability.numerical_compute,
                 RuntimeCapability.bayesian_inference,
                 RuntimeCapability.linear_algebra,
+                RuntimeCapability.econometrics,
             ],
             default_execution_host_ref="workspace-execution-host:primary",
             api_scopes=[
@@ -681,11 +722,13 @@ def reference_product_profiles() -> list[ProductRuntimeIntegrationProfile]:
                 "research-lab-computational-analysis",
                 "sc.core.stan-runtime.v1",
                 "sc.core.octave-runtime.v1",
+                "sc.core.gretl-hansl-runtime.v1",
             ],
             metadata={
                 "role": "scientific-analysis-client",
                 "stan_runtime_enabled": True,
                 "octave_runtime_enabled": True,
+                "gretl_runtime_enabled": True,
             },
         ),
         ProductRuntimeIntegrationProfile(

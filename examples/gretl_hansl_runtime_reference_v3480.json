@@ -1,0 +1,10 @@
+{
+  "bundle_id": "gretl-hansl-runtime-bundle:reference:v1",
+  "runtime_id": "sc-runtime-gretl",
+  "provider_version": "1.0.0",
+  "gretl_version": "2023c",
+  "operation": "ols",
+  "environment_package": "environment-package:gretl-hansl-runtime:v1",
+  "security_policy": "runtime-security-policy:gretl-hansl-runtime-standard:v1",
+  "contract": "sc.core.gretl-hansl-runtime.v1"
+}

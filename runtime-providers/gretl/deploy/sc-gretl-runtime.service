@@ -1,0 +1,22 @@
+[Unit]
+Description=Sustainable Catalyst gretl/hansl Runtime
+After=network.target
+
+[Service]
+Type=simple
+User=catalystadmin
+Group=catalystadmin
+WorkingDirectory=/opt/sustainable-catalyst/gretl-runtime
+Environment=SC_GRETL_RUNTIME_HOST=127.0.0.1
+Environment=SC_GRETL_RUNTIME_PORT=18097
+Environment=SC_GRETL_VERSION=2023c
+Environment=SC_GRETL_PACKAGE_VERSION=2023c-2.1build3
+Environment=SC_GRETL_BIN=/usr/bin/gretlcli
+Environment=SC_GRETL_ARTIFACT_ROOT=/var/lib/sc-gretl-runtime/artifacts
+Environment=SC_GRETL_WORK_ROOT=/var/lib/sc-gretl-runtime/work
+ExecStart=/opt/sustainable-catalyst/gretl-runtime/.venv/bin/uvicorn app.server:app --host 127.0.0.1 --port 18097
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

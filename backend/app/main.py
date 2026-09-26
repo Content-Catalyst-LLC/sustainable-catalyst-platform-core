@@ -114,6 +114,7 @@ from .routers import (
     runtime_fabric_certification,
     stan_runtime,
     octave_runtime,
+    gretl_hansl_runtime,
     uncertainty_probabilistic_evidence,
     visualization_registry,
     system_maps,
@@ -502,6 +503,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # v3.47.0 Octave Runtime.
     app.include_router(octave_runtime.router)
     app.include_router(octave_runtime.public_router)
+    # v3.48.0 gretl/hansl Runtime.
+    app.include_router(gretl_hansl_runtime.router)
+    app.include_router(gretl_hansl_runtime.public_router)
     app.include_router(uncertainty_probabilistic_evidence.router)
     app.include_router(uncertainty_probabilistic_evidence.public_router)
     # Open Forensics includes v2.51.0 Reproducible Investigation Packages.
