@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/c-cpp-runtime-v1.schema.json",
+  "title": "Sustainable Catalyst C/C++ Runtime",
+  "type": "object",
+  "required": [
+    "bundle_id",
+    "registration",
+    "environment_package",
+    "security_policy",
+    "reference_request",
+    "result_contract"
+  ],
+  "additionalProperties": true,
+  "x-sustainable-catalyst": {
+    "release": "3.51.0",
+    "contract": "sc.core.c-cpp-runtime.v1",
+    "runtime_id": "sc-runtime-cpp",
+    "provider_version": "1.0.0",
+    "gcc_version": "13.3.0",
+    "gpp_version": "13.3.0",
+    "package_version": "13.3.0-6ubuntu2~24.04.1",
+    "language_profiles": [
+      "c11",
+      "cpp17"
+    ],
+    "arbitrary_c_cpp_source": false
+  }
+}

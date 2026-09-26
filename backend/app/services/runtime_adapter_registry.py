@@ -547,6 +547,32 @@ def _fortran_runtime_adapter() -> RuntimeAdapterDescriptor:
         metadata={"core_executes_runtime_directly":False,"endpoint":"http://127.0.0.1:18099","native_runtime":"GNU Fortran","native_runtime_version":"13.3.0","language":"fortran"},
     )
 
+def _cpp_runtime_adapter() -> RuntimeAdapterDescriptor:
+    capability = RuntimeCapability(
+        capability_key="bounded-native-engineering",
+        category="native-engineering",
+        operations=["dot_product","matrix_multiply","linear_interpolation","polynomial_evaluate","fir_filter","dijkstra_shortest_path"],
+        input_types=["json","vector","matrix","scalar","graph"],
+        output_types=["json","scalar","vector","matrix","diagnostics"],
+        deterministic=True,
+        arbitrary_code_execution=False,
+        shell_execution=False,
+        package_installation=False,
+        metadata={"provider_contract":"sc.core.c-cpp-runtime.v1","environment_contract":"sc.core.reproducible-environment-package.v1","native_runtime":"GCC/G++","native_runtime_version":"13.3.0","native_package_version":"13.3.0-6ubuntu2~24.04.1","language_profiles":["c11","cpp17"]},
+    )
+    runtime = RuntimeDescriptor(
+        runtime_id="sc-runtime-cpp", runtime_kind=RuntimeKind.language, language="c-cpp", implementation="GCC/G++", runtime_version="13.3.0", provider_version="1.0.0", service_name="sc-cpp-runtime",
+        contract_versions=[OBJECT_CONTRACT_VERSION,ADAPTER_CONTRACT_VERSION,"sc.core.c-cpp-runtime.v1","sc.core.reproducible-environment-package.v1","sc.core.runtime-security-governance.v1"],
+        capabilities=[capability], execution_host="contabo-vps", status="active",
+        metadata={"canonical_runtime":True,"provider_release":"Sustainable Catalyst C/C++ Runtime v1.0.0","arbitrary_c_cpp_source":False,"shell_execution":False,"runtime_package_install":False,"provider_managed_compilation":True},
+    )
+    return RuntimeAdapterDescriptor(
+        adapter_id="adapter:sc-runtime-cpp", runtime=runtime,
+        provider_contracts=["sc.core.c-cpp-runtime.v1","sc.core.reproducible-environment-package.v1","sc.core.runtime-security-governance.v1"],
+        transport="http", invocation_mode="governed-service", service_ref="sc-cpp-runtime", status="registered",
+        metadata={"core_executes_runtime_directly":False,"endpoint":"http://127.0.0.1:18100","native_runtime":"GCC/G++","native_runtime_version":"13.3.0","language":"c-cpp","language_profiles":["c11","cpp17"]},
+    )
+
 def legacy_analytical_provider_to_adapter(
     provider: dict[str, Any],
     capabilities: list[dict[str, Any]] | None = None,
@@ -618,6 +644,7 @@ class RuntimeAdapterRegistry:
         self.register(_gretl_runtime_adapter())
         self.register(_haskell_runtime_adapter())
         self.register(_fortran_runtime_adapter())
+        self.register(_cpp_runtime_adapter())
 
     def register(self, adapter: RuntimeAdapterDescriptor) -> RuntimeAdapterDescriptor:
         self._adapters[adapter.adapter_id] = adapter

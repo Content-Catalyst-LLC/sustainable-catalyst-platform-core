@@ -1,0 +1,15 @@
+{
+  "bundle_id": "c-cpp-runtime-bundle:reference:v1",
+  "runtime_id": "sc-runtime-cpp",
+  "provider_version": "1.0.0",
+  "gcc_version": "13.3.0",
+  "gpp_version": "13.3.0",
+  "language_profiles": [
+    "c11",
+    "cpp17"
+  ],
+  "operation": "dot_product",
+  "environment_package": "environment-package:c-cpp-runtime:v1",
+  "security_policy": "runtime-security-policy:c-cpp-runtime-standard:v1",
+  "contract": "sc.core.c-cpp-runtime.v1"
+}

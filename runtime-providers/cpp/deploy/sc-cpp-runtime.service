@@ -1,0 +1,25 @@
+[Unit]
+Description=Sustainable Catalyst C/C++ Runtime
+After=network.target
+
+[Service]
+Type=simple
+User=catalystadmin
+Group=catalystadmin
+WorkingDirectory=/opt/sustainable-catalyst/cpp-runtime
+Environment=SC_CPP_RUNTIME_HOST=127.0.0.1
+Environment=SC_CPP_RUNTIME_PORT=18100
+Environment=SC_CPP_GCC_VERSION=13.3.0
+Environment=SC_CPP_GPP_VERSION=13.3.0
+Environment=SC_CPP_GCC_PACKAGE_VERSION=13.3.0-6ubuntu2~24.04.1
+Environment=SC_CPP_GPP_PACKAGE_VERSION=13.3.0-6ubuntu2~24.04.1
+Environment=SC_CPP_GCC_BIN=/usr/bin/gcc-13
+Environment=SC_CPP_GPP_BIN=/usr/bin/g++-13
+Environment=SC_CPP_ARTIFACT_ROOT=/var/lib/sc-cpp-runtime/artifacts
+Environment=SC_CPP_WORK_ROOT=/var/lib/sc-cpp-runtime/work
+ExecStart=/opt/sustainable-catalyst/cpp-runtime/.venv/bin/uvicorn app.server:app --host 127.0.0.1 --port 18100
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target
