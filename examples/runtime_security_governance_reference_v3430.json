@@ -1,0 +1,12 @@
+{
+  "bundle_id": "runtime-security-governance-bundle:reference:v1",
+  "policy_id": "runtime-security-policy:research-standard:v1",
+  "reference_decisions": [
+    "allow",
+    "allow",
+    "deny"
+  ],
+  "approval_capability": "secret-access",
+  "isolation_mechanism": "container",
+  "contract": "sc.core.runtime-security-governance.v1"
+}

@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/runtime-security-governance-v1.schema.json",
+  "title": "Sustainable Catalyst Runtime Security, Isolation & Governance",
+  "type": "object",
+  "required": [
+    "bundle_id",
+    "records"
+  ],
+  "properties": {
+    "bundle_id": {
+      "type": "string"
+    },
+    "records": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "source_object_refs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "metadata": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": true,
+  "x-sustainable-catalyst": {
+    "release": "3.43.0",
+    "contract": "sc.core.runtime-security-governance.v1",
+    "isolation_enforcement_owner": "workspace-or-execution-host",
+    "core_launches_sandboxes": false,
+    "secret_values_resolved_by_core": false
+  }
+}
