@@ -1,0 +1,29 @@
+[Unit]
+Description=Sustainable Catalyst Prolog Runtime
+After=network.target
+
+[Service]
+Type=simple
+User=catalystadmin
+Group=catalystadmin
+WorkingDirectory=/opt/sustainable-catalyst/prolog-runtime
+Environment=SC_PROLOG_RUNTIME_HOST=127.0.0.1
+Environment=SC_PROLOG_RUNTIME_PORT=18104
+Environment=SC_PROLOG_VERSION=9.0.4
+Environment=SC_PROLOG_PACKAGE_VERSION=9.0.4+dfsg-3.1ubuntu4
+Environment=SC_PROLOG_BIN=/usr/bin/swipl
+Environment=SC_PROLOG_ARTIFACT_ROOT=/var/lib/sc-prolog-runtime/artifacts
+Environment=SC_PROLOG_WORK_ROOT=/var/lib/sc-prolog-runtime/work
+ExecStart=/opt/sustainable-catalyst/prolog-runtime/.venv/bin/uvicorn app.server:app --host 127.0.0.1 --port 18104
+Restart=on-failure
+RestartSec=3
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/sc-prolog-runtime /opt/sustainable-catalyst/prolog-runtime
+IPAddressDeny=any
+IPAddressAllow=localhost
+
+[Install]
+WantedBy=multi-user.target

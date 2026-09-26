@@ -121,6 +121,7 @@ from .routers import (
     rust_runtime,
     go_runtime,
     python_runtime,
+    prolog_runtime,
     uncertainty_probabilistic_evidence,
     visualization_registry,
     system_maps,
@@ -530,6 +531,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # v3.54.0 Python Runtime Core Integration.
     app.include_router(python_runtime.router)
     app.include_router(python_runtime.public_router)
+    # v3.55.0 Prolog Logic & Constraint Runtime.
+    app.include_router(prolog_runtime.router)
+    app.include_router(prolog_runtime.public_router)
     app.include_router(uncertainty_probabilistic_evidence.router)
     app.include_router(uncertainty_probabilistic_evidence.public_router)
     # Open Forensics includes v2.51.0 Reproducible Investigation Packages.

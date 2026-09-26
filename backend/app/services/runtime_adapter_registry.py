@@ -609,6 +609,11 @@ def _python_runtime_adapter() -> RuntimeAdapterDescriptor:
     runtime = RuntimeDescriptor(runtime_id="sc-runtime-python",runtime_kind=RuntimeKind.language,language="python",implementation="CPython",runtime_version="3.12.3",provider_version="1.0.0",service_name="sc-python-runtime",contract_versions=[OBJECT_CONTRACT_VERSION,ADAPTER_CONTRACT_VERSION,"sc.core.python-runtime.v1","sc.core.reproducible-environment-package.v1","sc.core.runtime-security-governance.v1"],capabilities=[capability],execution_host="contabo-vps",status="active",metadata={"canonical_runtime":True,"provider_release":"Sustainable Catalyst Python Runtime v1.0.0","arbitrary_python_source":False,"shell_execution":False,"runtime_package_install":False,"job_network_access":False,"provider_managed_execution":True})
     return RuntimeAdapterDescriptor(adapter_id="adapter:sc-runtime-python",runtime=runtime,provider_contracts=["sc.core.python-runtime.v1","sc.core.reproducible-environment-package.v1","sc.core.runtime-security-governance.v1"],transport="http",invocation_mode="governed-service",service_ref="sc-python-runtime",status="registered",metadata={"core_executes_runtime_directly":False,"endpoint":"http://127.0.0.1:18103","native_runtime":"CPython","native_runtime_version":"3.12.3","language":"python"})
 
+def _prolog_runtime_adapter() -> RuntimeAdapterDescriptor:
+    capability = RuntimeCapability(capability_key="bounded-logic-constraint-reasoning",category="logic-constraint",operations=["relation_reachable","relation_paths_bounded","transitive_closure","contradiction_scan","temporal_consistency","graph_coloring"],input_types=["json","relation-graph","claim-set","temporal-constraints","graph"],output_types=["json","boolean","path-set","relation-set","contradiction-set","constraint-solution","diagnostics"],deterministic=True,arbitrary_code_execution=False,shell_execution=False,package_installation=False,metadata={"provider_contract":"sc.core.prolog-runtime.v1","environment_contract":"sc.core.reproducible-environment-package.v1","native_runtime":"SWI-Prolog","native_runtime_version":"9.0.4","native_package_version":"9.0.4+dfsg-3.1ubuntu4","provider_generated_programs":True})
+    runtime = RuntimeDescriptor(runtime_id="sc-runtime-prolog",runtime_kind=RuntimeKind.language,language="prolog",implementation="SWI-Prolog",runtime_version="9.0.4",provider_version="1.0.0",service_name="sc-prolog-runtime",contract_versions=[OBJECT_CONTRACT_VERSION,ADAPTER_CONTRACT_VERSION,"sc.core.prolog-runtime.v1","sc.core.reproducible-environment-package.v1","sc.core.runtime-security-governance.v1"],capabilities=[capability],execution_host="contabo-vps",status="active",metadata={"canonical_runtime":True,"provider_release":"Sustainable Catalyst Prolog Runtime v1.0.0","arbitrary_prolog_source":False,"shell_execution":False,"runtime_package_install":False,"provider_generated_programs":True})
+    return RuntimeAdapterDescriptor(adapter_id="adapter:sc-runtime-prolog",runtime=runtime,provider_contracts=["sc.core.prolog-runtime.v1","sc.core.reproducible-environment-package.v1","sc.core.runtime-security-governance.v1"],transport="http",invocation_mode="governed-service",service_ref="sc-prolog-runtime",status="registered",metadata={"core_executes_runtime_directly":False,"endpoint":"http://127.0.0.1:18104","native_runtime":"SWI-Prolog","native_runtime_version":"9.0.4","language":"prolog"})
+
 def legacy_analytical_provider_to_adapter(
     provider: dict[str, Any],
     capabilities: list[dict[str, Any]] | None = None,
@@ -684,6 +689,7 @@ class RuntimeAdapterRegistry:
         self.register(_rust_runtime_adapter())
         self.register(_go_runtime_adapter())
         self.register(_python_runtime_adapter())
+        self.register(_prolog_runtime_adapter())
 
     def register(self, adapter: RuntimeAdapterDescriptor) -> RuntimeAdapterDescriptor:
         self._adapters[adapter.adapter_id] = adapter

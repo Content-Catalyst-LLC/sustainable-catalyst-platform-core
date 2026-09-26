@@ -1,0 +1,15 @@
+{
+  "operation": "relation_reachable",
+  "edges": [
+    {
+      "source": "source_a",
+      "target": "entity_b"
+    },
+    {
+      "source": "entity_b",
+      "target": "target_c"
+    }
+  ],
+  "source": "source_a",
+  "target": "target_c"
+}

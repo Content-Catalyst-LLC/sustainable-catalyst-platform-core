@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/prolog-runtime-v1.schema.json",
+  "title": "Sustainable Catalyst Prolog Runtime v1",
+  "type": "object",
+  "required": [
+    "bundle_id",
+    "registration",
+    "environment_package",
+    "security_policy",
+    "reference_request"
+  ],
+  "properties": {
+    "bundle_id": {
+      "type": "string"
+    },
+    "registration": {
+      "type": "object"
+    },
+    "environment_package": {
+      "type": "object"
+    },
+    "security_policy": {
+      "type": "object"
+    },
+    "reference_request": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": true
+}

@@ -1,0 +1,10 @@
+Platform Core v3.55.0 — Prolog Logic & Constraint Runtime
+CONTRACT=sc.core.prolog-runtime.v1
+RUNTIME_ID=sc-runtime-prolog
+ADAPTER_ID=adapter:sc-runtime-prolog
+PROVIDER_VERSION=1.0.0
+SWI_PROLOG_VERSION=9.0.4
+OPERATIONS=relation_reachable,relation_paths_bounded,transitive_closure,contradiction_scan,temporal_consistency,graph_coloring
+ARBITRARY_PROLOG_SOURCE=false
+CORE_CERTIFIES_TRUTH=false
+DATABASE_MIGRATION=none
