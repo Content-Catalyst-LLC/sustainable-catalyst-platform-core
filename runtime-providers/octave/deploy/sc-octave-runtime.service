@@ -1,0 +1,21 @@
+[Unit]
+Description=Sustainable Catalyst Octave Runtime
+After=network.target
+
+[Service]
+Type=simple
+User=catalystadmin
+Group=catalystadmin
+WorkingDirectory=/opt/sustainable-catalyst/octave-runtime
+Environment=SC_OCTAVE_RUNTIME_HOST=127.0.0.1
+Environment=SC_OCTAVE_RUNTIME_PORT=18096
+Environment=SC_OCTAVE_VERSION=8.4.0
+Environment=SC_OCTAVE_BIN=/usr/bin/octave-cli
+Environment=SC_OCTAVE_ARTIFACT_ROOT=/var/lib/sc-octave-runtime/artifacts
+Environment=SC_OCTAVE_WORK_ROOT=/var/lib/sc-octave-runtime/work
+ExecStart=/opt/sustainable-catalyst/octave-runtime/.venv/bin/uvicorn app.server:app --host 127.0.0.1 --port 18096
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

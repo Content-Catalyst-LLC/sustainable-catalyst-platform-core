@@ -303,6 +303,78 @@ def _stan_runtime_adapter() -> RuntimeAdapterDescriptor:
         },
     )
 
+
+def _octave_runtime_adapter() -> RuntimeAdapterDescriptor:
+    capability = RuntimeCapability(
+        capability_key="bounded-numerical-computing",
+        category="numerical-computing",
+        operations=[
+            "matrix_multiply",
+            "linear_solve",
+            "eigenvalues",
+            "svd",
+            "fft",
+            "polynomial_roots",
+        ],
+        input_types=["json", "matrix", "vector", "scalar"],
+        output_types=["json", "matrix", "vector", "complex-vector", "diagnostics"],
+        deterministic=True,
+        arbitrary_code_execution=False,
+        shell_execution=False,
+        package_installation=False,
+        metadata={
+            "provider_contract": "sc.core.octave-runtime.v1",
+            "environment_contract": "sc.core.reproducible-environment-package.v1",
+            "native_runtime": "GNU Octave",
+            "native_runtime_version": "8.4.0",
+        },
+    )
+    runtime = RuntimeDescriptor(
+        runtime_id="sc-runtime-octave",
+        runtime_kind=RuntimeKind.language,
+        language="octave",
+        implementation="GNU Octave",
+        runtime_version="8.4.0",
+        provider_version="1.0.0",
+        service_name="sc-octave-runtime",
+        contract_versions=[
+            OBJECT_CONTRACT_VERSION,
+            ADAPTER_CONTRACT_VERSION,
+            "sc.core.octave-runtime.v1",
+            "sc.core.reproducible-environment-package.v1",
+            "sc.core.runtime-security-governance.v1",
+        ],
+        capabilities=[capability],
+        execution_host="contabo-vps",
+        status="active",
+        metadata={
+            "canonical_runtime": True,
+            "provider_release": "Sustainable Catalyst Octave Runtime v1.0.0",
+            "arbitrary_octave_source": False,
+            "shell_execution": False,
+            "runtime_package_install": False,
+        },
+    )
+    return RuntimeAdapterDescriptor(
+        adapter_id="adapter:sc-runtime-octave",
+        runtime=runtime,
+        provider_contracts=[
+            "sc.core.octave-runtime.v1",
+            "sc.core.reproducible-environment-package.v1",
+            "sc.core.runtime-security-governance.v1",
+        ],
+        transport="http",
+        invocation_mode="governed-service",
+        service_ref="sc-octave-runtime",
+        status="registered",
+        metadata={
+            "core_executes_runtime_directly": False,
+            "endpoint": "http://127.0.0.1:18096",
+            "native_runtime": "GNU Octave",
+            "native_runtime_version": "8.4.0",
+        },
+    )
+
 def legacy_analytical_provider_to_adapter(
     provider: dict[str, Any],
     capabilities: list[dict[str, Any]] | None = None,
@@ -370,6 +442,7 @@ class RuntimeAdapterRegistry:
         self.register(_julia_reference_adapter())
         self.register(_r_runtime_adapter())
         self.register(_stan_runtime_adapter())
+        self.register(_octave_runtime_adapter())
 
     def register(self, adapter: RuntimeAdapterDescriptor) -> RuntimeAdapterDescriptor:
         self._adapters[adapter.adapter_id] = adapter

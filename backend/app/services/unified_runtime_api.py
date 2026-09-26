@@ -30,6 +30,9 @@ REFERENCE_JULIA_ADAPTER = "adapter:catalyst-julia-runtime"
 REFERENCE_STAN_RUNTIME = "sc-runtime-stan"
 REFERENCE_STAN_VERSION = "1.0.0"
 REFERENCE_STAN_ADAPTER = "adapter:sc-runtime-stan"
+REFERENCE_OCTAVE_RUNTIME = "sc-runtime-octave"
+REFERENCE_OCTAVE_VERSION = "1.0.0"
+REFERENCE_OCTAVE_ADAPTER = "adapter:sc-runtime-octave"
 
 
 class ProductId(str, Enum):
@@ -74,6 +77,8 @@ class RuntimeCapability(str, Enum):
     probabilistic_modeling = "probabilistic-modeling"
     bayesian_inference = "bayesian-inference"
     posterior_sampling = "posterior-sampling"
+    linear_algebra = "linear-algebra"
+    signal_processing = "signal-processing"
 
 
 class RuntimeAvailability(str, Enum):
@@ -502,12 +507,8 @@ def reference_runtime_catalog() -> UnifiedRuntimeCatalog:
                     RuntimeCapability.verification,
                 ],
                 operations=[
-                    "descriptive_summary",
-                    "quantile_summary",
-                    "correlation_matrix",
-                    "linear_regression",
-                    "t_test",
-                    "one_way_anova",
+                    "descriptive_summary", "quantile_summary", "correlation_matrix",
+                    "linear_regression", "t_test", "one_way_anova",
                 ],
                 readable_formats=["json", "csv"],
                 writable_formats=["json", "csv"],
@@ -552,22 +553,42 @@ def reference_runtime_catalog() -> UnifiedRuntimeCatalog:
                     RuntimeCapability.reproduction,
                     RuntimeCapability.verification,
                 ],
-                operations=[
-                    "compile_model",
-                    "sample",
-                    "optimize",
-                    "variational",
-                    "diagnose",
-                ],
+                operations=["compile_model", "sample", "optimize", "variational", "diagnose"],
                 readable_formats=["json", "stan"],
                 writable_formats=["json", "csv"],
                 environment_package_ref="environment-package:stan-runtime:v1",
                 security_policy_ref="runtime-security-policy:stan-runtime-standard:v1",
                 isolation_profile_ref="isolation-profile:stan-runtime-standard:v1",
+                metadata={"provider_contract": "sc.core.stan-runtime.v1"},
+            ),
+            UnifiedRuntimeCatalogEntry(
+                catalog_entry_id="runtime-catalog-entry:sc-runtime-octave:1.0.0",
+                runtime_ref=REFERENCE_OCTAVE_RUNTIME,
+                runtime_version=REFERENCE_OCTAVE_VERSION,
+                runtime_adapter_ref=REFERENCE_OCTAVE_ADAPTER,
+                language="Octave",
+                capabilities=[
+                    RuntimeCapability.numerical_compute,
+                    RuntimeCapability.matrix_compute,
+                    RuntimeCapability.linear_algebra,
+                    RuntimeCapability.signal_processing,
+                    RuntimeCapability.workflow_execution,
+                    RuntimeCapability.reproduction,
+                    RuntimeCapability.verification,
+                ],
+                operations=[
+                    "matrix_multiply", "linear_solve", "eigenvalues",
+                    "svd", "fft", "polynomial_roots",
+                ],
+                readable_formats=["json"],
+                writable_formats=["json"],
+                environment_package_ref="environment-package:octave-runtime:v1",
+                security_policy_ref="runtime-security-policy:octave-runtime-standard:v1",
+                isolation_profile_ref="isolation-profile:octave-runtime-standard:v1",
                 metadata={
-                    "provider_contract": "sc.core.stan-runtime.v1",
-                    "native_runtime": "CmdStan",
-                    "native_runtime_version": "2.36.0",
+                    "provider_contract": "sc.core.octave-runtime.v1",
+                    "native_runtime": "GNU Octave",
+                    "native_runtime_version": "8.4.0",
                 },
             ),
         ],
@@ -576,6 +597,7 @@ def reference_runtime_catalog() -> UnifiedRuntimeCatalog:
             "runtime-data-interchange-bundle:reference-r-julia:v1",
             "runtime-security-governance-bundle:reference:v1",
             "stan-runtime-bundle:reference:v1",
+            "octave-runtime-bundle:reference:v1",
         ],
         metadata={
             "selection_owner": "calling-product-or-workspace",
@@ -589,28 +611,30 @@ def reference_product_profiles() -> list[ProductRuntimeIntegrationProfile]:
         "linear_regression", "t_test", "one_way_anova",
     ]
     all_julia_ops = ["identity", "sum", "mean", "matrix_multiply"]
-    all_stan_ops = [
-        "compile_model", "sample", "optimize", "variational", "diagnose",
+    all_stan_ops = ["compile_model", "sample", "optimize", "variational", "diagnose"]
+    all_octave_ops = [
+        "matrix_multiply", "linear_solve", "eigenvalues",
+        "svd", "fft", "polynomial_roots",
     ]
     return [
         ProductRuntimeIntegrationProfile(
             product_profile_id="product-runtime-profile:workspace:v1",
             product_id=ProductId.workspace,
-            integration_version="1.1.0",
+            integration_version="1.2.0",
             allowed_actions=[
                 RuntimeAction.execute, RuntimeAction.statistical_analysis,
                 RuntimeAction.workflow, RuntimeAction.interchange,
                 RuntimeAction.reproduce, RuntimeAction.verify, RuntimeAction.inspect,
             ],
             allowed_runtime_refs=[
-                REFERENCE_R_RUNTIME,
-                REFERENCE_JULIA_RUNTIME,
-                REFERENCE_STAN_RUNTIME,
+                REFERENCE_R_RUNTIME, REFERENCE_JULIA_RUNTIME,
+                REFERENCE_STAN_RUNTIME, REFERENCE_OCTAVE_RUNTIME,
             ],
             allowed_operations={
                 REFERENCE_R_RUNTIME: all_r_ops,
                 REFERENCE_JULIA_RUNTIME: all_julia_ops,
                 REFERENCE_STAN_RUNTIME: all_stan_ops,
+                REFERENCE_OCTAVE_RUNTIME: all_octave_ops,
             },
             required_capabilities=[RuntimeCapability.workflow_execution],
             default_execution_host_ref="workspace-execution-host:primary",
@@ -621,31 +645,33 @@ def reference_product_profiles() -> list[ProductRuntimeIntegrationProfile]:
             source_product_contract_refs=[
                 "workspace-runtime-orchestration",
                 "sc.core.stan-runtime.v1",
+                "sc.core.octave-runtime.v1",
             ],
             metadata={"role": "primary-runtime-orchestrator"},
         ),
         ProductRuntimeIntegrationProfile(
             product_profile_id="product-runtime-profile:research-lab:v1",
             product_id=ProductId.research_lab,
-            integration_version="1.1.0",
+            integration_version="1.2.0",
             allowed_actions=[
                 RuntimeAction.execute, RuntimeAction.statistical_analysis,
                 RuntimeAction.interchange, RuntimeAction.verify, RuntimeAction.inspect,
             ],
             allowed_runtime_refs=[
-                REFERENCE_R_RUNTIME,
-                REFERENCE_JULIA_RUNTIME,
-                REFERENCE_STAN_RUNTIME,
+                REFERENCE_R_RUNTIME, REFERENCE_JULIA_RUNTIME,
+                REFERENCE_STAN_RUNTIME, REFERENCE_OCTAVE_RUNTIME,
             ],
             allowed_operations={
                 REFERENCE_R_RUNTIME: all_r_ops,
                 REFERENCE_JULIA_RUNTIME: all_julia_ops,
                 REFERENCE_STAN_RUNTIME: all_stan_ops,
+                REFERENCE_OCTAVE_RUNTIME: all_octave_ops,
             },
             required_capabilities=[
                 RuntimeCapability.statistical_analysis,
                 RuntimeCapability.numerical_compute,
                 RuntimeCapability.bayesian_inference,
+                RuntimeCapability.linear_algebra,
             ],
             default_execution_host_ref="workspace-execution-host:primary",
             api_scopes=[
@@ -654,33 +680,47 @@ def reference_product_profiles() -> list[ProductRuntimeIntegrationProfile]:
             source_product_contract_refs=[
                 "research-lab-computational-analysis",
                 "sc.core.stan-runtime.v1",
+                "sc.core.octave-runtime.v1",
             ],
             metadata={
                 "role": "scientific-analysis-client",
                 "stan_runtime_enabled": True,
+                "octave_runtime_enabled": True,
             },
         ),
         ProductRuntimeIntegrationProfile(
             product_profile_id="product-runtime-profile:workbench:v1",
             product_id=ProductId.workbench,
-            integration_version="1.0.0",
+            integration_version="1.1.0",
             allowed_actions=[
                 RuntimeAction.execute, RuntimeAction.interchange, RuntimeAction.inspect,
             ],
-            allowed_runtime_refs=[REFERENCE_R_RUNTIME, REFERENCE_JULIA_RUNTIME],
+            allowed_runtime_refs=[
+                REFERENCE_R_RUNTIME, REFERENCE_JULIA_RUNTIME, REFERENCE_OCTAVE_RUNTIME,
+            ],
             allowed_operations={
                 REFERENCE_R_RUNTIME: [
                     "descriptive_summary", "correlation_matrix", "linear_regression",
                 ],
                 REFERENCE_JULIA_RUNTIME: all_julia_ops,
+                REFERENCE_OCTAVE_RUNTIME: all_octave_ops,
             },
-            required_capabilities=[RuntimeCapability.numerical_compute],
+            required_capabilities=[
+                RuntimeCapability.numerical_compute,
+                RuntimeCapability.linear_algebra,
+            ],
             default_execution_host_ref="workspace-execution-host:primary",
             api_scopes=[
                 "runtime:catalog", "runtime:resolve", "runtime:invoke", "runtime:receipt",
             ],
-            source_product_contract_refs=["workbench-computational-prototyping"],
-            metadata={"role": "engineering-compute-client"},
+            source_product_contract_refs=[
+                "workbench-computational-prototyping",
+                "sc.core.octave-runtime.v1",
+            ],
+            metadata={
+                "role": "engineering-compute-client",
+                "octave_runtime_enabled": True,
+            },
         ),
     ]
 

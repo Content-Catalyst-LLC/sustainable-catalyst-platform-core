@@ -1,0 +1,10 @@
+{
+  "bundle_id": "octave-runtime-bundle:reference:v1",
+  "runtime_id": "sc-runtime-octave",
+  "provider_version": "1.0.0",
+  "octave_version": "8.4.0",
+  "operation": "linear_solve",
+  "environment_package": "environment-package:octave-runtime:v1",
+  "security_policy": "runtime-security-policy:octave-runtime-standard:v1",
+  "contract": "sc.core.octave-runtime.v1"
+}
