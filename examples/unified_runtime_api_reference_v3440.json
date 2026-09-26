@@ -1,0 +1,15 @@
+{
+  "bundle_id": "unified-runtime-api-bundle:research-lab:r-regression:v1",
+  "product_id": "research-lab",
+  "action": "statistical-analysis",
+  "capability": "regression",
+  "operation": "linear_regression",
+  "explicit_runtime_ref": "sc-runtime-r",
+  "runtime_version": "1.0.0",
+  "runtime_adapter_ref": "adapter:sc-runtime-r",
+  "environment_package_ref": "environment-package:reference-r-julia:v1",
+  "security_decision_ref": "security-decision:r-regression:reference",
+  "execution_host_ref": "workspace-execution-host:primary",
+  "receipt_status": "completed",
+  "contract": "sc.core.unified-runtime-api.v1"
+}

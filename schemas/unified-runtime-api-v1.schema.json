@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/unified-runtime-api-v1.schema.json",
+  "title": "Sustainable Catalyst Unified Runtime API",
+  "type": "object",
+  "required": ["bundle_id", "catalog", "product_profiles", "request", "resolution"],
+  "properties": {
+    "bundle_id": {"type": "string"},
+    "catalog": {"type": "object"},
+    "product_profiles": {"type": "array", "items": {"type": "object"}},
+    "request": {"type": "object"},
+    "resolution": {"type": "object"},
+    "invocation": {"type": ["object", "null"]},
+    "receipts": {"type": "array", "items": {"type": "object"}},
+    "source_object_refs": {"type": "array", "items": {"type": "string"}},
+    "metadata": {"type": "object"}
+  },
+  "additionalProperties": true,
+  "x-sustainable-catalyst": {
+    "release": "3.44.0",
+    "contract": "sc.core.unified-runtime-api.v1",
+    "runtime_selection": "explicit-or-candidate-only",
+    "dispatch_owner": "workspace-or-execution-host",
+    "core_autonomously_selects_runtime": false,
+    "core_dispatches_execution": false,
+    "product_profiles": ["workspace", "research-lab", "workbench"]
+  }
+}

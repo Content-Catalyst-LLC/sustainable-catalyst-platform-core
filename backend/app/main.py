@@ -110,6 +110,7 @@ from .routers import (
     reproducible_environments,
     verification_reproduction,
     runtime_security,
+    unified_runtime,
     uncertainty_probabilistic_evidence,
     visualization_registry,
     system_maps,
@@ -486,6 +487,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # v3.43.0 Runtime Security, Isolation & Governance.
     app.include_router(runtime_security.router)
     app.include_router(runtime_security.public_router)
+    # v3.44.0 Unified Runtime API & Product Integration.
+    app.include_router(unified_runtime.router)
+    app.include_router(unified_runtime.public_router)
     app.include_router(uncertainty_probabilistic_evidence.router)
     app.include_router(uncertainty_probabilistic_evidence.public_router)
     # Open Forensics includes v2.51.0 Reproducible Investigation Packages.
