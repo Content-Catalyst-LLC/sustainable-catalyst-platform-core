@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/runtime-fabric-production-certification-v1.schema.json",
+  "title": "Sustainable Catalyst Runtime Fabric Production Certification",
+  "type": "object",
+  "required": [
+    "certificate_id",
+    "certified_release",
+    "certified_tag",
+    "assessment"
+  ],
+  "properties": {
+    "certificate_id": {
+      "type": "string"
+    },
+    "certified_release": {
+      "type": "string"
+    },
+    "certified_tag": {
+      "type": "string"
+    },
+    "assessment": {
+      "type": "object"
+    },
+    "issuer_ref": {
+      "type": "string"
+    },
+    "production_target_ref": {
+      "type": "string"
+    },
+    "source_object_refs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "metadata": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": true,
+  "x-sustainable-catalyst": {
+    "release": "3.45.0",
+    "contract": "sc.core.runtime-fabric-production-certification.v1",
+    "reference_certificate_is_live_production_evidence": false,
+    "deploy_verifier_supplies_live_production_evidence": true,
+    "external_product_repository_integration_certified": false,
+    "scientific_validity_certified": false
+  }
+}

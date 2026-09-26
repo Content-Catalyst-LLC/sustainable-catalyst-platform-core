@@ -1,0 +1,17 @@
+{
+  "certificate_id": "runtime-fabric-production-certificate:reference:v1",
+  "certified_release": "3.45.0",
+  "certified_tag": "v3.45.0",
+  "assessment_status": "certified",
+  "runtime_providers": [
+    "sc-runtime-r@1.0.0",
+    "catalyst-julia-runtime@0.3.0"
+  ],
+  "product_profiles": [
+    "workspace",
+    "research-lab",
+    "workbench"
+  ],
+  "contract": "sc.core.runtime-fabric-production-certification.v1",
+  "note": "Reference contract proof; live production evidence is collected by deployment verifier."
+}
