@@ -1,0 +1,22 @@
+[Unit]
+Description=Sustainable Catalyst Go Runtime
+After=network.target
+
+[Service]
+Type=simple
+User=catalystadmin
+Group=catalystadmin
+WorkingDirectory=/opt/sustainable-catalyst/go-runtime
+Environment=SC_GO_RUNTIME_HOST=127.0.0.1
+Environment=SC_GO_RUNTIME_PORT=18102
+Environment=SC_GO_VERSION=1.22.2
+Environment=SC_GO_PACKAGE_VERSION=1.22.2-2ubuntu0.4
+Environment=SC_GO_BIN=/usr/lib/go-1.22/bin/go
+Environment=SC_GO_ARTIFACT_ROOT=/var/lib/sc-go-runtime/artifacts
+Environment=SC_GO_WORK_ROOT=/var/lib/sc-go-runtime/work
+ExecStart=/opt/sustainable-catalyst/go-runtime/.venv/bin/uvicorn app.server:app --host 127.0.0.1 --port 18102
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

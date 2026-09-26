@@ -1,0 +1,8 @@
+{
+  "contract": "sc.core.go-runtime.v1",
+  "runtime_id": "sc-runtime-go",
+  "provider_version": "1.0.0",
+  "go_version": "1.22.2",
+  "reference_operation": "parallel_sum",
+  "expected_value": 10.0
+}

@@ -599,6 +599,11 @@ def _rust_runtime_adapter() -> RuntimeAdapterDescriptor:
         metadata={"core_executes_runtime_directly":False,"endpoint":"http://127.0.0.1:18101","native_runtime":"rustc","native_runtime_version":"1.75.0","language":"rust","edition":"2021","unsafe_code":False},
     )
 
+def _go_runtime_adapter() -> RuntimeAdapterDescriptor:
+    capability = RuntimeCapability(capability_key="bounded-concurrent-distributed",category="concurrent-distributed",operations=["parallel_sum","parallel_map_affine","concurrent_histogram","parallel_matrix_row_sums","parallel_graph_degrees","batch_sha256"],input_types=["json","numeric-vector","matrix","graph","text-batch"],output_types=["json","scalar","numeric-vector","integer-vector","hash-batch","diagnostics"],deterministic=True,arbitrary_code_execution=False,shell_execution=False,package_installation=False,metadata={"provider_contract":"sc.core.go-runtime.v1","environment_contract":"sc.core.reproducible-environment-package.v1","native_runtime":"Go","native_runtime_version":"1.22.2","native_package_version":"1.22.2-2ubuntu0.4","external_module_downloads":False,"cgo":False})
+    runtime = RuntimeDescriptor(runtime_id="sc-runtime-go",runtime_kind=RuntimeKind.language,language="go",implementation="Go",runtime_version="1.22.2",provider_version="1.0.0",service_name="sc-go-runtime",contract_versions=[OBJECT_CONTRACT_VERSION,ADAPTER_CONTRACT_VERSION,"sc.core.go-runtime.v1","sc.core.reproducible-environment-package.v1","sc.core.runtime-security-governance.v1"],capabilities=[capability],execution_host="contabo-vps",status="active",metadata={"canonical_runtime":True,"provider_release":"Sustainable Catalyst Go Runtime v1.0.0","arbitrary_go_source":False,"external_module_downloads":False,"shell_execution":False,"runtime_package_install":False,"provider_managed_compilation":True})
+    return RuntimeAdapterDescriptor(adapter_id="adapter:sc-runtime-go",runtime=runtime,provider_contracts=["sc.core.go-runtime.v1","sc.core.reproducible-environment-package.v1","sc.core.runtime-security-governance.v1"],transport="http",invocation_mode="governed-service",service_ref="sc-go-runtime",status="registered",metadata={"core_executes_runtime_directly":False,"endpoint":"http://127.0.0.1:18102","native_runtime":"Go","native_runtime_version":"1.22.2","language":"go"})
+
 def legacy_analytical_provider_to_adapter(
     provider: dict[str, Any],
     capabilities: list[dict[str, Any]] | None = None,
@@ -672,6 +677,7 @@ class RuntimeAdapterRegistry:
         self.register(_fortran_runtime_adapter())
         self.register(_cpp_runtime_adapter())
         self.register(_rust_runtime_adapter())
+        self.register(_go_runtime_adapter())
 
     def register(self, adapter: RuntimeAdapterDescriptor) -> RuntimeAdapterDescriptor:
         self._adapters[adapter.adapter_id] = adapter
