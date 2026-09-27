@@ -1,5 +1,13 @@
 # v3.3.0 — Statistical Reasoning Object Model
 
+## 3.61.0 — Explainability & Model Interpretation Objects
+
+- Adds governed feature-attribution, saliency, attention, counterfactual, embedding-space, and model-comparison interpretation records.
+- Binds explanations to v3.60 evaluation/checkpoint/dataset-partition lineage.
+- Records explicit non-causal, non-evidentiary interpretation semantics.
+- Keeps explainability computation, causal inference, autonomous model selection, and interpretation certification outside Core.
+
+
 ## 3.60.0 — Neural Evaluation, Calibration & Uncertainty Objects
 
 - Adds governed metric, confusion-matrix, calibration, confidence-distribution, predictive-interval, uncertainty, and OOD records.
