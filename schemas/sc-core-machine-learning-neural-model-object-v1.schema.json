@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/sc-core-machine-learning-neural-model-object-v1.schema.json",
+  "title": "Sustainable Catalyst Core Machine Learning & Neural Model Object Foundation",
+  "type": "object",
+  "required": ["model_spec_id", "ai_model_ref", "model_family", "algorithm_name", "feature_schema", "objective"],
+  "properties": {
+    "model_spec_id": {"type": "string", "minLength": 2},
+    "ai_model_ref": {"type": "string", "minLength": 2},
+    "ai_model_version_ref": {"type": ["string", "null"]},
+    "model_family": {"enum": ["linear", "tree-ensemble", "kernel", "nearest-neighbor", "probabilistic", "neural-network", "graph-neural-network", "transformer", "ensemble", "hybrid", "other"]},
+    "algorithm_name": {"type": "string", "minLength": 1},
+    "feature_schema": {"type": "object"},
+    "objective": {"type": "object"},
+    "neural_architecture": {"type": ["object", "null"]},
+    "hyperparameters": {"type": "object"},
+    "runtime_bindings": {"type": "array"}
+  },
+  "additionalProperties": true
+}

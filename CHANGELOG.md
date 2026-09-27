@@ -1,5 +1,12 @@
 # v3.3.0 — Statistical Reasoning Object Model
 
+## 3.57.0 — Machine Learning & Neural Model Object Foundation
+
+- Adds governed ML feature/schema, objective, neural-architecture, runtime-binding, model-specification, training-plan, inference-plan, and bundle objects.
+- Extends the v3.27 AI model registry with reproducible ML/deep-learning research semantics while leaving computation in governed external runtimes.
+- Adds public and internal contract endpoints plus release validation and schema artifacts.
+
+
 - Added first-class statistical reasoning, diagnostic, assumption, robustness, model-comparison, coefficient, interval, interpretation, and snapshot records.
 - Added governed ingestion of Catalyst Analytics R v2.2.0 diagnostics through Workspace v3.9.1.
 - Added migration 0105 and promoted the provider registry baseline to Analytics R 2.2.0 / Workspace 3.9.1.

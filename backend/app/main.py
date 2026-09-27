@@ -123,6 +123,7 @@ from .routers import (
     python_runtime,
     prolog_runtime,
     jvm_runtime,
+    machine_learning_models,
     jvm_language_profiles,
     uncertainty_probabilistic_evidence,
     visualization_registry,
@@ -540,6 +541,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # v3.56.0 JVM Runtime.
     app.include_router(jvm_runtime.router)
     app.include_router(jvm_runtime.public_router)
+
+    # Platform Core v3.57.0 — Machine Learning & Neural Model Object Foundation
+    app.include_router(machine_learning_models.router)
+    app.include_router(machine_learning_models.public_router)
     # v3.56.1 JVM Language Profiles.
     app.include_router(jvm_language_profiles.router)
     app.include_router(jvm_language_profiles.public_router)
