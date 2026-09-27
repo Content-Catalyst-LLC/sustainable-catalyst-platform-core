@@ -1,5 +1,13 @@
 # v3.3.0 — Statistical Reasoning Object Model
 
+## 3.60.0 — Neural Evaluation, Calibration & Uncertainty Objects
+
+- Adds governed metric, confusion-matrix, calibration, confidence-distribution, predictive-interval, uncertainty, and OOD records.
+- Links evaluation outputs to v3.58 checkpoint/evaluation lineage and v3.59 dataset partitions.
+- Treats metrics and scores as analytical results rather than evidence or truth claims.
+- Keeps evaluation computation, calibration, OOD detection, model selection, certification, and promotion outside Core.
+
+
 ## 3.59.0 — Neural Dataset, Feature & Transformation Provenance
 
 - Adds governed raw-source, dataset-snapshot, partition, transformation-pipeline, feature-representation, and tensor-input lineage.

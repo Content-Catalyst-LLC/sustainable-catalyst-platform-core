@@ -126,6 +126,7 @@ from .routers import (
     machine_learning_models,
     ml_training_lineage,
     ml_dataset_provenance,
+    ml_evaluation_uncertainty,
     jvm_language_profiles,
     uncertainty_probabilistic_evidence,
     visualization_registry,
@@ -555,6 +556,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # Platform Core v3.59.0 — Neural Dataset, Feature & Transformation Provenance
     app.include_router(ml_dataset_provenance.router)
     app.include_router(ml_dataset_provenance.public_router)
+
+    # Platform Core v3.60.0 — Neural Evaluation, Calibration & Uncertainty Objects
+    app.include_router(ml_evaluation_uncertainty.router)
+    app.include_router(ml_evaluation_uncertainty.public_router)
     # v3.56.1 JVM Language Profiles.
     app.include_router(jvm_language_profiles.router)
     app.include_router(jvm_language_profiles.public_router)

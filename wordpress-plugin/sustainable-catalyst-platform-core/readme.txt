@@ -43,7 +43,7 @@ Tags: knowledge graph, entity registry, provenance, live data, sustainable catal
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.0
-Stable tag: 3.59.0
+Stable tag: 3.60.0
 License: MIT
 
 WordPress status, live-data gateway, and entity lookup client for Sustainable Catalyst Platform Core.
@@ -323,6 +323,10 @@ Scientific Study & Investigation Protocol Model status surface and Core 2.86.0 c
 Computation, Analysis & Execution Lineage status surface and Core 2.87.0 compatibility.
 
 == Changelog ==
+= 3.60.0 =
+* Adds governed neural evaluation, calibration, confidence-distribution, predictive-interval, uncertainty, and OOD objects.
+* Binds analytical outputs to v3.58 evaluation/checkpoint lineage and v3.59 dataset-partition provenance without treating scores as evidence.
+
 = 3.59.0 =
 * Adds governed neural dataset, feature, transformation, partition, representation, and tensor-input provenance objects.
 * Adds deterministic data-lineage fingerprints and a training-partition-only fitted-transform guardrail.
