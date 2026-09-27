@@ -45,7 +45,7 @@ def main():
         # Scala 3
         s=root/'scala';s.mkdir();(s/'Main.scala').write_text('object Main:\n  def main(args: Array[String]): Unit = println(List(1,2,3,4,5).sum)\n')
         run(subprocess.run([SCALAC,'-d',str(s),'Main.scala'],cwd=s,capture_output=True,text=True,timeout=120),'scalac')
-        cp=subprocess.run([SCALA,'-classpath',str(s),'Main'],cwd=s,capture_output=True,text=True,timeout=60);run(cp,'scala');assert cp.stdout.strip().splitlines()[-1]=='15'
+        cp=subprocess.run([SCALA,'run','-classpath',str(s),'--main-class','Main'],cwd=s,capture_output=True,text=True,timeout=60);run(cp,'scala');assert cp.stdout.strip().splitlines()[-1]=='15'
         print('PASS - Scala 3.9.0 profile compile/run')
     print('PASS - 3/3 JVM language profiles natively certified')
 

@@ -43,10 +43,14 @@ Tags: knowledge graph, entity registry, provenance, live data, sustainable catal
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.0
-Stable tag: 3.56.1
+Stable tag: 3.56.1.1
 License: MIT
 
 WordPress status, live-data gateway, and entity lookup client for Sustainable Catalyst Platform Core.
+
+== 3.56.1.1 ==
+* Repairs Scala 3.9.0 native profile certification for the Scala CLI runner by using the explicit `run` subcommand and main-class binding.
+* Adds deployment-path protection so production deployment cannot select or mutate an archival `/backups/` repository checkout.
 
 == Installation ==
 
