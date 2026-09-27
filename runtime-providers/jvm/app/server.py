@@ -12,6 +12,14 @@ RUNTIME_ID="sc-runtime-jvm";ADAPTER_ID="adapter:sc-runtime-jvm";RUNTIME_CONTRACT
 HOST=os.environ.get("SC_JVM_RUNTIME_HOST","127.0.0.1");PORT=int(os.environ.get("SC_JVM_RUNTIME_PORT","18105"));JAVA=os.environ.get("SC_JAVA_BIN","/usr/bin/java");JAVAC=os.environ.get("SC_JAVAC_BIN","/usr/bin/javac")
 ARTIFACT_ROOT=Path(os.environ.get("SC_JVM_ARTIFACT_ROOT","/var/lib/sc-jvm-runtime/artifacts"));WORK_ROOT=Path(os.environ.get("SC_JVM_WORK_ROOT","/var/lib/sc-jvm-runtime/work"))
 OPERATIONS=["jvm_runtime_info","parallel_sum","parallel_map_affine","matrix_row_sums","graph_bfs","batch_sha256"];SAFE=set(OPERATIONS)
+JVM_LANGUAGE_PROFILES=[
+    {"profile_id":"jvm-language-profile:java-21","language":"java","language_version":"21","compiler":"javac","execution_target":"OpenJDK JVM 21","status":"active"},
+    {"profile_id":"jvm-language-profile:kotlin-2.4.20","language":"kotlin","language_version":"2.4.20","compiler":"/opt/sustainable-catalyst/toolchains/kotlin-2.4.20/bin/kotlinc","execution_target":"OpenJDK JVM 21","status":"active"},
+    {"profile_id":"jvm-language-profile:scala-3.9.0","language":"scala","language_version":"3.9.0","compiler":"/opt/sustainable-catalyst/toolchains/scala3-3.9.0/bin/scalac","execution_target":"OpenJDK JVM 21","status":"active"},
+]
+
+def language_profiles_descriptor():
+    return {"runtime_id":RUNTIME_ID,"provider_version":PROVIDER_VERSION,"jvm_major_version":JVM_MAJOR_VERSION,"profiles":JVM_LANGUAGE_PROFILES,"explicit_profile_binding_required":True,"autonomous_profile_selection":False,"boundaries":{"arbitrary_source":False,"caller_classpath":False,"runtime_dependency_install":False,"network_access":False}}
 
 def now_iso():return datetime.now(timezone.utc).isoformat()
 def number(v,name):
@@ -106,11 +114,13 @@ app=FastAPI(title="Sustainable Catalyst JVM Runtime",version=PROVIDER_VERSION)
 def health():
     try:v=native_version();j=javac_version();ok=('version "21.' in v or 'version "21"' in v) and j.startswith('javac 21')
     except Exception:v='unavailable';j='unavailable';ok=False
-    return {"ok":ok,"runtime_id":RUNTIME_ID,"version":PROVIDER_VERSION,"jvm_major_version":JVM_MAJOR_VERSION,"java_version_output":v,"javac_version_output":j,"capabilities":len(OPERATIONS)}
+    return {"ok":ok,"runtime_id":RUNTIME_ID,"version":PROVIDER_VERSION,"jvm_major_version":JVM_MAJOR_VERSION,"java_version_output":v,"javac_version_output":j,"capabilities":len(OPERATIONS),"language_profiles":len(JVM_LANGUAGE_PROFILES)}
 @app.get('/version')
 def version():return {"runtime_id":RUNTIME_ID,"version":PROVIDER_VERSION,"jvm_major_version":JVM_MAJOR_VERSION,"java_version_output":native_version(),"javac_version_output":javac_version()}
 @app.get('/capabilities')
 def capabilities():return {"runtime_id":RUNTIME_ID,"operations":OPERATIONS}
+@app.get('/v1/language-profiles')
+def language_profiles():return language_profiles_descriptor()
 @app.get('/v1/core-adapter')
 def adapter():return adapter_descriptor()
 @app.post('/v1/core-adapter/prepare')

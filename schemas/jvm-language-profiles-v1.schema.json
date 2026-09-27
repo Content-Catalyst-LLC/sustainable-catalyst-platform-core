@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/jvm-language-profiles-v1.schema.json",
+  "title": "Sustainable Catalyst JVM Language Profiles v1",
+  "type": "object",
+  "required": [
+    "catalog_id",
+    "runtime_ref",
+    "profiles",
+    "explicit_profile_binding_required"
+  ],
+  "properties": {
+    "catalog_id": {
+      "type": "string"
+    },
+    "runtime_ref": {
+      "const": "sc-runtime-jvm"
+    },
+    "explicit_profile_binding_required": {
+      "const": true
+    },
+    "profiles": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": {
+        "type": "object"
+      }
+    }
+  },
+  "additionalProperties": true
+}

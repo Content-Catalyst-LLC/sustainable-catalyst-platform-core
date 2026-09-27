@@ -19,7 +19,7 @@ from .runtime_security_governance import (
     RuntimeIsolationProfile, RuntimeSecurityPolicy,
 )
 
-CORE_RELEASE = "3.56.0"
+CORE_RELEASE = "3.56.1"
 CONTRACT_VERSION = "sc.core.jvm-runtime.v1"
 PROVIDER_VERSION = "1.0.0"
 JVM_MAJOR_VERSION = "21"
@@ -153,7 +153,7 @@ def reference_environment_package():
         ],
         source_environment_ref="runtime-environment:jvm-provider:v1",source_job_refs=[],source_workflow_refs=[],state=EnvironmentPackageState.verified,
         provenance={"source_release":CORE_RELEASE,"core_builds_environment":False,"execution_host_builds_environment":True,"native_package_version_recorded_at_deploy":True},
-        metadata={"jvm_major_version":JVM_MAJOR_VERSION,"jvm_implementation":JVM_IMPLEMENTATION,"jvm_package_name":JVM_PACKAGE_NAME,"language_profiles_deferred_to":"3.56.1","arbitrary_bytecode":False},
+        metadata={"jvm_major_version":JVM_MAJOR_VERSION,"jvm_implementation":JVM_IMPLEMENTATION,"jvm_package_name":JVM_PACKAGE_NAME,"language_profiles_contract":"sc.core.jvm-language-profiles.v1","arbitrary_bytecode":False},
     )
 
 def reference_security_policy():
@@ -169,4 +169,4 @@ def to_scientific_jvm_artifact(bundle):
 
 def contract_document():
     b=reference_runtime_bundle()
-    return {"ok":True,"release":CORE_RELEASE,"contract":CONTRACT_VERSION,"provider_version":PROVIDER_VERSION,"jvm_major_version":JVM_MAJOR_VERSION,"jvm_implementation":JVM_IMPLEMENTATION,"jvm_package_name":JVM_PACKAGE_NAME,"runtime_id":RUNTIME_ID,"adapter_id":ADAPTER_ID,"runtime_kind":"execution-target","language":"jvm-bytecode","operations":list(JVM_OPERATIONS),"capabilities":{"managed_vm_execution":True,"parallel_compute":True,"graph_processing":True,"deterministic_hashing":True,"provider_managed_compilation":True,"reproducible_environment_package":True,"runtime_security_policy":True,"runtime_adapter_registration":True,"unified_runtime_catalog_integration":True,"workspace_product_profile_integration":True,"research_lab_product_profile_integration":True,"workbench_product_profile_integration":True,"scientific_registry_bridge":True,"language_profiles_ready":True},"boundaries":{"core_executes_jvm":False,"provider_executes_jvm":True,"arbitrary_jvm_bytecode":False,"arbitrary_java_source":False,"caller_classpath":False,"shell_execution":False,"runtime_dependency_install_via_api":False,"network_access":False,"core_selects_jvm_language_profile":False,"java_kotlin_scala_profiles_deferred_to":"3.56.1","spark_adapter_deferred_to":"3.56.2"},"reference":{"bundle_id":b.bundle_id,"environment_package_id":b.environment_package.environment_package_id,"security_policy_id":b.security_policy.security_policy_id,"reference_request_id":b.reference_request.jvm_request_id,"reference_operation":b.reference_request.operation.value,"bundle_fingerprint_sha256":b.fingerprint()}}
+    return {"ok":True,"release":CORE_RELEASE,"contract":CONTRACT_VERSION,"provider_version":PROVIDER_VERSION,"jvm_major_version":JVM_MAJOR_VERSION,"jvm_implementation":JVM_IMPLEMENTATION,"jvm_package_name":JVM_PACKAGE_NAME,"runtime_id":RUNTIME_ID,"adapter_id":ADAPTER_ID,"runtime_kind":"execution-target","language":"jvm-bytecode","operations":list(JVM_OPERATIONS),"capabilities":{"managed_vm_execution":True,"parallel_compute":True,"graph_processing":True,"deterministic_hashing":True,"provider_managed_compilation":True,"reproducible_environment_package":True,"runtime_security_policy":True,"runtime_adapter_registration":True,"unified_runtime_catalog_integration":True,"workspace_product_profile_integration":True,"research_lab_product_profile_integration":True,"workbench_product_profile_integration":True,"scientific_registry_bridge":True,"language_profiles_ready":True},"boundaries":{"core_executes_jvm":False,"provider_executes_jvm":True,"arbitrary_jvm_bytecode":False,"arbitrary_java_source":False,"caller_classpath":False,"shell_execution":False,"runtime_dependency_install_via_api":False,"network_access":False,"core_selects_jvm_language_profile":False,"java_kotlin_scala_profiles_contract":"sc.core.jvm-language-profiles.v1","spark_adapter_deferred_to":"3.56.2"},"reference":{"bundle_id":b.bundle_id,"environment_package_id":b.environment_package.environment_package_id,"security_policy_id":b.security_policy.security_policy_id,"reference_request_id":b.reference_request.jvm_request_id,"reference_operation":b.reference_request.operation.value,"bundle_fingerprint_sha256":b.fingerprint()}}

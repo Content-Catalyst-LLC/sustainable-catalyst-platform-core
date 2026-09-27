@@ -1,0 +1,10 @@
+{
+  "catalog_id": "jvm-language-profile-catalog:platform-core:v1",
+  "runtime_ref": "sc-runtime-jvm",
+  "profiles": [
+    "jvm-language-profile:java-21",
+    "jvm-language-profile:kotlin-2.4.20",
+    "jvm-language-profile:scala-3.9.0"
+  ],
+  "explicit_profile_binding_required": true
+}

@@ -123,6 +123,7 @@ from .routers import (
     python_runtime,
     prolog_runtime,
     jvm_runtime,
+    jvm_language_profiles,
     uncertainty_probabilistic_evidence,
     visualization_registry,
     system_maps,
@@ -538,6 +539,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # v3.56.0 JVM Runtime.
     app.include_router(jvm_runtime.router)
     app.include_router(jvm_runtime.public_router)
+    # v3.56.1 JVM Language Profiles.
+    app.include_router(jvm_language_profiles.router)
+    app.include_router(jvm_language_profiles.public_router)
     app.include_router(uncertainty_probabilistic_evidence.router)
     app.include_router(uncertainty_probabilistic_evidence.public_router)
     # Open Forensics includes v2.51.0 Reproducible Investigation Packages.

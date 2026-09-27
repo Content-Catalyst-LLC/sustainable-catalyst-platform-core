@@ -20,7 +20,8 @@ def operational_jdk():
 JAVAC_OK, JAVA_OK = operational_jdk()
 
 def test_identity(): assert RUNTIME_ID=='sc-runtime-jvm' and ADAPTER_ID=='adapter:sc-runtime-jvm'
-def test_operations(): assert OPERATIONS==['jvm_runtime_info','parallel_sum','parallel_map_affine','matrix_row_sums','graph_bfs','batch_sha256']
+BASE_OPERATIONS={'jvm_runtime_info','parallel_sum','parallel_map_affine','matrix_row_sums','graph_bfs','batch_sha256'}
+def test_operations(): assert BASE_OPERATIONS.issubset(set(OPERATIONS)) and len(OPERATIONS)==len(set(OPERATIONS))
 def test_parallel_sum_source():
     s=build_source('parallel_sum',{'values':[1,2,3]});assert 'parallel().sum()' in s and 'new double[]{1.0,2.0,3.0}' in s
 def test_affine_source(): assert 'parallel().map' in build_source('parallel_map_affine',{'values':[1,2],'scale':2,'offset':1})

@@ -1,0 +1,10 @@
+Platform Core v3.56.1 — JVM Language Profiles
+CONTRACT=sc.core.jvm-language-profiles.v1
+RUNTIME=sc-runtime-jvm@1.1.0
+JAVA=21
+KOTLIN=2.4.20
+SCALA=3.9.0
+EXPLICIT_PROFILE_BINDING=required
+AUTONOMOUS_PROFILE_SELECTION=false
+ARBITRARY_SOURCE=false
+DATABASE_MIGRATION=none
