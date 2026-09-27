@@ -9,6 +9,12 @@ from pydantic import BaseModel,Field,model_validator
 
 PROVIDER_VERSION="1.0.0";JVM_MAJOR_VERSION=os.environ.get("SC_JVM_MAJOR_VERSION","21");JVM_IMPLEMENTATION="OpenJDK"
 RUNTIME_ID="sc-runtime-jvm";ADAPTER_ID="adapter:sc-runtime-jvm";RUNTIME_CONTRACT="sc.core.jvm-runtime.v1";ADAPTER_CONTRACT="sc.core.runtime-adapter.v1"
+
+LANGUAGE_PROFILES=[
+    {"profile_id":"jvm-profile:java-21","language":"java","language_version":"21","runtime_id":RUNTIME_ID,"provider_version":PROVIDER_VERSION,"execution_mode":"provider-managed","explicit_binding_required":True},
+    {"profile_id":"jvm-profile:kotlin-2.4.20","language":"kotlin","language_version":"2.4.20","runtime_id":RUNTIME_ID,"provider_version":PROVIDER_VERSION,"execution_mode":"provider-managed","explicit_binding_required":True},
+    {"profile_id":"jvm-profile:scala-3.9.0","language":"scala","language_version":"3.9.0","runtime_id":RUNTIME_ID,"provider_version":PROVIDER_VERSION,"execution_mode":"provider-managed","explicit_binding_required":True},
+]
 HOST=os.environ.get("SC_JVM_RUNTIME_HOST","127.0.0.1");PORT=int(os.environ.get("SC_JVM_RUNTIME_PORT","18105"));JAVA=os.environ.get("SC_JAVA_BIN","/usr/bin/java");JAVAC=os.environ.get("SC_JAVAC_BIN","/usr/bin/javac")
 ARTIFACT_ROOT=Path(os.environ.get("SC_JVM_ARTIFACT_ROOT","/var/lib/sc-jvm-runtime/artifacts"));WORK_ROOT=Path(os.environ.get("SC_JVM_WORK_ROOT","/var/lib/sc-jvm-runtime/work"))
 OPERATIONS=["jvm_runtime_info","parallel_sum","parallel_map_affine","matrix_row_sums","graph_bfs","batch_sha256"];SAFE=set(OPERATIONS)
@@ -120,7 +126,17 @@ def version():return {"runtime_id":RUNTIME_ID,"version":PROVIDER_VERSION,"jvm_ma
 @app.get('/capabilities')
 def capabilities():return {"runtime_id":RUNTIME_ID,"operations":OPERATIONS}
 @app.get('/v1/language-profiles')
-def language_profiles():return language_profiles_descriptor()
+def language_profiles():
+    return {
+        "runtime_id":RUNTIME_ID,
+        "provider_version":PROVIDER_VERSION,
+        "jvm_major_version":JVM_MAJOR_VERSION,
+        "profiles":LANGUAGE_PROFILES,
+        "explicit_profile_binding_required":True,
+        "autonomous_profile_selection":False,
+        "arbitrary_source":False,
+        "runtime_package_install":False,
+    }
 @app.get('/v1/core-adapter')
 def adapter():return adapter_descriptor()
 @app.post('/v1/core-adapter/prepare')

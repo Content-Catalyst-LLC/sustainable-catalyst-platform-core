@@ -170,3 +170,52 @@ def to_scientific_jvm_artifact(bundle):
 def contract_document():
     b=reference_runtime_bundle()
     return {"ok":True,"release":CORE_RELEASE,"contract":CONTRACT_VERSION,"provider_version":PROVIDER_VERSION,"jvm_major_version":JVM_MAJOR_VERSION,"jvm_implementation":JVM_IMPLEMENTATION,"jvm_package_name":JVM_PACKAGE_NAME,"runtime_id":RUNTIME_ID,"adapter_id":ADAPTER_ID,"runtime_kind":"execution-target","language":"jvm-bytecode","operations":list(JVM_OPERATIONS),"capabilities":{"managed_vm_execution":True,"parallel_compute":True,"graph_processing":True,"deterministic_hashing":True,"provider_managed_compilation":True,"reproducible_environment_package":True,"runtime_security_policy":True,"runtime_adapter_registration":True,"unified_runtime_catalog_integration":True,"workspace_product_profile_integration":True,"research_lab_product_profile_integration":True,"workbench_product_profile_integration":True,"scientific_registry_bridge":True,"language_profiles_ready":True},"boundaries":{"core_executes_jvm":False,"provider_executes_jvm":True,"arbitrary_jvm_bytecode":False,"arbitrary_java_source":False,"caller_classpath":False,"shell_execution":False,"runtime_dependency_install_via_api":False,"network_access":False,"core_selects_jvm_language_profile":False,"java_kotlin_scala_profiles_contract":"sc.core.jvm-language-profiles.v1","spark_adapter_deferred_to":"3.56.2"},"reference":{"bundle_id":b.bundle_id,"environment_package_id":b.environment_package.environment_package_id,"security_policy_id":b.security_policy.security_policy_id,"reference_request_id":b.reference_request.jvm_request_id,"reference_operation":b.reference_request.operation.value,"bundle_fingerprint_sha256":b.fingerprint()}}
+
+
+# PLATFORM CORE v3.56.1.2 BASE JVM CONTRACT COMPATIBILITY
+# The base sc.core.jvm-runtime.v1 contract was introduced in v3.56.0.
+# v3.56.1 adds a separate language-profile contract and must not re-version
+# the base runtime contract. Keep this wrapper until the base contract gets an
+# intentional schema/version successor.
+_sc_jvm_contract_document_v3560 = contract_document
+def contract_document():
+    document = _sc_jvm_contract_document_v3560()
+    if not isinstance(document, dict):
+        raise TypeError("sc.core.jvm-runtime.v1 contract_document() must return dict")
+    current_release = document.get("release")
+    if current_release not in {"3.56.0", "3.56.1"}:
+        raise RuntimeError(f"Unexpected sc.core.jvm-runtime.v1 release: {current_release!r}")
+    document = dict(document)
+    document["release"] = "3.56.0"
+    return document
+
+
+# PLATFORM CORE v3.56.1.2 BASE JVM BOUNDARY COMPATIBILITY
+_sc_jvm_contract_document_v3560_boundaries = contract_document
+def contract_document():
+    document = _sc_jvm_contract_document_v3560_boundaries()
+    if not isinstance(document, dict):
+        raise TypeError("sc.core.jvm-runtime.v1 contract_document() must return dict")
+    document = dict(document)
+    boundaries = document.get("boundaries")
+    if not isinstance(boundaries, dict):
+        raise TypeError("sc.core.jvm-runtime.v1 boundaries must be dict")
+    boundaries = dict(boundaries)
+
+    profile_deferred = boundaries.get("java_kotlin_scala_profiles_deferred_to")
+    if profile_deferred not in {None, "3.56.1"}:
+        raise RuntimeError(
+            "Unexpected sc.core.jvm-runtime.v1 language-profile boundary: "
+            f"{profile_deferred!r}"
+        )
+    boundaries["java_kotlin_scala_profiles_deferred_to"] = "3.56.1"
+
+    spark_deferred = boundaries.get("spark_adapter_deferred_to")
+    if spark_deferred not in {None, "3.56.2"}:
+        raise RuntimeError(
+            "Unexpected sc.core.jvm-runtime.v1 Spark boundary: "
+            f"{spark_deferred!r}"
+        )
+    boundaries["spark_adapter_deferred_to"] = "3.56.2"
+    document["boundaries"] = boundaries
+    return document
