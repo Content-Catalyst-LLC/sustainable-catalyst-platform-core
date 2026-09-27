@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/sc-core-neural-embedding-representation-intelligence-v1.schema.json",
+  "title": "Sustainable Catalyst Platform Core Neural Embedding & Representation Intelligence Contract",
+  "type": "object",
+  "required": [
+    "release",
+    "contract",
+    "object_types",
+    "representation_capabilities",
+    "integration",
+    "reproducibility",
+    "governance",
+    "boundaries"
+  ],
+  "properties": {
+    "release": {"const": "3.62.0"},
+    "contract": {"const": "sc.core.neural-embedding-representation-intelligence.v1"},
+    "object_types": {"type": "array", "minItems": 9, "items": {"type": "string"}},
+    "representation_capabilities": {"type": "object"},
+    "integration": {"type": "object"},
+    "reproducibility": {"type": "object"},
+    "governance": {"type": "object"},
+    "boundaries": {"type": "object"},
+    "reference": {"type": "object"}
+  },
+  "additionalProperties": true
+}

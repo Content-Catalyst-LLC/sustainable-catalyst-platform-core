@@ -1,5 +1,13 @@
 # v3.3.0 — Statistical Reasoning Object Model
 
+## 3.62.0 — Neural Embedding & Representation Intelligence
+
+- Adds governed representation-model, embedding-space, source-bound embedding, similarity-result, vector-projection, and representation-cluster objects.
+- Resolves v3.61 embedding explanation representation/space/query/neighbor/cluster lineage into canonical v3.62 objects.
+- Preserves explicit semantics that learned proximity, projections, and clusters are analytical outputs rather than evidence or semantic truth.
+- Keeps embedding computation, indexing, similarity search, projections, and clustering outside Core.
+
+
 ## 3.61.0 — Explainability & Model Interpretation Objects
 
 - Adds governed feature-attribution, saliency, attention, counterfactual, embedding-space, and model-comparison interpretation records.

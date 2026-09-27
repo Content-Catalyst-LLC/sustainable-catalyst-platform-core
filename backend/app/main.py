@@ -128,6 +128,7 @@ from .routers import (
     ml_dataset_provenance,
     ml_evaluation_uncertainty,
     ml_explainability_interpretation,
+    ml_embedding_representation,
     jvm_language_profiles,
     uncertainty_probabilistic_evidence,
     visualization_registry,
@@ -565,6 +566,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # Platform Core v3.61.0 — Explainability & Model Interpretation Objects
     app.include_router(ml_explainability_interpretation.router)
     app.include_router(ml_explainability_interpretation.public_router)
+
+    # Platform Core v3.62.0 — Neural Embedding & Representation Intelligence
+    app.include_router(ml_embedding_representation.router)
+    app.include_router(ml_embedding_representation.public_router)
     # v3.56.1 JVM Language Profiles.
     app.include_router(jvm_language_profiles.router)
     app.include_router(jvm_language_profiles.public_router)
