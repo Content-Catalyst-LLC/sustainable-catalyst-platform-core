@@ -1,5 +1,13 @@
 # v3.3.0 — Statistical Reasoning Object Model
 
+## 3.59.0 — Neural Dataset, Feature & Transformation Provenance
+
+- Adds governed raw-source, dataset-snapshot, partition, transformation-pipeline, feature-representation, and tensor-input lineage.
+- Extends v3.57 ML model contracts and v3.58 training lineage with deterministic data-side provenance.
+- Rejects fitted transform state derived from validation/test partitions to preserve leakage-aware lineage.
+- Keeps data ingestion, split execution, transformations, fitted-state computation, and tensor creation outside Core.
+
+
 ## 3.58.0 — Training Run, Checkpoint & Experiment Lineage
 
 - Adds governed experiment, training-run, epoch, checkpoint, evaluation, seed-state, and code-reference lineage objects.

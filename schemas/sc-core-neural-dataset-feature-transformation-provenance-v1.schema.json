@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/sc-core-neural-dataset-feature-transformation-provenance-v1.schema.json",
+  "title": "Sustainable Catalyst Platform Core Neural Dataset, Feature & Transformation Provenance",
+  "type": "object",
+  "required": ["model_spec", "training_plan", "raw_sources", "dataset_snapshots", "partitions", "transformation_pipelines", "feature_representations", "tensor_inputs"],
+  "properties": {
+    "model_spec": {"type": "object"},
+    "training_plan": {"type": "object"},
+    "raw_sources": {"type": "array", "minItems": 1, "items": {"type": "object"}},
+    "dataset_snapshots": {"type": "array", "minItems": 1, "items": {"type": "object"}},
+    "partitions": {"type": "array", "minItems": 1, "items": {"type": "object"}},
+    "transformation_pipelines": {"type": "array", "minItems": 1, "items": {"type": "object"}},
+    "feature_representations": {"type": "array", "minItems": 1, "items": {"type": "object"}},
+    "tensor_inputs": {"type": "array", "minItems": 1, "items": {"type": "object"}},
+    "training_experiment_refs": {"type": "array", "items": {"type": "string"}},
+    "training_run_refs": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": false
+}
