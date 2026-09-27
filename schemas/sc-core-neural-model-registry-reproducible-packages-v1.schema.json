@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/sc-core-neural-model-registry-reproducible-packages-v1.schema.json",
+  "title": "Sustainable Catalyst Platform Core Neural Model Registry & Reproducible Model Packages",
+  "type": "object",
+  "required": [
+    "ml_model_bundle",
+    "training_lineage_bundle",
+    "evaluation_bundle",
+    "explainability_bundle",
+    "representation_bundle",
+    "inference_bundle",
+    "artifacts",
+    "runtime_requirements",
+    "intended_use_statements",
+    "limitations",
+    "registry_entries",
+    "reproducibility_manifests",
+    "model_packages"
+  ],
+  "properties": {
+    "artifacts": {
+      "type": "array",
+      "minItems": 1
+    },
+    "runtime_requirements": {
+      "type": "array",
+      "minItems": 1
+    },
+    "intended_use_statements": {
+      "type": "array",
+      "minItems": 1
+    },
+    "limitations": {
+      "type": "array",
+      "minItems": 1
+    },
+    "registry_entries": {
+      "type": "array",
+      "minItems": 1
+    },
+    "reproducibility_manifests": {
+      "type": "array",
+      "minItems": 1
+    },
+    "model_packages": {
+      "type": "array",
+      "minItems": 1
+    }
+  },
+  "additionalProperties": true
+}

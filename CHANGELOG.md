@@ -1,5 +1,13 @@
 # v3.3.0 — Statistical Reasoning Object Model
 
+## 3.64.0 — Neural Model Registry & Reproducible Model Packages
+
+- Adds governed model registry entries linked to model specification, training run, checkpoint, inference plan, evaluation, and representation lineage.
+- Adds portable reproducible model packages with immutable artifact hashes, runtime/environment requirements, schemas, intended use, limitations, and deterministic manifests.
+- Preserves registration != certification, package != guaranteed reproducibility, and model/prediction != evidence boundaries.
+- Keeps model execution, dependency installation, artifact downloads, autonomous model selection, and certification outside Platform Core.
+
+
 ## 3.63.0 — Neural Inference & Prediction Provenance
 
 - Adds source-bound inference inputs, checkpoint-bound inference runs, governed predictions, uncertainty bindings, and interpretation bindings.

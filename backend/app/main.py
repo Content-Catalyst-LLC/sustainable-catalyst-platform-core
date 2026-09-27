@@ -159,6 +159,7 @@ from .routers import (
     trust_public,
     workflow_public,
     workflows,
+    ml_model_registry_packages,
 )
 from app.routers.spark_runtime import router as spark_runtime_router
 
@@ -608,6 +609,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(_sc320_investigation_workspace.router)
     app.include_router(spark_runtime_router)
 
+
+    # Platform Core v3.64.0 — Neural Model Registry & Reproducible Model Packages
+    app.include_router(ml_model_registry_packages.router)
+    app.include_router(ml_model_registry_packages.public_router)
     return app
 
 
