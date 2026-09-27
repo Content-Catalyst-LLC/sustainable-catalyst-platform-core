@@ -1,0 +1,1 @@
+{"release":"3.56.2","contract":"sc.core.spark-runtime.v1","runtime_id":"sc-runtime-spark","provider_version":"1.0.0","spark_version":"4.2.0","scala_binary_version":"2.13","request":{"operation":"distributed_sum","values":[1,2,3,4,5],"partitions":2},"expected_result":{"sum":15.0,"count":5}}

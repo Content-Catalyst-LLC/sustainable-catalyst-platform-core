@@ -153,6 +153,7 @@ from .routers import (
     workflow_public,
     workflows,
 )
+from app.routers.spark_runtime import router as spark_runtime_router
 
 
 def create_app(settings: Settings | None = None) -> FastAPI:
@@ -570,6 +571,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     from .routers import investigation_workspace as _sc320_investigation_workspace
     app.include_router(_sc320_investigation_workspace.router)
+    app.include_router(spark_runtime_router)
 
     return app
 

@@ -812,3 +812,12 @@ def contract_document() -> dict[str, Any]:
             "core_certifies_scientific_validity": False,
         },
     }
+
+# PLATFORM CORE v3.56.2 SPARK ADAPTER REGISTRY BRIDGE
+def spark_adapter_descriptor_v3562():
+    from app.services.spark_runtime import adapter_descriptor
+    return adapter_descriptor()
+
+def spark_runtime_catalog_entry_v3562():
+    from app.services.spark_runtime import runtime_catalog_entry
+    return runtime_catalog_entry()

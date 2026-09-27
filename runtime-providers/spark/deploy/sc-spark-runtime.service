@@ -1,0 +1,26 @@
+[Unit]
+Description=Sustainable Catalyst Spark Runtime v1.0.0
+After=network.target
+
+[Service]
+Type=simple
+User=catalystadmin
+Group=catalystadmin
+WorkingDirectory=/opt/sustainable-catalyst/spark-runtime
+Environment=JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
+Environment=SPARK_LOCAL_IP=127.0.0.1
+Environment=SC_SPARK_MASTER=local[2]
+Environment=SC_SPARK_LOCAL_DIR=/var/lib/sc-spark-runtime/tmp
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/opt/sustainable-catalyst/spark-runtime/.venv/bin/uvicorn app.server:app --host 127.0.0.1 --port 18106 --workers 1
+Restart=on-failure
+RestartSec=3
+TimeoutStartSec=180
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=true
+ReadWritePaths=/var/lib/sc-spark-runtime
+
+[Install]
+WantedBy=multi-user.target

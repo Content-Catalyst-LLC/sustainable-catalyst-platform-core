@@ -880,3 +880,12 @@ def contract_document() -> dict[str, Any]:
             "bundle_fingerprint_sha256": bundle.fingerprint(),
         },
     }
+
+# PLATFORM CORE v3.56.2 SPARK UNIFIED RUNTIME BRIDGE
+def spark_runtime_contract_v3562():
+    from app.services.spark_runtime import contract_document
+    return contract_document()
+
+def spark_runtime_catalog_entry_v3562():
+    from app.services.spark_runtime import runtime_catalog_entry
+    return runtime_catalog_entry()

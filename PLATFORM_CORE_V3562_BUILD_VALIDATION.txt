@@ -1,0 +1,14 @@
+Platform Core v3.56.2 — Apache Spark Adapter & Distributed Analytical Execution
+Contract: sc.core.spark-runtime.v1
+Provider: sc-runtime-spark v1.0.0
+Adapter: adapter:sc-runtime-spark
+Spark: 4.2.0
+Scala binary: 2.13
+JVM: 17/21 compatible; OpenJDK 21 deployment
+Endpoint: http://127.0.0.1:18106
+Default master: local[2]
+Bounded operations: 6
+Arbitrary code/SQL/UDF: false
+Caller Spark config: false
+Remote cluster selection: false
+External data sources: false
