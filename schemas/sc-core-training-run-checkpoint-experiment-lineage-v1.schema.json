@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://core.sustainablecatalyst.com/schemas/sc-core-training-run-checkpoint-experiment-lineage-v1.schema.json",
+  "title": "Sustainable Catalyst Platform Core Training Run, Checkpoint & Experiment Lineage v1",
+  "description": "Governed lineage bundle for ML experiments, training runs, epochs, checkpoints, and evaluations. Execution remains external to Platform Core.",
+  "type": "object",
+  "required": [
+    "model_spec",
+    "training_plan",
+    "experiment",
+    "training_runs"
+  ],
+  "properties": {
+    "model_spec": {
+      "type": "object"
+    },
+    "training_plan": {
+      "type": "object"
+    },
+    "experiment": {
+      "type": "object"
+    },
+    "training_runs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "x-sustainable-catalyst-contract": "sc.core.training-run-checkpoint-experiment-lineage.v1",
+  "x-release": "3.58.0",
+  "x-boundary": "Core records and validates lineage; Workspace/Lab perform training and evaluation."
+}

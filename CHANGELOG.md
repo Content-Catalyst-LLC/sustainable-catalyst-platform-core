@@ -1,5 +1,12 @@
 # v3.3.0 — Statistical Reasoning Object Model
 
+## 3.58.0 — Training Run, Checkpoint & Experiment Lineage
+
+- Adds governed experiment, training-run, epoch, checkpoint, evaluation, seed-state, and code-reference lineage objects.
+- Connects v3.57 ML model specifications/training plans to dataset, environment, runtime, job, code revision, parameter, seed, checkpoint, metric, and model-version lineage.
+- Keeps training/evaluation execution and model promotion outside Platform Core.
+
+
 ## 3.57.0 — Machine Learning & Neural Model Object Foundation
 
 - Adds governed ML feature/schema, objective, neural-architecture, runtime-binding, model-specification, training-plan, inference-plan, and bundle objects.
