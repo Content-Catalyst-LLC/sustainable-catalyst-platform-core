@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/sc-core-neural-inference-prediction-provenance-v1.schema.json",
+  "title": "Sustainable Catalyst Platform Core Neural Inference & Prediction Provenance",
+  "type": "object",
+  "required": [
+    "ml_model_bundle",
+    "dataset_lineage_bundle",
+    "representation_bundle",
+    "input_bindings",
+    "inference_runs",
+    "predictions",
+    "dataset_lineage_fingerprint_sha256",
+    "representation_lineage_fingerprint_sha256"
+  ],
+  "properties": {
+    "input_bindings": {
+      "type": "array",
+      "minItems": 1
+    },
+    "inference_runs": {
+      "type": "array",
+      "minItems": 1
+    },
+    "predictions": {
+      "type": "array",
+      "minItems": 1
+    },
+    "confidence_bindings": {
+      "type": "array"
+    },
+    "interpretation_bindings": {
+      "type": "array"
+    },
+    "dataset_lineage_fingerprint_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "representation_lineage_fingerprint_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  },
+  "additionalProperties": true
+}

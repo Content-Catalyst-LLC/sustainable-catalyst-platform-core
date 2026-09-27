@@ -1,5 +1,13 @@
 # v3.3.0 — Statistical Reasoning Object Model
 
+## 3.63.0 — Neural Inference & Prediction Provenance
+
+- Adds source-bound inference inputs, checkpoint-bound inference runs, governed predictions, uncertainty bindings, and interpretation bindings.
+- Resolves v3.59 data lineage, v3.60 calibration/uncertainty, v3.61 explainability, and v3.62 representation objects into one prediction provenance chain.
+- Prevents predictions from being promoted to evidence or claims inside Core.
+- Keeps inference execution, prediction generation, calibration, OOD detection, and explanation computation outside Core.
+
+
 ## 3.62.0 — Neural Embedding & Representation Intelligence
 
 - Adds governed representation-model, embedding-space, source-bound embedding, similarity-result, vector-projection, and representation-cluster objects.
