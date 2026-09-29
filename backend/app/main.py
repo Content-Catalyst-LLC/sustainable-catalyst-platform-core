@@ -172,6 +172,7 @@ from .routers import (
     graph_anomaly_detection,
     knowledge_graph_representation_learning,
     evidence_graph_neural_validation,
+    entity_resolution_identity_graph,
 )
 from app.routers.spark_runtime import router as spark_runtime_router
 
@@ -673,6 +674,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # Platform Core v3.76.0 — Evidence Graph Neural Analysis & Validation Workflow
     app.include_router(evidence_graph_neural_validation.router)
     app.include_router(evidence_graph_neural_validation.public_router)
+
+    # Platform Core v3.77.0 — Entity Resolution & Identity Graph Foundation
+    app.include_router(entity_resolution_identity_graph.router)
+    app.include_router(entity_resolution_identity_graph.public_router)
     return app
 
 

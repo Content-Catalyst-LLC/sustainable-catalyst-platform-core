@@ -1,3 +1,8 @@
+## 3.77.0 — Entity Resolution & Identity Graph Foundation
+- Begins the Entity, Evidence & Connection Intelligence block with governed canonical entity records, aliases, identifier assertions, source-specific identity assertions, identity evidence, candidate matching and independent review.
+- Adds governed merge/split authorization, immutable identity-graph snapshots and append-only resolution audit.
+- Enforces match probability != identity fact, same name != identity fact, and authorization != identity-graph mutation.
+
 ## 3.76.0 — Evidence Graph Neural Analysis & Validation Workflow
 - Added governed neural-signal aggregation, independent evidence validation, reviewer assessments, promotion authorization, and validation audit.
 - Enforced model output ≠ evidence and authorization ≠ graph mutation.
