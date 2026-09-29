@@ -1,3 +1,7 @@
+## 3.72.0 — Node & Edge Classification Objects
+- Added governed node/edge label spaces, classification tasks, model/runtime bindings, probabilities, evaluation lineage and non-evidentiary prediction/review objects.
+- Preserved `classification != graph fact/evidence` and reserved link prediction for v3.73.
+
 
 ## 3.71.0 — Graph Embedding Objects & Runtime Contracts
 - Adds graph embedding spaces and node/edge/graph embedding objects.
