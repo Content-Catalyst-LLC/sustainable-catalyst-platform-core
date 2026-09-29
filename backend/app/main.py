@@ -165,6 +165,7 @@ from .routers import (
     translation_alignment,
     historical_language_variant,
     cross_lingual_semantic_exchange,
+    graph_machine_learning,
 )
 from app.routers.spark_runtime import router as spark_runtime_router
 
@@ -638,6 +639,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # Platform Core v3.69.0 — Cross-Lingual Semantic & Linguistic Exchange Layer
     app.include_router(cross_lingual_semantic_exchange.router)
     app.include_router(cross_lingual_semantic_exchange.public_router)
+
+    # Platform Core v3.70.0 — Graph Machine Learning Foundation
+    app.include_router(graph_machine_learning.router)
+    app.include_router(graph_machine_learning.public_router)
     return app
 
 

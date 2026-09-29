@@ -1,3 +1,9 @@
+## 3.70.0 — Graph Machine Learning Foundation
+- Began the second neural/GNN wave with governed graph-learning snapshots, evidence-edge bindings, feature/label provenance, graph task/runtime/model contracts, run lineage, and PredictedRelationship envelopes.
+- Enforced GNN prediction != graph fact, predicted relationship != evidence edge, and separate validation before any future evidence-edge promotion.
+- Prepared v3.71–v3.76 while preserving Core defines / Workspace computes / Lab experiments / products consume.
+- No database migration.
+
 ## 3.69.0 — Cross-Lingual Semantic & Linguistic Exchange Layer
 - Added language-neutral concept identities, language-specific semantic anchors, cross-lingual semantic assertions, provenance, review state, supporting/contradicting evidence references, and concept sets.
 - Preserved semantic similarity != equivalence, correspondence != identity, and GNN prediction != graph fact.

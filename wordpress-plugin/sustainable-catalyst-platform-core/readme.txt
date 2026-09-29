@@ -43,10 +43,15 @@ Tags: knowledge graph, entity registry, provenance, live data, sustainable catal
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.0
-Stable tag: 3.69.0
+Stable tag: 3.70.0
 License: MIT
 
 WordPress status, live-data gateway, and entity lookup client for Sustainable Catalyst Platform Core.
+
+
+== 3.70.0 ==
+* Adds Graph Machine Learning Foundation contracts for governed graph snapshots, feature/label provenance, graph-ML task/runtime contracts, run lineage, and non-factual PredictedRelationship envelopes.
+* Enforces GNN prediction != graph fact and requires separate validation before any predicted relationship can become an evidence edge.
 
 == 3.56.1.1 ==
 * Repairs Scala 3.9.0 native profile certification for the Scala CLI runner by using the explicit `run` subcommand and main-class binding.
