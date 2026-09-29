@@ -1,3 +1,8 @@
+## 3.76.0 — Evidence Graph Neural Analysis & Validation Workflow
+- Added governed neural-signal aggregation, independent evidence validation, reviewer assessments, promotion authorization, and validation audit.
+- Enforced model output ≠ evidence and authorization ≠ graph mutation.
+- Completed the v3.70–v3.76 graph-neural wave and reconnected it to evidence validation.
+
 ## 3.75.0 — Knowledge Graph Representation Learning
 - Added governed entity/relation representation spaces, negative-sampling lineage, KG scoring contracts, triple scoring, and ranking evaluation.
 - Enforced representation score ≠ graph fact/evidence and negative sample ≠ false fact.
