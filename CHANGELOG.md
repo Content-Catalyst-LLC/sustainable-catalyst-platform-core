@@ -1,3 +1,10 @@
+
+## 3.71.0 — Graph Embedding Objects & Runtime Contracts
+- Adds graph embedding spaces and node/edge/graph embedding objects.
+- Adds embedding runtime/provider contracts and computation lineage.
+- Adds vector-index and similarity-query provenance.
+- Enforces embedding similarity != graph fact/evidence/identity.
+- No database migration.
 ## 3.70.0 — Graph Machine Learning Foundation
 - Began the second neural/GNN wave with governed graph-learning snapshots, evidence-edge bindings, feature/label provenance, graph task/runtime/model contracts, run lineage, and PredictedRelationship envelopes.
 - Enforced GNN prediction != graph fact, predicted relationship != evidence edge, and separate validation before any future evidence-edge promotion.

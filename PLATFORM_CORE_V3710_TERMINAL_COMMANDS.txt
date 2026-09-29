@@ -1,0 +1,6 @@
+cd ~/Downloads
+rm -rf sc-core-v3.71.0-graph-embeddings
+unzip -q platform-core-v3.71.0-graph-embedding-objects-runtime-contracts-release-bundle.zip -d sc-core-v3.71.0-graph-embeddings
+cd sc-core-v3.71.0-graph-embeddings
+chmod +x REPAIR_PLATFORM_CORE_V3710.py APPLY_AND_PUSH_PLATFORM_CORE_V3710.sh DEPLOY_PLATFORM_CORE_V3710_CONTABO.sh PACKAGE_PLATFORM_CORE_V3710.sh
+./APPLY_AND_PUSH_PLATFORM_CORE_V3710.sh "$HOME/Downloads/sustainable-catalyst-platform-core"

@@ -166,6 +166,7 @@ from .routers import (
     historical_language_variant,
     cross_lingual_semantic_exchange,
     graph_machine_learning,
+    graph_embedding_runtime,
 )
 from app.routers.spark_runtime import router as spark_runtime_router
 
@@ -643,6 +644,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # Platform Core v3.70.0 — Graph Machine Learning Foundation
     app.include_router(graph_machine_learning.router)
     app.include_router(graph_machine_learning.public_router)
+
+    # Platform Core v3.71.0 — Graph Embedding Objects & Runtime Contracts
+    app.include_router(graph_embedding_runtime.router)
+    app.include_router(graph_embedding_runtime.public_router)
     return app
 
 
