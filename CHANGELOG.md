@@ -1,3 +1,8 @@
+## 3.75.0 — Knowledge Graph Representation Learning
+- Added governed entity/relation representation spaces, negative-sampling lineage, KG scoring contracts, triple scoring, and ranking evaluation.
+- Enforced representation score ≠ graph fact/evidence and negative sample ≠ false fact.
+- Prepared v3.76 Evidence Graph Neural Analysis & Validation Workflow.
+
 ## 3.74.0 — Graph Anomaly Detection
 - Adds governed graph anomaly targets, scores, explanations, review records, detector/runtime contracts, and evaluation lineage.
 - Enforces anomaly != fact, anomaly != evidence, anomaly != wrongdoing, and prohibits automatic evidence-graph mutation.

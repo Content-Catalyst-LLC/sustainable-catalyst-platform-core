@@ -43,11 +43,14 @@ Tags: knowledge graph, entity registry, provenance, live data, sustainable catal
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.0
-Stable tag: 3.74.0
+Stable tag: 3.75.0
 License: MIT
 
 WordPress status, live-data gateway, and entity lookup client for Sustainable Catalyst Platform Core.
 
+
+== 3.75.0 ==
+* Added Knowledge Graph Representation Learning contracts and provenance with non-evidentiary scoring boundaries.
 
 == 3.74.0 ==
 * Adds governed graph anomaly targets, anomaly scores, explanation records, review records, runtime contracts, and evaluation lineage.
