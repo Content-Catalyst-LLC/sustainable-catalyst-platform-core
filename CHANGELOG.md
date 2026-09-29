@@ -1,5 +1,12 @@
 # v3.3.0 — Statistical Reasoning Object Model
 
+## 3.68.0 — Historical Language, Script, Orthography & Variant Identity
+
+- Adds historical language-stage, historical script-variant, orthography-profile, exact source-bound attestation, and derived normalization lineage objects.
+- Preserves attested canonical text and temporal uncertainty; normalization/modernization remains derived and provenance-bearing rather than authoritative.
+- Prepares v3.69 cross-lingual semantic exchange while preserving the v3.70–v3.76 GNN wave and `GNN prediction != graph fact`.
+
+
 ## 3.67.0 — Translation, Transliteration & Parallel-Text Alignment Objects
 
 - Adds derived translation and transliteration representations with immutable source references, target language/script identity, deterministic content hashes, translator/model/tool provenance, and review state.
@@ -18,8 +25,9 @@
 ## 3.65.0 — Multilingual Text & Language Object Model
 
 - Adds governed BCP 47 language identities, ISO 15924 script identities, canonical UTF-8 text sources, source provenance, hierarchical text units, and mixed-language span bindings.
-- Makes original-language text canonical and explicitly prevents translations from replacing source text.
-- Keeps machine-assisted language assignments advisory and prepares v3.66–v3.69 language/linguistics contracts.
+- Makes original-language text canonical and explicitly prevents translations from replacing the source text.
+- Preserves machine-assisted language assignments as advisory metadata rather than authoritative linguistic truth.
+- Prepares v3.66 linguistic annotations, v3.67 translation/transliteration alignment, v3.68 historical language identity, and v3.69 cross-lingual exchange.
 
 
 ## 3.64.0 — Neural Model Registry & Reproducible Model Packages

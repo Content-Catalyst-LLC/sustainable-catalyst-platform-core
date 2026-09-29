@@ -163,6 +163,7 @@ from .routers import (
     multilingual_text_language,
     linguistic_annotation,
     translation_alignment,
+    historical_language_variant,
 )
 from app.routers.spark_runtime import router as spark_runtime_router
 
@@ -628,6 +629,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # Platform Core v3.67.0 — Translation, Transliteration & Parallel-Text Alignment Objects
     app.include_router(translation_alignment.router)
     app.include_router(translation_alignment.public_router)
+
+    # Platform Core v3.68.0 — Historical Language, Script, Orthography & Variant Identity
+    app.include_router(historical_language_variant.router)
+    app.include_router(historical_language_variant.public_router)
     return app
 
 

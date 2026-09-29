@@ -1,0 +1,1388 @@
+{
+  "$defs": {
+    "CanonicalTextSource": {
+      "properties": {
+        "content": {
+          "minLength": 1,
+          "title": "Content",
+          "type": "string"
+        },
+        "content_encoding": {
+          "const": "utf-8",
+          "default": "utf-8",
+          "title": "Content Encoding",
+          "type": "string"
+        },
+        "content_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Content Sha256",
+          "type": "string"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "original_language_is_canonical": {
+          "const": true,
+          "default": true,
+          "title": "Original Language Is Canonical",
+          "type": "boolean"
+        },
+        "primary_language_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Primary Language Ref",
+          "type": "string"
+        },
+        "primary_script_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Primary Script Ref",
+          "type": "string"
+        },
+        "provenance_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Provenance Ref",
+          "type": "string"
+        },
+        "source_kind": {
+          "maxLength": 120,
+          "minLength": 2,
+          "title": "Source Kind",
+          "type": "string"
+        },
+        "source_object_ref": {
+          "maxLength": 1000,
+          "minLength": 2,
+          "title": "Source Object Ref",
+          "type": "string"
+        },
+        "text_source_id": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Text Source Id",
+          "type": "string"
+        },
+        "translation_substitution_allowed": {
+          "const": false,
+          "default": false,
+          "title": "Translation Substitution Allowed",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "text_source_id",
+        "source_object_ref",
+        "source_kind",
+        "primary_language_ref",
+        "primary_script_ref",
+        "provenance_ref",
+        "content",
+        "content_sha256"
+      ],
+      "title": "CanonicalTextSource",
+      "type": "object"
+    },
+    "HistoricalIdentityMethod": {
+      "enum": [
+        "declared",
+        "editorial",
+        "imported",
+        "scholarly",
+        "model-assisted"
+      ],
+      "title": "HistoricalIdentityMethod",
+      "type": "string"
+    },
+    "HistoricalLanguageStageIdentity": {
+      "properties": {
+        "assigned_by_ref": {
+          "anyOf": [
+            {
+              "maxLength": 1000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Assigned By Ref"
+        },
+        "canonical_label": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Canonical Label",
+          "type": "string"
+        },
+        "chronology_source_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Chronology Source Refs",
+          "type": "array"
+        },
+        "confidence": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confidence"
+        },
+        "end_year": {
+          "anyOf": [
+            {
+              "maximum": 10000,
+              "minimum": -10000,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "End Year"
+        },
+        "identity_is_authoritative": {
+          "const": false,
+          "default": false,
+          "title": "Identity Is Authoritative",
+          "type": "boolean"
+        },
+        "identity_method": {
+          "$ref": "#/$defs/HistoricalIdentityMethod",
+          "default": "declared"
+        },
+        "language_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Language Ref",
+          "type": "string"
+        },
+        "machine_identity_is_advisory": {
+          "const": true,
+          "default": true,
+          "title": "Machine Identity Is Advisory",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "parent_stage_ref": {
+          "anyOf": [
+            {
+              "maxLength": 500,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Parent Stage Ref"
+        },
+        "stage_id": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Stage Id",
+          "type": "string"
+        },
+        "start_year": {
+          "anyOf": [
+            {
+              "maximum": 10000,
+              "minimum": -10000,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Start Year"
+        },
+        "temporal_certainty": {
+          "$ref": "#/$defs/TemporalCertainty",
+          "default": "unknown"
+        }
+      },
+      "required": [
+        "stage_id",
+        "language_ref",
+        "canonical_label"
+      ],
+      "title": "HistoricalLanguageStageIdentity",
+      "type": "object"
+    },
+    "HistoricalScriptVariantIdentity": {
+      "properties": {
+        "assigned_by_ref": {
+          "anyOf": [
+            {
+              "maxLength": 1000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Assigned By Ref"
+        },
+        "base_script_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Base Script Ref",
+          "type": "string"
+        },
+        "canonical_label": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Canonical Label",
+          "type": "string"
+        },
+        "chronology_source_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Chronology Source Refs",
+          "type": "array"
+        },
+        "confidence": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confidence"
+        },
+        "identity_is_authoritative": {
+          "const": false,
+          "default": false,
+          "title": "Identity Is Authoritative",
+          "type": "boolean"
+        },
+        "identity_method": {
+          "$ref": "#/$defs/HistoricalIdentityMethod",
+          "default": "declared"
+        },
+        "language_stage_ref": {
+          "anyOf": [
+            {
+              "maxLength": 500,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Language Stage Ref"
+        },
+        "machine_identity_is_advisory": {
+          "const": true,
+          "default": true,
+          "title": "Machine Identity Is Advisory",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "parent_script_variant_ref": {
+          "anyOf": [
+            {
+              "maxLength": 500,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Parent Script Variant Ref"
+        },
+        "script_variant_id": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Script Variant Id",
+          "type": "string"
+        },
+        "variant_label": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Variant Label",
+          "type": "string"
+        }
+      },
+      "required": [
+        "script_variant_id",
+        "base_script_ref",
+        "canonical_label",
+        "variant_label"
+      ],
+      "title": "HistoricalScriptVariantIdentity",
+      "type": "object"
+    },
+    "HistoricalVariantAttestation": {
+      "properties": {
+        "attestation_is_authoritative": {
+          "const": false,
+          "default": false,
+          "title": "Attestation Is Authoritative",
+          "type": "boolean"
+        },
+        "attestation_source_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Attestation Source Refs",
+          "type": "array"
+        },
+        "attested_form": {
+          "minLength": 1,
+          "title": "Attested Form",
+          "type": "string"
+        },
+        "attested_form_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Attested Form Sha256",
+          "type": "string"
+        },
+        "char_end": {
+          "exclusiveMinimum": 0,
+          "title": "Char End",
+          "type": "integer"
+        },
+        "char_start": {
+          "minimum": 0,
+          "title": "Char Start",
+          "type": "integer"
+        },
+        "end_year": {
+          "anyOf": [
+            {
+              "maximum": 10000,
+              "minimum": -10000,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "End Year"
+        },
+        "language_stage_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Language Stage Ref",
+          "type": "string"
+        },
+        "machine_assignment_is_advisory": {
+          "const": true,
+          "default": true,
+          "title": "Machine Assignment Is Advisory",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "orthography_profile_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Orthography Profile Ref",
+          "type": "string"
+        },
+        "review_state": {
+          "$ref": "#/$defs/VariantReviewState",
+          "default": "unreviewed"
+        },
+        "reviewer_ref": {
+          "anyOf": [
+            {
+              "maxLength": 1000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reviewer Ref"
+        },
+        "script_variant_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Script Variant Ref",
+          "type": "string"
+        },
+        "source_text_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Source Text Ref",
+          "type": "string"
+        },
+        "start_year": {
+          "anyOf": [
+            {
+              "maximum": 10000,
+              "minimum": -10000,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Start Year"
+        },
+        "temporal_certainty": {
+          "$ref": "#/$defs/TemporalCertainty",
+          "default": "unknown"
+        },
+        "temporal_label": {
+          "anyOf": [
+            {
+              "maxLength": 500,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Temporal Label"
+        },
+        "text_unit_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Text Unit Ref",
+          "type": "string"
+        },
+        "variant_id": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Variant Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "variant_id",
+        "source_text_ref",
+        "text_unit_ref",
+        "char_start",
+        "char_end",
+        "attested_form",
+        "attested_form_sha256",
+        "language_stage_ref",
+        "script_variant_ref",
+        "orthography_profile_ref"
+      ],
+      "title": "HistoricalVariantAttestation",
+      "type": "object"
+    },
+    "LanguageAssignmentMethod": {
+      "enum": [
+        "declared",
+        "editorial",
+        "imported",
+        "model-assisted",
+        "unknown"
+      ],
+      "title": "LanguageAssignmentMethod",
+      "type": "string"
+    },
+    "LanguageIdentity": {
+      "properties": {
+        "alternate_names": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Alternate Names",
+          "type": "array"
+        },
+        "bcp47_tag": {
+          "maxLength": 80,
+          "minLength": 2,
+          "title": "Bcp47 Tag",
+          "type": "string"
+        },
+        "canonical_name": {
+          "maxLength": 240,
+          "minLength": 1,
+          "title": "Canonical Name",
+          "type": "string"
+        },
+        "endonyms": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Endonyms",
+          "type": "array"
+        },
+        "iso_639_1": {
+          "anyOf": [
+            {
+              "maxLength": 2,
+              "minLength": 2,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Iso 639 1"
+        },
+        "iso_639_3": {
+          "anyOf": [
+            {
+              "maxLength": 3,
+              "minLength": 3,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Iso 639 3"
+        },
+        "language_id": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Language Id",
+          "type": "string"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        }
+      },
+      "required": [
+        "language_id",
+        "bcp47_tag",
+        "canonical_name"
+      ],
+      "title": "LanguageIdentity",
+      "type": "object"
+    },
+    "LanguageSpanBinding": {
+      "properties": {
+        "assigned_by_ref": {
+          "anyOf": [
+            {
+              "maxLength": 1000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Assigned By Ref"
+        },
+        "assignment_method": {
+          "$ref": "#/$defs/LanguageAssignmentMethod"
+        },
+        "char_end": {
+          "exclusiveMinimum": 0,
+          "title": "Char End",
+          "type": "integer"
+        },
+        "char_start": {
+          "minimum": 0,
+          "title": "Char Start",
+          "type": "integer"
+        },
+        "confidence": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confidence"
+        },
+        "language_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Language Ref",
+          "type": "string"
+        },
+        "machine_assignment_is_advisory": {
+          "const": true,
+          "default": true,
+          "title": "Machine Assignment Is Advisory",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "script_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Script Ref",
+          "type": "string"
+        },
+        "span_binding_id": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Span Binding Id",
+          "type": "string"
+        },
+        "text_unit_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Text Unit Ref",
+          "type": "string"
+        }
+      },
+      "required": [
+        "span_binding_id",
+        "text_unit_ref",
+        "char_start",
+        "char_end",
+        "language_ref",
+        "script_ref",
+        "assignment_method"
+      ],
+      "title": "LanguageSpanBinding",
+      "type": "object"
+    },
+    "MultilingualTextLanguageBundle": {
+      "properties": {
+        "language_spans": {
+          "items": {
+            "$ref": "#/$defs/LanguageSpanBinding"
+          },
+          "title": "Language Spans",
+          "type": "array"
+        },
+        "languages": {
+          "items": {
+            "$ref": "#/$defs/LanguageIdentity"
+          },
+          "minItems": 1,
+          "title": "Languages",
+          "type": "array"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "provenance_records": {
+          "items": {
+            "$ref": "#/$defs/TextSourceProvenanceRecord"
+          },
+          "minItems": 1,
+          "title": "Provenance Records",
+          "type": "array"
+        },
+        "scripts": {
+          "items": {
+            "$ref": "#/$defs/ScriptIdentity"
+          },
+          "minItems": 1,
+          "title": "Scripts",
+          "type": "array"
+        },
+        "text_sources": {
+          "items": {
+            "$ref": "#/$defs/CanonicalTextSource"
+          },
+          "minItems": 1,
+          "title": "Text Sources",
+          "type": "array"
+        },
+        "text_units": {
+          "items": {
+            "$ref": "#/$defs/TextUnitRecord"
+          },
+          "minItems": 1,
+          "title": "Text Units",
+          "type": "array"
+        }
+      },
+      "required": [
+        "languages",
+        "scripts",
+        "provenance_records",
+        "text_sources",
+        "text_units"
+      ],
+      "title": "MultilingualTextLanguageBundle",
+      "type": "object"
+    },
+    "NormalizationMethod": {
+      "enum": [
+        "manual",
+        "editorial",
+        "rule-based",
+        "imported",
+        "model-assisted"
+      ],
+      "title": "NormalizationMethod",
+      "type": "string"
+    },
+    "OrthographicNormalizationRecord": {
+      "properties": {
+        "canonical_source_unchanged": {
+          "const": true,
+          "default": true,
+          "title": "Canonical Source Unchanged",
+          "type": "boolean"
+        },
+        "machine_normalization_is_advisory": {
+          "const": true,
+          "default": true,
+          "title": "Machine Normalization Is Advisory",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "method": {
+          "$ref": "#/$defs/NormalizationMethod"
+        },
+        "model_ref": {
+          "anyOf": [
+            {
+              "maxLength": 1000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Model Ref"
+        },
+        "model_version": {
+          "anyOf": [
+            {
+              "maxLength": 240,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Model Version"
+        },
+        "normalization_id": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Normalization Id",
+          "type": "string"
+        },
+        "normalization_is_authoritative": {
+          "const": false,
+          "default": false,
+          "title": "Normalization Is Authoritative",
+          "type": "boolean"
+        },
+        "normalized_form": {
+          "minLength": 1,
+          "title": "Normalized Form",
+          "type": "string"
+        },
+        "normalized_form_is_derived": {
+          "const": true,
+          "default": true,
+          "title": "Normalized Form Is Derived",
+          "type": "boolean"
+        },
+        "normalized_form_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Normalized Form Sha256",
+          "type": "string"
+        },
+        "produced_by_ref": {
+          "maxLength": 1000,
+          "minLength": 2,
+          "title": "Produced By Ref",
+          "type": "string"
+        },
+        "reversible": {
+          "default": false,
+          "title": "Reversible",
+          "type": "boolean"
+        },
+        "review_state": {
+          "$ref": "#/$defs/VariantReviewState",
+          "default": "unreviewed"
+        },
+        "reviewer_ref": {
+          "anyOf": [
+            {
+              "maxLength": 1000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reviewer Ref"
+        },
+        "ruleset_ref": {
+          "anyOf": [
+            {
+              "maxLength": 1000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ruleset Ref"
+        },
+        "source_form": {
+          "minLength": 1,
+          "title": "Source Form",
+          "type": "string"
+        },
+        "source_form_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Source Form Sha256",
+          "type": "string"
+        },
+        "tool_ref": {
+          "anyOf": [
+            {
+              "maxLength": 1000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tool Ref"
+        },
+        "tool_version": {
+          "anyOf": [
+            {
+              "maxLength": 240,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tool Version"
+        },
+        "variant_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Variant Ref",
+          "type": "string"
+        }
+      },
+      "required": [
+        "normalization_id",
+        "variant_ref",
+        "source_form",
+        "source_form_sha256",
+        "normalized_form",
+        "normalized_form_sha256",
+        "method",
+        "produced_by_ref"
+      ],
+      "title": "OrthographicNormalizationRecord",
+      "type": "object"
+    },
+    "OrthographyProfile": {
+      "properties": {
+        "assigned_by_ref": {
+          "anyOf": [
+            {
+              "maxLength": 1000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Assigned By Ref"
+        },
+        "canonical_label": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Canonical Label",
+          "type": "string"
+        },
+        "confidence": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confidence"
+        },
+        "convention_notes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Convention Notes",
+          "type": "array"
+        },
+        "identity_method": {
+          "$ref": "#/$defs/HistoricalIdentityMethod",
+          "default": "declared"
+        },
+        "language_stage_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Language Stage Ref",
+          "type": "string"
+        },
+        "machine_profile_is_advisory": {
+          "const": true,
+          "default": true,
+          "title": "Machine Profile Is Advisory",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "orthography_profile_id": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Orthography Profile Id",
+          "type": "string"
+        },
+        "profile_is_authoritative": {
+          "const": false,
+          "default": false,
+          "title": "Profile Is Authoritative",
+          "type": "boolean"
+        },
+        "script_variant_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Script Variant Ref",
+          "type": "string"
+        },
+        "source_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Source Refs",
+          "type": "array"
+        }
+      },
+      "required": [
+        "orthography_profile_id",
+        "language_stage_ref",
+        "script_variant_ref",
+        "canonical_label"
+      ],
+      "title": "OrthographyProfile",
+      "type": "object"
+    },
+    "ScriptIdentity": {
+      "properties": {
+        "canonical_name": {
+          "maxLength": 240,
+          "minLength": 1,
+          "title": "Canonical Name",
+          "type": "string"
+        },
+        "iso_15924_code": {
+          "maxLength": 4,
+          "minLength": 4,
+          "title": "Iso 15924 Code",
+          "type": "string"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "script_id": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Script Id",
+          "type": "string"
+        },
+        "unicode_script_property": {
+          "anyOf": [
+            {
+              "maxLength": 120,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Unicode Script Property"
+        },
+        "writing_direction": {
+          "$ref": "#/$defs/WritingDirection"
+        }
+      },
+      "required": [
+        "script_id",
+        "iso_15924_code",
+        "canonical_name",
+        "writing_direction"
+      ],
+      "title": "ScriptIdentity",
+      "type": "object"
+    },
+    "TemporalCertainty": {
+      "enum": [
+        "exact",
+        "approximate",
+        "uncertain",
+        "unknown"
+      ],
+      "title": "TemporalCertainty",
+      "type": "string"
+    },
+    "TextSourceProvenanceRecord": {
+      "properties": {
+        "acquisition_method": {
+          "maxLength": 240,
+          "minLength": 2,
+          "title": "Acquisition Method",
+          "type": "string"
+        },
+        "content_replaces_original": {
+          "const": false,
+          "default": false,
+          "title": "Content Replaces Original",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "provenance_id": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Provenance Id",
+          "type": "string"
+        },
+        "recorded_at": {
+          "anyOf": [
+            {
+              "maxLength": 80,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Recorded At"
+        },
+        "recorded_by_ref": {
+          "anyOf": [
+            {
+              "maxLength": 1000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Recorded By Ref"
+        },
+        "source_artifact_ref": {
+          "anyOf": [
+            {
+              "maxLength": 1000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Artifact Ref"
+        },
+        "source_artifact_sha256": {
+          "anyOf": [
+            {
+              "maxLength": 64,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Artifact Sha256"
+        },
+        "source_object_ref": {
+          "maxLength": 1000,
+          "minLength": 2,
+          "title": "Source Object Ref",
+          "type": "string"
+        },
+        "text_source_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Text Source Ref",
+          "type": "string"
+        }
+      },
+      "required": [
+        "provenance_id",
+        "text_source_ref",
+        "source_object_ref",
+        "acquisition_method"
+      ],
+      "title": "TextSourceProvenanceRecord",
+      "type": "object"
+    },
+    "TextUnitKind": {
+      "enum": [
+        "document",
+        "section",
+        "paragraph",
+        "sentence",
+        "passage",
+        "utterance",
+        "line",
+        "verse",
+        "title",
+        "label"
+      ],
+      "title": "TextUnitKind",
+      "type": "string"
+    },
+    "TextUnitRecord": {
+      "properties": {
+        "char_end": {
+          "exclusiveMinimum": 0,
+          "title": "Char End",
+          "type": "integer"
+        },
+        "char_start": {
+          "minimum": 0,
+          "title": "Char Start",
+          "type": "integer"
+        },
+        "content": {
+          "minLength": 1,
+          "title": "Content",
+          "type": "string"
+        },
+        "content_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Content Sha256",
+          "type": "string"
+        },
+        "language_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Language Ref",
+          "type": "string"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "parent_text_unit_ref": {
+          "anyOf": [
+            {
+              "maxLength": 500,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Parent Text Unit Ref"
+        },
+        "script_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Script Ref",
+          "type": "string"
+        },
+        "sequence": {
+          "minimum": 0,
+          "title": "Sequence",
+          "type": "integer"
+        },
+        "source_text_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Source Text Ref",
+          "type": "string"
+        },
+        "text_unit_id": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Text Unit Id",
+          "type": "string"
+        },
+        "unit_kind": {
+          "$ref": "#/$defs/TextUnitKind"
+        }
+      },
+      "required": [
+        "text_unit_id",
+        "source_text_ref",
+        "unit_kind",
+        "sequence",
+        "char_start",
+        "char_end",
+        "content",
+        "content_sha256",
+        "language_ref",
+        "script_ref"
+      ],
+      "title": "TextUnitRecord",
+      "type": "object"
+    },
+    "VariantReviewState": {
+      "enum": [
+        "unreviewed",
+        "reviewed",
+        "accepted",
+        "rejected",
+        "disputed"
+      ],
+      "title": "VariantReviewState",
+      "type": "string"
+    },
+    "WritingDirection": {
+      "enum": [
+        "ltr",
+        "rtl",
+        "vertical-rl",
+        "vertical-lr",
+        "mixed"
+      ],
+      "title": "WritingDirection",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "derived_representation_refs": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Derived Representation Refs",
+      "type": "array"
+    },
+    "language_stages": {
+      "items": {
+        "$ref": "#/$defs/HistoricalLanguageStageIdentity"
+      },
+      "minItems": 1,
+      "title": "Language Stages",
+      "type": "array"
+    },
+    "linguistic_annotation_refs": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Linguistic Annotation Refs",
+      "type": "array"
+    },
+    "metadata": {
+      "additionalProperties": true,
+      "title": "Metadata",
+      "type": "object"
+    },
+    "normalizations": {
+      "items": {
+        "$ref": "#/$defs/OrthographicNormalizationRecord"
+      },
+      "title": "Normalizations",
+      "type": "array"
+    },
+    "orthography_profiles": {
+      "items": {
+        "$ref": "#/$defs/OrthographyProfile"
+      },
+      "minItems": 1,
+      "title": "Orthography Profiles",
+      "type": "array"
+    },
+    "script_variants": {
+      "items": {
+        "$ref": "#/$defs/HistoricalScriptVariantIdentity"
+      },
+      "minItems": 1,
+      "title": "Script Variants",
+      "type": "array"
+    },
+    "text_bundle": {
+      "$ref": "#/$defs/MultilingualTextLanguageBundle"
+    },
+    "variants": {
+      "items": {
+        "$ref": "#/$defs/HistoricalVariantAttestation"
+      },
+      "minItems": 1,
+      "title": "Variants",
+      "type": "array"
+    }
+  },
+  "required": [
+    "text_bundle",
+    "language_stages",
+    "script_variants",
+    "orthography_profiles",
+    "variants"
+  ],
+  "title": "HistoricalLanguageVariantBundle",
+  "type": "object"
+}
