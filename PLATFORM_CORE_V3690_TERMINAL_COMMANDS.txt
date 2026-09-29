@@ -1,0 +1,3 @@
+Mac: ./APPLY_AND_PUSH_PLATFORM_CORE_V3690.sh "$HOME/Downloads/sustainable-catalyst-platform-core"
+Contabo: /tmp/DEPLOY_PLATFORM_CORE_V3690_CONTABO.sh
+Public contract: https://core.sustainablecatalyst.com/public/v1/cross-lingual-exchange/contract

@@ -1,3 +1,9 @@
+## 3.69.0 — Cross-Lingual Semantic & Linguistic Exchange Layer
+- Added language-neutral concept identities, language-specific semantic anchors, cross-lingual semantic assertions, provenance, review state, supporting/contradicting evidence references, and concept sets.
+- Preserved semantic similarity != equivalence, correspondence != identity, and GNN prediction != graph fact.
+- Completed the v3.65–v3.69 language/linguistics Core block and prepared v3.70 Graph Machine Learning Foundation.
+- No database migration.
+
 # v3.3.0 — Statistical Reasoning Object Model
 
 ## 3.68.0 — Historical Language, Script, Orthography & Variant Identity

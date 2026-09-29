@@ -164,6 +164,7 @@ from .routers import (
     linguistic_annotation,
     translation_alignment,
     historical_language_variant,
+    cross_lingual_semantic_exchange,
 )
 from app.routers.spark_runtime import router as spark_runtime_router
 
@@ -633,6 +634,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # Platform Core v3.68.0 — Historical Language, Script, Orthography & Variant Identity
     app.include_router(historical_language_variant.router)
     app.include_router(historical_language_variant.public_router)
+
+    # Platform Core v3.69.0 — Cross-Lingual Semantic & Linguistic Exchange Layer
+    app.include_router(cross_lingual_semantic_exchange.router)
+    app.include_router(cross_lingual_semantic_exchange.public_router)
     return app
 
 

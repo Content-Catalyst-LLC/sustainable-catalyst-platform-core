@@ -1,0 +1,3566 @@
+{
+  "$defs": {
+    "AlignmentKind": {
+      "enum": [
+        "one-to-one",
+        "one-to-many",
+        "many-to-one",
+        "many-to-many",
+        "partial",
+        "omission",
+        "insertion"
+      ],
+      "title": "AlignmentKind",
+      "type": "string"
+    },
+    "AnnotationMethod": {
+      "enum": [
+        "manual",
+        "editorial",
+        "imported",
+        "model-assisted",
+        "pipeline"
+      ],
+      "title": "AnnotationMethod",
+      "type": "string"
+    },
+    "AnnotationProvenanceRecord": {
+      "properties": {
+        "provenance_id": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Provenance Id",
+          "type": "string"
+        },
+        "source_text_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Source Text Ref",
+          "type": "string"
+        },
+        "source_content_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Source Content Sha256",
+          "type": "string"
+        },
+        "method": {
+          "$ref": "#/$defs/AnnotationMethod"
+        },
+        "produced_by_ref": {
+          "maxLength": 1000,
+          "minLength": 2,
+          "title": "Produced By Ref",
+          "type": "string"
+        },
+        "tool_ref": {
+          "anyOf": [
+            {
+              "maxLength": 1000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tool Ref"
+        },
+        "tool_version": {
+          "anyOf": [
+            {
+              "maxLength": 240,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tool Version"
+        },
+        "model_ref": {
+          "anyOf": [
+            {
+              "maxLength": 1000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Model Ref"
+        },
+        "model_version": {
+          "anyOf": [
+            {
+              "maxLength": 240,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Model Version"
+        },
+        "annotation_scheme": {
+          "anyOf": [
+            {
+              "maxLength": 500,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Annotation Scheme"
+        },
+        "created_at": {
+          "anyOf": [
+            {
+              "maxLength": 80,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Created At"
+        },
+        "review_state": {
+          "$ref": "#/$defs/AnnotationReviewState",
+          "default": "unreviewed"
+        },
+        "reviewer_ref": {
+          "anyOf": [
+            {
+              "maxLength": 1000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reviewer Ref"
+        },
+        "review_note": {
+          "anyOf": [
+            {
+              "maxLength": 2000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Review Note"
+        },
+        "model_output_is_advisory": {
+          "const": true,
+          "default": true,
+          "title": "Model Output Is Advisory",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        }
+      },
+      "required": [
+        "provenance_id",
+        "source_text_ref",
+        "source_content_sha256",
+        "method",
+        "produced_by_ref"
+      ],
+      "title": "AnnotationProvenanceRecord",
+      "type": "object"
+    },
+    "AnnotationReviewState": {
+      "enum": [
+        "unreviewed",
+        "reviewed",
+        "accepted",
+        "rejected"
+      ],
+      "title": "AnnotationReviewState",
+      "type": "string"
+    },
+    "CanonicalTextSource": {
+      "properties": {
+        "text_source_id": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Text Source Id",
+          "type": "string"
+        },
+        "source_object_ref": {
+          "maxLength": 1000,
+          "minLength": 2,
+          "title": "Source Object Ref",
+          "type": "string"
+        },
+        "source_kind": {
+          "maxLength": 120,
+          "minLength": 2,
+          "title": "Source Kind",
+          "type": "string"
+        },
+        "primary_language_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Primary Language Ref",
+          "type": "string"
+        },
+        "primary_script_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Primary Script Ref",
+          "type": "string"
+        },
+        "provenance_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Provenance Ref",
+          "type": "string"
+        },
+        "content": {
+          "minLength": 1,
+          "title": "Content",
+          "type": "string"
+        },
+        "content_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Content Sha256",
+          "type": "string"
+        },
+        "content_encoding": {
+          "const": "utf-8",
+          "default": "utf-8",
+          "title": "Content Encoding",
+          "type": "string"
+        },
+        "original_language_is_canonical": {
+          "const": true,
+          "default": true,
+          "title": "Original Language Is Canonical",
+          "type": "boolean"
+        },
+        "translation_substitution_allowed": {
+          "const": false,
+          "default": false,
+          "title": "Translation Substitution Allowed",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        }
+      },
+      "required": [
+        "text_source_id",
+        "source_object_ref",
+        "source_kind",
+        "primary_language_ref",
+        "primary_script_ref",
+        "provenance_ref",
+        "content",
+        "content_sha256"
+      ],
+      "title": "CanonicalTextSource",
+      "type": "object"
+    },
+    "ConstituencyNode": {
+      "properties": {
+        "node_id": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Node Id",
+          "type": "string"
+        },
+        "parse_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Parse Ref",
+          "type": "string"
+        },
+        "label": {
+          "maxLength": 120,
+          "minLength": 1,
+          "title": "Label",
+          "type": "string"
+        },
+        "child_node_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Child Node Refs",
+          "type": "array"
+        },
+        "token_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Token Refs",
+          "type": "array"
+        },
+        "provenance_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Provenance Ref",
+          "type": "string"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        }
+      },
+      "required": [
+        "node_id",
+        "parse_ref",
+        "label",
+        "provenance_ref"
+      ],
+      "title": "ConstituencyNode",
+      "type": "object"
+    },
+    "ConstituencyParseRecord": {
+      "properties": {
+        "parse_id": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Parse Id",
+          "type": "string"
+        },
+        "tokenization_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Tokenization Ref",
+          "type": "string"
+        },
+        "root_node_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Root Node Ref",
+          "type": "string"
+        },
+        "node_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Node Refs",
+          "type": "array"
+        },
+        "scheme": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Scheme",
+          "type": "string"
+        },
+        "complete": {
+          "default": true,
+          "title": "Complete",
+          "type": "boolean"
+        },
+        "provenance_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Provenance Ref",
+          "type": "string"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        }
+      },
+      "required": [
+        "parse_id",
+        "tokenization_ref",
+        "root_node_ref",
+        "node_refs",
+        "scheme",
+        "provenance_ref"
+      ],
+      "title": "ConstituencyParseRecord",
+      "type": "object"
+    },
+    "CrossLingualConceptSet": {
+      "properties": {
+        "concept_set_id": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Concept Set Id",
+          "type": "string"
+        },
+        "concept_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Concept Ref",
+          "type": "string"
+        },
+        "anchor_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 2,
+          "title": "Anchor Refs",
+          "type": "array"
+        },
+        "assertion_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Assertion Refs",
+          "type": "array"
+        },
+        "language_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 2,
+          "title": "Language Refs",
+          "type": "array"
+        },
+        "unresolved_disagreement_preserved": {
+          "const": true,
+          "default": true,
+          "title": "Unresolved Disagreement Preserved",
+          "type": "boolean"
+        },
+        "preferred_language_form_selected_by_core": {
+          "const": false,
+          "default": false,
+          "title": "Preferred Language Form Selected By Core",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        }
+      },
+      "required": [
+        "concept_set_id",
+        "concept_ref",
+        "anchor_refs",
+        "language_refs"
+      ],
+      "title": "CrossLingualConceptSet",
+      "type": "object"
+    },
+    "CrossLingualSemanticAssertion": {
+      "properties": {
+        "assertion_id": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Assertion Id",
+          "type": "string"
+        },
+        "source_anchor_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Source Anchor Ref",
+          "type": "string"
+        },
+        "target_anchor_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Target Anchor Ref",
+          "type": "string"
+        },
+        "relation_kind": {
+          "$ref": "#/$defs/SemanticRelationKind"
+        },
+        "provenance_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Provenance Ref",
+          "type": "string"
+        },
+        "assertion_state": {
+          "$ref": "#/$defs/ExchangeAssertionState",
+          "default": "candidate"
+        },
+        "semantic_similarity_score": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Semantic Similarity Score"
+        },
+        "confidence": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confidence"
+        },
+        "supporting_evidence_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Supporting Evidence Refs",
+          "type": "array"
+        },
+        "contradicting_evidence_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Contradicting Evidence Refs",
+          "type": "array"
+        },
+        "reviewer_ref": {
+          "anyOf": [
+            {
+              "maxLength": 1000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reviewer Ref"
+        },
+        "machine_similarity_is_not_equivalence": {
+          "const": true,
+          "default": true,
+          "title": "Machine Similarity Is Not Equivalence",
+          "type": "boolean"
+        },
+        "assertion_is_not_graph_fact": {
+          "const": true,
+          "default": true,
+          "title": "Assertion Is Not Graph Fact",
+          "type": "boolean"
+        },
+        "assertion_is_not_entity_identity": {
+          "const": true,
+          "default": true,
+          "title": "Assertion Is Not Entity Identity",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        }
+      },
+      "required": [
+        "assertion_id",
+        "source_anchor_ref",
+        "target_anchor_ref",
+        "relation_kind",
+        "provenance_ref"
+      ],
+      "title": "CrossLingualSemanticAssertion",
+      "type": "object"
+    },
+    "DependencyParseRecord": {
+      "properties": {
+        "parse_id": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Parse Id",
+          "type": "string"
+        },
+        "tokenization_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Tokenization Ref",
+          "type": "string"
+        },
+        "relation_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Relation Refs",
+          "type": "array"
+        },
+        "scheme": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Scheme",
+          "type": "string"
+        },
+        "complete": {
+          "default": true,
+          "title": "Complete",
+          "type": "boolean"
+        },
+        "provenance_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Provenance Ref",
+          "type": "string"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        }
+      },
+      "required": [
+        "parse_id",
+        "tokenization_ref",
+        "relation_refs",
+        "scheme",
+        "provenance_ref"
+      ],
+      "title": "DependencyParseRecord",
+      "type": "object"
+    },
+    "DependencyRelation": {
+      "properties": {
+        "relation_id": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Relation Id",
+          "type": "string"
+        },
+        "parse_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Parse Ref",
+          "type": "string"
+        },
+        "dependent_token_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Dependent Token Ref",
+          "type": "string"
+        },
+        "head_token_ref": {
+          "anyOf": [
+            {
+              "maxLength": 500,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Head Token Ref"
+        },
+        "relation": {
+          "maxLength": 120,
+          "minLength": 1,
+          "title": "Relation",
+          "type": "string"
+        },
+        "enhanced": {
+          "default": false,
+          "title": "Enhanced",
+          "type": "boolean"
+        },
+        "provenance_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Provenance Ref",
+          "type": "string"
+        },
+        "confidence": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confidence"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        }
+      },
+      "required": [
+        "relation_id",
+        "parse_ref",
+        "dependent_token_ref",
+        "relation",
+        "provenance_ref"
+      ],
+      "title": "DependencyRelation",
+      "type": "object"
+    },
+    "DerivationMethod": {
+      "enum": [
+        "manual",
+        "editorial",
+        "imported",
+        "model-assisted",
+        "pipeline"
+      ],
+      "title": "DerivationMethod",
+      "type": "string"
+    },
+    "DerivationProvenanceRecord": {
+      "properties": {
+        "provenance_id": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Provenance Id",
+          "type": "string"
+        },
+        "representation_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Representation Ref",
+          "type": "string"
+        },
+        "source_text_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Source Text Ref",
+          "type": "string"
+        },
+        "source_content_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Source Content Sha256",
+          "type": "string"
+        },
+        "source_annotation_bundle_fingerprint_sha256": {
+          "anyOf": [
+            {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Annotation Bundle Fingerprint Sha256"
+        },
+        "method": {
+          "$ref": "#/$defs/DerivationMethod"
+        },
+        "produced_by_ref": {
+          "maxLength": 1000,
+          "minLength": 2,
+          "title": "Produced By Ref",
+          "type": "string"
+        },
+        "translator_ref": {
+          "anyOf": [
+            {
+              "maxLength": 1000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Translator Ref"
+        },
+        "tool_ref": {
+          "anyOf": [
+            {
+              "maxLength": 1000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tool Ref"
+        },
+        "tool_version": {
+          "anyOf": [
+            {
+              "maxLength": 240,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tool Version"
+        },
+        "model_ref": {
+          "anyOf": [
+            {
+              "maxLength": 1000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Model Ref"
+        },
+        "model_version": {
+          "anyOf": [
+            {
+              "maxLength": 240,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Model Version"
+        },
+        "created_at": {
+          "anyOf": [
+            {
+              "maxLength": 80,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Created At"
+        },
+        "review_state": {
+          "$ref": "#/$defs/DerivationReviewState",
+          "default": "unreviewed"
+        },
+        "reviewer_ref": {
+          "anyOf": [
+            {
+              "maxLength": 1000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reviewer Ref"
+        },
+        "review_note": {
+          "anyOf": [
+            {
+              "maxLength": 4000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Review Note"
+        },
+        "machine_output_is_advisory": {
+          "const": true,
+          "default": true,
+          "title": "Machine Output Is Advisory",
+          "type": "boolean"
+        },
+        "interpretation_is_authoritative": {
+          "const": false,
+          "default": false,
+          "title": "Interpretation Is Authoritative",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        }
+      },
+      "required": [
+        "provenance_id",
+        "representation_ref",
+        "source_text_ref",
+        "source_content_sha256",
+        "method",
+        "produced_by_ref"
+      ],
+      "title": "DerivationProvenanceRecord",
+      "type": "object"
+    },
+    "DerivationReviewState": {
+      "enum": [
+        "unreviewed",
+        "reviewed",
+        "accepted",
+        "rejected",
+        "disputed"
+      ],
+      "title": "DerivationReviewState",
+      "type": "string"
+    },
+    "DerivedRepresentationKind": {
+      "enum": [
+        "translation",
+        "transliteration"
+      ],
+      "title": "DerivedRepresentationKind",
+      "type": "string"
+    },
+    "DerivedTextRepresentation": {
+      "properties": {
+        "representation_id": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Representation Id",
+          "type": "string"
+        },
+        "kind": {
+          "$ref": "#/$defs/DerivedRepresentationKind"
+        },
+        "source_text_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Source Text Ref",
+          "type": "string"
+        },
+        "source_text_unit_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Source Text Unit Ref",
+          "type": "string"
+        },
+        "target_language_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Target Language Ref",
+          "type": "string"
+        },
+        "target_script_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Target Script Ref",
+          "type": "string"
+        },
+        "content": {
+          "minLength": 1,
+          "title": "Content",
+          "type": "string"
+        },
+        "content_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Content Sha256",
+          "type": "string"
+        },
+        "provenance_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Provenance Ref",
+          "type": "string"
+        },
+        "transliteration_scheme": {
+          "anyOf": [
+            {
+              "maxLength": 500,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Transliteration Scheme"
+        },
+        "derived_from_original": {
+          "const": true,
+          "default": true,
+          "title": "Derived From Original",
+          "type": "boolean"
+        },
+        "is_canonical_source": {
+          "const": false,
+          "default": false,
+          "title": "Is Canonical Source",
+          "type": "boolean"
+        },
+        "replaces_original": {
+          "const": false,
+          "default": false,
+          "title": "Replaces Original",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        }
+      },
+      "required": [
+        "representation_id",
+        "kind",
+        "source_text_ref",
+        "source_text_unit_ref",
+        "target_language_ref",
+        "target_script_ref",
+        "content",
+        "content_sha256",
+        "provenance_ref"
+      ],
+      "title": "DerivedTextRepresentation",
+      "type": "object"
+    },
+    "ExchangeAssertionState": {
+      "enum": [
+        "candidate",
+        "reviewed",
+        "accepted",
+        "rejected",
+        "disputed"
+      ],
+      "title": "ExchangeAssertionState",
+      "type": "string"
+    },
+    "ExchangeMethod": {
+      "enum": [
+        "manual",
+        "scholarly",
+        "imported",
+        "rule-based",
+        "model-assisted",
+        "graph-assisted"
+      ],
+      "title": "ExchangeMethod",
+      "type": "string"
+    },
+    "HistoricalIdentityMethod": {
+      "enum": [
+        "declared",
+        "editorial",
+        "imported",
+        "scholarly",
+        "model-assisted"
+      ],
+      "title": "HistoricalIdentityMethod",
+      "type": "string"
+    },
+    "HistoricalLanguageStageIdentity": {
+      "properties": {
+        "stage_id": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Stage Id",
+          "type": "string"
+        },
+        "language_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Language Ref",
+          "type": "string"
+        },
+        "canonical_label": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Canonical Label",
+          "type": "string"
+        },
+        "parent_stage_ref": {
+          "anyOf": [
+            {
+              "maxLength": 500,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Parent Stage Ref"
+        },
+        "start_year": {
+          "anyOf": [
+            {
+              "maximum": 10000,
+              "minimum": -10000,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Start Year"
+        },
+        "end_year": {
+          "anyOf": [
+            {
+              "maximum": 10000,
+              "minimum": -10000,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "End Year"
+        },
+        "temporal_certainty": {
+          "$ref": "#/$defs/TemporalCertainty",
+          "default": "unknown"
+        },
+        "chronology_source_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Chronology Source Refs",
+          "type": "array"
+        },
+        "identity_method": {
+          "$ref": "#/$defs/HistoricalIdentityMethod",
+          "default": "declared"
+        },
+        "assigned_by_ref": {
+          "anyOf": [
+            {
+              "maxLength": 1000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Assigned By Ref"
+        },
+        "confidence": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confidence"
+        },
+        "machine_identity_is_advisory": {
+          "const": true,
+          "default": true,
+          "title": "Machine Identity Is Advisory",
+          "type": "boolean"
+        },
+        "identity_is_authoritative": {
+          "const": false,
+          "default": false,
+          "title": "Identity Is Authoritative",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        }
+      },
+      "required": [
+        "stage_id",
+        "language_ref",
+        "canonical_label"
+      ],
+      "title": "HistoricalLanguageStageIdentity",
+      "type": "object"
+    },
+    "HistoricalLanguageVariantBundle": {
+      "properties": {
+        "text_bundle": {
+          "$ref": "#/$defs/MultilingualTextLanguageBundle"
+        },
+        "language_stages": {
+          "items": {
+            "$ref": "#/$defs/HistoricalLanguageStageIdentity"
+          },
+          "minItems": 1,
+          "title": "Language Stages",
+          "type": "array"
+        },
+        "script_variants": {
+          "items": {
+            "$ref": "#/$defs/HistoricalScriptVariantIdentity"
+          },
+          "minItems": 1,
+          "title": "Script Variants",
+          "type": "array"
+        },
+        "orthography_profiles": {
+          "items": {
+            "$ref": "#/$defs/OrthographyProfile"
+          },
+          "minItems": 1,
+          "title": "Orthography Profiles",
+          "type": "array"
+        },
+        "variants": {
+          "items": {
+            "$ref": "#/$defs/HistoricalVariantAttestation"
+          },
+          "minItems": 1,
+          "title": "Variants",
+          "type": "array"
+        },
+        "normalizations": {
+          "items": {
+            "$ref": "#/$defs/OrthographicNormalizationRecord"
+          },
+          "title": "Normalizations",
+          "type": "array"
+        },
+        "linguistic_annotation_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Linguistic Annotation Refs",
+          "type": "array"
+        },
+        "derived_representation_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Derived Representation Refs",
+          "type": "array"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        }
+      },
+      "required": [
+        "text_bundle",
+        "language_stages",
+        "script_variants",
+        "orthography_profiles",
+        "variants"
+      ],
+      "title": "HistoricalLanguageVariantBundle",
+      "type": "object"
+    },
+    "HistoricalScriptVariantIdentity": {
+      "properties": {
+        "script_variant_id": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Script Variant Id",
+          "type": "string"
+        },
+        "base_script_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Base Script Ref",
+          "type": "string"
+        },
+        "language_stage_ref": {
+          "anyOf": [
+            {
+              "maxLength": 500,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Language Stage Ref"
+        },
+        "canonical_label": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Canonical Label",
+          "type": "string"
+        },
+        "variant_label": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Variant Label",
+          "type": "string"
+        },
+        "parent_script_variant_ref": {
+          "anyOf": [
+            {
+              "maxLength": 500,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Parent Script Variant Ref"
+        },
+        "chronology_source_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Chronology Source Refs",
+          "type": "array"
+        },
+        "identity_method": {
+          "$ref": "#/$defs/HistoricalIdentityMethod",
+          "default": "declared"
+        },
+        "assigned_by_ref": {
+          "anyOf": [
+            {
+              "maxLength": 1000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Assigned By Ref"
+        },
+        "confidence": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confidence"
+        },
+        "machine_identity_is_advisory": {
+          "const": true,
+          "default": true,
+          "title": "Machine Identity Is Advisory",
+          "type": "boolean"
+        },
+        "identity_is_authoritative": {
+          "const": false,
+          "default": false,
+          "title": "Identity Is Authoritative",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        }
+      },
+      "required": [
+        "script_variant_id",
+        "base_script_ref",
+        "canonical_label",
+        "variant_label"
+      ],
+      "title": "HistoricalScriptVariantIdentity",
+      "type": "object"
+    },
+    "HistoricalVariantAttestation": {
+      "properties": {
+        "variant_id": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Variant Id",
+          "type": "string"
+        },
+        "source_text_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Source Text Ref",
+          "type": "string"
+        },
+        "text_unit_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Text Unit Ref",
+          "type": "string"
+        },
+        "char_start": {
+          "minimum": 0,
+          "title": "Char Start",
+          "type": "integer"
+        },
+        "char_end": {
+          "exclusiveMinimum": 0,
+          "title": "Char End",
+          "type": "integer"
+        },
+        "attested_form": {
+          "minLength": 1,
+          "title": "Attested Form",
+          "type": "string"
+        },
+        "attested_form_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Attested Form Sha256",
+          "type": "string"
+        },
+        "language_stage_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Language Stage Ref",
+          "type": "string"
+        },
+        "script_variant_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Script Variant Ref",
+          "type": "string"
+        },
+        "orthography_profile_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Orthography Profile Ref",
+          "type": "string"
+        },
+        "attestation_source_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Attestation Source Refs",
+          "type": "array"
+        },
+        "temporal_label": {
+          "anyOf": [
+            {
+              "maxLength": 500,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Temporal Label"
+        },
+        "start_year": {
+          "anyOf": [
+            {
+              "maximum": 10000,
+              "minimum": -10000,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Start Year"
+        },
+        "end_year": {
+          "anyOf": [
+            {
+              "maximum": 10000,
+              "minimum": -10000,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "End Year"
+        },
+        "temporal_certainty": {
+          "$ref": "#/$defs/TemporalCertainty",
+          "default": "unknown"
+        },
+        "review_state": {
+          "$ref": "#/$defs/VariantReviewState",
+          "default": "unreviewed"
+        },
+        "reviewer_ref": {
+          "anyOf": [
+            {
+              "maxLength": 1000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reviewer Ref"
+        },
+        "machine_assignment_is_advisory": {
+          "const": true,
+          "default": true,
+          "title": "Machine Assignment Is Advisory",
+          "type": "boolean"
+        },
+        "attestation_is_authoritative": {
+          "const": false,
+          "default": false,
+          "title": "Attestation Is Authoritative",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        }
+      },
+      "required": [
+        "variant_id",
+        "source_text_ref",
+        "text_unit_ref",
+        "char_start",
+        "char_end",
+        "attested_form",
+        "attested_form_sha256",
+        "language_stage_ref",
+        "script_variant_ref",
+        "orthography_profile_ref"
+      ],
+      "title": "HistoricalVariantAttestation",
+      "type": "object"
+    },
+    "LanguageAssignmentMethod": {
+      "enum": [
+        "declared",
+        "editorial",
+        "imported",
+        "model-assisted",
+        "unknown"
+      ],
+      "title": "LanguageAssignmentMethod",
+      "type": "string"
+    },
+    "LanguageIdentity": {
+      "properties": {
+        "language_id": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Language Id",
+          "type": "string"
+        },
+        "bcp47_tag": {
+          "maxLength": 80,
+          "minLength": 2,
+          "title": "Bcp47 Tag",
+          "type": "string"
+        },
+        "canonical_name": {
+          "maxLength": 240,
+          "minLength": 1,
+          "title": "Canonical Name",
+          "type": "string"
+        },
+        "iso_639_1": {
+          "anyOf": [
+            {
+              "maxLength": 2,
+              "minLength": 2,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Iso 639 1"
+        },
+        "iso_639_3": {
+          "anyOf": [
+            {
+              "maxLength": 3,
+              "minLength": 3,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Iso 639 3"
+        },
+        "endonyms": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Endonyms",
+          "type": "array"
+        },
+        "alternate_names": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Alternate Names",
+          "type": "array"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        }
+      },
+      "required": [
+        "language_id",
+        "bcp47_tag",
+        "canonical_name"
+      ],
+      "title": "LanguageIdentity",
+      "type": "object"
+    },
+    "LanguageSpanBinding": {
+      "properties": {
+        "span_binding_id": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Span Binding Id",
+          "type": "string"
+        },
+        "text_unit_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Text Unit Ref",
+          "type": "string"
+        },
+        "char_start": {
+          "minimum": 0,
+          "title": "Char Start",
+          "type": "integer"
+        },
+        "char_end": {
+          "exclusiveMinimum": 0,
+          "title": "Char End",
+          "type": "integer"
+        },
+        "language_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Language Ref",
+          "type": "string"
+        },
+        "script_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Script Ref",
+          "type": "string"
+        },
+        "assignment_method": {
+          "$ref": "#/$defs/LanguageAssignmentMethod"
+        },
+        "assigned_by_ref": {
+          "anyOf": [
+            {
+              "maxLength": 1000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Assigned By Ref"
+        },
+        "confidence": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confidence"
+        },
+        "machine_assignment_is_advisory": {
+          "const": true,
+          "default": true,
+          "title": "Machine Assignment Is Advisory",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        }
+      },
+      "required": [
+        "span_binding_id",
+        "text_unit_ref",
+        "char_start",
+        "char_end",
+        "language_ref",
+        "script_ref",
+        "assignment_method"
+      ],
+      "title": "LanguageSpanBinding",
+      "type": "object"
+    },
+    "LinguisticAnnotationBundle": {
+      "properties": {
+        "text_bundle": {
+          "$ref": "#/$defs/MultilingualTextLanguageBundle"
+        },
+        "provenance_records": {
+          "items": {
+            "$ref": "#/$defs/AnnotationProvenanceRecord"
+          },
+          "minItems": 1,
+          "title": "Provenance Records",
+          "type": "array"
+        },
+        "tokenizations": {
+          "items": {
+            "$ref": "#/$defs/TokenizationRecord"
+          },
+          "minItems": 1,
+          "title": "Tokenizations",
+          "type": "array"
+        },
+        "tokens": {
+          "items": {
+            "$ref": "#/$defs/TokenRecord"
+          },
+          "minItems": 1,
+          "title": "Tokens",
+          "type": "array"
+        },
+        "morphemes": {
+          "items": {
+            "$ref": "#/$defs/MorphemeRecord"
+          },
+          "title": "Morphemes",
+          "type": "array"
+        },
+        "morphology_annotations": {
+          "items": {
+            "$ref": "#/$defs/MorphologicalAnnotation"
+          },
+          "title": "Morphology Annotations",
+          "type": "array"
+        },
+        "pos_annotations": {
+          "items": {
+            "$ref": "#/$defs/PartOfSpeechAnnotation"
+          },
+          "title": "Pos Annotations",
+          "type": "array"
+        },
+        "dependency_parses": {
+          "items": {
+            "$ref": "#/$defs/DependencyParseRecord"
+          },
+          "title": "Dependency Parses",
+          "type": "array"
+        },
+        "dependency_relations": {
+          "items": {
+            "$ref": "#/$defs/DependencyRelation"
+          },
+          "title": "Dependency Relations",
+          "type": "array"
+        },
+        "constituency_parses": {
+          "items": {
+            "$ref": "#/$defs/ConstituencyParseRecord"
+          },
+          "title": "Constituency Parses",
+          "type": "array"
+        },
+        "constituency_nodes": {
+          "items": {
+            "$ref": "#/$defs/ConstituencyNode"
+          },
+          "title": "Constituency Nodes",
+          "type": "array"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        }
+      },
+      "required": [
+        "text_bundle",
+        "provenance_records",
+        "tokenizations",
+        "tokens"
+      ],
+      "title": "LinguisticAnnotationBundle",
+      "type": "object"
+    },
+    "LinguisticSemanticAnchor": {
+      "properties": {
+        "anchor_id": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Anchor Id",
+          "type": "string"
+        },
+        "concept_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Concept Ref",
+          "type": "string"
+        },
+        "language_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Language Ref",
+          "type": "string"
+        },
+        "script_ref": {
+          "anyOf": [
+            {
+              "maxLength": 500,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Script Ref"
+        },
+        "surface_form": {
+          "maxLength": 4000,
+          "minLength": 1,
+          "title": "Surface Form",
+          "type": "string"
+        },
+        "source_object_ref": {
+          "maxLength": 1000,
+          "minLength": 2,
+          "title": "Source Object Ref",
+          "type": "string"
+        },
+        "source_object_kind": {
+          "maxLength": 200,
+          "minLength": 2,
+          "title": "Source Object Kind",
+          "type": "string"
+        },
+        "text_source_ref": {
+          "anyOf": [
+            {
+              "maxLength": 500,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Text Source Ref"
+        },
+        "text_unit_ref": {
+          "anyOf": [
+            {
+              "maxLength": 500,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Text Unit Ref"
+        },
+        "char_start": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Char Start"
+        },
+        "char_end": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Char End"
+        },
+        "historical_language_stage_ref": {
+          "anyOf": [
+            {
+              "maxLength": 500,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Historical Language Stage Ref"
+        },
+        "orthography_profile_ref": {
+          "anyOf": [
+            {
+              "maxLength": 500,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Orthography Profile Ref"
+        },
+        "translation_representation_ref": {
+          "anyOf": [
+            {
+              "maxLength": 500,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Translation Representation Ref"
+        },
+        "anchor_is_evidence_of_concept_identity": {
+          "const": false,
+          "default": false,
+          "title": "Anchor Is Evidence Of Concept Identity",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        }
+      },
+      "required": [
+        "anchor_id",
+        "concept_ref",
+        "language_ref",
+        "surface_form",
+        "source_object_ref",
+        "source_object_kind"
+      ],
+      "title": "LinguisticSemanticAnchor",
+      "type": "object"
+    },
+    "MorphemeRecord": {
+      "properties": {
+        "morpheme_id": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Morpheme Id",
+          "type": "string"
+        },
+        "token_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Token Ref",
+          "type": "string"
+        },
+        "sequence": {
+          "minimum": 0,
+          "title": "Sequence",
+          "type": "integer"
+        },
+        "char_start": {
+          "minimum": 0,
+          "title": "Char Start",
+          "type": "integer"
+        },
+        "char_end": {
+          "exclusiveMinimum": 0,
+          "title": "Char End",
+          "type": "integer"
+        },
+        "surface": {
+          "minLength": 1,
+          "title": "Surface",
+          "type": "string"
+        },
+        "surface_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Surface Sha256",
+          "type": "string"
+        },
+        "morpheme_type": {
+          "maxLength": 120,
+          "minLength": 1,
+          "title": "Morpheme Type",
+          "type": "string"
+        },
+        "gloss": {
+          "anyOf": [
+            {
+              "maxLength": 500,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Gloss"
+        },
+        "provenance_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Provenance Ref",
+          "type": "string"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        }
+      },
+      "required": [
+        "morpheme_id",
+        "token_ref",
+        "sequence",
+        "char_start",
+        "char_end",
+        "surface",
+        "surface_sha256",
+        "morpheme_type",
+        "provenance_ref"
+      ],
+      "title": "MorphemeRecord",
+      "type": "object"
+    },
+    "MorphologicalAnnotation": {
+      "properties": {
+        "annotation_id": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Annotation Id",
+          "type": "string"
+        },
+        "token_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Token Ref",
+          "type": "string"
+        },
+        "lemma": {
+          "anyOf": [
+            {
+              "maxLength": 1000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Lemma"
+        },
+        "features": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Features",
+          "type": "object"
+        },
+        "morpheme_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Morpheme Refs",
+          "type": "array"
+        },
+        "provenance_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Provenance Ref",
+          "type": "string"
+        },
+        "confidence": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confidence"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        }
+      },
+      "required": [
+        "annotation_id",
+        "token_ref",
+        "provenance_ref"
+      ],
+      "title": "MorphologicalAnnotation",
+      "type": "object"
+    },
+    "MultilingualTextLanguageBundle": {
+      "properties": {
+        "languages": {
+          "items": {
+            "$ref": "#/$defs/LanguageIdentity"
+          },
+          "minItems": 1,
+          "title": "Languages",
+          "type": "array"
+        },
+        "scripts": {
+          "items": {
+            "$ref": "#/$defs/ScriptIdentity"
+          },
+          "minItems": 1,
+          "title": "Scripts",
+          "type": "array"
+        },
+        "provenance_records": {
+          "items": {
+            "$ref": "#/$defs/TextSourceProvenanceRecord"
+          },
+          "minItems": 1,
+          "title": "Provenance Records",
+          "type": "array"
+        },
+        "text_sources": {
+          "items": {
+            "$ref": "#/$defs/CanonicalTextSource"
+          },
+          "minItems": 1,
+          "title": "Text Sources",
+          "type": "array"
+        },
+        "text_units": {
+          "items": {
+            "$ref": "#/$defs/TextUnitRecord"
+          },
+          "minItems": 1,
+          "title": "Text Units",
+          "type": "array"
+        },
+        "language_spans": {
+          "items": {
+            "$ref": "#/$defs/LanguageSpanBinding"
+          },
+          "title": "Language Spans",
+          "type": "array"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        }
+      },
+      "required": [
+        "languages",
+        "scripts",
+        "provenance_records",
+        "text_sources",
+        "text_units"
+      ],
+      "title": "MultilingualTextLanguageBundle",
+      "type": "object"
+    },
+    "NormalizationMethod": {
+      "enum": [
+        "manual",
+        "editorial",
+        "rule-based",
+        "imported",
+        "model-assisted"
+      ],
+      "title": "NormalizationMethod",
+      "type": "string"
+    },
+    "OrthographicNormalizationRecord": {
+      "properties": {
+        "normalization_id": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Normalization Id",
+          "type": "string"
+        },
+        "variant_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Variant Ref",
+          "type": "string"
+        },
+        "source_form": {
+          "minLength": 1,
+          "title": "Source Form",
+          "type": "string"
+        },
+        "source_form_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Source Form Sha256",
+          "type": "string"
+        },
+        "normalized_form": {
+          "minLength": 1,
+          "title": "Normalized Form",
+          "type": "string"
+        },
+        "normalized_form_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Normalized Form Sha256",
+          "type": "string"
+        },
+        "method": {
+          "$ref": "#/$defs/NormalizationMethod"
+        },
+        "produced_by_ref": {
+          "maxLength": 1000,
+          "minLength": 2,
+          "title": "Produced By Ref",
+          "type": "string"
+        },
+        "ruleset_ref": {
+          "anyOf": [
+            {
+              "maxLength": 1000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ruleset Ref"
+        },
+        "tool_ref": {
+          "anyOf": [
+            {
+              "maxLength": 1000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tool Ref"
+        },
+        "tool_version": {
+          "anyOf": [
+            {
+              "maxLength": 240,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tool Version"
+        },
+        "model_ref": {
+          "anyOf": [
+            {
+              "maxLength": 1000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Model Ref"
+        },
+        "model_version": {
+          "anyOf": [
+            {
+              "maxLength": 240,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Model Version"
+        },
+        "reversible": {
+          "default": false,
+          "title": "Reversible",
+          "type": "boolean"
+        },
+        "review_state": {
+          "$ref": "#/$defs/VariantReviewState",
+          "default": "unreviewed"
+        },
+        "reviewer_ref": {
+          "anyOf": [
+            {
+              "maxLength": 1000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reviewer Ref"
+        },
+        "normalized_form_is_derived": {
+          "const": true,
+          "default": true,
+          "title": "Normalized Form Is Derived",
+          "type": "boolean"
+        },
+        "canonical_source_unchanged": {
+          "const": true,
+          "default": true,
+          "title": "Canonical Source Unchanged",
+          "type": "boolean"
+        },
+        "machine_normalization_is_advisory": {
+          "const": true,
+          "default": true,
+          "title": "Machine Normalization Is Advisory",
+          "type": "boolean"
+        },
+        "normalization_is_authoritative": {
+          "const": false,
+          "default": false,
+          "title": "Normalization Is Authoritative",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        }
+      },
+      "required": [
+        "normalization_id",
+        "variant_ref",
+        "source_form",
+        "source_form_sha256",
+        "normalized_form",
+        "normalized_form_sha256",
+        "method",
+        "produced_by_ref"
+      ],
+      "title": "OrthographicNormalizationRecord",
+      "type": "object"
+    },
+    "OrthographyProfile": {
+      "properties": {
+        "orthography_profile_id": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Orthography Profile Id",
+          "type": "string"
+        },
+        "language_stage_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Language Stage Ref",
+          "type": "string"
+        },
+        "script_variant_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Script Variant Ref",
+          "type": "string"
+        },
+        "canonical_label": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Canonical Label",
+          "type": "string"
+        },
+        "convention_notes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Convention Notes",
+          "type": "array"
+        },
+        "source_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Source Refs",
+          "type": "array"
+        },
+        "identity_method": {
+          "$ref": "#/$defs/HistoricalIdentityMethod",
+          "default": "declared"
+        },
+        "assigned_by_ref": {
+          "anyOf": [
+            {
+              "maxLength": 1000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Assigned By Ref"
+        },
+        "confidence": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confidence"
+        },
+        "machine_profile_is_advisory": {
+          "const": true,
+          "default": true,
+          "title": "Machine Profile Is Advisory",
+          "type": "boolean"
+        },
+        "profile_is_authoritative": {
+          "const": false,
+          "default": false,
+          "title": "Profile Is Authoritative",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        }
+      },
+      "required": [
+        "orthography_profile_id",
+        "language_stage_ref",
+        "script_variant_ref",
+        "canonical_label"
+      ],
+      "title": "OrthographyProfile",
+      "type": "object"
+    },
+    "ParallelTextAlignmentRecord": {
+      "properties": {
+        "alignment_id": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Alignment Id",
+          "type": "string"
+        },
+        "representation_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Representation Ref",
+          "type": "string"
+        },
+        "source_text_unit_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Source Text Unit Ref",
+          "type": "string"
+        },
+        "source_char_start": {
+          "minimum": 0,
+          "title": "Source Char Start",
+          "type": "integer"
+        },
+        "source_char_end": {
+          "exclusiveMinimum": 0,
+          "title": "Source Char End",
+          "type": "integer"
+        },
+        "source_content": {
+          "minLength": 1,
+          "title": "Source Content",
+          "type": "string"
+        },
+        "source_content_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Source Content Sha256",
+          "type": "string"
+        },
+        "target_char_start": {
+          "minimum": 0,
+          "title": "Target Char Start",
+          "type": "integer"
+        },
+        "target_char_end": {
+          "exclusiveMinimum": 0,
+          "title": "Target Char End",
+          "type": "integer"
+        },
+        "target_content": {
+          "minLength": 1,
+          "title": "Target Content",
+          "type": "string"
+        },
+        "target_content_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Target Content Sha256",
+          "type": "string"
+        },
+        "alignment_kind": {
+          "$ref": "#/$defs/AlignmentKind"
+        },
+        "provenance_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Provenance Ref",
+          "type": "string"
+        },
+        "source_token_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Source Token Refs",
+          "type": "array"
+        },
+        "confidence": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confidence"
+        },
+        "machine_alignment_is_advisory": {
+          "const": true,
+          "default": true,
+          "title": "Machine Alignment Is Advisory",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        }
+      },
+      "required": [
+        "alignment_id",
+        "representation_ref",
+        "source_text_unit_ref",
+        "source_char_start",
+        "source_char_end",
+        "source_content",
+        "source_content_sha256",
+        "target_char_start",
+        "target_char_end",
+        "target_content",
+        "target_content_sha256",
+        "alignment_kind",
+        "provenance_ref"
+      ],
+      "title": "ParallelTextAlignmentRecord",
+      "type": "object"
+    },
+    "PartOfSpeechAnnotation": {
+      "properties": {
+        "annotation_id": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Annotation Id",
+          "type": "string"
+        },
+        "token_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Token Ref",
+          "type": "string"
+        },
+        "upos": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/UniversalPartOfSpeech"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "xpos": {
+          "anyOf": [
+            {
+              "maxLength": 120,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Xpos"
+        },
+        "tagset": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Tagset",
+          "type": "string"
+        },
+        "provenance_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Provenance Ref",
+          "type": "string"
+        },
+        "confidence": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confidence"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        }
+      },
+      "required": [
+        "annotation_id",
+        "token_ref",
+        "tagset",
+        "provenance_ref"
+      ],
+      "title": "PartOfSpeechAnnotation",
+      "type": "object"
+    },
+    "RepresentationVariantSet": {
+      "properties": {
+        "variant_set_id": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Variant Set Id",
+          "type": "string"
+        },
+        "source_text_unit_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Source Text Unit Ref",
+          "type": "string"
+        },
+        "representation_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 2,
+          "title": "Representation Refs",
+          "type": "array"
+        },
+        "comparison_basis": {
+          "maxLength": 1000,
+          "minLength": 2,
+          "title": "Comparison Basis",
+          "type": "string"
+        },
+        "disagreement_preserved": {
+          "const": true,
+          "default": true,
+          "title": "Disagreement Preserved",
+          "type": "boolean"
+        },
+        "preferred_representation_selected_by_core": {
+          "const": false,
+          "default": false,
+          "title": "Preferred Representation Selected By Core",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        }
+      },
+      "required": [
+        "variant_set_id",
+        "source_text_unit_ref",
+        "representation_refs",
+        "comparison_basis"
+      ],
+      "title": "RepresentationVariantSet",
+      "type": "object"
+    },
+    "ScriptIdentity": {
+      "properties": {
+        "script_id": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Script Id",
+          "type": "string"
+        },
+        "iso_15924_code": {
+          "maxLength": 4,
+          "minLength": 4,
+          "title": "Iso 15924 Code",
+          "type": "string"
+        },
+        "canonical_name": {
+          "maxLength": 240,
+          "minLength": 1,
+          "title": "Canonical Name",
+          "type": "string"
+        },
+        "writing_direction": {
+          "$ref": "#/$defs/WritingDirection"
+        },
+        "unicode_script_property": {
+          "anyOf": [
+            {
+              "maxLength": 120,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Unicode Script Property"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        }
+      },
+      "required": [
+        "script_id",
+        "iso_15924_code",
+        "canonical_name",
+        "writing_direction"
+      ],
+      "title": "ScriptIdentity",
+      "type": "object"
+    },
+    "SemanticConceptIdentity": {
+      "properties": {
+        "concept_id": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Concept Id",
+          "type": "string"
+        },
+        "canonical_label": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Canonical Label",
+          "type": "string"
+        },
+        "definition": {
+          "anyOf": [
+            {
+              "maxLength": 5000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Definition"
+        },
+        "domain_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Domain Refs",
+          "type": "array"
+        },
+        "external_concept_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "External Concept Refs",
+          "type": "array"
+        },
+        "concept_identity_is_language_neutral": {
+          "const": true,
+          "default": true,
+          "title": "Concept Identity Is Language Neutral",
+          "type": "boolean"
+        },
+        "concept_is_not_source_text": {
+          "const": true,
+          "default": true,
+          "title": "Concept Is Not Source Text",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        }
+      },
+      "required": [
+        "concept_id",
+        "canonical_label"
+      ],
+      "title": "SemanticConceptIdentity",
+      "type": "object"
+    },
+    "SemanticExchangeProvenanceRecord": {
+      "properties": {
+        "provenance_id": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Provenance Id",
+          "type": "string"
+        },
+        "assertion_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Assertion Ref",
+          "type": "string"
+        },
+        "method": {
+          "$ref": "#/$defs/ExchangeMethod"
+        },
+        "produced_by_ref": {
+          "maxLength": 1000,
+          "minLength": 2,
+          "title": "Produced By Ref",
+          "type": "string"
+        },
+        "model_ref": {
+          "anyOf": [
+            {
+              "maxLength": 1000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Model Ref"
+        },
+        "model_version": {
+          "anyOf": [
+            {
+              "maxLength": 240,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Model Version"
+        },
+        "tool_ref": {
+          "anyOf": [
+            {
+              "maxLength": 1000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tool Ref"
+        },
+        "tool_version": {
+          "anyOf": [
+            {
+              "maxLength": 240,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tool Version"
+        },
+        "source_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Source Refs",
+          "type": "array"
+        },
+        "created_at": {
+          "anyOf": [
+            {
+              "maxLength": 80,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Created At"
+        },
+        "reviewer_ref": {
+          "anyOf": [
+            {
+              "maxLength": 1000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reviewer Ref"
+        },
+        "review_note": {
+          "anyOf": [
+            {
+              "maxLength": 5000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Review Note"
+        },
+        "machine_or_graph_output_is_advisory": {
+          "const": true,
+          "default": true,
+          "title": "Machine Or Graph Output Is Advisory",
+          "type": "boolean"
+        },
+        "provenance_does_not_establish_semantic_truth": {
+          "const": true,
+          "default": true,
+          "title": "Provenance Does Not Establish Semantic Truth",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        }
+      },
+      "required": [
+        "provenance_id",
+        "assertion_ref",
+        "method",
+        "produced_by_ref"
+      ],
+      "title": "SemanticExchangeProvenanceRecord",
+      "type": "object"
+    },
+    "SemanticRelationKind": {
+      "enum": [
+        "exact-equivalent",
+        "near-equivalent",
+        "broader",
+        "narrower",
+        "related",
+        "lexical-correspondence",
+        "translation-correspondence",
+        "transliteration-correspondence",
+        "historical-variant-correspondence",
+        "entity-name-correspondence"
+      ],
+      "title": "SemanticRelationKind",
+      "type": "string"
+    },
+    "TemporalCertainty": {
+      "enum": [
+        "exact",
+        "approximate",
+        "uncertain",
+        "unknown"
+      ],
+      "title": "TemporalCertainty",
+      "type": "string"
+    },
+    "TextSourceProvenanceRecord": {
+      "properties": {
+        "provenance_id": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Provenance Id",
+          "type": "string"
+        },
+        "text_source_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Text Source Ref",
+          "type": "string"
+        },
+        "source_object_ref": {
+          "maxLength": 1000,
+          "minLength": 2,
+          "title": "Source Object Ref",
+          "type": "string"
+        },
+        "acquisition_method": {
+          "maxLength": 240,
+          "minLength": 2,
+          "title": "Acquisition Method",
+          "type": "string"
+        },
+        "source_artifact_ref": {
+          "anyOf": [
+            {
+              "maxLength": 1000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Artifact Ref"
+        },
+        "source_artifact_sha256": {
+          "anyOf": [
+            {
+              "maxLength": 64,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Artifact Sha256"
+        },
+        "recorded_by_ref": {
+          "anyOf": [
+            {
+              "maxLength": 1000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Recorded By Ref"
+        },
+        "recorded_at": {
+          "anyOf": [
+            {
+              "maxLength": 80,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Recorded At"
+        },
+        "content_replaces_original": {
+          "const": false,
+          "default": false,
+          "title": "Content Replaces Original",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        }
+      },
+      "required": [
+        "provenance_id",
+        "text_source_ref",
+        "source_object_ref",
+        "acquisition_method"
+      ],
+      "title": "TextSourceProvenanceRecord",
+      "type": "object"
+    },
+    "TextUnitKind": {
+      "enum": [
+        "document",
+        "section",
+        "paragraph",
+        "sentence",
+        "passage",
+        "utterance",
+        "line",
+        "verse",
+        "title",
+        "label"
+      ],
+      "title": "TextUnitKind",
+      "type": "string"
+    },
+    "TextUnitRecord": {
+      "properties": {
+        "text_unit_id": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Text Unit Id",
+          "type": "string"
+        },
+        "source_text_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Source Text Ref",
+          "type": "string"
+        },
+        "unit_kind": {
+          "$ref": "#/$defs/TextUnitKind"
+        },
+        "sequence": {
+          "minimum": 0,
+          "title": "Sequence",
+          "type": "integer"
+        },
+        "char_start": {
+          "minimum": 0,
+          "title": "Char Start",
+          "type": "integer"
+        },
+        "char_end": {
+          "exclusiveMinimum": 0,
+          "title": "Char End",
+          "type": "integer"
+        },
+        "content": {
+          "minLength": 1,
+          "title": "Content",
+          "type": "string"
+        },
+        "content_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Content Sha256",
+          "type": "string"
+        },
+        "language_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Language Ref",
+          "type": "string"
+        },
+        "script_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Script Ref",
+          "type": "string"
+        },
+        "parent_text_unit_ref": {
+          "anyOf": [
+            {
+              "maxLength": 500,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Parent Text Unit Ref"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        }
+      },
+      "required": [
+        "text_unit_id",
+        "source_text_ref",
+        "unit_kind",
+        "sequence",
+        "char_start",
+        "char_end",
+        "content",
+        "content_sha256",
+        "language_ref",
+        "script_ref"
+      ],
+      "title": "TextUnitRecord",
+      "type": "object"
+    },
+    "TokenKind": {
+      "enum": [
+        "word",
+        "punctuation",
+        "number",
+        "symbol",
+        "whitespace",
+        "other"
+      ],
+      "title": "TokenKind",
+      "type": "string"
+    },
+    "TokenRecord": {
+      "properties": {
+        "token_id": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Token Id",
+          "type": "string"
+        },
+        "tokenization_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Tokenization Ref",
+          "type": "string"
+        },
+        "text_unit_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Text Unit Ref",
+          "type": "string"
+        },
+        "sequence": {
+          "minimum": 0,
+          "title": "Sequence",
+          "type": "integer"
+        },
+        "char_start": {
+          "minimum": 0,
+          "title": "Char Start",
+          "type": "integer"
+        },
+        "char_end": {
+          "exclusiveMinimum": 0,
+          "title": "Char End",
+          "type": "integer"
+        },
+        "surface": {
+          "minLength": 1,
+          "title": "Surface",
+          "type": "string"
+        },
+        "surface_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Surface Sha256",
+          "type": "string"
+        },
+        "token_kind": {
+          "$ref": "#/$defs/TokenKind",
+          "default": "word"
+        },
+        "language_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Language Ref",
+          "type": "string"
+        },
+        "script_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Script Ref",
+          "type": "string"
+        },
+        "provenance_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Provenance Ref",
+          "type": "string"
+        },
+        "confidence": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confidence"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        }
+      },
+      "required": [
+        "token_id",
+        "tokenization_ref",
+        "text_unit_ref",
+        "sequence",
+        "char_start",
+        "char_end",
+        "surface",
+        "surface_sha256",
+        "language_ref",
+        "script_ref",
+        "provenance_ref"
+      ],
+      "title": "TokenRecord",
+      "type": "object"
+    },
+    "TokenizationRecord": {
+      "properties": {
+        "tokenization_id": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Tokenization Id",
+          "type": "string"
+        },
+        "text_unit_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Text Unit Ref",
+          "type": "string"
+        },
+        "token_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Token Refs",
+          "type": "array"
+        },
+        "scheme": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Scheme",
+          "type": "string"
+        },
+        "complete": {
+          "default": true,
+          "title": "Complete",
+          "type": "boolean"
+        },
+        "provenance_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Provenance Ref",
+          "type": "string"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        }
+      },
+      "required": [
+        "tokenization_id",
+        "text_unit_ref",
+        "token_refs",
+        "scheme",
+        "provenance_ref"
+      ],
+      "title": "TokenizationRecord",
+      "type": "object"
+    },
+    "TranslationTransliterationAlignmentBundle": {
+      "properties": {
+        "annotation_bundle": {
+          "$ref": "#/$defs/LinguisticAnnotationBundle"
+        },
+        "provenance_records": {
+          "items": {
+            "$ref": "#/$defs/DerivationProvenanceRecord"
+          },
+          "minItems": 1,
+          "title": "Provenance Records",
+          "type": "array"
+        },
+        "representations": {
+          "items": {
+            "$ref": "#/$defs/DerivedTextRepresentation"
+          },
+          "minItems": 1,
+          "title": "Representations",
+          "type": "array"
+        },
+        "alignments": {
+          "items": {
+            "$ref": "#/$defs/ParallelTextAlignmentRecord"
+          },
+          "title": "Alignments",
+          "type": "array"
+        },
+        "variant_sets": {
+          "items": {
+            "$ref": "#/$defs/RepresentationVariantSet"
+          },
+          "title": "Variant Sets",
+          "type": "array"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        }
+      },
+      "required": [
+        "annotation_bundle",
+        "provenance_records",
+        "representations"
+      ],
+      "title": "TranslationTransliterationAlignmentBundle",
+      "type": "object"
+    },
+    "UniversalPartOfSpeech": {
+      "enum": [
+        "ADJ",
+        "ADP",
+        "ADV",
+        "AUX",
+        "CCONJ",
+        "DET",
+        "INTJ",
+        "NOUN",
+        "NUM",
+        "PART",
+        "PRON",
+        "PROPN",
+        "PUNCT",
+        "SCONJ",
+        "SYM",
+        "VERB",
+        "X"
+      ],
+      "title": "UniversalPartOfSpeech",
+      "type": "string"
+    },
+    "VariantReviewState": {
+      "enum": [
+        "unreviewed",
+        "reviewed",
+        "accepted",
+        "rejected",
+        "disputed"
+      ],
+      "title": "VariantReviewState",
+      "type": "string"
+    },
+    "WritingDirection": {
+      "enum": [
+        "ltr",
+        "rtl",
+        "vertical-rl",
+        "vertical-lr",
+        "mixed"
+      ],
+      "title": "WritingDirection",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "translation_bundle": {
+      "$ref": "#/$defs/TranslationTransliterationAlignmentBundle"
+    },
+    "historical_bundle": {
+      "$ref": "#/$defs/HistoricalLanguageVariantBundle"
+    },
+    "concepts": {
+      "items": {
+        "$ref": "#/$defs/SemanticConceptIdentity"
+      },
+      "minItems": 1,
+      "title": "Concepts",
+      "type": "array"
+    },
+    "anchors": {
+      "items": {
+        "$ref": "#/$defs/LinguisticSemanticAnchor"
+      },
+      "minItems": 2,
+      "title": "Anchors",
+      "type": "array"
+    },
+    "provenance_records": {
+      "items": {
+        "$ref": "#/$defs/SemanticExchangeProvenanceRecord"
+      },
+      "minItems": 1,
+      "title": "Provenance Records",
+      "type": "array"
+    },
+    "assertions": {
+      "items": {
+        "$ref": "#/$defs/CrossLingualSemanticAssertion"
+      },
+      "minItems": 1,
+      "title": "Assertions",
+      "type": "array"
+    },
+    "concept_sets": {
+      "items": {
+        "$ref": "#/$defs/CrossLingualConceptSet"
+      },
+      "minItems": 1,
+      "title": "Concept Sets",
+      "type": "array"
+    },
+    "metadata": {
+      "additionalProperties": true,
+      "title": "Metadata",
+      "type": "object"
+    }
+  },
+  "required": [
+    "translation_bundle",
+    "historical_bundle",
+    "concepts",
+    "anchors",
+    "provenance_records",
+    "assertions",
+    "concept_sets"
+  ],
+  "title": "CrossLingualSemanticExchangeBundle",
+  "type": "object"
+}
