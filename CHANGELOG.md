@@ -1,3 +1,7 @@
+## 3.74.0 — Graph Anomaly Detection
+- Adds governed graph anomaly targets, scores, explanations, review records, detector/runtime contracts, and evaluation lineage.
+- Enforces anomaly != fact, anomaly != evidence, anomaly != wrongdoing, and prohibits automatic evidence-graph mutation.
+
 
 ## 3.73.0 — Link Prediction & Candidate Relationship Objects
 - Added governed graph link-prediction candidate pairs, tasks, runtime/model bindings, prediction probabilities, CandidateRelationship objects, review records, evaluation lineage, and promotion gates.

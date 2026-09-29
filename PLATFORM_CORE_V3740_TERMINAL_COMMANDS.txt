@@ -1,0 +1,1 @@
+Platform Core v3.74.0 terminal workflow is provided in README_FIRST.md and the apply/deploy scripts.
