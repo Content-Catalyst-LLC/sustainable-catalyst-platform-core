@@ -1,5 +1,13 @@
 # v3.3.0 — Statistical Reasoning Object Model
 
+## 3.67.0 — Translation, Transliteration & Parallel-Text Alignment Objects
+
+- Adds derived translation and transliteration representations with immutable source references, target language/script identity, deterministic content hashes, translator/model/tool provenance, and review state.
+- Adds span-level parallel-text alignments that preserve exact canonical source slices, derived target slices, and optional v3.66 token references.
+- Adds translation variant sets so competing renderings and disagreements may coexist without Core selecting a preferred or authoritative translation.
+- Keeps translation, transliteration, and alignment execution outside Core; preserves v3.68–v3.69 language roadmap and the v3.70–v3.76 Graph Neural Network wave with the invariant that GNN predictions are not graph facts.
+
+
 ## 3.66.0 — Linguistic Annotation, Token, Morphology & Syntax Provenance
 
 - Adds governed annotation provenance, tokenization layers, tokens, morphemes, lemmas, morphological features, POS annotations, dependency syntax, and constituency syntax objects.
