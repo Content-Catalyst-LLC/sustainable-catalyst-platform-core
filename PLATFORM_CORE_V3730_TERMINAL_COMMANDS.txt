@@ -1,6 +1,0 @@
-cd ~/Downloads
-rm -rf sc-core-v3.73.0-link-prediction
-unzip -q platform-core-v3.73.0-link-prediction-candidate-relationship-objects-release-bundle.zip -d sc-core-v3.73.0-link-prediction
-cd sc-core-v3.73.0-link-prediction
-chmod +x REPAIR_PLATFORM_CORE_V3730.py APPLY_AND_PUSH_PLATFORM_CORE_V3730.sh DEPLOY_PLATFORM_CORE_V3730_CONTABO.sh PACKAGE_PLATFORM_CORE_V3730.sh
-./APPLY_AND_PUSH_PLATFORM_CORE_V3730.sh "$HOME/Downloads/sustainable-catalyst-platform-core"

@@ -7,6 +7,8 @@ __pycache__/
 htmlcov/
 .venv/
 .env
+.env.*
+!.env.example
 *.db
 *.sqlite
 *.sqlite3
@@ -16,3 +18,28 @@ build/
 *.egg-info/
 wordpress-plugin/*.zip
 /var/
+
+# Local release staging and packaged archives
+/release-staging/
+/dist-v*/
+/*.zip
+/*.tgz
+/*.tar.gz
+
+# Generated release metadata belongs in release bundles/history, not repository root.
+/BUILD_MANIFEST.json
+/MANIFEST.sha256
+/TEST_RESULTS.txt
+/*_MIGRATION_ID.txt
+/BACKEND_PACKAGE_*.md
+/RELEASE_NOTES_*.md
+/PLATFORM_CORE_*_BUILD_VALIDATION.txt
+/PLATFORM_CORE_*_TERMINAL_COMMANDS.txt
+/PLATFORM_CORE_*_INSTALL_AND_TEST.md
+/PLATFORM_CORE_*_AUDIT.md
+/PLATFORM_CORE_*_REPAIR*.md
+/platform-core-v*.env.example
+
+# Operational/release helpers belong under scripts/ or deployment/, not repository root.
+/*.sh
+/*.py

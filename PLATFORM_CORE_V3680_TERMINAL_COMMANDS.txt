@@ -1,5 +1,0 @@
-Mac:
-./APPLY_AND_PUSH_PLATFORM_CORE_V3680.sh "$HOME/Downloads/sustainable-catalyst-platform-core"
-
-Contabo:
-/tmp/DEPLOY_PLATFORM_CORE_V3680_CONTABO.sh

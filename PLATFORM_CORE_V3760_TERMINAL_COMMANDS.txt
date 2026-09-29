@@ -1,2 +1,0 @@
-./APPLY_AND_PUSH_PLATFORM_CORE_V3760.sh "$HOME/Downloads/sustainable-catalyst-platform-core"
-/tmp/DEPLOY_PLATFORM_CORE_V3760_CONTABO.sh

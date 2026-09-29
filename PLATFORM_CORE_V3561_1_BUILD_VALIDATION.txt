@@ -1,7 +1,0 @@
-PASS - Platform Core v3.56.1.1 Scala CLI Runner & Deployment Path Repair
-SCALA_RUNNER=scala run -classpath <classes> --main-class Main
-JAVA_PROFILE=21
-KOTLIN_PROFILE=2.4.20
-SCALA_PROFILE=3.9.0
-JVM_PROVIDER_VERSION=1.0.0
-BACKUP_REPO_DEPLOYMENT=denied

@@ -1,6 +1,0 @@
-Platform Core v3.56.1.2
-PASS - live JVM language-profile descriptor route present
-PASS - JVM provider identity remains 1.0.0
-PASS - Java 21 / Kotlin 2.4.20 / Scala 3.9.0 descriptor contract
-PASS - explicit binding required
-PASS - autonomous profile selection false
