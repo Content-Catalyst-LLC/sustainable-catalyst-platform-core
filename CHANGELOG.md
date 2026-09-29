@@ -1,3 +1,10 @@
+
+## 3.73.0 — Link Prediction & Candidate Relationship Objects
+- Added governed graph link-prediction candidate pairs, tasks, runtime/model bindings, prediction probabilities, CandidateRelationship objects, review records, evaluation lineage, and promotion gates.
+- Enforced `GNN prediction != graph fact`; v3.73 cannot promote candidates to evidence edges.
+- Preserved supporting and contradicting evidence references and required separate evidence validation.
+- No database migration.
+
 ## 3.72.0 — Node & Edge Classification Objects
 - Added governed node/edge label spaces, classification tasks, model/runtime bindings, probabilities, evaluation lineage and non-evidentiary prediction/review objects.
 - Preserved `classification != graph fact/evidence` and reserved link prediction for v3.73.

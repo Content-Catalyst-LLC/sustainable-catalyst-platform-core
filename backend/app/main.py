@@ -168,6 +168,7 @@ from .routers import (
     graph_machine_learning,
     graph_embedding_runtime,
     graph_classification,
+    graph_link_prediction,
 )
 from app.routers.spark_runtime import router as spark_runtime_router
 
@@ -653,6 +654,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # Platform Core v3.72.0 — Node & Edge Classification Objects
     app.include_router(graph_classification.router)
     app.include_router(graph_classification.public_router)
+
+    # Platform Core v3.73.0 — Link Prediction & Candidate Relationship Objects
+    app.include_router(graph_link_prediction.router)
+    app.include_router(graph_link_prediction.public_router)
     return app
 
 
