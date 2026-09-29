@@ -1,5 +1,12 @@
 # v3.3.0 — Statistical Reasoning Object Model
 
+## 3.66.0 — Linguistic Annotation, Token, Morphology & Syntax Provenance
+
+- Adds governed annotation provenance, tokenization layers, tokens, morphemes, lemmas, morphological features, POS annotations, dependency syntax, and constituency syntax objects.
+- Requires exact linkage back to immutable v3.65 canonical text and preserves human/model/tool provenance plus review state.
+- Keeps NLP execution outside Core: Core validates annotation structure and lineage but does not tokenize, analyze morphology, assign POS tags, parse syntax, or promote model output to truth; the v3.70–v3.76 Graph Neural Network roadmap remains preserved.
+
+
 ## 3.65.0 — Multilingual Text & Language Object Model
 
 - Adds governed BCP 47 language identities, ISO 15924 script identities, canonical UTF-8 text sources, source provenance, hierarchical text units, and mixed-language span bindings.

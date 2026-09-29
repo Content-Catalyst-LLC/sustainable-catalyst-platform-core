@@ -161,6 +161,7 @@ from .routers import (
     workflows,
     ml_model_registry_packages,
     multilingual_text_language,
+    linguistic_annotation,
 )
 from app.routers.spark_runtime import router as spark_runtime_router
 
@@ -618,6 +619,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # Platform Core v3.65.0 — Multilingual Text & Language Object Model
     app.include_router(multilingual_text_language.router)
     app.include_router(multilingual_text_language.public_router)
+
+    # Platform Core v3.66.0 — Linguistic Annotation, Token, Morphology & Syntax Provenance
+    app.include_router(linguistic_annotation.router)
+    app.include_router(linguistic_annotation.public_router)
     return app
 
 
