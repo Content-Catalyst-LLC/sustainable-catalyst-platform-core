@@ -1,5 +1,12 @@
 # v3.3.0 — Statistical Reasoning Object Model
 
+## 3.65.0 — Multilingual Text & Language Object Model
+
+- Adds governed BCP 47 language identities, ISO 15924 script identities, canonical UTF-8 text sources, source provenance, hierarchical text units, and mixed-language span bindings.
+- Makes original-language text canonical and explicitly prevents translations from replacing source text.
+- Keeps machine-assisted language assignments advisory and prepares v3.66–v3.69 language/linguistics contracts.
+
+
 ## 3.64.0 — Neural Model Registry & Reproducible Model Packages
 
 - Adds governed model registry entries linked to model specification, training run, checkpoint, inference plan, evaluation, and representation lineage.

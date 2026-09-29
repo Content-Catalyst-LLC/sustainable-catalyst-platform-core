@@ -43,7 +43,7 @@ Tags: knowledge graph, entity registry, provenance, live data, sustainable catal
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.0
-Stable tag: 3.64.0
+Stable tag: 3.65.0
 License: MIT
 
 WordPress status, live-data gateway, and entity lookup client for Sustainable Catalyst Platform Core.
@@ -323,6 +323,10 @@ Scientific Study & Investigation Protocol Model status surface and Core 2.86.0 c
 Computation, Analysis & Execution Lineage status surface and Core 2.87.0 compatibility.
 
 == Changelog ==
+= 3.65.0 =
+* Adds canonical multilingual text, language, script, source-provenance, text-unit, and mixed-language span objects.
+* Establishes original-language-first semantics while reserving linguistic annotation for v3.66 and translation/alignment objects for v3.67.
+
 = 3.64.0 =
 * Adds governed neural model registry entries and portable reproducible model packages.
 * Adds immutable artifact hashes, runtime/environment requirements, intended use, limitations, and deterministic reproducibility manifests.

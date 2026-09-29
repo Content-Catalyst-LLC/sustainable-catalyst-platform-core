@@ -160,6 +160,7 @@ from .routers import (
     workflow_public,
     workflows,
     ml_model_registry_packages,
+    multilingual_text_language,
 )
 from app.routers.spark_runtime import router as spark_runtime_router
 
@@ -613,6 +614,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # Platform Core v3.64.0 — Neural Model Registry & Reproducible Model Packages
     app.include_router(ml_model_registry_packages.router)
     app.include_router(ml_model_registry_packages.public_router)
+
+    # Platform Core v3.65.0 — Multilingual Text & Language Object Model
+    app.include_router(multilingual_text_language.router)
+    app.include_router(multilingual_text_language.public_router)
     return app
 
 
