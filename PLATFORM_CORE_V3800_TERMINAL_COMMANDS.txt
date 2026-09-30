@@ -1,0 +1,6 @@
+cd ~/Downloads
+rm -rf sc-core-v3.80.0-entity-reconciliation
+unzip -q platform-core-v3.80.0-cross-source-entity-reconciliation-identity-provenance-release-bundle.zip -d sc-core-v3.80.0-entity-reconciliation
+cd sc-core-v3.80.0-entity-reconciliation
+chmod +x REPAIR_PLATFORM_CORE_V3800.py APPLY_AND_PUSH_PLATFORM_CORE_V3800.sh DEPLOY_PLATFORM_CORE_V3800_CONTABO.sh PACKAGE_PLATFORM_CORE_V3800.sh
+./APPLY_AND_PUSH_PLATFORM_CORE_V3800.sh "$HOME/Downloads/sustainable-catalyst-platform-core"

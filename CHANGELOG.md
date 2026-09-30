@@ -1,3 +1,10 @@
+## 3.80.0 — Cross-Source Entity Reconciliation & Identity Provenance
+
+- Adds governed cross-source identity observations, source descriptors, source-independence groups, field-level comparisons, provenance chains, reconciliation conflicts, source-preserving clusters, independent reviews, and immutable identity-provenance snapshots.
+- Extends v3.77-v3.79 without treating source agreement, source count, or linkage probability as identity fact/evidence.
+- Reconciliation decisions are reviewable handoffs only; Core does not auto-prioritize sources, merge canonical entities, or mutate the identity graph.
+- No database migration.
+
 ## 3.79.0 — Probabilistic Record Linkage & Entity Matching Objects
 
 - Adds governed blocking, feature-comparison, probabilistic matching, calibration, threshold, review, and evaluation objects.
