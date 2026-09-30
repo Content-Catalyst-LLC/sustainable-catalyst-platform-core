@@ -179,6 +179,7 @@ from .routers import (
     public_record_documentary_source,
     relationship_discovery_hypotheses,
     network_structure_community_motif,
+    explainable_connection_paths_evidence_chains,
 )
 from app.routers.spark_runtime import router as spark_runtime_router
 
@@ -704,6 +705,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(relationship_discovery_hypotheses.public_router)
     app.include_router(network_structure_community_motif.router)
     app.include_router(network_structure_community_motif.public_router)
+
+    # Platform Core v3.84.0 — Explainable Connection Paths & Evidence Chains
+    app.include_router(explainable_connection_paths_evidence_chains.router)
+    app.include_router(explainable_connection_paths_evidence_chains.public_router)
     return app
 
 

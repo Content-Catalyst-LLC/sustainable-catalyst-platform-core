@@ -1,3 +1,14 @@
+# Changelog
+
+## 3.84.0 — Explainable Connection Paths & Evidence Chains
+
+- Added provenance-preserving connection path steps over v3.83 network edge projections.
+- Added explainable path, evidence-chain, contradiction, alternative-path, bottleneck, and immutable snapshot objects.
+- Preserved documentary anchors, relationship-evidence positions, source independence groups, and upstream reconciliation conflicts.
+- Enforced that path existence, shortest paths, path length, multiple routes, and evidence-chain length do not establish relationship truth, causality, independence, or evidence strength.
+- Added public contract `/public/v1/connection-paths/contract`.
+- No database migration.
+
 ## 3.83.0 — Network Structure, Community & Motif Intelligence
 
 - Adds governed analytical network snapshots with epistemic-state-preserving edge projections.
