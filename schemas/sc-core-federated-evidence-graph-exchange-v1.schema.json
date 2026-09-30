@@ -1,0 +1,924 @@
+{
+  "$defs": {
+    "ConflictDisposition": {
+      "enum": [
+        "unresolved",
+        "locally-qualified",
+        "superseded-remote-version"
+      ],
+      "title": "ConflictDisposition",
+      "type": "string"
+    },
+    "EvidenceGraphExchangePolicy": {
+      "properties": {
+        "allow_reference_first_exchange": {
+          "const": true,
+          "default": true,
+          "title": "Allow Reference First Exchange",
+          "type": "boolean"
+        },
+        "exchange_policy_id": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Exchange Policy Id",
+          "type": "string"
+        },
+        "federation_consensus_can_establish_truth": {
+          "const": false,
+          "default": false,
+          "title": "Federation Consensus Can Establish Truth",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "node_trust_can_establish_content_truth": {
+          "const": false,
+          "default": false,
+          "title": "Node Trust Can Establish Content Truth",
+          "type": "boolean"
+        },
+        "preserve_contradictions": {
+          "const": true,
+          "default": true,
+          "title": "Preserve Contradictions",
+          "type": "boolean"
+        },
+        "preserve_epistemic_state": {
+          "const": true,
+          "default": true,
+          "title": "Preserve Epistemic State",
+          "type": "boolean"
+        },
+        "preserve_source_provenance": {
+          "const": true,
+          "default": true,
+          "title": "Preserve Source Provenance",
+          "type": "boolean"
+        },
+        "remote_acceptance_can_create_local_evidence": {
+          "const": false,
+          "default": false,
+          "title": "Remote Acceptance Can Create Local Evidence",
+          "type": "boolean"
+        },
+        "remote_exchange_can_mutate_local_graph": {
+          "const": false,
+          "default": false,
+          "title": "Remote Exchange Can Mutate Local Graph",
+          "type": "boolean"
+        },
+        "require_local_validation_before_promotion": {
+          "const": true,
+          "default": true,
+          "title": "Require Local Validation Before Promotion",
+          "type": "boolean"
+        },
+        "require_manifest_hash": {
+          "const": true,
+          "default": true,
+          "title": "Require Manifest Hash",
+          "type": "boolean"
+        },
+        "require_node_identity": {
+          "const": true,
+          "default": true,
+          "title": "Require Node Identity",
+          "type": "boolean"
+        },
+        "require_object_fingerprints": {
+          "const": true,
+          "default": true,
+          "title": "Require Object Fingerprints",
+          "type": "boolean"
+        },
+        "require_upstream_contract_identity": {
+          "const": true,
+          "default": true,
+          "title": "Require Upstream Contract Identity",
+          "type": "boolean"
+        },
+        "signature_validity_can_establish_content_truth": {
+          "const": false,
+          "default": false,
+          "title": "Signature Validity Can Establish Content Truth",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "exchange_policy_id"
+      ],
+      "title": "EvidenceGraphExchangePolicy",
+      "type": "object"
+    },
+    "ExchangeDirection": {
+      "enum": [
+        "export",
+        "import"
+      ],
+      "title": "ExchangeDirection",
+      "type": "string"
+    },
+    "ExchangeDisposition": {
+      "enum": [
+        "reference-only",
+        "accepted-for-local-validation",
+        "quarantined",
+        "rejected"
+      ],
+      "title": "ExchangeDisposition",
+      "type": "string"
+    },
+    "ExchangeIntegrityAttestation": {
+      "properties": {
+        "exchange_integrity_attestation_id": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Exchange Integrity Attestation Id",
+          "type": "string"
+        },
+        "exchange_manifest_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Exchange Manifest Ref",
+          "type": "string"
+        },
+        "manifest_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Manifest Sha256",
+          "type": "string"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "signature_algorithm": {
+          "maxLength": 100,
+          "minLength": 2,
+          "title": "Signature Algorithm",
+          "type": "string"
+        },
+        "signature_does_not_establish_source_claim_accuracy": {
+          "const": true,
+          "default": true,
+          "title": "Signature Does Not Establish Source Claim Accuracy",
+          "type": "boolean"
+        },
+        "signature_proves_bytes_not_truth": {
+          "const": true,
+          "default": true,
+          "title": "Signature Proves Bytes Not Truth",
+          "type": "boolean"
+        },
+        "signature_value_b64": {
+          "maxLength": 12000,
+          "minLength": 8,
+          "title": "Signature Value B64",
+          "type": "string"
+        },
+        "signature_verified": {
+          "title": "Signature Verified",
+          "type": "boolean"
+        },
+        "signing_key_fingerprint_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Signing Key Fingerprint Sha256",
+          "type": "string"
+        },
+        "signing_node_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Signing Node Ref",
+          "type": "string"
+        },
+        "verified_at": {
+          "maxLength": 80,
+          "minLength": 10,
+          "title": "Verified At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "exchange_integrity_attestation_id",
+        "exchange_manifest_ref",
+        "signing_node_ref",
+        "signing_key_fingerprint_sha256",
+        "manifest_sha256",
+        "signature_algorithm",
+        "signature_value_b64",
+        "signature_verified",
+        "verified_at"
+      ],
+      "title": "ExchangeIntegrityAttestation",
+      "type": "object"
+    },
+    "ExchangeManifest": {
+      "properties": {
+        "created_at": {
+          "maxLength": 80,
+          "minLength": 10,
+          "title": "Created At",
+          "type": "string"
+        },
+        "destination_node_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Destination Node Ref",
+          "type": "string"
+        },
+        "direction": {
+          "$ref": "#/$defs/ExchangeDirection"
+        },
+        "exchange_manifest_id": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Exchange Manifest Id",
+          "type": "string"
+        },
+        "exchange_policy_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Exchange Policy Ref",
+          "type": "string"
+        },
+        "manifest_is_not_evidence": {
+          "const": true,
+          "default": true,
+          "title": "Manifest Is Not Evidence",
+          "type": "boolean"
+        },
+        "manifest_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Manifest Sha256",
+          "type": "string"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "object_descriptor_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Object Descriptor Refs",
+          "type": "array"
+        },
+        "package_reference_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Package Reference Refs",
+          "type": "array"
+        },
+        "reference_first": {
+          "const": true,
+          "default": true,
+          "title": "Reference First",
+          "type": "boolean"
+        },
+        "schema_version": {
+          "const": "1.0",
+          "default": "1.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "source_node_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Source Node Ref",
+          "type": "string"
+        }
+      },
+      "required": [
+        "exchange_manifest_id",
+        "exchange_policy_ref",
+        "source_node_ref",
+        "destination_node_ref",
+        "direction",
+        "object_descriptor_refs",
+        "created_at",
+        "manifest_sha256"
+      ],
+      "title": "ExchangeManifest",
+      "type": "object"
+    },
+    "FederatedConflictRecord": {
+      "properties": {
+        "conflict_preserved": {
+          "const": true,
+          "default": true,
+          "title": "Conflict Preserved",
+          "type": "boolean"
+        },
+        "conflict_type": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Conflict Type",
+          "type": "string"
+        },
+        "description": {
+          "maxLength": 8000,
+          "minLength": 3,
+          "title": "Description",
+          "type": "string"
+        },
+        "disposition": {
+          "$ref": "#/$defs/ConflictDisposition"
+        },
+        "federated_conflict_record_id": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Federated Conflict Record Id",
+          "type": "string"
+        },
+        "local_fingerprint_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Local Fingerprint Sha256",
+          "type": "string"
+        },
+        "local_object_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Local Object Ref",
+          "type": "string"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "remote_fingerprint_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Remote Fingerprint Sha256",
+          "type": "string"
+        },
+        "remote_object_descriptor_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Remote Object Descriptor Ref",
+          "type": "string"
+        },
+        "remote_version_does_not_silently_overwrite_local": {
+          "const": true,
+          "default": true,
+          "title": "Remote Version Does Not Silently Overwrite Local",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "federated_conflict_record_id",
+        "local_object_ref",
+        "remote_object_descriptor_ref",
+        "conflict_type",
+        "description",
+        "local_fingerprint_sha256",
+        "remote_fingerprint_sha256",
+        "disposition"
+      ],
+      "title": "FederatedConflictRecord",
+      "type": "object"
+    },
+    "FederatedObjectDescriptor": {
+      "properties": {
+        "as_of": {
+          "maxLength": 80,
+          "minLength": 10,
+          "title": "As Of",
+          "type": "string"
+        },
+        "descriptor_does_not_create_local_graph_edge": {
+          "const": true,
+          "default": true,
+          "title": "Descriptor Does Not Create Local Graph Edge",
+          "type": "boolean"
+        },
+        "descriptor_does_not_establish_local_truth": {
+          "const": true,
+          "default": true,
+          "title": "Descriptor Does Not Establish Local Truth",
+          "type": "boolean"
+        },
+        "epistemic_state": {
+          "maxLength": 200,
+          "minLength": 2,
+          "title": "Epistemic State",
+          "type": "string"
+        },
+        "federated_object_descriptor_id": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Federated Object Descriptor Id",
+          "type": "string"
+        },
+        "local_object_ref": {
+          "anyOf": [
+            {
+              "maxLength": 500,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Local Object Ref"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "object_fingerprint_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Object Fingerprint Sha256",
+          "type": "string"
+        },
+        "object_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Object Ref",
+          "type": "string"
+        },
+        "object_type": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Object Type",
+          "type": "string"
+        },
+        "provenance_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Provenance Refs",
+          "type": "array"
+        },
+        "remote_state_preserved": {
+          "const": true,
+          "default": true,
+          "title": "Remote State Preserved",
+          "type": "boolean"
+        },
+        "source_node_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Source Node Ref",
+          "type": "string"
+        },
+        "upstream_contract": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Upstream Contract",
+          "type": "string"
+        }
+      },
+      "required": [
+        "federated_object_descriptor_id",
+        "source_node_ref",
+        "upstream_contract",
+        "object_type",
+        "object_ref",
+        "object_fingerprint_sha256",
+        "epistemic_state",
+        "provenance_refs",
+        "as_of"
+      ],
+      "title": "FederatedObjectDescriptor",
+      "type": "object"
+    },
+    "FederatedPackageReference": {
+      "properties": {
+        "as_of": {
+          "maxLength": 80,
+          "minLength": 10,
+          "title": "As Of",
+          "type": "string"
+        },
+        "contract_version": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Contract Version",
+          "type": "string"
+        },
+        "federated_package_reference_id": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Federated Package Reference Id",
+          "type": "string"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "package_manifest_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Package Manifest Ref",
+          "type": "string"
+        },
+        "package_manifest_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Package Manifest Sha256",
+          "type": "string"
+        },
+        "package_reference_is_not_local_import": {
+          "const": true,
+          "default": true,
+          "title": "Package Reference Is Not Local Import",
+          "type": "boolean"
+        },
+        "package_reference_is_not_truth_verdict": {
+          "const": true,
+          "default": true,
+          "title": "Package Reference Is Not Truth Verdict",
+          "type": "boolean"
+        },
+        "package_root_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Package Root Sha256",
+          "type": "string"
+        },
+        "source_node_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Source Node Ref",
+          "type": "string"
+        }
+      },
+      "required": [
+        "federated_package_reference_id",
+        "source_node_ref",
+        "package_manifest_ref",
+        "package_manifest_sha256",
+        "package_root_sha256",
+        "contract_version",
+        "as_of"
+      ],
+      "title": "FederatedPackageReference",
+      "type": "object"
+    },
+    "FederationExchangeSnapshot": {
+      "properties": {
+        "as_of": {
+          "maxLength": 80,
+          "minLength": 10,
+          "title": "As Of",
+          "type": "string"
+        },
+        "assessment_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Assessment Ref",
+          "type": "string"
+        },
+        "conflict_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Conflict Refs",
+          "type": "array"
+        },
+        "exchange_manifest_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Exchange Manifest Ref",
+          "type": "string"
+        },
+        "federation_exchange_snapshot_id": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Federation Exchange Snapshot Id",
+          "type": "string"
+        },
+        "immutable": {
+          "const": true,
+          "default": true,
+          "title": "Immutable",
+          "type": "boolean"
+        },
+        "later_exchange_may_supersede_snapshot": {
+          "const": true,
+          "default": true,
+          "title": "Later Exchange May Supersede Snapshot",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "node_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 2,
+          "title": "Node Refs",
+          "type": "array"
+        },
+        "object_descriptor_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Object Descriptor Refs",
+          "type": "array"
+        },
+        "package_reference_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Package Reference Refs",
+          "type": "array"
+        },
+        "remote_objects_remain_remote_references": {
+          "const": true,
+          "default": true,
+          "title": "Remote Objects Remain Remote References",
+          "type": "boolean"
+        },
+        "snapshot_is_not_truth_verdict": {
+          "const": true,
+          "default": true,
+          "title": "Snapshot Is Not Truth Verdict",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "federation_exchange_snapshot_id",
+        "exchange_manifest_ref",
+        "assessment_ref",
+        "node_refs",
+        "object_descriptor_refs",
+        "as_of"
+      ],
+      "title": "FederationExchangeSnapshot",
+      "type": "object"
+    },
+    "FederationNodeIdentity": {
+      "properties": {
+        "federation_node_id": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Federation Node Id",
+          "type": "string"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "node_uri": {
+          "maxLength": 2000,
+          "minLength": 3,
+          "title": "Node Uri",
+          "type": "string"
+        },
+        "operator_name": {
+          "maxLength": 1000,
+          "minLength": 2,
+          "title": "Operator Name",
+          "type": "string"
+        },
+        "public_key_fingerprint_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Public Key Fingerprint Sha256",
+          "type": "string"
+        },
+        "registered_at": {
+          "maxLength": 80,
+          "minLength": 10,
+          "title": "Registered At",
+          "type": "string"
+        },
+        "trust_state": {
+          "$ref": "#/$defs/NodeTrustState"
+        }
+      },
+      "required": [
+        "federation_node_id",
+        "node_uri",
+        "operator_name",
+        "public_key_fingerprint_sha256",
+        "trust_state",
+        "registered_at"
+      ],
+      "title": "FederationNodeIdentity",
+      "type": "object"
+    },
+    "InboundExchangeAssessment": {
+      "properties": {
+        "acceptance_does_not_promote_remote_assertions": {
+          "const": true,
+          "default": true,
+          "title": "Acceptance Does Not Promote Remote Assertions",
+          "type": "boolean"
+        },
+        "assessed_at": {
+          "maxLength": 80,
+          "minLength": 10,
+          "title": "Assessed At",
+          "type": "string"
+        },
+        "assessed_object_descriptor_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Assessed Object Descriptor Refs",
+          "type": "array"
+        },
+        "compatibility_does_not_establish_semantic_equivalence": {
+          "const": true,
+          "default": true,
+          "title": "Compatibility Does Not Establish Semantic Equivalence",
+          "type": "boolean"
+        },
+        "compatibility_note": {
+          "maxLength": 8000,
+          "minLength": 3,
+          "title": "Compatibility Note",
+          "type": "string"
+        },
+        "conflict_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Conflict Refs",
+          "type": "array"
+        },
+        "disposition": {
+          "$ref": "#/$defs/ExchangeDisposition"
+        },
+        "exchange_manifest_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Exchange Manifest Ref",
+          "type": "string"
+        },
+        "inbound_exchange_assessment_id": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Inbound Exchange Assessment Id",
+          "type": "string"
+        },
+        "integrity_attestation_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Integrity Attestation Ref",
+          "type": "string"
+        },
+        "local_validation_required": {
+          "const": true,
+          "default": true,
+          "title": "Local Validation Required",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        }
+      },
+      "required": [
+        "inbound_exchange_assessment_id",
+        "exchange_manifest_ref",
+        "integrity_attestation_ref",
+        "assessed_object_descriptor_refs",
+        "disposition",
+        "assessed_at",
+        "compatibility_note"
+      ],
+      "title": "InboundExchangeAssessment",
+      "type": "object"
+    },
+    "NodeTrustState": {
+      "enum": [
+        "registered",
+        "authenticated",
+        "suspended",
+        "revoked"
+      ],
+      "title": "NodeTrustState",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "assessments": {
+      "items": {
+        "$ref": "#/$defs/InboundExchangeAssessment"
+      },
+      "minItems": 1,
+      "title": "Assessments",
+      "type": "array"
+    },
+    "conflicts": {
+      "items": {
+        "$ref": "#/$defs/FederatedConflictRecord"
+      },
+      "title": "Conflicts",
+      "type": "array"
+    },
+    "contract": {
+      "const": "sc.core.federated-evidence-graph-exchange.v1",
+      "default": "sc.core.federated-evidence-graph-exchange.v1",
+      "title": "Contract",
+      "type": "string"
+    },
+    "evidence_graph_mutation_performed": {
+      "const": false,
+      "default": false,
+      "title": "Evidence Graph Mutation Performed",
+      "type": "boolean"
+    },
+    "identity_graph_mutation_performed": {
+      "const": false,
+      "default": false,
+      "title": "Identity Graph Mutation Performed",
+      "type": "boolean"
+    },
+    "integrity_attestations": {
+      "items": {
+        "$ref": "#/$defs/ExchangeIntegrityAttestation"
+      },
+      "minItems": 1,
+      "title": "Integrity Attestations",
+      "type": "array"
+    },
+    "manifests": {
+      "items": {
+        "$ref": "#/$defs/ExchangeManifest"
+      },
+      "minItems": 1,
+      "title": "Manifests",
+      "type": "array"
+    },
+    "nodes": {
+      "items": {
+        "$ref": "#/$defs/FederationNodeIdentity"
+      },
+      "minItems": 2,
+      "title": "Nodes",
+      "type": "array"
+    },
+    "object_descriptors": {
+      "items": {
+        "$ref": "#/$defs/FederatedObjectDescriptor"
+      },
+      "minItems": 1,
+      "title": "Object Descriptors",
+      "type": "array"
+    },
+    "package_references": {
+      "items": {
+        "$ref": "#/$defs/FederatedPackageReference"
+      },
+      "title": "Package References",
+      "type": "array"
+    },
+    "policies": {
+      "items": {
+        "$ref": "#/$defs/EvidenceGraphExchangePolicy"
+      },
+      "minItems": 1,
+      "title": "Policies",
+      "type": "array"
+    },
+    "relationship_graph_mutation_performed": {
+      "const": false,
+      "default": false,
+      "title": "Relationship Graph Mutation Performed",
+      "type": "boolean"
+    },
+    "release": {
+      "const": "3.89.0",
+      "default": "3.89.0",
+      "title": "Release",
+      "type": "string"
+    },
+    "snapshots": {
+      "items": {
+        "$ref": "#/$defs/FederationExchangeSnapshot"
+      },
+      "minItems": 1,
+      "title": "Snapshots",
+      "type": "array"
+    }
+  },
+  "required": [
+    "nodes",
+    "policies",
+    "object_descriptors",
+    "manifests",
+    "integrity_attestations",
+    "assessments",
+    "snapshots"
+  ],
+  "title": "FederatedEvidenceGraphExchangeBundle",
+  "type": "object"
+}

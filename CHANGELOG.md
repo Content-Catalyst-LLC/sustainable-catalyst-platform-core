@@ -1,3 +1,8 @@
+# 3.89.0
+- Added Federated Evidence Graph Exchange Contract with reference-first remote object descriptors, content-addressed exchange manifests, node identity, integrity attestations, conflict preservation, local validation gates, and immutable exchange snapshots.
+- Preserved remote epistemic state and source provenance without treating node trust, signatures, federation agreement, or schema compatibility as truth.
+- No identity, relationship, or evidence graph mutation.
+
 # Platform Core v3.88.0 — Reproducible Graph Investigation Package
 
 - Adds governed, content-addressed graph investigation package policies, questions, object bindings, artifacts, environment manifests, reproduction steps, manifests, integrity records, verification records, and immutable package snapshots.
