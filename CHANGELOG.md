@@ -1,3 +1,11 @@
+## 3.83.0 — Network Structure, Community & Motif Intelligence
+
+- Adds governed analytical network snapshots with epistemic-state-preserving edge projections.
+- Adds network metric, community detection/assignment/profile, motif, bridge/broker, and structural-equivalence objects.
+- Enforces that centrality is not importance, community membership is not affiliation, motifs are not coordination, bridge scores are not influence, and structural equivalence is not identity.
+- Preserves the v3.76 evidence boundary and performs no relationship, evidence, or identity graph mutation.
+- No database migration.
+
 ## 3.82.0 — Relationship Discovery & Connection Hypothesis Objects
 
 - Adds governed source-observed relationships, analytical discovery signals, connection candidates, explicit relationship hypotheses, evidence positions, independent reviews, promotion gates, and immutable relationship-discovery snapshots.
