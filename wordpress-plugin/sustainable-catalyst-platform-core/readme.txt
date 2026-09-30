@@ -1,3 +1,6 @@
+== 3.79.0 ==
+* Adds Probabilistic Record Linkage & Entity Matching Objects diagnostics and Core 3.79.0 compatibility.
+
 == 3.78.0 ==
 * Adds Temporal Identity, Alias & Name Variant Intelligence diagnostics and Core 3.78.0 compatibility.
 

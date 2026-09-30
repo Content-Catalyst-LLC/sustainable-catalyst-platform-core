@@ -1,3 +1,11 @@
+## 3.79.0 — Probabilistic Record Linkage & Entity Matching Objects
+
+- Adds governed blocking, feature-comparison, probabilistic matching, calibration, threshold, review, and evaluation objects.
+- Extends v3.77 entity resolution and v3.78 temporal identity intelligence without bypassing governed identity review.
+- Enforces match probability ≠ identity fact, linkage output ≠ identity evidence, and no automatic merge/split or graph mutation.
+- Adds public/private record-linkage contract and reference endpoints.
+- Database migration: none.
+
 ## 3.78.0 — Temporal Identity, Alias & Name Variant Intelligence
 - Adds time-bounded identity names, identifiers, roles/titles, source assertions, supersession lineage, temporal conflicts, and as-of snapshots.
 - Preserves historical disagreement and prohibits automatic identity merging from temporal overlap.
