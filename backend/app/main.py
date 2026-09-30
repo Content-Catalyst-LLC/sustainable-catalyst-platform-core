@@ -173,6 +173,7 @@ from .routers import (
     knowledge_graph_representation_learning,
     evidence_graph_neural_validation,
     entity_resolution_identity_graph,
+    temporal_identity_intelligence,
 )
 from app.routers.spark_runtime import router as spark_runtime_router
 
@@ -678,6 +679,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # Platform Core v3.77.0 — Entity Resolution & Identity Graph Foundation
     app.include_router(entity_resolution_identity_graph.router)
     app.include_router(entity_resolution_identity_graph.public_router)
+
+    # Platform Core v3.78.0 — Temporal Identity, Alias & Name Variant Intelligence
+    app.include_router(temporal_identity_intelligence.router)
+    app.include_router(temporal_identity_intelligence.public_router)
     return app
 
 

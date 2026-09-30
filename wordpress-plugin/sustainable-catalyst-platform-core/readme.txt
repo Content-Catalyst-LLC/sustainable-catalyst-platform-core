@@ -1,5 +1,6 @@
-== 3.77.0 ==
-* Adds Entity Resolution & Identity Graph Foundation diagnostics and Core 3.77.0 compatibility.
+== 3.78.0 ==
+* Adds Temporal Identity, Alias & Name Variant Intelligence diagnostics and Core 3.78.0 compatibility.
+
 
 == 3.3.0 ==
 * Adds Statistical Reasoning Object Model status and Analytics R 2.2 diagnostics visibility.

@@ -1,3 +1,8 @@
+## 3.78.0 — Temporal Identity, Alias & Name Variant Intelligence
+- Adds time-bounded identity names, identifiers, roles/titles, source assertions, supersession lineage, temporal conflicts, and as-of snapshots.
+- Preserves historical disagreement and prohibits automatic identity merging from temporal overlap.
+- No database migration.
+
 ## 3.77.0 — Entity Resolution & Identity Graph Foundation
 - Begins the Entity, Evidence & Connection Intelligence block with governed canonical entity records, aliases, identifier assertions, source-specific identity assertions, identity evidence, candidate matching and independent review.
 - Adds governed merge/split authorization, immutable identity-graph snapshots and append-only resolution audit.
