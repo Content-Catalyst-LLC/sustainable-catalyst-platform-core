@@ -1,0 +1,13 @@
+# Mac apply
+cd ~/Downloads/sc-core-v3.86.0-contradiction-resolution
+./APPLY_AND_PUSH_PLATFORM_CORE_V3860.sh "$HOME/Downloads/sustainable-catalyst-platform-core"
+
+# Copy deployer
+scp -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes DEPLOY_PLATFORM_CORE_V3860_CONTABO.sh catalystadmin@94.72.113.77:/tmp/
+
+# Connect
+ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes catalystadmin@94.72.113.77
+
+# VPS deploy
+chmod +x /tmp/DEPLOY_PLATFORM_CORE_V3860_CONTABO.sh
+/tmp/DEPLOY_PLATFORM_CORE_V3860_CONTABO.sh

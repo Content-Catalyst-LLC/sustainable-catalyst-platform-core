@@ -1,3 +1,11 @@
+# Platform Core v3.86.0 — Contradictory Identity & Relationship Resolution
+
+- Adds governed contradictory identity and relationship assertion objects, contradiction sets, explicit resolution criteria, independent reviews, resolution decisions, supersession lineage, downstream handoffs, and immutable resolution snapshots.
+- Preserves source disagreement, temporal qualification, and disfavored assertion lineage.
+- Prohibits automatic truth selection from majority agreement, source count, recency, model confidence, or source precedence.
+- Performs no identity, relationship, or evidence graph mutation.
+- Database migration: none.
+
 ## 3.85.0 — Multi-Hop Research & Investigation Graph Reasoning
 
 - Adds governed multi-hop reasoning policies, queries, hops, branches, inference steps, contradiction propagation, source-independence assessments, stopping decisions, reproducible traces, and immutable snapshots.
