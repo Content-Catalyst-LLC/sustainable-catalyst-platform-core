@@ -1,0 +1,12 @@
+Mac apply:
+  ./APPLY_AND_PUSH_PLATFORM_CORE_V3810.sh "$HOME/Downloads/sustainable-catalyst-platform-core"
+
+Copy deployer:
+  scp -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes DEPLOY_PLATFORM_CORE_V3810_CONTABO.sh catalystadmin@94.72.113.77:/tmp/
+
+Connect:
+  ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes catalystadmin@94.72.113.77
+
+Contabo deploy:
+  chmod +x /tmp/DEPLOY_PLATFORM_CORE_V3810_CONTABO.sh
+  /tmp/DEPLOY_PLATFORM_CORE_V3810_CONTABO.sh

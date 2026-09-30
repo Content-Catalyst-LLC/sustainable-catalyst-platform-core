@@ -1,3 +1,10 @@
+## 3.81.0 — Public Record & Documentary Source Object Model
+
+- Adds governed documentary/public-record source descriptors, acquisition provenance, content hashes, original/derivative version lineage, append-only custody events, redaction provenance, segment anchors, authenticity assessments, disclosure lineage, evidence interpretations, and immutable documentary snapshots.
+- Separates document existence, authenticity, content, derived representations, and evidentiary interpretation.
+- Enforces document authenticity != content truth, redaction != wrongdoing, missing/withheld material != proof, and no inference of hidden content.
+- No database migration.
+
 ## 3.80.0 — Cross-Source Entity Reconciliation & Identity Provenance
 
 - Adds governed cross-source identity observations, source descriptors, source-independence groups, field-level comparisons, provenance chains, reconciliation conflicts, source-preserving clusters, independent reviews, and immutable identity-provenance snapshots.

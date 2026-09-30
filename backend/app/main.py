@@ -176,6 +176,7 @@ from .routers import (
     temporal_identity_intelligence,
     probabilistic_record_linkage,
     cross_source_entity_reconciliation,
+    public_record_documentary_source,
 )
 from app.routers.spark_runtime import router as spark_runtime_router
 
@@ -691,6 +692,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # Platform Core v3.80.0 — Cross-Source Entity Reconciliation & Identity Provenance
     app.include_router(cross_source_entity_reconciliation.router)
     app.include_router(cross_source_entity_reconciliation.public_router)
+
+    # Platform Core v3.81.0 — Public Record & Documentary Source Object Model
+    app.include_router(public_record_documentary_source.router)
+    app.include_router(public_record_documentary_source.public_router)
     return app
 
 
