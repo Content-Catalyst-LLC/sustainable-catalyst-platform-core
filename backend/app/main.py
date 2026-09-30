@@ -177,6 +177,7 @@ from .routers import (
     probabilistic_record_linkage,
     cross_source_entity_reconciliation,
     public_record_documentary_source,
+    relationship_discovery_hypotheses,
 )
 from app.routers.spark_runtime import router as spark_runtime_router
 
@@ -696,6 +697,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # Platform Core v3.81.0 — Public Record & Documentary Source Object Model
     app.include_router(public_record_documentary_source.router)
     app.include_router(public_record_documentary_source.public_router)
+
+    # Platform Core v3.82.0 — Relationship Discovery & Connection Hypothesis Objects
+    app.include_router(relationship_discovery_hypotheses.router)
+    app.include_router(relationship_discovery_hypotheses.public_router)
     return app
 
 

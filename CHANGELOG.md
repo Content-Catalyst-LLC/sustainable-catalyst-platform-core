@@ -1,3 +1,10 @@
+## 3.82.0 — Relationship Discovery & Connection Hypothesis Objects
+
+- Adds governed source-observed relationships, analytical discovery signals, connection candidates, explicit relationship hypotheses, evidence positions, independent reviews, promotion gates, and immutable relationship-discovery snapshots.
+- Separates source observations, analytical signals, candidates, hypotheses, and validated graph relationships so co-occurrence, shared attributes, graph proximity, embedding similarity, source count, and model scores cannot silently become graph facts.
+- Requires separate evidence validation before any evidence-edge creation and preserves documentary, identity, and source provenance across the discovery workflow.
+- No database migration.
+
 ## 3.81.0 — Public Record & Documentary Source Object Model
 
 - Adds governed documentary/public-record source descriptors, acquisition provenance, content hashes, original/derivative version lineage, append-only custody events, redaction provenance, segment anchors, authenticity assessments, disclosure lineage, evidence interpretations, and immutable documentary snapshots.

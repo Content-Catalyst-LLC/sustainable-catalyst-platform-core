@@ -1,0 +1,17 @@
+# MAC
+cd ~/Downloads
+rm -rf sc-core-v3.82.0-relationship-discovery
+unzip -q platform-core-v3.82.0-relationship-discovery-connection-hypothesis-objects-release-bundle.zip -d sc-core-v3.82.0-relationship-discovery
+cd sc-core-v3.82.0-relationship-discovery
+chmod +x REPAIR_PLATFORM_CORE_V3820.py APPLY_AND_PUSH_PLATFORM_CORE_V3820.sh DEPLOY_PLATFORM_CORE_V3820_CONTABO.sh PACKAGE_PLATFORM_CORE_V3820.sh
+./APPLY_AND_PUSH_PLATFORM_CORE_V3820.sh "$HOME/Downloads/sustainable-catalyst-platform-core"
+
+# COPY DEPLOYER
+scp -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes DEPLOY_PLATFORM_CORE_V3820_CONTABO.sh catalystadmin@94.72.113.77:/tmp/
+
+# SSH
+ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes catalystadmin@94.72.113.77
+
+# CONTABO
+chmod +x /tmp/DEPLOY_PLATFORM_CORE_V3820_CONTABO.sh
+/tmp/DEPLOY_PLATFORM_CORE_V3820_CONTABO.sh
