@@ -180,6 +180,7 @@ from .routers import (
     relationship_discovery_hypotheses,
     network_structure_community_motif,
     explainable_connection_paths_evidence_chains,
+    multi_hop_research_investigation_graph_reasoning,
 )
 from app.routers.spark_runtime import router as spark_runtime_router
 
@@ -709,6 +710,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # Platform Core v3.84.0 — Explainable Connection Paths & Evidence Chains
     app.include_router(explainable_connection_paths_evidence_chains.router)
     app.include_router(explainable_connection_paths_evidence_chains.public_router)
+
+    # Platform Core v3.85.0 — Multi-Hop Research & Investigation Graph Reasoning
+    app.include_router(multi_hop_research_investigation_graph_reasoning.router)
+    app.include_router(multi_hop_research_investigation_graph_reasoning.public_router)
     return app
 
 

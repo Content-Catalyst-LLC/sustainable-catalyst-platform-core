@@ -1,3 +1,11 @@
+## 3.85.0 — Multi-Hop Research & Investigation Graph Reasoning
+
+- Adds governed multi-hop reasoning policies, queries, hops, branches, inference steps, contradiction propagation, source-independence assessments, stopping decisions, reproducible traces, and immutable snapshots.
+- Preserves upstream epistemic state, contradictions, provenance, and source-independence groups through each analytical hop.
+- Enforces that reachability, hop count, branch scores, analytical confidence, and completed reasoning chains do not establish relationship truth, causality, evidence strength, or wrongdoing.
+- Adds `/v1/multi-hop-reasoning/*` and `/public/v1/multi-hop-reasoning/contract`.
+- Database migration: none.
+
 # Changelog
 
 ## 3.84.0 — Explainable Connection Paths & Evidence Chains
