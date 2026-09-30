@@ -1,3 +1,11 @@
+# Platform Core v3.87.0 — Entity-Centric Timeline & Event Association
+
+- Adds governed event records, entity participation, source-bound event assertions, temporal qualifications, cross-event associations, independent association review, entity timelines, and immutable timeline snapshots.
+- Carries v3.86 contradiction state and documentary provenance into timeline reasoning.
+- Prohibits inference of causality, relationship, coordination, or intent from temporal proximity, co-presence, sequence, or repetition alone.
+- Performs no identity, relationship, or evidence graph mutation.
+- Database migration: none.
+
 # Platform Core v3.86.0 — Contradictory Identity & Relationship Resolution
 
 - Adds governed contradictory identity and relationship assertion objects, contradiction sets, explicit resolution criteria, independent reviews, resolution decisions, supersession lineage, downstream handoffs, and immutable resolution snapshots.

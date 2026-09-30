@@ -182,6 +182,7 @@ from .routers import (
     explainable_connection_paths_evidence_chains,
     multi_hop_research_investigation_graph_reasoning,
     contradictory_identity_relationship_resolution,
+    entity_centric_timeline_event_association,
 )
 from app.routers.spark_runtime import router as spark_runtime_router
 
@@ -717,6 +718,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(multi_hop_research_investigation_graph_reasoning.public_router)
     app.include_router(contradictory_identity_relationship_resolution.router)
     app.include_router(contradictory_identity_relationship_resolution.public_router)
+    app.include_router(entity_centric_timeline_event_association.router)
+    app.include_router(entity_centric_timeline_event_association.public_router)
     return app
 
 
