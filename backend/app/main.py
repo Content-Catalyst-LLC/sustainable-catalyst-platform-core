@@ -183,6 +183,7 @@ from .routers import (
     multi_hop_research_investigation_graph_reasoning,
     contradictory_identity_relationship_resolution,
     entity_centric_timeline_event_association,
+    reproducible_graph_investigation_package,
 )
 from app.routers.spark_runtime import router as spark_runtime_router
 
@@ -720,6 +721,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(contradictory_identity_relationship_resolution.public_router)
     app.include_router(entity_centric_timeline_event_association.router)
     app.include_router(entity_centric_timeline_event_association.public_router)
+    app.include_router(reproducible_graph_investigation_package.router)
+    app.include_router(reproducible_graph_investigation_package.public_router)
     return app
 
 

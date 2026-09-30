@@ -1,3 +1,11 @@
+# Platform Core v3.88.0 — Reproducible Graph Investigation Package
+
+- Adds governed, content-addressed graph investigation package policies, questions, object bindings, artifacts, environment manifests, reproduction steps, manifests, integrity records, verification records, and immutable package snapshots.
+- Preserves upstream epistemic state, provenance, contradictions, timelines, evidence chains, connection hypotheses, reasoning traces, and documentary anchors.
+- Enforces that reproducibility, package hashes, replay success, and byte-identical outputs do not establish truth, authenticity, admissibility, correctness, completeness, causality, coordination, intent, or wrongdoing.
+- Performs no identity, relationship, or evidence graph mutation.
+- Database migration: none.
+
 # Platform Core v3.87.0 — Entity-Centric Timeline & Event Association
 
 - Adds governed event records, entity participation, source-bound event assertions, temporal qualifications, cross-event associations, independent association review, entity timelines, and immutable timeline snapshots.
