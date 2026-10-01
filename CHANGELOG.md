@@ -923,3 +923,8 @@ Adds governed research notebooks, ordered sections and entries, cross-research b
 - Added capability, request/result, environment, artifact, diagnostic, and reproduction-reference records.
 - Added public provider discovery surfaces, SDK helpers, WordPress status surface, release validation, and VPS deployment gates.
 - Preserved the Core execution boundary: Core does not execute R, Python, Julia, infer statistical significance, certify scientific validity, or determine truth.
+
+## 3.96.0 — Federation Governance, Trust & Policy Runtime
+- Added scoped/revocable federation trust and policy governance.
+- Added explicit capability permissions, intake rules, conflict preservation, and audit traces.
+- Preserved remote-reference/local-validation boundaries across trusted and signed federation content.

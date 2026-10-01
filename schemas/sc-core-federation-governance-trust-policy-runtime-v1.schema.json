@@ -1,0 +1,1115 @@
+{
+  "$defs": {
+    "FederationCapabilityPermission": {
+      "properties": {
+        "capability": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Capability",
+          "type": "string"
+        },
+        "constraints": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Constraints",
+          "type": "array"
+        },
+        "effect": {
+          "$ref": "#/$defs/PermissionEffect"
+        },
+        "granted_at": {
+          "maxLength": 80,
+          "minLength": 10,
+          "title": "Granted At",
+          "type": "string"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "node_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Node Ref",
+          "type": "string"
+        },
+        "permission_cannot_increase_epistemic_authority": {
+          "const": true,
+          "default": true,
+          "title": "Permission Cannot Increase Epistemic Authority",
+          "type": "boolean"
+        },
+        "permission_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Permission Id",
+          "type": "string"
+        },
+        "permission_is_not_content_validation": {
+          "const": true,
+          "default": true,
+          "title": "Permission Is Not Content Validation",
+          "type": "boolean"
+        },
+        "permission_is_not_truth_assessment": {
+          "const": true,
+          "default": true,
+          "title": "Permission Is Not Truth Assessment",
+          "type": "boolean"
+        },
+        "required_contract": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Required Contract",
+          "type": "string"
+        },
+        "trust_scope_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Trust Scope Ref",
+          "type": "string"
+        }
+      },
+      "required": [
+        "permission_id",
+        "node_ref",
+        "capability",
+        "effect",
+        "trust_scope_ref",
+        "required_contract",
+        "constraints",
+        "granted_at"
+      ],
+      "title": "FederationCapabilityPermission",
+      "type": "object"
+    },
+    "FederationConflictGovernanceRecord": {
+      "properties": {
+        "conflict_governance_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Conflict Governance Id",
+          "type": "string"
+        },
+        "conflict_is_not_truth_verdict": {
+          "const": true,
+          "default": true,
+          "title": "Conflict Is Not Truth Verdict",
+          "type": "boolean"
+        },
+        "decision_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Decision Ref",
+          "type": "string"
+        },
+        "disposition": {
+          "enum": [
+            "preserved-unresolved",
+            "quarantined",
+            "locally-qualified"
+          ],
+          "title": "Disposition",
+          "type": "string"
+        },
+        "local_state_preserved": {
+          "const": true,
+          "default": true,
+          "title": "Local State Preserved",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "node_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Node Ref",
+          "type": "string"
+        },
+        "remote_state_preserved": {
+          "const": true,
+          "default": true,
+          "title": "Remote State Preserved",
+          "type": "boolean"
+        },
+        "silent_overwrite_allowed": {
+          "const": false,
+          "default": false,
+          "title": "Silent Overwrite Allowed",
+          "type": "boolean"
+        },
+        "source_conflict_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Source Conflict Ref",
+          "type": "string"
+        }
+      },
+      "required": [
+        "conflict_governance_id",
+        "source_conflict_ref",
+        "node_ref",
+        "decision_ref",
+        "disposition"
+      ],
+      "title": "FederationConflictGovernanceRecord",
+      "type": "object"
+    },
+    "FederationGovernanceAuditEvent": {
+      "properties": {
+        "audit_event_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Audit Event Id",
+          "type": "string"
+        },
+        "deterministic_event_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Deterministic Event Sha256",
+          "type": "string"
+        },
+        "event_is_audit_record_not_truth_assessment": {
+          "const": true,
+          "default": true,
+          "title": "Event Is Audit Record Not Truth Assessment",
+          "type": "boolean"
+        },
+        "event_type": {
+          "enum": [
+            "node-state",
+            "scope-evaluation",
+            "permission-evaluation",
+            "signature-check",
+            "intake-decision",
+            "conflict-preservation"
+          ],
+          "title": "Event Type",
+          "type": "string"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "node_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Node Ref",
+          "type": "string"
+        },
+        "recorded_at": {
+          "maxLength": 80,
+          "minLength": 10,
+          "title": "Recorded At",
+          "type": "string"
+        },
+        "related_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Related Refs",
+          "type": "array"
+        }
+      },
+      "required": [
+        "audit_event_id",
+        "event_type",
+        "node_ref",
+        "related_refs",
+        "recorded_at",
+        "deterministic_event_sha256"
+      ],
+      "title": "FederationGovernanceAuditEvent",
+      "type": "object"
+    },
+    "FederationGovernancePolicy": {
+      "properties": {
+        "allow_conflict_overwrite": {
+          "const": false,
+          "default": false,
+          "title": "Allow Conflict Overwrite",
+          "type": "boolean"
+        },
+        "allow_global_unscoped_trust": {
+          "const": false,
+          "default": false,
+          "title": "Allow Global Unscoped Trust",
+          "type": "boolean"
+        },
+        "allow_policy_approval_to_create_local_evidence": {
+          "const": false,
+          "default": false,
+          "title": "Allow Policy Approval To Create Local Evidence",
+          "type": "boolean"
+        },
+        "allow_policy_to_mutate_governed_graphs": {
+          "const": false,
+          "default": false,
+          "title": "Allow Policy To Mutate Governed Graphs",
+          "type": "boolean"
+        },
+        "allow_remote_content_to_bypass_local_validation": {
+          "const": false,
+          "default": false,
+          "title": "Allow Remote Content To Bypass Local Validation",
+          "type": "boolean"
+        },
+        "allow_revoked_node_to_exchange": {
+          "const": false,
+          "default": false,
+          "title": "Allow Revoked Node To Exchange",
+          "type": "boolean"
+        },
+        "allow_signature_to_establish_content_truth": {
+          "const": false,
+          "default": false,
+          "title": "Allow Signature To Establish Content Truth",
+          "type": "boolean"
+        },
+        "allow_suspended_node_to_exchange": {
+          "const": false,
+          "default": false,
+          "title": "Allow Suspended Node To Exchange",
+          "type": "boolean"
+        },
+        "allow_trust_to_establish_content_truth": {
+          "const": false,
+          "default": false,
+          "title": "Allow Trust To Establish Content Truth",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "policy_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Policy Id",
+          "type": "string"
+        },
+        "require_auditable_policy_decisions": {
+          "const": true,
+          "default": true,
+          "title": "Require Auditable Policy Decisions",
+          "type": "boolean"
+        },
+        "require_capability_permission": {
+          "const": true,
+          "default": true,
+          "title": "Require Capability Permission",
+          "type": "boolean"
+        },
+        "require_conflict_preservation": {
+          "const": true,
+          "default": true,
+          "title": "Require Conflict Preservation",
+          "type": "boolean"
+        },
+        "require_contract_allowlist": {
+          "const": true,
+          "default": true,
+          "title": "Require Contract Allowlist",
+          "type": "boolean"
+        },
+        "require_current_node_state": {
+          "const": true,
+          "default": true,
+          "title": "Require Current Node State",
+          "type": "boolean"
+        },
+        "require_explicit_revocation_and_suspension": {
+          "const": true,
+          "default": true,
+          "title": "Require Explicit Revocation And Suspension",
+          "type": "boolean"
+        },
+        "require_local_validation_for_remote_content": {
+          "const": true,
+          "default": true,
+          "title": "Require Local Validation For Remote Content",
+          "type": "boolean"
+        },
+        "require_registered_node_identity": {
+          "const": true,
+          "default": true,
+          "title": "Require Registered Node Identity",
+          "type": "boolean"
+        },
+        "require_scoped_trust": {
+          "const": true,
+          "default": true,
+          "title": "Require Scoped Trust",
+          "type": "boolean"
+        },
+        "require_signature_verification_when_attested": {
+          "const": true,
+          "default": true,
+          "title": "Require Signature Verification When Attested",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "policy_id"
+      ],
+      "title": "FederationGovernancePolicy",
+      "type": "object"
+    },
+    "FederationGovernanceSnapshot": {
+      "properties": {
+        "action_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Action Refs",
+          "type": "array"
+        },
+        "as_of": {
+          "maxLength": 80,
+          "minLength": 10,
+          "title": "As Of",
+          "type": "string"
+        },
+        "audit_event_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Audit Event Refs",
+          "type": "array"
+        },
+        "conflict_governance_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Conflict Governance Refs",
+          "type": "array"
+        },
+        "decision_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Decision Refs",
+          "type": "array"
+        },
+        "immutable": {
+          "const": true,
+          "default": true,
+          "title": "Immutable",
+          "type": "boolean"
+        },
+        "intake_rule_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Intake Rule Refs",
+          "type": "array"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "node_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Node Refs",
+          "type": "array"
+        },
+        "permission_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Permission Refs",
+          "type": "array"
+        },
+        "policy_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Policy Ref",
+          "type": "string"
+        },
+        "snapshot_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Snapshot Id",
+          "type": "string"
+        },
+        "snapshot_is_not_truth_verdict": {
+          "const": true,
+          "default": true,
+          "title": "Snapshot Is Not Truth Verdict",
+          "type": "boolean"
+        },
+        "supersedable": {
+          "const": true,
+          "default": true,
+          "title": "Supersedable",
+          "type": "boolean"
+        },
+        "trust_scope_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Trust Scope Refs",
+          "type": "array"
+        }
+      },
+      "required": [
+        "snapshot_id",
+        "policy_ref",
+        "node_refs",
+        "trust_scope_refs",
+        "permission_refs",
+        "intake_rule_refs",
+        "decision_refs",
+        "audit_event_refs",
+        "as_of"
+      ],
+      "title": "FederationGovernanceSnapshot",
+      "type": "object"
+    },
+    "FederationGovernedNode": {
+      "properties": {
+        "active_key_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Active Key Refs",
+          "type": "array"
+        },
+        "federation_node_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Federation Node Ref",
+          "type": "string"
+        },
+        "governance_state": {
+          "$ref": "#/$defs/GovernanceNodeState"
+        },
+        "governed_node_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Governed Node Id",
+          "type": "string"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "node_state_does_not_expand_content_authority": {
+          "const": true,
+          "default": true,
+          "title": "Node State Does Not Expand Content Authority",
+          "type": "boolean"
+        },
+        "node_state_is_not_content_truth": {
+          "const": true,
+          "default": true,
+          "title": "Node State Is Not Content Truth",
+          "type": "boolean"
+        },
+        "operator_name": {
+          "maxLength": 1000,
+          "minLength": 2,
+          "title": "Operator Name",
+          "type": "string"
+        },
+        "permission_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Permission Refs",
+          "type": "array"
+        },
+        "state_effective_at": {
+          "maxLength": 80,
+          "minLength": 10,
+          "title": "State Effective At",
+          "type": "string"
+        },
+        "trust_scope_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Trust Scope Refs",
+          "type": "array"
+        },
+        "underlying_exchange_trust_state": {
+          "$ref": "#/$defs/NodeTrustState"
+        }
+      },
+      "required": [
+        "governed_node_id",
+        "federation_node_ref",
+        "operator_name",
+        "governance_state",
+        "underlying_exchange_trust_state",
+        "state_effective_at"
+      ],
+      "title": "FederationGovernedNode",
+      "type": "object"
+    },
+    "FederationIntakeRule": {
+      "properties": {
+        "default_disposition": {
+          "$ref": "#/$defs/GovernanceDecisionDisposition"
+        },
+        "intake_rule_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Intake Rule Id",
+          "type": "string"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "object_contract": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Object Contract",
+          "type": "string"
+        },
+        "object_type": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Object Type",
+          "type": "string"
+        },
+        "preserve_remote_epistemic_state": {
+          "const": true,
+          "default": true,
+          "title": "Preserve Remote Epistemic State",
+          "type": "boolean"
+        },
+        "preserve_remote_provenance": {
+          "const": true,
+          "default": true,
+          "title": "Preserve Remote Provenance",
+          "type": "boolean"
+        },
+        "require_local_validation": {
+          "const": true,
+          "default": true,
+          "title": "Require Local Validation",
+          "type": "boolean"
+        },
+        "required_verification_dispositions": {
+          "items": {
+            "$ref": "#/$defs/VerificationDisposition"
+          },
+          "minItems": 1,
+          "title": "Required Verification Dispositions",
+          "type": "array"
+        },
+        "trust_scope_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Trust Scope Ref",
+          "type": "string"
+        }
+      },
+      "required": [
+        "intake_rule_id",
+        "trust_scope_ref",
+        "object_contract",
+        "object_type",
+        "required_verification_dispositions",
+        "default_disposition"
+      ],
+      "title": "FederationIntakeRule",
+      "type": "object"
+    },
+    "FederationPolicyDecision": {
+      "properties": {
+        "applied_constraints": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Applied Constraints",
+          "type": "array"
+        },
+        "decided_at": {
+          "maxLength": 80,
+          "minLength": 10,
+          "title": "Decided At",
+          "type": "string"
+        },
+        "decision_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Decision Id",
+          "type": "string"
+        },
+        "decision_is_not_content_truth": {
+          "const": true,
+          "default": true,
+          "title": "Decision Is Not Content Truth",
+          "type": "boolean"
+        },
+        "decision_is_not_local_evidence_promotion": {
+          "const": true,
+          "default": true,
+          "title": "Decision Is Not Local Evidence Promotion",
+          "type": "boolean"
+        },
+        "disposition": {
+          "$ref": "#/$defs/GovernanceDecisionDisposition"
+        },
+        "intake_rule_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Intake Rule Ref",
+          "type": "string"
+        },
+        "local_validation_required": {
+          "const": true,
+          "default": true,
+          "title": "Local Validation Required",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "node_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Node Ref",
+          "type": "string"
+        },
+        "permission_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Permission Ref",
+          "type": "string"
+        },
+        "policy_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Policy Ref",
+          "type": "string"
+        },
+        "remote_epistemic_state_preserved": {
+          "const": true,
+          "default": true,
+          "title": "Remote Epistemic State Preserved",
+          "type": "boolean"
+        },
+        "remote_object_ref": {
+          "maxLength": 1000,
+          "minLength": 3,
+          "title": "Remote Object Ref",
+          "type": "string"
+        },
+        "remote_provenance_preserved": {
+          "const": true,
+          "default": true,
+          "title": "Remote Provenance Preserved",
+          "type": "boolean"
+        },
+        "signature_verification_ref": {
+          "anyOf": [
+            {
+              "maxLength": 500,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Signature Verification Ref"
+        },
+        "trust_scope_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Trust Scope Ref",
+          "type": "string"
+        }
+      },
+      "required": [
+        "decision_id",
+        "policy_ref",
+        "node_ref",
+        "permission_ref",
+        "trust_scope_ref",
+        "intake_rule_ref",
+        "remote_object_ref",
+        "disposition",
+        "applied_constraints",
+        "decided_at"
+      ],
+      "title": "FederationPolicyDecision",
+      "type": "object"
+    },
+    "FederationRevocationSuspensionRecord": {
+      "properties": {
+        "action": {
+          "enum": [
+            "suspend",
+            "revoke",
+            "restore"
+          ],
+          "title": "Action",
+          "type": "string"
+        },
+        "action_does_not_rewrite_remote_content": {
+          "const": true,
+          "default": true,
+          "title": "Action Does Not Rewrite Remote Content",
+          "type": "boolean"
+        },
+        "action_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Action Id",
+          "type": "string"
+        },
+        "effective_at": {
+          "maxLength": 80,
+          "minLength": 10,
+          "title": "Effective At",
+          "type": "string"
+        },
+        "future_policy_decisions_must_reflect_action": {
+          "const": true,
+          "default": true,
+          "title": "Future Policy Decisions Must Reflect Action",
+          "type": "boolean"
+        },
+        "historical_records_remain_immutable": {
+          "const": true,
+          "default": true,
+          "title": "Historical Records Remain Immutable",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "node_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Node Ref",
+          "type": "string"
+        },
+        "reason": {
+          "maxLength": 2000,
+          "minLength": 3,
+          "title": "Reason",
+          "type": "string"
+        },
+        "supersedes_action_ref": {
+          "anyOf": [
+            {
+              "maxLength": 500,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Supersedes Action Ref"
+        }
+      },
+      "required": [
+        "action_id",
+        "node_ref",
+        "action",
+        "effective_at",
+        "reason"
+      ],
+      "title": "FederationRevocationSuspensionRecord",
+      "type": "object"
+    },
+    "FederationTrustScope": {
+      "properties": {
+        "allowed_contracts": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Allowed Contracts",
+          "type": "array"
+        },
+        "allowed_object_types": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Allowed Object Types",
+          "type": "array"
+        },
+        "local_validation_required": {
+          "const": true,
+          "default": true,
+          "title": "Local Validation Required",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "node_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Node Ref",
+          "type": "string"
+        },
+        "reference_only": {
+          "default": false,
+          "title": "Reference Only",
+          "type": "boolean"
+        },
+        "scope_kind": {
+          "$ref": "#/$defs/TrustScopeKind"
+        },
+        "trust_scope_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Trust Scope Id",
+          "type": "string"
+        },
+        "trust_scope_is_not_evidence_promotion": {
+          "const": true,
+          "default": true,
+          "title": "Trust Scope Is Not Evidence Promotion",
+          "type": "boolean"
+        },
+        "trust_scope_is_not_truth_assessment": {
+          "const": true,
+          "default": true,
+          "title": "Trust Scope Is Not Truth Assessment",
+          "type": "boolean"
+        },
+        "valid_from": {
+          "maxLength": 80,
+          "minLength": 10,
+          "title": "Valid From",
+          "type": "string"
+        },
+        "valid_until": {
+          "anyOf": [
+            {
+              "maxLength": 80,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Valid Until"
+        }
+      },
+      "required": [
+        "trust_scope_id",
+        "node_ref",
+        "scope_kind",
+        "allowed_contracts",
+        "allowed_object_types",
+        "valid_from"
+      ],
+      "title": "FederationTrustScope",
+      "type": "object"
+    },
+    "GovernanceDecisionDisposition": {
+      "enum": [
+        "allowed",
+        "allowed-with-constraints",
+        "reference-only",
+        "quarantined",
+        "denied"
+      ],
+      "title": "GovernanceDecisionDisposition",
+      "type": "string"
+    },
+    "GovernanceNodeState": {
+      "enum": [
+        "active",
+        "constrained",
+        "suspended",
+        "revoked"
+      ],
+      "title": "GovernanceNodeState",
+      "type": "string"
+    },
+    "NodeTrustState": {
+      "enum": [
+        "registered",
+        "authenticated",
+        "suspended",
+        "revoked"
+      ],
+      "title": "NodeTrustState",
+      "type": "string"
+    },
+    "PermissionEffect": {
+      "enum": [
+        "allow",
+        "deny",
+        "reference-only",
+        "local-validation-required"
+      ],
+      "title": "PermissionEffect",
+      "type": "string"
+    },
+    "TrustScopeKind": {
+      "enum": [
+        "identity",
+        "documentary-reference",
+        "investigation-package",
+        "query-reference",
+        "runtime-attestation",
+        "capability-metadata"
+      ],
+      "title": "TrustScopeKind",
+      "type": "string"
+    },
+    "VerificationDisposition": {
+      "enum": [
+        "verified",
+        "verified-with-qualifications",
+        "invalid",
+        "unverifiable",
+        "revoked",
+        "expired"
+      ],
+      "title": "VerificationDisposition",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "actions": {
+      "items": {
+        "$ref": "#/$defs/FederationRevocationSuspensionRecord"
+      },
+      "title": "Actions",
+      "type": "array"
+    },
+    "audit_events": {
+      "items": {
+        "$ref": "#/$defs/FederationGovernanceAuditEvent"
+      },
+      "minItems": 1,
+      "title": "Audit Events",
+      "type": "array"
+    },
+    "conflicts": {
+      "items": {
+        "$ref": "#/$defs/FederationConflictGovernanceRecord"
+      },
+      "title": "Conflicts",
+      "type": "array"
+    },
+    "contract": {
+      "const": "sc.core.federation-governance-trust-policy-runtime.v1",
+      "default": "sc.core.federation-governance-trust-policy-runtime.v1",
+      "title": "Contract",
+      "type": "string"
+    },
+    "database_migration": {
+      "const": "none",
+      "default": "none",
+      "title": "Database Migration",
+      "type": "string"
+    },
+    "decisions": {
+      "items": {
+        "$ref": "#/$defs/FederationPolicyDecision"
+      },
+      "minItems": 1,
+      "title": "Decisions",
+      "type": "array"
+    },
+    "intake_rules": {
+      "items": {
+        "$ref": "#/$defs/FederationIntakeRule"
+      },
+      "minItems": 1,
+      "title": "Intake Rules",
+      "type": "array"
+    },
+    "nodes": {
+      "items": {
+        "$ref": "#/$defs/FederationGovernedNode"
+      },
+      "minItems": 1,
+      "title": "Nodes",
+      "type": "array"
+    },
+    "permissions": {
+      "items": {
+        "$ref": "#/$defs/FederationCapabilityPermission"
+      },
+      "minItems": 1,
+      "title": "Permissions",
+      "type": "array"
+    },
+    "policies": {
+      "items": {
+        "$ref": "#/$defs/FederationGovernancePolicy"
+      },
+      "minItems": 1,
+      "title": "Policies",
+      "type": "array"
+    },
+    "release": {
+      "const": "3.96.0",
+      "default": "3.96.0",
+      "title": "Release",
+      "type": "string"
+    },
+    "snapshots": {
+      "items": {
+        "$ref": "#/$defs/FederationGovernanceSnapshot"
+      },
+      "minItems": 1,
+      "title": "Snapshots",
+      "type": "array"
+    },
+    "trust_scopes": {
+      "items": {
+        "$ref": "#/$defs/FederationTrustScope"
+      },
+      "minItems": 1,
+      "title": "Trust Scopes",
+      "type": "array"
+    }
+  },
+  "required": [
+    "policies",
+    "nodes",
+    "trust_scopes",
+    "permissions",
+    "intake_rules",
+    "decisions",
+    "audit_events",
+    "snapshots"
+  ],
+  "title": "FederationGovernanceTrustPolicyBundle",
+  "type": "object"
+}
