@@ -1,0 +1,1 @@
+Apply with APPLY_AND_PUSH_PLATFORM_CORE_V3990.sh from the release bundle, then deploy with DEPLOY_PLATFORM_CORE_V3990_CONTABO.sh.

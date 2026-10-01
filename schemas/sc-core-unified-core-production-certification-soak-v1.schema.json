@@ -1,0 +1,919 @@
+{
+  "$defs": {
+    "CertificationGate": {
+      "properties": {
+        "gate_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Gate Id",
+          "type": "string"
+        },
+        "category": {
+          "enum": [
+            "contracts",
+            "routes",
+            "schemas",
+            "tests",
+            "reproducibility",
+            "performance",
+            "observability",
+            "security-governance",
+            "federation",
+            "recovery",
+            "wordpress",
+            "release-integrity"
+          ],
+          "title": "Category",
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/GateStatus"
+        },
+        "evidence_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Evidence Refs",
+          "type": "array"
+        },
+        "blocking": {
+          "title": "Blocking",
+          "type": "boolean"
+        },
+        "qualification": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Qualification"
+        },
+        "measured_state_is_operational_evidence_only": {
+          "const": true,
+          "default": true,
+          "title": "Measured State Is Operational Evidence Only",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "gate_id",
+        "category",
+        "status",
+        "evidence_refs",
+        "blocking"
+      ],
+      "title": "CertificationGate",
+      "type": "object"
+    },
+    "CertificationQualification": {
+      "properties": {
+        "qualification_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Qualification Id",
+          "type": "string"
+        },
+        "source_ref": {
+          "maxLength": 1000,
+          "minLength": 3,
+          "title": "Source Ref",
+          "type": "string"
+        },
+        "severity": {
+          "enum": [
+            "info",
+            "warning"
+          ],
+          "title": "Severity",
+          "type": "string"
+        },
+        "description": {
+          "maxLength": 3000,
+          "minLength": 10,
+          "title": "Description",
+          "type": "string"
+        },
+        "blocks_controlled_soak": {
+          "title": "Blocks Controlled Soak",
+          "type": "boolean"
+        },
+        "requires_follow_up": {
+          "title": "Requires Follow Up",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "qualification_id",
+        "source_ref",
+        "severity",
+        "description",
+        "blocks_controlled_soak",
+        "requires_follow_up"
+      ],
+      "title": "CertificationQualification",
+      "type": "object"
+    },
+    "ContractCertificationRecord": {
+      "properties": {
+        "release": {
+          "pattern": "^3\\.\\d+\\.\\d+$",
+          "title": "Release",
+          "type": "string"
+        },
+        "module": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Module",
+          "type": "string"
+        },
+        "contract": {
+          "maxLength": 1000,
+          "minLength": 8,
+          "title": "Contract",
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/GateStatus"
+        },
+        "route_mounted": {
+          "title": "Route Mounted",
+          "type": "boolean"
+        },
+        "schema_available": {
+          "title": "Schema Available",
+          "type": "boolean"
+        },
+        "compatibility_state": {
+          "enum": [
+            "certified",
+            "qualified",
+            "blocked"
+          ],
+          "title": "Compatibility State",
+          "type": "string"
+        },
+        "certification_does_not_promote_epistemic_state": {
+          "const": true,
+          "default": true,
+          "title": "Certification Does Not Promote Epistemic State",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "release",
+        "module",
+        "contract",
+        "status",
+        "route_mounted",
+        "schema_available",
+        "compatibility_state"
+      ],
+      "title": "ContractCertificationRecord",
+      "type": "object"
+    },
+    "GateStatus": {
+      "enum": [
+        "pass",
+        "warn",
+        "fail",
+        "pending"
+      ],
+      "title": "GateStatus",
+      "type": "string"
+    },
+    "ProductionCertificationPolicy": {
+      "properties": {
+        "policy_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Policy Id",
+          "type": "string"
+        },
+        "required_contract_start_release": {
+          "const": "3.57.0",
+          "default": "3.57.0",
+          "title": "Required Contract Start Release",
+          "type": "string"
+        },
+        "required_contract_end_release": {
+          "const": "3.98.0",
+          "default": "3.98.0",
+          "title": "Required Contract End Release",
+          "type": "string"
+        },
+        "require_all_contracts_identified": {
+          "const": true,
+          "default": true,
+          "title": "Require All Contracts Identified",
+          "type": "boolean"
+        },
+        "require_route_and_schema_certification": {
+          "const": true,
+          "default": true,
+          "title": "Require Route And Schema Certification",
+          "type": "boolean"
+        },
+        "require_zero_critical_failures": {
+          "const": true,
+          "default": true,
+          "title": "Require Zero Critical Failures",
+          "type": "boolean"
+        },
+        "require_reproducible_validation": {
+          "const": true,
+          "default": true,
+          "title": "Require Reproducible Validation",
+          "type": "boolean"
+        },
+        "require_recovery_readiness": {
+          "const": true,
+          "default": true,
+          "title": "Require Recovery Readiness",
+          "type": "boolean"
+        },
+        "require_observability_and_slo_gates": {
+          "const": true,
+          "default": true,
+          "title": "Require Observability And Slo Gates",
+          "type": "boolean"
+        },
+        "require_federation_and_signature_policy_checks": {
+          "const": true,
+          "default": true,
+          "title": "Require Federation And Signature Policy Checks",
+          "type": "boolean"
+        },
+        "minimum_controlled_soak_hours": {
+          "default": 24,
+          "minimum": 1,
+          "title": "Minimum Controlled Soak Hours",
+          "type": "integer"
+        },
+        "recommended_extended_soak_hours": {
+          "default": 72,
+          "minimum": 24,
+          "title": "Recommended Extended Soak Hours",
+          "type": "integer"
+        },
+        "certification_is_not_scientific_truth": {
+          "const": true,
+          "default": true,
+          "title": "Certification Is Not Scientific Truth",
+          "type": "boolean"
+        },
+        "certification_is_not_evidence_validation": {
+          "const": true,
+          "default": true,
+          "title": "Certification Is Not Evidence Validation",
+          "type": "boolean"
+        },
+        "certification_may_not_mutate_governed_graphs": {
+          "const": true,
+          "default": true,
+          "title": "Certification May Not Mutate Governed Graphs",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        }
+      },
+      "required": [
+        "policy_id"
+      ],
+      "title": "ProductionCertificationPolicy",
+      "type": "object"
+    },
+    "ProductionCertificationSnapshot": {
+      "properties": {
+        "snapshot_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Snapshot Id",
+          "type": "string"
+        },
+        "policy_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Policy Ref",
+          "type": "string"
+        },
+        "contract_record_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Contract Record Refs",
+          "type": "array"
+        },
+        "gate_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Gate Refs",
+          "type": "array"
+        },
+        "route_surface_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Route Surface Refs",
+          "type": "array"
+        },
+        "recovery_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Recovery Refs",
+          "type": "array"
+        },
+        "soak_policy_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Soak Policy Ref",
+          "type": "string"
+        },
+        "soak_observation_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Soak Observation Refs",
+          "type": "array"
+        },
+        "qualification_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Qualification Refs",
+          "type": "array"
+        },
+        "decision_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Decision Ref",
+          "type": "string"
+        },
+        "trace_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Trace Ref",
+          "type": "string"
+        },
+        "as_of": {
+          "maxLength": 80,
+          "minLength": 10,
+          "title": "As Of",
+          "type": "string"
+        },
+        "immutable": {
+          "const": true,
+          "default": true,
+          "title": "Immutable",
+          "type": "boolean"
+        },
+        "supersedable": {
+          "const": true,
+          "default": true,
+          "title": "Supersedable",
+          "type": "boolean"
+        },
+        "snapshot_is_not_scientific_or_evidentiary_truth": {
+          "const": true,
+          "default": true,
+          "title": "Snapshot Is Not Scientific Or Evidentiary Truth",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "snapshot_id",
+        "policy_ref",
+        "contract_record_refs",
+        "gate_refs",
+        "route_surface_refs",
+        "recovery_refs",
+        "soak_policy_ref",
+        "soak_observation_refs",
+        "decision_ref",
+        "trace_ref",
+        "as_of"
+      ],
+      "title": "ProductionCertificationSnapshot",
+      "type": "object"
+    },
+    "ProductionCertificationTrace": {
+      "properties": {
+        "trace_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Trace Id",
+          "type": "string"
+        },
+        "contract_record_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Contract Record Refs",
+          "type": "array"
+        },
+        "gate_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Gate Refs",
+          "type": "array"
+        },
+        "route_surface_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Route Surface Refs",
+          "type": "array"
+        },
+        "recovery_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Recovery Refs",
+          "type": "array"
+        },
+        "soak_observation_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Soak Observation Refs",
+          "type": "array"
+        },
+        "qualification_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Qualification Refs",
+          "type": "array"
+        },
+        "decision_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Decision Ref",
+          "type": "string"
+        },
+        "started_at": {
+          "maxLength": 80,
+          "minLength": 10,
+          "title": "Started At",
+          "type": "string"
+        },
+        "completed_at": {
+          "maxLength": 80,
+          "minLength": 10,
+          "title": "Completed At",
+          "type": "string"
+        },
+        "reproducible": {
+          "const": true,
+          "default": true,
+          "title": "Reproducible",
+          "type": "boolean"
+        },
+        "trace_preserves_qualifications": {
+          "const": true,
+          "default": true,
+          "title": "Trace Preserves Qualifications",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "trace_id",
+        "contract_record_refs",
+        "gate_refs",
+        "route_surface_refs",
+        "recovery_refs",
+        "soak_observation_refs",
+        "decision_ref",
+        "started_at",
+        "completed_at"
+      ],
+      "title": "ProductionCertificationTrace",
+      "type": "object"
+    },
+    "ProductionReadinessDecision": {
+      "properties": {
+        "decision_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Decision Id",
+          "type": "string"
+        },
+        "disposition": {
+          "$ref": "#/$defs/ReadinessDisposition"
+        },
+        "blocking_gate_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Blocking Gate Refs",
+          "type": "array"
+        },
+        "qualification_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Qualification Refs",
+          "type": "array"
+        },
+        "controlled_soak_required": {
+          "const": true,
+          "default": true,
+          "title": "Controlled Soak Required",
+          "type": "boolean"
+        },
+        "minimum_soak_hours": {
+          "minimum": 1,
+          "title": "Minimum Soak Hours",
+          "type": "integer"
+        },
+        "full_production_certification_requires_elapsed_soak": {
+          "const": true,
+          "default": true,
+          "title": "Full Production Certification Requires Elapsed Soak",
+          "type": "boolean"
+        },
+        "decision_is_operational_not_epistemic": {
+          "const": true,
+          "default": true,
+          "title": "Decision Is Operational Not Epistemic",
+          "type": "boolean"
+        },
+        "no_graph_mutation_authorized": {
+          "const": true,
+          "default": true,
+          "title": "No Graph Mutation Authorized",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "decision_id",
+        "disposition",
+        "minimum_soak_hours"
+      ],
+      "title": "ProductionReadinessDecision",
+      "type": "object"
+    },
+    "ReadinessDisposition": {
+      "enum": [
+        "approved-for-controlled-soak",
+        "production-certified",
+        "blocked"
+      ],
+      "title": "ReadinessDisposition",
+      "type": "string"
+    },
+    "RecoveryReadinessRecord": {
+      "properties": {
+        "recovery_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Recovery Id",
+          "type": "string"
+        },
+        "capability": {
+          "enum": [
+            "backup",
+            "rollback",
+            "restore",
+            "tagged-source-promotion"
+          ],
+          "title": "Capability",
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/GateStatus"
+        },
+        "evidence_ref": {
+          "maxLength": 1000,
+          "minLength": 3,
+          "title": "Evidence Ref",
+          "type": "string"
+        },
+        "destructive_cleanup_required": {
+          "const": false,
+          "default": false,
+          "title": "Destructive Cleanup Required",
+          "type": "boolean"
+        },
+        "preserves_unrelated_local_state": {
+          "const": true,
+          "default": true,
+          "title": "Preserves Unrelated Local State",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "recovery_id",
+        "capability",
+        "status",
+        "evidence_ref"
+      ],
+      "title": "RecoveryReadinessRecord",
+      "type": "object"
+    },
+    "RouteSurfaceCertification": {
+      "properties": {
+        "surface_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Surface Id",
+          "type": "string"
+        },
+        "surface_kind": {
+          "enum": [
+            "private-api",
+            "public-api",
+            "health",
+            "wordpress-connector"
+          ],
+          "title": "Surface Kind",
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/GateStatus"
+        },
+        "expected_behavior": {
+          "maxLength": 2000,
+          "minLength": 3,
+          "title": "Expected Behavior",
+          "type": "string"
+        },
+        "version_identity_required": {
+          "const": true,
+          "default": true,
+          "title": "Version Identity Required",
+          "type": "boolean"
+        },
+        "contract_identity_required": {
+          "default": true,
+          "title": "Contract Identity Required",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "surface_id",
+        "surface_kind",
+        "status",
+        "expected_behavior"
+      ],
+      "title": "RouteSurfaceCertification",
+      "type": "object"
+    },
+    "SoakObservation": {
+      "properties": {
+        "observation_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Observation Id",
+          "type": "string"
+        },
+        "phase": {
+          "enum": [
+            "preflight",
+            "controlled-soak",
+            "extended-soak"
+          ],
+          "title": "Phase",
+          "type": "string"
+        },
+        "observed_hours": {
+          "minimum": 0,
+          "title": "Observed Hours",
+          "type": "number"
+        },
+        "status": {
+          "$ref": "#/$defs/GateStatus"
+        },
+        "health_passes": {
+          "minimum": 0,
+          "title": "Health Passes",
+          "type": "integer"
+        },
+        "health_failures": {
+          "minimum": 0,
+          "title": "Health Failures",
+          "type": "integer"
+        },
+        "critical_failures": {
+          "minimum": 0,
+          "title": "Critical Failures",
+          "type": "integer"
+        },
+        "data_integrity_failures": {
+          "minimum": 0,
+          "title": "Data Integrity Failures",
+          "type": "integer"
+        },
+        "qualification": {
+          "title": "Qualification",
+          "type": "string"
+        },
+        "observation_is_not_claim_truth_verdict": {
+          "const": true,
+          "default": true,
+          "title": "Observation Is Not Claim Truth Verdict",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "observation_id",
+        "phase",
+        "observed_hours",
+        "status",
+        "health_passes",
+        "health_failures",
+        "critical_failures",
+        "data_integrity_failures",
+        "qualification"
+      ],
+      "title": "SoakObservation",
+      "type": "object"
+    },
+    "SoakPolicy": {
+      "properties": {
+        "soak_policy_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Soak Policy Id",
+          "type": "string"
+        },
+        "minimum_hours": {
+          "minimum": 1,
+          "title": "Minimum Hours",
+          "type": "integer"
+        },
+        "recommended_hours": {
+          "minimum": 1,
+          "title": "Recommended Hours",
+          "type": "integer"
+        },
+        "required_health_checks": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Required Health Checks",
+          "type": "array"
+        },
+        "allowed_critical_failures": {
+          "const": 0,
+          "default": 0,
+          "title": "Allowed Critical Failures",
+          "type": "integer"
+        },
+        "allowed_data_integrity_failures": {
+          "const": 0,
+          "default": 0,
+          "title": "Allowed Data Integrity Failures",
+          "type": "integer"
+        },
+        "require_no_unexplained_graph_mutation": {
+          "const": true,
+          "default": true,
+          "title": "Require No Unexplained Graph Mutation",
+          "type": "boolean"
+        },
+        "require_alert_and_drift_capture": {
+          "const": true,
+          "default": true,
+          "title": "Require Alert And Drift Capture",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "soak_policy_id",
+        "minimum_hours",
+        "recommended_hours",
+        "required_health_checks"
+      ],
+      "title": "SoakPolicy",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "release": {
+      "const": "3.99.0",
+      "default": "3.99.0",
+      "title": "Release",
+      "type": "string"
+    },
+    "contract": {
+      "const": "sc.core.unified-core-production-certification-soak.v1",
+      "default": "sc.core.unified-core-production-certification-soak.v1",
+      "title": "Contract",
+      "type": "string"
+    },
+    "policy": {
+      "$ref": "#/$defs/ProductionCertificationPolicy"
+    },
+    "contract_records": {
+      "items": {
+        "$ref": "#/$defs/ContractCertificationRecord"
+      },
+      "minItems": 1,
+      "title": "Contract Records",
+      "type": "array"
+    },
+    "gates": {
+      "items": {
+        "$ref": "#/$defs/CertificationGate"
+      },
+      "minItems": 1,
+      "title": "Gates",
+      "type": "array"
+    },
+    "route_surfaces": {
+      "items": {
+        "$ref": "#/$defs/RouteSurfaceCertification"
+      },
+      "minItems": 1,
+      "title": "Route Surfaces",
+      "type": "array"
+    },
+    "recovery_records": {
+      "items": {
+        "$ref": "#/$defs/RecoveryReadinessRecord"
+      },
+      "minItems": 1,
+      "title": "Recovery Records",
+      "type": "array"
+    },
+    "soak_policy": {
+      "$ref": "#/$defs/SoakPolicy"
+    },
+    "soak_observations": {
+      "items": {
+        "$ref": "#/$defs/SoakObservation"
+      },
+      "minItems": 1,
+      "title": "Soak Observations",
+      "type": "array"
+    },
+    "qualifications": {
+      "items": {
+        "$ref": "#/$defs/CertificationQualification"
+      },
+      "title": "Qualifications",
+      "type": "array"
+    },
+    "decision": {
+      "$ref": "#/$defs/ProductionReadinessDecision"
+    },
+    "traces": {
+      "items": {
+        "$ref": "#/$defs/ProductionCertificationTrace"
+      },
+      "minItems": 1,
+      "title": "Traces",
+      "type": "array"
+    },
+    "snapshots": {
+      "items": {
+        "$ref": "#/$defs/ProductionCertificationSnapshot"
+      },
+      "minItems": 1,
+      "title": "Snapshots",
+      "type": "array"
+    },
+    "database_migration": {
+      "const": "none",
+      "default": "none",
+      "title": "Database Migration",
+      "type": "string"
+    }
+  },
+  "required": [
+    "policy",
+    "contract_records",
+    "gates",
+    "route_surfaces",
+    "recovery_records",
+    "soak_policy",
+    "soak_observations",
+    "decision",
+    "traces",
+    "snapshots"
+  ],
+  "title": "UnifiedCoreProductionCertificationSoakBundle",
+  "type": "object"
+}

@@ -1,3 +1,7 @@
+## 3.99.0 — Unified Core Production Certification & Soak
+- Adds 42-contract production certification inventory, controlled soak policy, recovery/readiness gates, and bounded operational certification semantics.
+- Full production certification remains pending actual elapsed soak.
+
 # Platform Core v3.97.0 — Unified Runtime Observability, Audit & Drift Intelligence
 
 - Adds governed runtime/contract health observations, immutable audit events, provenance-gap detection, drift baselines and signals, stale-evidence/federation-policy drift, SLO indicators, alert decisions, traces, and snapshots.

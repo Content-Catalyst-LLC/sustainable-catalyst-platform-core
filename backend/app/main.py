@@ -194,6 +194,7 @@ from .routers import (
     federation_governance_trust_policy_runtime,
     unified_runtime_observability_audit_drift_intelligence,
     entity_evidence_runtime_performance_scale,
+    unified_core_production_certification_soak,
 )
 from app.routers.spark_runtime import router as spark_runtime_router
 
@@ -771,6 +772,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # Platform Core v3.98.0 — Entity & Evidence Runtime Performance and Scale
     app.include_router(entity_evidence_runtime_performance_scale.router)
     app.include_router(entity_evidence_runtime_performance_scale.public_router)
+
+    # Platform Core v3.99.0 — Unified Core Production Certification & Soak
+    app.include_router(unified_core_production_certification_soak.router)
+    app.include_router(unified_core_production_certification_soak.public_router)
     return app
 
 
