@@ -1,0 +1,1210 @@
+{
+  "$defs": {
+    "ArtifactKind": {
+      "enum": [
+        "runtime-trace",
+        "query-result-set",
+        "session-checkpoint",
+        "session-snapshot",
+        "handoff-trace",
+        "investigation-package",
+        "federation-snapshot",
+        "capability-negotiation-trace"
+      ],
+      "title": "ArtifactKind",
+      "type": "string"
+    },
+    "AttestationStatementKind": {
+      "enum": [
+        "artifact-integrity",
+        "execution-provenance",
+        "environment-binding",
+        "cross-product-handoff"
+      ],
+      "title": "AttestationStatementKind",
+      "type": "string"
+    },
+    "AttestationVerificationRecord": {
+      "properties": {
+        "attestation_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Attestation Ref",
+          "type": "string"
+        },
+        "cryptographic_verification_performed": {
+          "title": "Cryptographic Verification Performed",
+          "type": "boolean"
+        },
+        "disposition": {
+          "$ref": "#/$defs/VerificationDisposition"
+        },
+        "expected_subject_sha256": {
+          "title": "Expected Subject Sha256",
+          "type": "string"
+        },
+        "key_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Key Ref",
+          "type": "string"
+        },
+        "key_status_at_verification": {
+          "$ref": "#/$defs/KeyLifecycleStatus"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "observed_subject_sha256": {
+          "title": "Observed Subject Sha256",
+          "type": "string"
+        },
+        "qualifications": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Qualifications",
+          "type": "array"
+        },
+        "signature_matches": {
+          "title": "Signature Matches",
+          "type": "boolean"
+        },
+        "subject_ref": {
+          "maxLength": 1000,
+          "minLength": 3,
+          "title": "Subject Ref",
+          "type": "string"
+        },
+        "verification_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Verification Id",
+          "type": "string"
+        },
+        "verification_is_not_content_truth": {
+          "const": true,
+          "default": true,
+          "title": "Verification Is Not Content Truth",
+          "type": "boolean"
+        },
+        "verification_is_not_evidence_promotion": {
+          "const": true,
+          "default": true,
+          "title": "Verification Is Not Evidence Promotion",
+          "type": "boolean"
+        },
+        "verification_is_not_scientific_validity": {
+          "const": true,
+          "default": true,
+          "title": "Verification Is Not Scientific Validity",
+          "type": "boolean"
+        },
+        "verified_at": {
+          "maxLength": 80,
+          "minLength": 10,
+          "title": "Verified At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "verification_id",
+        "attestation_ref",
+        "subject_ref",
+        "expected_subject_sha256",
+        "observed_subject_sha256",
+        "key_ref",
+        "verified_at",
+        "cryptographic_verification_performed",
+        "signature_matches",
+        "key_status_at_verification",
+        "disposition",
+        "qualifications"
+      ],
+      "title": "AttestationVerificationRecord",
+      "type": "object"
+    },
+    "DetachedExecutionAttestation": {
+      "properties": {
+        "algorithm": {
+          "$ref": "#/$defs/SignatureAlgorithm"
+        },
+        "attestation_asserts_integrity_and_signer_association_only": {
+          "const": true,
+          "default": true,
+          "title": "Attestation Asserts Integrity And Signer Association Only",
+          "type": "boolean"
+        },
+        "attestation_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Attestation Id",
+          "type": "string"
+        },
+        "attestation_is_not_content_truth": {
+          "const": true,
+          "default": true,
+          "title": "Attestation Is Not Content Truth",
+          "type": "boolean"
+        },
+        "attestation_is_not_epistemic_promotion": {
+          "const": true,
+          "default": true,
+          "title": "Attestation Is Not Epistemic Promotion",
+          "type": "boolean"
+        },
+        "canonicalization": {
+          "const": "sc-canonical-json-v1",
+          "default": "sc-canonical-json-v1",
+          "title": "Canonicalization",
+          "type": "string"
+        },
+        "detached": {
+          "const": true,
+          "default": true,
+          "title": "Detached",
+          "type": "boolean"
+        },
+        "key_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Key Ref",
+          "type": "string"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "signature_encoding": {
+          "const": "base64",
+          "default": "base64",
+          "title": "Signature Encoding",
+          "type": "string"
+        },
+        "signature_value_b64": {
+          "title": "Signature Value B64",
+          "type": "string"
+        },
+        "signed_at": {
+          "maxLength": 80,
+          "minLength": 10,
+          "title": "Signed At",
+          "type": "string"
+        },
+        "signer_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Signer Ref",
+          "type": "string"
+        },
+        "signing_provider_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Signing Provider Ref",
+          "type": "string"
+        },
+        "statement_kind": {
+          "$ref": "#/$defs/AttestationStatementKind"
+        },
+        "subject_ref": {
+          "maxLength": 1000,
+          "minLength": 3,
+          "title": "Subject Ref",
+          "type": "string"
+        },
+        "subject_sha256": {
+          "title": "Subject Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "attestation_id",
+        "statement_kind",
+        "subject_ref",
+        "subject_sha256",
+        "signer_ref",
+        "key_ref",
+        "algorithm",
+        "signature_value_b64",
+        "signing_provider_ref",
+        "signed_at"
+      ],
+      "title": "DetachedExecutionAttestation",
+      "type": "object"
+    },
+    "EpistemicState": {
+      "enum": [
+        "governed-record",
+        "source-asserted",
+        "candidate",
+        "hypothesis",
+        "analytical",
+        "qualified",
+        "unresolved",
+        "remote-reference",
+        "runtime-metadata"
+      ],
+      "title": "EpistemicState",
+      "type": "string"
+    },
+    "ExecutionAttestationChain": {
+      "properties": {
+        "artifact_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Artifact Refs",
+          "type": "array"
+        },
+        "attestation_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Attestation Refs",
+          "type": "array"
+        },
+        "chain_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Chain Id",
+          "type": "string"
+        },
+        "chain_is_not_independent_corroboration": {
+          "const": true,
+          "default": true,
+          "title": "Chain Is Not Independent Corroboration",
+          "type": "boolean"
+        },
+        "chain_is_not_truth_certification": {
+          "const": true,
+          "default": true,
+          "title": "Chain Is Not Truth Certification",
+          "type": "boolean"
+        },
+        "chain_preserves_artifact_epistemic_state": {
+          "const": true,
+          "default": true,
+          "title": "Chain Preserves Artifact Epistemic State",
+          "type": "boolean"
+        },
+        "chain_preserves_artifact_validation_state": {
+          "const": true,
+          "default": true,
+          "title": "Chain Preserves Artifact Validation State",
+          "type": "boolean"
+        },
+        "chain_root_sha256": {
+          "title": "Chain Root Sha256",
+          "type": "string"
+        },
+        "execution_manifest_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Execution Manifest Ref",
+          "type": "string"
+        },
+        "immutable": {
+          "const": true,
+          "default": true,
+          "title": "Immutable",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "parent_chain_ref": {
+          "anyOf": [
+            {
+              "maxLength": 500,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Parent Chain Ref"
+        },
+        "verification_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Verification Refs",
+          "type": "array"
+        }
+      },
+      "required": [
+        "chain_id",
+        "execution_manifest_ref",
+        "artifact_refs",
+        "attestation_refs",
+        "verification_refs",
+        "chain_root_sha256"
+      ],
+      "title": "ExecutionAttestationChain",
+      "type": "object"
+    },
+    "KeyLifecycleStatus": {
+      "enum": [
+        "active",
+        "revoked",
+        "expired"
+      ],
+      "title": "KeyLifecycleStatus",
+      "type": "string"
+    },
+    "KeyRevocationRecord": {
+      "properties": {
+        "key_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Key Ref",
+          "type": "string"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "reason": {
+          "maxLength": 1000,
+          "minLength": 3,
+          "title": "Reason",
+          "type": "string"
+        },
+        "revocation_does_not_rewrite_historical_artifact_bytes": {
+          "const": true,
+          "default": true,
+          "title": "Revocation Does Not Rewrite Historical Artifact Bytes",
+          "type": "boolean"
+        },
+        "revocation_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Revocation Id",
+          "type": "string"
+        },
+        "revocation_requires_future_verifications_to_reflect_status": {
+          "const": true,
+          "default": true,
+          "title": "Revocation Requires Future Verifications To Reflect Status",
+          "type": "boolean"
+        },
+        "revoked_at": {
+          "maxLength": 80,
+          "minLength": 10,
+          "title": "Revoked At",
+          "type": "string"
+        },
+        "superseding_key_ref": {
+          "anyOf": [
+            {
+              "maxLength": 500,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Superseding Key Ref"
+        }
+      },
+      "required": [
+        "revocation_id",
+        "key_ref",
+        "revoked_at",
+        "reason"
+      ],
+      "title": "KeyRevocationRecord",
+      "type": "object"
+    },
+    "ResultValidationState": {
+      "enum": [
+        "governed-reference",
+        "review-required",
+        "local-validation-required",
+        "analytical-only",
+        "unresolved",
+        "metadata-only"
+      ],
+      "title": "ResultValidationState",
+      "type": "string"
+    },
+    "RuntimeArtifactDescriptor": {
+      "properties": {
+        "artifact_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Artifact Id",
+          "type": "string"
+        },
+        "artifact_kind": {
+          "$ref": "#/$defs/ArtifactKind"
+        },
+        "byte_length": {
+          "minimum": 1,
+          "title": "Byte Length",
+          "type": "integer"
+        },
+        "content_hash_is_not_content_truth": {
+          "const": true,
+          "default": true,
+          "title": "Content Hash Is Not Content Truth",
+          "type": "boolean"
+        },
+        "content_sha256": {
+          "title": "Content Sha256",
+          "type": "string"
+        },
+        "epistemic_state": {
+          "$ref": "#/$defs/EpistemicState"
+        },
+        "generated_at": {
+          "maxLength": 80,
+          "minLength": 10,
+          "title": "Generated At",
+          "type": "string"
+        },
+        "immutable": {
+          "const": true,
+          "default": true,
+          "title": "Immutable",
+          "type": "boolean"
+        },
+        "media_type": {
+          "maxLength": 255,
+          "minLength": 3,
+          "title": "Media Type",
+          "type": "string"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "provenance_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Provenance Refs",
+          "type": "array"
+        },
+        "source_contract": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Source Contract",
+          "type": "string"
+        },
+        "source_object_ref": {
+          "maxLength": 1000,
+          "minLength": 3,
+          "title": "Source Object Ref",
+          "type": "string"
+        },
+        "validation_state": {
+          "$ref": "#/$defs/ResultValidationState"
+        }
+      },
+      "required": [
+        "artifact_id",
+        "artifact_kind",
+        "source_contract",
+        "source_object_ref",
+        "media_type",
+        "content_sha256",
+        "byte_length",
+        "generated_at",
+        "provenance_refs",
+        "epistemic_state",
+        "validation_state"
+      ],
+      "title": "RuntimeArtifactDescriptor",
+      "type": "object"
+    },
+    "RuntimeExecutionManifest": {
+      "properties": {
+        "capability_contracts": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Capability Contracts",
+          "type": "array"
+        },
+        "completed_at": {
+          "maxLength": 80,
+          "minLength": 10,
+          "title": "Completed At",
+          "type": "string"
+        },
+        "environment_fingerprint_sha256": {
+          "title": "Environment Fingerprint Sha256",
+          "type": "string"
+        },
+        "execution_manifest_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Execution Manifest Id",
+          "type": "string"
+        },
+        "execution_manifest_is_not_correctness_certification": {
+          "const": true,
+          "default": true,
+          "title": "Execution Manifest Is Not Correctness Certification",
+          "type": "boolean"
+        },
+        "execution_manifest_is_not_truth_certification": {
+          "const": true,
+          "default": true,
+          "title": "Execution Manifest Is Not Truth Certification",
+          "type": "boolean"
+        },
+        "execution_trace_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Execution Trace Refs",
+          "type": "array"
+        },
+        "input_artifact_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Input Artifact Refs",
+          "type": "array"
+        },
+        "manifest_sha256": {
+          "title": "Manifest Sha256",
+          "type": "string"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "output_artifact_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Output Artifact Refs",
+          "type": "array"
+        },
+        "policy_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Policy Refs",
+          "type": "array"
+        },
+        "request_ref": {
+          "maxLength": 1000,
+          "minLength": 3,
+          "title": "Request Ref",
+          "type": "string"
+        },
+        "runtime_contract": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Runtime Contract",
+          "type": "string"
+        },
+        "runtime_release": {
+          "maxLength": 120,
+          "minLength": 1,
+          "title": "Runtime Release",
+          "type": "string"
+        },
+        "started_at": {
+          "maxLength": 80,
+          "minLength": 10,
+          "title": "Started At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "execution_manifest_id",
+        "runtime_release",
+        "runtime_contract",
+        "request_ref",
+        "input_artifact_refs",
+        "output_artifact_refs",
+        "policy_refs",
+        "capability_contracts",
+        "execution_trace_refs",
+        "environment_fingerprint_sha256",
+        "started_at",
+        "completed_at",
+        "manifest_sha256"
+      ],
+      "title": "RuntimeExecutionManifest",
+      "type": "object"
+    },
+    "SignatureAlgorithm": {
+      "enum": [
+        "ed25519",
+        "ecdsa-p256-sha256",
+        "rsa-pss-sha256"
+      ],
+      "title": "SignatureAlgorithm",
+      "type": "string"
+    },
+    "SignedRuntimeArtifactPolicy": {
+      "properties": {
+        "allow_attestation_to_mutate_governed_graphs": {
+          "const": false,
+          "default": false,
+          "title": "Allow Attestation To Mutate Governed Graphs",
+          "type": "boolean"
+        },
+        "allow_expired_key_to_verify_as_current": {
+          "const": false,
+          "default": false,
+          "title": "Allow Expired Key To Verify As Current",
+          "type": "boolean"
+        },
+        "allow_key_identity_to_expand_authority_scope": {
+          "const": false,
+          "default": false,
+          "title": "Allow Key Identity To Expand Authority Scope",
+          "type": "boolean"
+        },
+        "allow_revoked_key_to_verify_as_current": {
+          "const": false,
+          "default": false,
+          "title": "Allow Revoked Key To Verify As Current",
+          "type": "boolean"
+        },
+        "allow_signature_to_bypass_review": {
+          "const": false,
+          "default": false,
+          "title": "Allow Signature To Bypass Review",
+          "type": "boolean"
+        },
+        "allow_signature_to_bypass_validation": {
+          "const": false,
+          "default": false,
+          "title": "Allow Signature To Bypass Validation",
+          "type": "boolean"
+        },
+        "allow_signature_to_create_evidence": {
+          "const": false,
+          "default": false,
+          "title": "Allow Signature To Create Evidence",
+          "type": "boolean"
+        },
+        "allow_signature_to_promote_epistemic_state": {
+          "const": false,
+          "default": false,
+          "title": "Allow Signature To Promote Epistemic State",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "policy_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Policy Id",
+          "type": "string"
+        },
+        "require_canonical_signable_payload": {
+          "const": true,
+          "default": true,
+          "title": "Require Canonical Signable Payload",
+          "type": "boolean"
+        },
+        "require_content_addressed_artifacts": {
+          "const": true,
+          "default": true,
+          "title": "Require Content Addressed Artifacts",
+          "type": "boolean"
+        },
+        "require_detached_attestation": {
+          "const": true,
+          "default": true,
+          "title": "Require Detached Attestation",
+          "type": "boolean"
+        },
+        "require_epistemic_state_preservation": {
+          "const": true,
+          "default": true,
+          "title": "Require Epistemic State Preservation",
+          "type": "boolean"
+        },
+        "require_explicit_execution_manifest": {
+          "const": true,
+          "default": true,
+          "title": "Require Explicit Execution Manifest",
+          "type": "boolean"
+        },
+        "require_explicit_signer_identity": {
+          "const": true,
+          "default": true,
+          "title": "Require Explicit Signer Identity",
+          "type": "boolean"
+        },
+        "require_key_lifecycle_state": {
+          "const": true,
+          "default": true,
+          "title": "Require Key Lifecycle State",
+          "type": "boolean"
+        },
+        "require_provenance_preservation": {
+          "const": true,
+          "default": true,
+          "title": "Require Provenance Preservation",
+          "type": "boolean"
+        },
+        "require_revocation_and_expiry_awareness": {
+          "const": true,
+          "default": true,
+          "title": "Require Revocation And Expiry Awareness",
+          "type": "boolean"
+        },
+        "require_source_contract_identity": {
+          "const": true,
+          "default": true,
+          "title": "Require Source Contract Identity",
+          "type": "boolean"
+        },
+        "require_source_object_reference": {
+          "const": true,
+          "default": true,
+          "title": "Require Source Object Reference",
+          "type": "boolean"
+        },
+        "require_validation_state_preservation": {
+          "const": true,
+          "default": true,
+          "title": "Require Validation State Preservation",
+          "type": "boolean"
+        },
+        "require_verification_record": {
+          "const": true,
+          "default": true,
+          "title": "Require Verification Record",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "policy_id"
+      ],
+      "title": "SignedRuntimeArtifactPolicy",
+      "type": "object"
+    },
+    "SignedRuntimeAttestationSnapshot": {
+      "properties": {
+        "artifact_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Artifact Refs",
+          "type": "array"
+        },
+        "as_of": {
+          "maxLength": 80,
+          "minLength": 10,
+          "title": "As Of",
+          "type": "string"
+        },
+        "attestation_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Attestation Refs",
+          "type": "array"
+        },
+        "chain_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Chain Refs",
+          "type": "array"
+        },
+        "execution_manifest_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Execution Manifest Refs",
+          "type": "array"
+        },
+        "immutable": {
+          "const": true,
+          "default": true,
+          "title": "Immutable",
+          "type": "boolean"
+        },
+        "key_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Key Refs",
+          "type": "array"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "policy_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Policy Ref",
+          "type": "string"
+        },
+        "signer_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Signer Refs",
+          "type": "array"
+        },
+        "snapshot_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Snapshot Id",
+          "type": "string"
+        },
+        "snapshot_is_not_truth_certification": {
+          "const": true,
+          "default": true,
+          "title": "Snapshot Is Not Truth Certification",
+          "type": "boolean"
+        },
+        "supersedable": {
+          "const": true,
+          "default": true,
+          "title": "Supersedable",
+          "type": "boolean"
+        },
+        "verification_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Verification Refs",
+          "type": "array"
+        }
+      },
+      "required": [
+        "snapshot_id",
+        "policy_ref",
+        "signer_refs",
+        "key_refs",
+        "artifact_refs",
+        "execution_manifest_refs",
+        "attestation_refs",
+        "verification_refs",
+        "chain_refs",
+        "as_of"
+      ],
+      "title": "SignedRuntimeAttestationSnapshot",
+      "type": "object"
+    },
+    "SignerIdentityReference": {
+      "properties": {
+        "authority_scopes": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Authority Scopes",
+          "type": "array"
+        },
+        "display_name": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Display Name",
+          "type": "string"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "principal_kind": {
+          "enum": [
+            "service",
+            "operator",
+            "federation-node",
+            "system"
+          ],
+          "title": "Principal Kind",
+          "type": "string"
+        },
+        "signer_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Signer Id",
+          "type": "string"
+        },
+        "signer_identity_does_not_expand_object_authority": {
+          "const": true,
+          "default": true,
+          "title": "Signer Identity Does Not Expand Object Authority",
+          "type": "boolean"
+        },
+        "signer_identity_is_not_content_truth": {
+          "const": true,
+          "default": true,
+          "title": "Signer Identity Is Not Content Truth",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "signer_id",
+        "principal_kind",
+        "display_name",
+        "authority_scopes"
+      ],
+      "title": "SignerIdentityReference",
+      "type": "object"
+    },
+    "SigningKeyReference": {
+      "properties": {
+        "algorithm": {
+          "$ref": "#/$defs/SignatureAlgorithm"
+        },
+        "expires_at": {
+          "maxLength": 80,
+          "minLength": 10,
+          "title": "Expires At",
+          "type": "string"
+        },
+        "issued_at": {
+          "maxLength": 80,
+          "minLength": 10,
+          "title": "Issued At",
+          "type": "string"
+        },
+        "key_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Key Ref",
+          "type": "string"
+        },
+        "key_version": {
+          "maxLength": 120,
+          "minLength": 1,
+          "title": "Key Version",
+          "type": "string"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "not_before": {
+          "maxLength": 80,
+          "minLength": 10,
+          "title": "Not Before",
+          "type": "string"
+        },
+        "private_key_material_stored_in_core": {
+          "const": false,
+          "default": false,
+          "title": "Private Key Material Stored In Core",
+          "type": "boolean"
+        },
+        "public_key_fingerprint_sha256": {
+          "title": "Public Key Fingerprint Sha256",
+          "type": "string"
+        },
+        "revocation_ref": {
+          "anyOf": [
+            {
+              "maxLength": 500,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Revocation Ref"
+        },
+        "signer_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Signer Ref",
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/KeyLifecycleStatus"
+        }
+      },
+      "required": [
+        "key_ref",
+        "signer_ref",
+        "algorithm",
+        "key_version",
+        "public_key_fingerprint_sha256",
+        "issued_at",
+        "not_before",
+        "expires_at",
+        "status"
+      ],
+      "title": "SigningKeyReference",
+      "type": "object"
+    },
+    "VerificationDisposition": {
+      "enum": [
+        "verified",
+        "verified-with-qualifications",
+        "invalid",
+        "unverifiable",
+        "revoked",
+        "expired"
+      ],
+      "title": "VerificationDisposition",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "artifacts": {
+      "items": {
+        "$ref": "#/$defs/RuntimeArtifactDescriptor"
+      },
+      "minItems": 1,
+      "title": "Artifacts",
+      "type": "array"
+    },
+    "attestations": {
+      "items": {
+        "$ref": "#/$defs/DetachedExecutionAttestation"
+      },
+      "minItems": 1,
+      "title": "Attestations",
+      "type": "array"
+    },
+    "chains": {
+      "items": {
+        "$ref": "#/$defs/ExecutionAttestationChain"
+      },
+      "minItems": 1,
+      "title": "Chains",
+      "type": "array"
+    },
+    "contract": {
+      "const": "sc.core.signed-runtime-artifacts-execution-attestations.v1",
+      "default": "sc.core.signed-runtime-artifacts-execution-attestations.v1",
+      "title": "Contract",
+      "type": "string"
+    },
+    "evidence_graph_mutation_performed": {
+      "const": false,
+      "default": false,
+      "title": "Evidence Graph Mutation Performed",
+      "type": "boolean"
+    },
+    "execution_manifests": {
+      "items": {
+        "$ref": "#/$defs/RuntimeExecutionManifest"
+      },
+      "minItems": 1,
+      "title": "Execution Manifests",
+      "type": "array"
+    },
+    "identity_graph_mutation_performed": {
+      "const": false,
+      "default": false,
+      "title": "Identity Graph Mutation Performed",
+      "type": "boolean"
+    },
+    "keys": {
+      "items": {
+        "$ref": "#/$defs/SigningKeyReference"
+      },
+      "minItems": 1,
+      "title": "Keys",
+      "type": "array"
+    },
+    "policies": {
+      "items": {
+        "$ref": "#/$defs/SignedRuntimeArtifactPolicy"
+      },
+      "minItems": 1,
+      "title": "Policies",
+      "type": "array"
+    },
+    "relationship_graph_mutation_performed": {
+      "const": false,
+      "default": false,
+      "title": "Relationship Graph Mutation Performed",
+      "type": "boolean"
+    },
+    "release": {
+      "const": "3.95.0",
+      "default": "3.95.0",
+      "title": "Release",
+      "type": "string"
+    },
+    "revocations": {
+      "items": {
+        "$ref": "#/$defs/KeyRevocationRecord"
+      },
+      "title": "Revocations",
+      "type": "array"
+    },
+    "signers": {
+      "items": {
+        "$ref": "#/$defs/SignerIdentityReference"
+      },
+      "minItems": 1,
+      "title": "Signers",
+      "type": "array"
+    },
+    "snapshots": {
+      "items": {
+        "$ref": "#/$defs/SignedRuntimeAttestationSnapshot"
+      },
+      "minItems": 1,
+      "title": "Snapshots",
+      "type": "array"
+    },
+    "verifications": {
+      "items": {
+        "$ref": "#/$defs/AttestationVerificationRecord"
+      },
+      "minItems": 1,
+      "title": "Verifications",
+      "type": "array"
+    }
+  },
+  "required": [
+    "policies",
+    "signers",
+    "keys",
+    "artifacts",
+    "execution_manifests",
+    "attestations",
+    "verifications",
+    "chains",
+    "snapshots"
+  ],
+  "title": "SignedRuntimeArtifactsExecutionAttestationsBundle",
+  "type": "object"
+}

@@ -190,6 +190,7 @@ from .routers import (
     unified_entity_evidence_query_api,
     investigation_session_research_context_runtime,
     cross_product_intelligence_handoff,
+    signed_runtime_artifacts_execution_attestations,
 )
 from app.routers.spark_runtime import router as spark_runtime_router
 
@@ -753,6 +754,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # Platform Core v3.94.0 — Cross-Product Intelligence Handoff Contract
     app.include_router(cross_product_intelligence_handoff.router)
     app.include_router(cross_product_intelligence_handoff.public_router)
+
+    # Platform Core v3.95.0 — Signed Runtime Artifacts & Execution Attestations
+    app.include_router(signed_runtime_artifacts_execution_attestations.router)
+    app.include_router(signed_runtime_artifacts_execution_attestations.public_router)
     return app
 
 

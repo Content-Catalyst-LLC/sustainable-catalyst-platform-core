@@ -1,3 +1,10 @@
+
+## 3.95.0 — Signed Runtime Artifacts & Execution Attestations
+- Added provider-neutral, content-addressed runtime artifact signing and execution attestation contracts.
+- Added signer/key references, canonical manifests, detached attestations, verification evidence, revocation/expiry status, chains, and snapshots.
+- Preserved epistemic/validation state and non-truth, non-promotion, non-mutation boundaries.
+- No database migration.
+
 ## 3.94.0 — Cross-Product Intelligence Handoff Contract
 - Added governed cross-product intelligence handoff, receipt, return, and trace contracts.
 - Preserves epistemic/validation/provenance boundaries across all seven product handoffs.
