@@ -1,3 +1,9 @@
+## 3.93.0 — Investigation Session & Research Context Runtime
+- Added persistent governed investigation sessions and research-context bindings above the v3.92 unified query API.
+- Added attributed context contributions, filters, working hypotheses, immutable/supersedable checkpoints, runtime traces, and research-context snapshots.
+- Preserved source contract identity, epistemic state, validation state, provenance, contradictions, and remote-reference/local-validation requirements across saved session context.
+- Clarified that saved context, persisted hypotheses, checkpoints, and contributions are not evidence creation, truth certification, or graph mutation.
+
 ## 3.92.0 — Unified Entity & Evidence Query API
 - Added one governed query surface across the v3.77–v3.91 entity/evidence runtime and control plane.
 - Added explicit query policies, scopes, plans, provenance references, qualified result sets, execution traces, and immutable query snapshots.

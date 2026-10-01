@@ -1,0 +1,5 @@
+./APPLY_AND_PUSH_PLATFORM_CORE_V3930.sh "$HOME/Downloads/sustainable-catalyst-platform-core"
+scp -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes DEPLOY_PLATFORM_CORE_V3930_CONTABO.sh catalystadmin@94.72.113.77:/tmp/
+ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes catalystadmin@94.72.113.77
+chmod +x /tmp/DEPLOY_PLATFORM_CORE_V3930_CONTABO.sh
+/tmp/DEPLOY_PLATFORM_CORE_V3930_CONTABO.sh

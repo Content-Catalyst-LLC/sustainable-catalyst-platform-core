@@ -1,0 +1,1046 @@
+{
+  "$defs": {
+    "ContextBindingKind": {
+      "enum": [
+        "entity",
+        "source",
+        "query",
+        "query-result",
+        "hypothesis",
+        "reasoning-trace",
+        "contradiction",
+        "timeline",
+        "investigation-package",
+        "federation-reference",
+        "runtime-metadata"
+      ],
+      "title": "ContextBindingKind",
+      "type": "string"
+    },
+    "ContributionActorKind": {
+      "enum": [
+        "human",
+        "assistant",
+        "runtime",
+        "system"
+      ],
+      "title": "ContributionActorKind",
+      "type": "string"
+    },
+    "EpistemicState": {
+      "enum": [
+        "governed-record",
+        "source-asserted",
+        "candidate",
+        "hypothesis",
+        "analytical",
+        "qualified",
+        "unresolved",
+        "remote-reference",
+        "runtime-metadata"
+      ],
+      "title": "EpistemicState",
+      "type": "string"
+    },
+    "HypothesisState": {
+      "enum": [
+        "open",
+        "supported",
+        "qualified",
+        "contradicted",
+        "closed"
+      ],
+      "title": "HypothesisState",
+      "type": "string"
+    },
+    "InvestigationSession": {
+      "properties": {
+        "consumer_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Consumer Ref",
+          "type": "string"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "opened_at": {
+          "maxLength": 80,
+          "minLength": 10,
+          "title": "Opened At",
+          "type": "string"
+        },
+        "parent_session_ref": {
+          "anyOf": [
+            {
+              "maxLength": 500,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Parent Session Ref"
+        },
+        "policy_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Policy Ref",
+          "type": "string"
+        },
+        "research_question": {
+          "maxLength": 8000,
+          "minLength": 3,
+          "title": "Research Question",
+          "type": "string"
+        },
+        "session_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Session Id",
+          "type": "string"
+        },
+        "session_is_working_context_not_evidence": {
+          "const": true,
+          "default": true,
+          "title": "Session Is Working Context Not Evidence",
+          "type": "boolean"
+        },
+        "status": {
+          "$ref": "#/$defs/SessionStatus"
+        },
+        "title": {
+          "maxLength": 1000,
+          "minLength": 3,
+          "title": "Title",
+          "type": "string"
+        },
+        "updated_at": {
+          "maxLength": 80,
+          "minLength": 10,
+          "title": "Updated At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "session_id",
+        "policy_ref",
+        "consumer_ref",
+        "title",
+        "research_question",
+        "status",
+        "opened_at",
+        "updated_at"
+      ],
+      "title": "InvestigationSession",
+      "type": "object"
+    },
+    "InvestigationSessionCheckpoint": {
+      "properties": {
+        "binding_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Binding Refs",
+          "type": "array"
+        },
+        "captured_at": {
+          "maxLength": 80,
+          "minLength": 10,
+          "title": "Captured At",
+          "type": "string"
+        },
+        "checkpoint_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Checkpoint Id",
+          "type": "string"
+        },
+        "checkpoint_is_not_truth_certification": {
+          "const": true,
+          "default": true,
+          "title": "Checkpoint Is Not Truth Certification",
+          "type": "boolean"
+        },
+        "contribution_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Contribution Refs",
+          "type": "array"
+        },
+        "deterministic_context_fingerprint_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Deterministic Context Fingerprint Sha256",
+          "type": "string"
+        },
+        "filter_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Filter Refs",
+          "type": "array"
+        },
+        "hypothesis_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Hypothesis Refs",
+          "type": "array"
+        },
+        "immutable": {
+          "const": true,
+          "default": true,
+          "title": "Immutable",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "ordinal": {
+          "minimum": 1,
+          "title": "Ordinal",
+          "type": "integer"
+        },
+        "query_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Query Refs",
+          "type": "array"
+        },
+        "session_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Session Ref",
+          "type": "string"
+        },
+        "supersedable": {
+          "const": true,
+          "default": true,
+          "title": "Supersedable",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "checkpoint_id",
+        "session_ref",
+        "ordinal",
+        "binding_refs",
+        "contribution_refs",
+        "captured_at",
+        "deterministic_context_fingerprint_sha256"
+      ],
+      "title": "InvestigationSessionCheckpoint",
+      "type": "object"
+    },
+    "InvestigationSessionPolicy": {
+      "properties": {
+        "allow_epistemic_state_promotion": {
+          "const": false,
+          "default": false,
+          "title": "Allow Epistemic State Promotion",
+          "type": "boolean"
+        },
+        "allow_graph_mutation_from_session_state": {
+          "const": false,
+          "default": false,
+          "title": "Allow Graph Mutation From Session State",
+          "type": "boolean"
+        },
+        "allow_remote_reference_promotion": {
+          "const": false,
+          "default": false,
+          "title": "Allow Remote Reference Promotion",
+          "type": "boolean"
+        },
+        "allow_validation_bypass": {
+          "const": false,
+          "default": false,
+          "title": "Allow Validation Bypass",
+          "type": "boolean"
+        },
+        "checkpoints_may_be_superseded": {
+          "const": true,
+          "default": true,
+          "title": "Checkpoints May Be Superseded",
+          "type": "boolean"
+        },
+        "immutable_checkpoints": {
+          "const": true,
+          "default": true,
+          "title": "Immutable Checkpoints",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "persisted_conclusion_is_not_truth_verdict": {
+          "const": true,
+          "default": true,
+          "title": "Persisted Conclusion Is Not Truth Verdict",
+          "type": "boolean"
+        },
+        "persisted_hypothesis_is_not_graph_fact": {
+          "const": true,
+          "default": true,
+          "title": "Persisted Hypothesis Is Not Graph Fact",
+          "type": "boolean"
+        },
+        "policy_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Policy Id",
+          "type": "string"
+        },
+        "preserve_contradictions": {
+          "const": true,
+          "default": true,
+          "title": "Preserve Contradictions",
+          "type": "boolean"
+        },
+        "preserve_epistemic_state": {
+          "const": true,
+          "default": true,
+          "title": "Preserve Epistemic State",
+          "type": "boolean"
+        },
+        "preserve_provenance": {
+          "const": true,
+          "default": true,
+          "title": "Preserve Provenance",
+          "type": "boolean"
+        },
+        "preserve_remote_reference_state": {
+          "const": true,
+          "default": true,
+          "title": "Preserve Remote Reference State",
+          "type": "boolean"
+        },
+        "preserve_source_contract_identity": {
+          "const": true,
+          "default": true,
+          "title": "Preserve Source Contract Identity",
+          "type": "boolean"
+        },
+        "preserve_validation_state": {
+          "const": true,
+          "default": true,
+          "title": "Preserve Validation State",
+          "type": "boolean"
+        },
+        "require_attributed_context_changes": {
+          "const": true,
+          "default": true,
+          "title": "Require Attributed Context Changes",
+          "type": "boolean"
+        },
+        "session_context_is_not_evidence": {
+          "const": true,
+          "default": true,
+          "title": "Session Context Is Not Evidence",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "policy_id"
+      ],
+      "title": "InvestigationSessionPolicy",
+      "type": "object"
+    },
+    "InvestigationSessionRuntimeTrace": {
+      "properties": {
+        "checkpoint_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Checkpoint Refs",
+          "type": "array"
+        },
+        "contradiction_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Contradiction Refs",
+          "type": "array"
+        },
+        "deterministic_trace_fingerprint_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Deterministic Trace Fingerprint Sha256",
+          "type": "string"
+        },
+        "ended_at": {
+          "maxLength": 80,
+          "minLength": 10,
+          "title": "Ended At",
+          "type": "string"
+        },
+        "final_session_status": {
+          "$ref": "#/$defs/SessionStatus"
+        },
+        "graph_mutation_performed": {
+          "const": false,
+          "default": false,
+          "title": "Graph Mutation Performed",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "query_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Query Refs",
+          "type": "array"
+        },
+        "reasoning_trace_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Reasoning Trace Refs",
+          "type": "array"
+        },
+        "session_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Session Ref",
+          "type": "string"
+        },
+        "started_at": {
+          "maxLength": 80,
+          "minLength": 10,
+          "title": "Started At",
+          "type": "string"
+        },
+        "timeline_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Timeline Refs",
+          "type": "array"
+        },
+        "trace_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Trace Id",
+          "type": "string"
+        },
+        "trace_is_not_truth_assessment": {
+          "const": true,
+          "default": true,
+          "title": "Trace Is Not Truth Assessment",
+          "type": "boolean"
+        },
+        "trace_preserves_contradictions": {
+          "const": true,
+          "default": true,
+          "title": "Trace Preserves Contradictions",
+          "type": "boolean"
+        },
+        "trace_preserves_epistemic_state": {
+          "const": true,
+          "default": true,
+          "title": "Trace Preserves Epistemic State",
+          "type": "boolean"
+        },
+        "trace_preserves_provenance": {
+          "const": true,
+          "default": true,
+          "title": "Trace Preserves Provenance",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "trace_id",
+        "session_ref",
+        "checkpoint_refs",
+        "started_at",
+        "ended_at",
+        "final_session_status",
+        "deterministic_trace_fingerprint_sha256"
+      ],
+      "title": "InvestigationSessionRuntimeTrace",
+      "type": "object"
+    },
+    "ResearchContextBinding": {
+      "properties": {
+        "binding_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Binding Id",
+          "type": "string"
+        },
+        "binding_kind": {
+          "$ref": "#/$defs/ContextBindingKind"
+        },
+        "binding_role": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Binding Role",
+          "type": "string"
+        },
+        "context_selection_does_not_promote_source_state": {
+          "const": true,
+          "default": true,
+          "title": "Context Selection Does Not Promote Source State",
+          "type": "boolean"
+        },
+        "context_selection_is_not_evidence_creation": {
+          "const": true,
+          "default": true,
+          "title": "Context Selection Is Not Evidence Creation",
+          "type": "boolean"
+        },
+        "epistemic_state": {
+          "$ref": "#/$defs/EpistemicState"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "provenance_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Provenance Refs",
+          "type": "array"
+        },
+        "selected_at": {
+          "maxLength": 80,
+          "minLength": 10,
+          "title": "Selected At",
+          "type": "string"
+        },
+        "selected_by_contribution_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Selected By Contribution Ref",
+          "type": "string"
+        },
+        "session_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Session Ref",
+          "type": "string"
+        },
+        "source_contract": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Source Contract",
+          "type": "string"
+        },
+        "source_object_ref": {
+          "maxLength": 1000,
+          "minLength": 3,
+          "title": "Source Object Ref",
+          "type": "string"
+        },
+        "validation_state": {
+          "$ref": "#/$defs/ResultValidationState"
+        }
+      },
+      "required": [
+        "binding_id",
+        "session_ref",
+        "binding_kind",
+        "source_contract",
+        "source_object_ref",
+        "epistemic_state",
+        "validation_state",
+        "provenance_refs",
+        "binding_role",
+        "selected_at",
+        "selected_by_contribution_ref"
+      ],
+      "title": "ResearchContextBinding",
+      "type": "object"
+    },
+    "ResearchContextFilter": {
+      "properties": {
+        "allowed_epistemic_states": {
+          "items": {
+            "$ref": "#/$defs/EpistemicState"
+          },
+          "minItems": 1,
+          "title": "Allowed Epistemic States",
+          "type": "array"
+        },
+        "filter_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Filter Id",
+          "type": "string"
+        },
+        "filter_is_not_truth_filter": {
+          "const": true,
+          "default": true,
+          "title": "Filter Is Not Truth Filter",
+          "type": "boolean"
+        },
+        "include_contradictions": {
+          "default": true,
+          "title": "Include Contradictions",
+          "type": "boolean"
+        },
+        "include_remote_references": {
+          "default": false,
+          "title": "Include Remote References",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "omitted_context_does_not_imply_nonexistence": {
+          "const": true,
+          "default": true,
+          "title": "Omitted Context Does Not Imply Nonexistence",
+          "type": "boolean"
+        },
+        "session_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Session Ref",
+          "type": "string"
+        },
+        "target_domains": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Target Domains",
+          "type": "array"
+        },
+        "valid_time_end": {
+          "anyOf": [
+            {
+              "maxLength": 80,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Valid Time End"
+        },
+        "valid_time_start": {
+          "anyOf": [
+            {
+              "maxLength": 80,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Valid Time Start"
+        }
+      },
+      "required": [
+        "filter_id",
+        "session_ref",
+        "target_domains",
+        "allowed_epistemic_states"
+      ],
+      "title": "ResearchContextFilter",
+      "type": "object"
+    },
+    "ResearchContextSnapshot": {
+      "properties": {
+        "as_of": {
+          "maxLength": 80,
+          "minLength": 10,
+          "title": "As Of",
+          "type": "string"
+        },
+        "checkpoint_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Checkpoint Ref",
+          "type": "string"
+        },
+        "immutable": {
+          "const": true,
+          "default": true,
+          "title": "Immutable",
+          "type": "boolean"
+        },
+        "later_context_may_supersede_snapshot": {
+          "const": true,
+          "default": true,
+          "title": "Later Context May Supersede Snapshot",
+          "type": "boolean"
+        },
+        "later_evidence_may_supersede_context": {
+          "const": true,
+          "default": true,
+          "title": "Later Evidence May Supersede Context",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "session_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Session Ref",
+          "type": "string"
+        },
+        "snapshot_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Snapshot Id",
+          "type": "string"
+        },
+        "snapshot_is_not_evidence": {
+          "const": true,
+          "default": true,
+          "title": "Snapshot Is Not Evidence",
+          "type": "boolean"
+        },
+        "snapshot_is_not_truth_certification": {
+          "const": true,
+          "default": true,
+          "title": "Snapshot Is Not Truth Certification",
+          "type": "boolean"
+        },
+        "trace_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Trace Ref",
+          "type": "string"
+        }
+      },
+      "required": [
+        "snapshot_id",
+        "session_ref",
+        "checkpoint_ref",
+        "trace_ref",
+        "as_of"
+      ],
+      "title": "ResearchContextSnapshot",
+      "type": "object"
+    },
+    "ResultValidationState": {
+      "enum": [
+        "governed-reference",
+        "review-required",
+        "local-validation-required",
+        "analytical-only",
+        "unresolved",
+        "metadata-only"
+      ],
+      "title": "ResultValidationState",
+      "type": "string"
+    },
+    "SessionContribution": {
+      "properties": {
+        "action": {
+          "maxLength": 1000,
+          "minLength": 3,
+          "title": "Action",
+          "type": "string"
+        },
+        "actor_kind": {
+          "$ref": "#/$defs/ContributionActorKind"
+        },
+        "actor_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Actor Ref",
+          "type": "string"
+        },
+        "attribution_is_not_authority": {
+          "const": true,
+          "default": true,
+          "title": "Attribution Is Not Authority",
+          "type": "boolean"
+        },
+        "contributed_at": {
+          "maxLength": 80,
+          "minLength": 10,
+          "title": "Contributed At",
+          "type": "string"
+        },
+        "contribution_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Contribution Id",
+          "type": "string"
+        },
+        "contribution_is_not_evidence": {
+          "const": true,
+          "default": true,
+          "title": "Contribution Is Not Evidence",
+          "type": "boolean"
+        },
+        "created_or_updated_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Created Or Updated Refs",
+          "type": "array"
+        },
+        "input_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Input Refs",
+          "type": "array"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "session_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Session Ref",
+          "type": "string"
+        }
+      },
+      "required": [
+        "contribution_id",
+        "session_ref",
+        "actor_kind",
+        "actor_ref",
+        "action",
+        "contributed_at"
+      ],
+      "title": "SessionContribution",
+      "type": "object"
+    },
+    "SessionHypothesis": {
+      "properties": {
+        "contradicting_binding_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Contradicting Binding Refs",
+          "type": "array"
+        },
+        "created_by_contribution_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Created By Contribution Ref",
+          "type": "string"
+        },
+        "hypothesis_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Hypothesis Id",
+          "type": "string"
+        },
+        "hypothesis_state_is_not_truth_verdict": {
+          "const": true,
+          "default": true,
+          "title": "Hypothesis State Is Not Truth Verdict",
+          "type": "boolean"
+        },
+        "last_updated_by_contribution_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Last Updated By Contribution Ref",
+          "type": "string"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "persisted_hypothesis_is_not_graph_fact": {
+          "const": true,
+          "default": true,
+          "title": "Persisted Hypothesis Is Not Graph Fact",
+          "type": "boolean"
+        },
+        "session_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Session Ref",
+          "type": "string"
+        },
+        "state": {
+          "$ref": "#/$defs/HypothesisState"
+        },
+        "statement": {
+          "maxLength": 8000,
+          "minLength": 3,
+          "title": "Statement",
+          "type": "string"
+        },
+        "supporting_binding_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Supporting Binding Refs",
+          "type": "array"
+        }
+      },
+      "required": [
+        "hypothesis_id",
+        "session_ref",
+        "statement",
+        "state",
+        "created_by_contribution_ref",
+        "last_updated_by_contribution_ref"
+      ],
+      "title": "SessionHypothesis",
+      "type": "object"
+    },
+    "SessionStatus": {
+      "enum": [
+        "active",
+        "paused",
+        "closed",
+        "archived"
+      ],
+      "title": "SessionStatus",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "bindings": {
+      "items": {
+        "$ref": "#/$defs/ResearchContextBinding"
+      },
+      "minItems": 1,
+      "title": "Bindings",
+      "type": "array"
+    },
+    "checkpoints": {
+      "items": {
+        "$ref": "#/$defs/InvestigationSessionCheckpoint"
+      },
+      "minItems": 1,
+      "title": "Checkpoints",
+      "type": "array"
+    },
+    "contract": {
+      "const": "sc.core.investigation-session-research-context-runtime.v1",
+      "default": "sc.core.investigation-session-research-context-runtime.v1",
+      "title": "Contract",
+      "type": "string"
+    },
+    "contributions": {
+      "items": {
+        "$ref": "#/$defs/SessionContribution"
+      },
+      "minItems": 1,
+      "title": "Contributions",
+      "type": "array"
+    },
+    "evidence_graph_mutation_performed": {
+      "const": false,
+      "default": false,
+      "title": "Evidence Graph Mutation Performed",
+      "type": "boolean"
+    },
+    "filters": {
+      "items": {
+        "$ref": "#/$defs/ResearchContextFilter"
+      },
+      "minItems": 1,
+      "title": "Filters",
+      "type": "array"
+    },
+    "hypotheses": {
+      "items": {
+        "$ref": "#/$defs/SessionHypothesis"
+      },
+      "minItems": 1,
+      "title": "Hypotheses",
+      "type": "array"
+    },
+    "identity_graph_mutation_performed": {
+      "const": false,
+      "default": false,
+      "title": "Identity Graph Mutation Performed",
+      "type": "boolean"
+    },
+    "policies": {
+      "items": {
+        "$ref": "#/$defs/InvestigationSessionPolicy"
+      },
+      "minItems": 1,
+      "title": "Policies",
+      "type": "array"
+    },
+    "query_contract": {
+      "const": "sc.core.unified-entity-evidence-query-api.v1",
+      "default": "sc.core.unified-entity-evidence-query-api.v1",
+      "title": "Query Contract",
+      "type": "string"
+    },
+    "relationship_graph_mutation_performed": {
+      "const": false,
+      "default": false,
+      "title": "Relationship Graph Mutation Performed",
+      "type": "boolean"
+    },
+    "release": {
+      "const": "3.93.0",
+      "default": "3.93.0",
+      "title": "Release",
+      "type": "string"
+    },
+    "sessions": {
+      "items": {
+        "$ref": "#/$defs/InvestigationSession"
+      },
+      "minItems": 1,
+      "title": "Sessions",
+      "type": "array"
+    },
+    "snapshots": {
+      "items": {
+        "$ref": "#/$defs/ResearchContextSnapshot"
+      },
+      "minItems": 1,
+      "title": "Snapshots",
+      "type": "array"
+    },
+    "traces": {
+      "items": {
+        "$ref": "#/$defs/InvestigationSessionRuntimeTrace"
+      },
+      "minItems": 1,
+      "title": "Traces",
+      "type": "array"
+    }
+  },
+  "required": [
+    "policies",
+    "sessions",
+    "bindings",
+    "filters",
+    "hypotheses",
+    "contributions",
+    "checkpoints",
+    "traces",
+    "snapshots"
+  ],
+  "title": "InvestigationSessionResearchContextBundle",
+  "type": "object"
+}
