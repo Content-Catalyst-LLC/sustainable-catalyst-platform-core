@@ -185,6 +185,7 @@ from .routers import (
     entity_centric_timeline_event_association,
     reproducible_graph_investigation_package,
     federated_evidence_graph_exchange,
+    unified_entity_evidence_intelligence_runtime,
 )
 from app.routers.spark_runtime import router as spark_runtime_router
 
@@ -728,6 +729,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # Platform Core v3.89.0 — Federated Evidence Graph Exchange Contract
     app.include_router(federated_evidence_graph_exchange.router)
     app.include_router(federated_evidence_graph_exchange.public_router)
+
+    # Platform Core v3.90.0 — Unified Entity & Evidence Intelligence Runtime
+    app.include_router(unified_entity_evidence_intelligence_runtime.router)
+    app.include_router(unified_entity_evidence_intelligence_runtime.public_router)
     return app
 
 

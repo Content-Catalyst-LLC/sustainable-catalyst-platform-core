@@ -1,3 +1,6 @@
+== 3.90.0 ==
+* Adds Unified Entity & Evidence Intelligence Runtime diagnostics and Core 3.90.0 compatibility.
+
 == 3.79.0 ==
 * Adds Probabilistic Record Linkage & Entity Matching Objects diagnostics and Core 3.79.0 compatibility.
 
@@ -50,7 +53,7 @@ Tags: knowledge graph, entity registry, provenance, live data, sustainable catal
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.0
-Stable tag: 3.89.0
+Stable tag: 3.90.0
 License: MIT
 
 WordPress status, live-data gateway, and entity lookup client for Sustainable Catalyst Platform Core.

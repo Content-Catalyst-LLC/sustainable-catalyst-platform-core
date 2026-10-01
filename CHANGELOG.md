@@ -1,3 +1,9 @@
+# 3.90.0
+- Added Unified Entity & Evidence Intelligence Runtime spanning the governed v3.77-v3.89 identity, evidence, relationship, graph-reasoning, reproducibility, and federation contracts.
+- Added explicit runtime capability bindings, policy, request, stage execution, handoff, finding, execution-trace, and immutable snapshot objects.
+- Preserved upstream contract identity, epistemic state, provenance, contradictions, local-validation requirements, and review gates without creating a global truth score or mutating identity/relationship/evidence graphs.
+- Database migration: none.
+
 # 3.89.0
 - Added Federated Evidence Graph Exchange Contract with reference-first remote object descriptors, content-addressed exchange manifests, node identity, integrity attestations, conflict preservation, local validation gates, and immutable exchange snapshots.
 - Preserved remote epistemic state and source provenance without treating node trust, signatures, federation agreement, or schema compatibility as truth.

@@ -1,0 +1,806 @@
+{
+  "$defs": {
+    "RuntimeCapabilityBinding": {
+      "properties": {
+        "capability_id": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Capability Id",
+          "type": "string"
+        },
+        "contract": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Contract",
+          "type": "string"
+        },
+        "may_mutate_evidence_graph": {
+          "const": false,
+          "default": false,
+          "title": "May Mutate Evidence Graph",
+          "type": "boolean"
+        },
+        "may_mutate_identity_graph": {
+          "const": false,
+          "default": false,
+          "title": "May Mutate Identity Graph",
+          "type": "boolean"
+        },
+        "may_mutate_relationship_graph": {
+          "const": false,
+          "default": false,
+          "title": "May Mutate Relationship Graph",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "preserves_epistemic_state": {
+          "const": true,
+          "default": true,
+          "title": "Preserves Epistemic State",
+          "type": "boolean"
+        },
+        "preserves_provenance": {
+          "const": true,
+          "default": true,
+          "title": "Preserves Provenance",
+          "type": "boolean"
+        },
+        "preserves_upstream_contract": {
+          "const": true,
+          "default": true,
+          "title": "Preserves Upstream Contract",
+          "type": "boolean"
+        },
+        "reference_bundle_fingerprint_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Reference Bundle Fingerprint Sha256",
+          "type": "string"
+        },
+        "release": {
+          "pattern": "^3\\.(?:7[7-9]|8[0-9])\\.0$",
+          "title": "Release",
+          "type": "string"
+        },
+        "service_module": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Service Module",
+          "type": "string"
+        },
+        "stage_kind": {
+          "$ref": "#/$defs/RuntimeStageKind"
+        }
+      },
+      "required": [
+        "capability_id",
+        "stage_kind",
+        "release",
+        "contract",
+        "service_module",
+        "reference_bundle_fingerprint_sha256"
+      ],
+      "title": "RuntimeCapabilityBinding",
+      "type": "object"
+    },
+    "RuntimeDisposition": {
+      "enum": [
+        "qualified-analytical",
+        "unresolved",
+        "validation-required",
+        "reference-only"
+      ],
+      "title": "RuntimeDisposition",
+      "type": "string"
+    },
+    "RuntimeHandoffDecision": {
+      "properties": {
+        "auto_promotion_allowed": {
+          "const": false,
+          "default": false,
+          "title": "Auto Promotion Allowed",
+          "type": "boolean"
+        },
+        "from_stage_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "From Stage Ref",
+          "type": "string"
+        },
+        "handoff_is_not_validation": {
+          "const": true,
+          "default": true,
+          "title": "Handoff Is Not Validation",
+          "type": "boolean"
+        },
+        "handoff_required": {
+          "const": true,
+          "default": true,
+          "title": "Handoff Required",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "reason": {
+          "maxLength": 8000,
+          "minLength": 3,
+          "title": "Reason",
+          "type": "string"
+        },
+        "runtime_handoff_decision_id": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Runtime Handoff Decision Id",
+          "type": "string"
+        },
+        "source_output_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Source Output Refs",
+          "type": "array"
+        },
+        "to_stage_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "To Stage Ref",
+          "type": "string"
+        }
+      },
+      "required": [
+        "runtime_handoff_decision_id",
+        "from_stage_ref",
+        "to_stage_ref",
+        "reason",
+        "source_output_refs"
+      ],
+      "title": "RuntimeHandoffDecision",
+      "type": "object"
+    },
+    "RuntimeStageExecution": {
+      "properties": {
+        "capability_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Capability Ref",
+          "type": "string"
+        },
+        "contradiction_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Contradiction Refs",
+          "type": "array"
+        },
+        "input_epistemic_states": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Input Epistemic States",
+          "type": "array"
+        },
+        "input_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Input Refs",
+          "type": "array"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "output_epistemic_states": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Output Epistemic States",
+          "type": "array"
+        },
+        "output_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Output Refs",
+          "type": "array"
+        },
+        "qualification_note": {
+          "maxLength": 8000,
+          "minLength": 3,
+          "title": "Qualification Note",
+          "type": "string"
+        },
+        "runtime_stage_execution_id": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Runtime Stage Execution Id",
+          "type": "string"
+        },
+        "sequence": {
+          "minimum": 1,
+          "title": "Sequence",
+          "type": "integer"
+        },
+        "stage_does_not_auto_promote_graph_fact": {
+          "const": true,
+          "default": true,
+          "title": "Stage Does Not Auto Promote Graph Fact",
+          "type": "boolean"
+        },
+        "stage_output_is_not_truth_verdict": {
+          "const": true,
+          "default": true,
+          "title": "Stage Output Is Not Truth Verdict",
+          "type": "boolean"
+        },
+        "status": {
+          "$ref": "#/$defs/RuntimeStageStatus"
+        }
+      },
+      "required": [
+        "runtime_stage_execution_id",
+        "capability_ref",
+        "sequence",
+        "output_refs",
+        "output_epistemic_states",
+        "status",
+        "qualification_note"
+      ],
+      "title": "RuntimeStageExecution",
+      "type": "object"
+    },
+    "RuntimeStageKind": {
+      "enum": [
+        "identity-resolution",
+        "temporal-identity",
+        "record-linkage",
+        "source-reconciliation",
+        "documentary-source",
+        "relationship-discovery",
+        "network-intelligence",
+        "connection-paths",
+        "multi-hop-reasoning",
+        "contradiction-resolution",
+        "timeline",
+        "reproducible-package",
+        "federation"
+      ],
+      "title": "RuntimeStageKind",
+      "type": "string"
+    },
+    "RuntimeStageStatus": {
+      "enum": [
+        "completed",
+        "qualified",
+        "handoff-required",
+        "stopped"
+      ],
+      "title": "RuntimeStageStatus",
+      "type": "string"
+    },
+    "UnifiedRuntimeExecutionTrace": {
+      "properties": {
+        "completed_at": {
+          "maxLength": 80,
+          "minLength": 10,
+          "title": "Completed At",
+          "type": "string"
+        },
+        "completed_runtime_is_not_truth_certification": {
+          "const": true,
+          "default": true,
+          "title": "Completed Runtime Is Not Truth Certification",
+          "type": "boolean"
+        },
+        "deterministic_trace_fingerprint_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Deterministic Trace Fingerprint Sha256",
+          "type": "string"
+        },
+        "final_disposition": {
+          "$ref": "#/$defs/RuntimeDisposition"
+        },
+        "finding_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Finding Refs",
+          "type": "array"
+        },
+        "handoff_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Handoff Refs",
+          "type": "array"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "runtime_request_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Runtime Request Ref",
+          "type": "string"
+        },
+        "stage_execution_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Stage Execution Refs",
+          "type": "array"
+        },
+        "started_at": {
+          "maxLength": 80,
+          "minLength": 10,
+          "title": "Started At",
+          "type": "string"
+        },
+        "trace_is_not_proof": {
+          "const": true,
+          "default": true,
+          "title": "Trace Is Not Proof",
+          "type": "boolean"
+        },
+        "unified_runtime_execution_trace_id": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Unified Runtime Execution Trace Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "unified_runtime_execution_trace_id",
+        "runtime_request_ref",
+        "stage_execution_refs",
+        "started_at",
+        "completed_at",
+        "final_disposition",
+        "deterministic_trace_fingerprint_sha256"
+      ],
+      "title": "UnifiedRuntimeExecutionTrace",
+      "type": "object"
+    },
+    "UnifiedRuntimeFinding": {
+      "properties": {
+        "analytical_confidence_is_not_probability_of_truth": {
+          "const": true,
+          "default": true,
+          "title": "Analytical Confidence Is Not Probability Of Truth",
+          "type": "boolean"
+        },
+        "basis_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Basis Refs",
+          "type": "array"
+        },
+        "contradiction_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Contradiction Refs",
+          "type": "array"
+        },
+        "disposition": {
+          "$ref": "#/$defs/RuntimeDisposition"
+        },
+        "finding_is_not_truth_verdict": {
+          "const": true,
+          "default": true,
+          "title": "Finding Is Not Truth Verdict",
+          "type": "boolean"
+        },
+        "human_review_required": {
+          "const": true,
+          "default": true,
+          "title": "Human Review Required",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "statement": {
+          "maxLength": 12000,
+          "minLength": 3,
+          "title": "Statement",
+          "type": "string"
+        },
+        "unified_runtime_finding_id": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Unified Runtime Finding Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "unified_runtime_finding_id",
+        "statement",
+        "basis_refs",
+        "disposition"
+      ],
+      "title": "UnifiedRuntimeFinding",
+      "type": "object"
+    },
+    "UnifiedRuntimePolicy": {
+      "properties": {
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "require_capability_contract_identity": {
+          "const": true,
+          "default": true,
+          "title": "Require Capability Contract Identity",
+          "type": "boolean"
+        },
+        "require_contradiction_preservation": {
+          "const": true,
+          "default": true,
+          "title": "Require Contradiction Preservation",
+          "type": "boolean"
+        },
+        "require_epistemic_state_preservation": {
+          "const": true,
+          "default": true,
+          "title": "Require Epistemic State Preservation",
+          "type": "boolean"
+        },
+        "require_explicit_handoffs": {
+          "const": true,
+          "default": true,
+          "title": "Require Explicit Handoffs",
+          "type": "boolean"
+        },
+        "require_explicit_stopping_decisions": {
+          "const": true,
+          "default": true,
+          "title": "Require Explicit Stopping Decisions",
+          "type": "boolean"
+        },
+        "require_human_review_for_promotion": {
+          "const": true,
+          "default": true,
+          "title": "Require Human Review For Promotion",
+          "type": "boolean"
+        },
+        "require_local_validation_for_remote_references": {
+          "const": true,
+          "default": true,
+          "title": "Require Local Validation For Remote References",
+          "type": "boolean"
+        },
+        "require_provenance_preservation": {
+          "const": true,
+          "default": true,
+          "title": "Require Provenance Preservation",
+          "type": "boolean"
+        },
+        "runtime_may_auto_promote_candidates": {
+          "const": false,
+          "default": false,
+          "title": "Runtime May Auto Promote Candidates",
+          "type": "boolean"
+        },
+        "runtime_may_auto_resolve_contradictions": {
+          "const": false,
+          "default": false,
+          "title": "Runtime May Auto Resolve Contradictions",
+          "type": "boolean"
+        },
+        "runtime_may_create_global_truth_score": {
+          "const": false,
+          "default": false,
+          "title": "Runtime May Create Global Truth Score",
+          "type": "boolean"
+        },
+        "runtime_may_mutate_governed_graphs": {
+          "const": false,
+          "default": false,
+          "title": "Runtime May Mutate Governed Graphs",
+          "type": "boolean"
+        },
+        "runtime_may_treat_remote_acceptance_as_evidence": {
+          "const": false,
+          "default": false,
+          "title": "Runtime May Treat Remote Acceptance As Evidence",
+          "type": "boolean"
+        },
+        "runtime_policy_id": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Runtime Policy Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "runtime_policy_id"
+      ],
+      "title": "UnifiedRuntimePolicy",
+      "type": "object"
+    },
+    "UnifiedRuntimeRequest": {
+      "properties": {
+        "as_of": {
+          "maxLength": 80,
+          "minLength": 10,
+          "title": "As Of",
+          "type": "string"
+        },
+        "include_remote_references": {
+          "default": false,
+          "title": "Include Remote References",
+          "type": "boolean"
+        },
+        "max_hops": {
+          "maximum": 25,
+          "minimum": 1,
+          "title": "Max Hops",
+          "type": "integer"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "no_graph_mutation": {
+          "const": true,
+          "default": true,
+          "title": "No Graph Mutation",
+          "type": "boolean"
+        },
+        "objective": {
+          "maxLength": 8000,
+          "minLength": 3,
+          "title": "Objective",
+          "type": "string"
+        },
+        "requested_capability_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Requested Capability Refs",
+          "type": "array"
+        },
+        "runtime_request_id": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Runtime Request Id",
+          "type": "string"
+        },
+        "start_entity_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Start Entity Refs",
+          "type": "array"
+        },
+        "target_entity_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Target Entity Refs",
+          "type": "array"
+        }
+      },
+      "required": [
+        "runtime_request_id",
+        "objective",
+        "start_entity_refs",
+        "requested_capability_refs",
+        "as_of",
+        "max_hops"
+      ],
+      "title": "UnifiedRuntimeRequest",
+      "type": "object"
+    },
+    "UnifiedRuntimeSnapshot": {
+      "properties": {
+        "as_of": {
+          "maxLength": 80,
+          "minLength": 10,
+          "title": "As Of",
+          "type": "string"
+        },
+        "capability_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Capability Refs",
+          "type": "array"
+        },
+        "execution_trace_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Execution Trace Ref",
+          "type": "string"
+        },
+        "immutable": {
+          "const": true,
+          "default": true,
+          "title": "Immutable",
+          "type": "boolean"
+        },
+        "later_evidence_may_supersede_snapshot": {
+          "const": true,
+          "default": true,
+          "title": "Later Evidence May Supersede Snapshot",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "runtime_policy_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Runtime Policy Ref",
+          "type": "string"
+        },
+        "runtime_request_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Runtime Request Ref",
+          "type": "string"
+        },
+        "snapshot_is_not_truth_verdict": {
+          "const": true,
+          "default": true,
+          "title": "Snapshot Is Not Truth Verdict",
+          "type": "boolean"
+        },
+        "unified_runtime_snapshot_id": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Unified Runtime Snapshot Id",
+          "type": "string"
+        },
+        "upstream_objects_remain_authoritative_for_their_own_state": {
+          "const": true,
+          "default": true,
+          "title": "Upstream Objects Remain Authoritative For Their Own State",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "unified_runtime_snapshot_id",
+        "runtime_policy_ref",
+        "runtime_request_ref",
+        "execution_trace_ref",
+        "capability_refs",
+        "as_of"
+      ],
+      "title": "UnifiedRuntimeSnapshot",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "capabilities": {
+      "items": {
+        "$ref": "#/$defs/RuntimeCapabilityBinding"
+      },
+      "maxItems": 13,
+      "minItems": 13,
+      "title": "Capabilities",
+      "type": "array"
+    },
+    "contract": {
+      "const": "sc.core.unified-entity-evidence-intelligence-runtime.v1",
+      "default": "sc.core.unified-entity-evidence-intelligence-runtime.v1",
+      "title": "Contract",
+      "type": "string"
+    },
+    "evidence_graph_mutation_performed": {
+      "const": false,
+      "default": false,
+      "title": "Evidence Graph Mutation Performed",
+      "type": "boolean"
+    },
+    "findings": {
+      "items": {
+        "$ref": "#/$defs/UnifiedRuntimeFinding"
+      },
+      "minItems": 1,
+      "title": "Findings",
+      "type": "array"
+    },
+    "handoffs": {
+      "items": {
+        "$ref": "#/$defs/RuntimeHandoffDecision"
+      },
+      "title": "Handoffs",
+      "type": "array"
+    },
+    "identity_graph_mutation_performed": {
+      "const": false,
+      "default": false,
+      "title": "Identity Graph Mutation Performed",
+      "type": "boolean"
+    },
+    "policies": {
+      "items": {
+        "$ref": "#/$defs/UnifiedRuntimePolicy"
+      },
+      "minItems": 1,
+      "title": "Policies",
+      "type": "array"
+    },
+    "relationship_graph_mutation_performed": {
+      "const": false,
+      "default": false,
+      "title": "Relationship Graph Mutation Performed",
+      "type": "boolean"
+    },
+    "release": {
+      "const": "3.90.0",
+      "default": "3.90.0",
+      "title": "Release",
+      "type": "string"
+    },
+    "requests": {
+      "items": {
+        "$ref": "#/$defs/UnifiedRuntimeRequest"
+      },
+      "minItems": 1,
+      "title": "Requests",
+      "type": "array"
+    },
+    "snapshots": {
+      "items": {
+        "$ref": "#/$defs/UnifiedRuntimeSnapshot"
+      },
+      "minItems": 1,
+      "title": "Snapshots",
+      "type": "array"
+    },
+    "stage_executions": {
+      "items": {
+        "$ref": "#/$defs/RuntimeStageExecution"
+      },
+      "minItems": 1,
+      "title": "Stage Executions",
+      "type": "array"
+    },
+    "traces": {
+      "items": {
+        "$ref": "#/$defs/UnifiedRuntimeExecutionTrace"
+      },
+      "minItems": 1,
+      "title": "Traces",
+      "type": "array"
+    }
+  },
+  "required": [
+    "capabilities",
+    "policies",
+    "requests",
+    "stage_executions",
+    "findings",
+    "traces",
+    "snapshots"
+  ],
+  "title": "UnifiedEntityEvidenceIntelligenceRuntimeBundle",
+  "type": "object"
+}
