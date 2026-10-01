@@ -1,0 +1,886 @@
+{
+  "$defs": {
+    "CapabilityAvailability": {
+      "enum": [
+        "active",
+        "degraded",
+        "unavailable"
+      ],
+      "title": "CapabilityAvailability",
+      "type": "string"
+    },
+    "CapabilityNegotiationDecision": {
+      "properties": {
+        "applied_constraints": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Applied Constraints",
+          "type": "array"
+        },
+        "capability_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Capability Ref",
+          "type": "string"
+        },
+        "consumer_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Consumer Ref",
+          "type": "string"
+        },
+        "contract_identity_preserved": {
+          "const": true,
+          "default": true,
+          "title": "Contract Identity Preserved",
+          "type": "boolean"
+        },
+        "decision_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Decision Id",
+          "type": "string"
+        },
+        "decision_is_not_content_validation": {
+          "const": true,
+          "default": true,
+          "title": "Decision Is Not Content Validation",
+          "type": "boolean"
+        },
+        "decision_is_not_truth_assessment": {
+          "const": true,
+          "default": true,
+          "title": "Decision Is Not Truth Assessment",
+          "type": "boolean"
+        },
+        "epistemic_boundaries_preserved": {
+          "const": true,
+          "default": true,
+          "title": "Epistemic Boundaries Preserved",
+          "type": "boolean"
+        },
+        "fallback_ref": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Fallback Ref"
+        },
+        "granted_scopes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Granted Scopes",
+          "type": "array"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "policy_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Policy Ref",
+          "type": "string"
+        },
+        "provenance_preserved": {
+          "const": true,
+          "default": true,
+          "title": "Provenance Preserved",
+          "type": "boolean"
+        },
+        "release_requirement_satisfied": {
+          "const": true,
+          "default": true,
+          "title": "Release Requirement Satisfied",
+          "type": "boolean"
+        },
+        "requirement_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Requirement Ref",
+          "type": "string"
+        },
+        "review_gates_preserved": {
+          "const": true,
+          "default": true,
+          "title": "Review Gates Preserved",
+          "type": "boolean"
+        },
+        "status": {
+          "$ref": "#/$defs/CompatibilityStatus"
+        }
+      },
+      "required": [
+        "decision_id",
+        "policy_ref",
+        "consumer_ref",
+        "requirement_ref",
+        "capability_ref",
+        "status",
+        "applied_constraints"
+      ],
+      "title": "CapabilityNegotiationDecision",
+      "type": "object"
+    },
+    "CapabilityRegistrySnapshot": {
+      "properties": {
+        "as_of": {
+          "maxLength": 80,
+          "minLength": 10,
+          "title": "As Of",
+          "type": "string"
+        },
+        "availability_state_is_not_truth_signal": {
+          "const": true,
+          "default": true,
+          "title": "Availability State Is Not Truth Signal",
+          "type": "boolean"
+        },
+        "capability_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Capability Refs",
+          "type": "array"
+        },
+        "consumer_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Consumer Refs",
+          "type": "array"
+        },
+        "immutable": {
+          "const": true,
+          "default": true,
+          "title": "Immutable",
+          "type": "boolean"
+        },
+        "later_capability_state_may_supersede_snapshot": {
+          "const": true,
+          "default": true,
+          "title": "Later Capability State May Supersede Snapshot",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "policy_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Policy Ref",
+          "type": "string"
+        },
+        "snapshot_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Snapshot Id",
+          "type": "string"
+        },
+        "snapshot_is_not_runtime_authority": {
+          "const": true,
+          "default": true,
+          "title": "Snapshot Is Not Runtime Authority",
+          "type": "boolean"
+        },
+        "trace_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Trace Refs",
+          "type": "array"
+        }
+      },
+      "required": [
+        "snapshot_id",
+        "policy_ref",
+        "capability_refs",
+        "consumer_refs",
+        "trace_refs",
+        "as_of"
+      ],
+      "title": "CapabilityRegistrySnapshot",
+      "type": "object"
+    },
+    "CompatibilityStatus": {
+      "enum": [
+        "compatible",
+        "compatible-with-constraints",
+        "degraded",
+        "rejected"
+      ],
+      "title": "CompatibilityStatus",
+      "type": "string"
+    },
+    "ConsumerCapabilityRequirement": {
+      "properties": {
+        "allow_degraded": {
+          "default": false,
+          "title": "Allow Degraded",
+          "type": "boolean"
+        },
+        "allow_reference_only": {
+          "default": false,
+          "title": "Allow Reference Only",
+          "type": "boolean"
+        },
+        "capability_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Capability Ref",
+          "type": "string"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "minimum_release": {
+          "pattern": "^3\\.(?:7[7-9]|8[0-9]|90)\\.0$",
+          "title": "Minimum Release",
+          "type": "string"
+        },
+        "optional": {
+          "default": false,
+          "title": "Optional",
+          "type": "boolean"
+        },
+        "required_contract": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Required Contract",
+          "type": "string"
+        },
+        "required_scopes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Required Scopes",
+          "type": "array"
+        },
+        "requirement_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Requirement Id",
+          "type": "string"
+        },
+        "requires_epistemic_state_preservation": {
+          "const": true,
+          "default": true,
+          "title": "Requires Epistemic State Preservation",
+          "type": "boolean"
+        },
+        "requires_provenance_preservation": {
+          "const": true,
+          "default": true,
+          "title": "Requires Provenance Preservation",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "requirement_id",
+        "capability_ref",
+        "minimum_release",
+        "required_contract"
+      ],
+      "title": "ConsumerCapabilityRequirement",
+      "type": "object"
+    },
+    "ConsumerKind": {
+      "enum": [
+        "workspace",
+        "knowledge-library",
+        "research-librarian",
+        "research-lab",
+        "workbench",
+        "site-intelligence",
+        "decision-studio",
+        "external"
+      ],
+      "title": "ConsumerKind",
+      "type": "string"
+    },
+    "FallbackMode": {
+      "enum": [
+        "fail-closed",
+        "reference-only",
+        "degraded-read-only"
+      ],
+      "title": "FallbackMode",
+      "type": "string"
+    },
+    "RuntimeCapabilityDescriptor": {
+      "properties": {
+        "availability": {
+          "$ref": "#/$defs/CapabilityAvailability"
+        },
+        "capability_availability_is_not_truth_signal": {
+          "const": true,
+          "default": true,
+          "title": "Capability Availability Is Not Truth Signal",
+          "type": "boolean"
+        },
+        "capability_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Capability Id",
+          "type": "string"
+        },
+        "contract": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Contract",
+          "type": "string"
+        },
+        "degraded_mode_supported": {
+          "default": false,
+          "title": "Degraded Mode Supported",
+          "type": "boolean"
+        },
+        "dependency_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Dependency Refs",
+          "type": "array"
+        },
+        "endpoint": {
+          "maxLength": 1000,
+          "minLength": 2,
+          "title": "Endpoint",
+          "type": "string"
+        },
+        "governance_constraints": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Governance Constraints",
+          "type": "array"
+        },
+        "may_mutate_governed_graphs": {
+          "const": false,
+          "default": false,
+          "title": "May Mutate Governed Graphs",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "preserves_epistemic_state": {
+          "const": true,
+          "default": true,
+          "title": "Preserves Epistemic State",
+          "type": "boolean"
+        },
+        "preserves_provenance": {
+          "const": true,
+          "default": true,
+          "title": "Preserves Provenance",
+          "type": "boolean"
+        },
+        "preserves_upstream_contract_identity": {
+          "const": true,
+          "default": true,
+          "title": "Preserves Upstream Contract Identity",
+          "type": "boolean"
+        },
+        "release": {
+          "pattern": "^3\\.(?:7[7-9]|8[0-9]|90)\\.0$",
+          "title": "Release",
+          "type": "string"
+        },
+        "required_scopes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Required Scopes",
+          "type": "array"
+        },
+        "schema_fingerprint_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Schema Fingerprint Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "capability_id",
+        "release",
+        "contract",
+        "endpoint",
+        "availability",
+        "governance_constraints",
+        "schema_fingerprint_sha256"
+      ],
+      "title": "RuntimeCapabilityDescriptor",
+      "type": "object"
+    },
+    "RuntimeConsumerProfile": {
+      "properties": {
+        "accepts_degraded_mode": {
+          "default": false,
+          "title": "Accepts Degraded Mode",
+          "type": "boolean"
+        },
+        "accepts_reference_only_outputs": {
+          "default": false,
+          "title": "Accepts Reference Only Outputs",
+          "type": "boolean"
+        },
+        "consumer_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Consumer Id",
+          "type": "string"
+        },
+        "consumer_kind": {
+          "$ref": "#/$defs/ConsumerKind"
+        },
+        "declared_scopes": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Declared Scopes",
+          "type": "array"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "no_graph_mutation_requested": {
+          "const": true,
+          "default": true,
+          "title": "No Graph Mutation Requested",
+          "type": "boolean"
+        },
+        "preserve_epistemic_state": {
+          "const": true,
+          "default": true,
+          "title": "Preserve Epistemic State",
+          "type": "boolean"
+        },
+        "preserve_provenance": {
+          "const": true,
+          "default": true,
+          "title": "Preserve Provenance",
+          "type": "boolean"
+        },
+        "requirement_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Requirement Refs",
+          "type": "array"
+        }
+      },
+      "required": [
+        "consumer_id",
+        "consumer_kind",
+        "requirement_refs",
+        "declared_scopes"
+      ],
+      "title": "RuntimeConsumerProfile",
+      "type": "object"
+    },
+    "RuntimeFallbackRule": {
+      "properties": {
+        "capability_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Capability Ref",
+          "type": "string"
+        },
+        "fallback_may_not_increase_authority": {
+          "const": true,
+          "default": true,
+          "title": "Fallback May Not Increase Authority",
+          "type": "boolean"
+        },
+        "fallback_may_not_promote_graph_fact": {
+          "const": true,
+          "default": true,
+          "title": "Fallback May Not Promote Graph Fact",
+          "type": "boolean"
+        },
+        "fallback_preserves_provenance": {
+          "const": true,
+          "default": true,
+          "title": "Fallback Preserves Provenance",
+          "type": "boolean"
+        },
+        "fallback_rule_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Fallback Rule Id",
+          "type": "string"
+        },
+        "granted_scope_ceiling": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Granted Scope Ceiling",
+          "type": "array"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "mode": {
+          "$ref": "#/$defs/FallbackMode"
+        },
+        "output_epistemic_state": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Output Epistemic State",
+          "type": "string"
+        },
+        "reason": {
+          "maxLength": 4000,
+          "minLength": 3,
+          "title": "Reason",
+          "type": "string"
+        },
+        "trigger_availability": {
+          "items": {
+            "$ref": "#/$defs/CapabilityAvailability"
+          },
+          "minItems": 1,
+          "title": "Trigger Availability",
+          "type": "array"
+        }
+      },
+      "required": [
+        "fallback_rule_id",
+        "capability_ref",
+        "trigger_availability",
+        "mode",
+        "output_epistemic_state",
+        "reason"
+      ],
+      "title": "RuntimeFallbackRule",
+      "type": "object"
+    },
+    "RuntimeNegotiationPolicy": {
+      "properties": {
+        "allow_boundary_weakening": {
+          "const": false,
+          "default": false,
+          "title": "Allow Boundary Weakening",
+          "type": "boolean"
+        },
+        "allow_candidate_promotion": {
+          "const": false,
+          "default": false,
+          "title": "Allow Candidate Promotion",
+          "type": "boolean"
+        },
+        "allow_human_review_bypass": {
+          "const": false,
+          "default": false,
+          "title": "Allow Human Review Bypass",
+          "type": "boolean"
+        },
+        "allow_hypothesis_promotion": {
+          "const": false,
+          "default": false,
+          "title": "Allow Hypothesis Promotion",
+          "type": "boolean"
+        },
+        "allow_local_validation_bypass": {
+          "const": false,
+          "default": false,
+          "title": "Allow Local Validation Bypass",
+          "type": "boolean"
+        },
+        "allow_scope_escalation": {
+          "const": false,
+          "default": false,
+          "title": "Allow Scope Escalation",
+          "type": "boolean"
+        },
+        "enforce_minimum_release": {
+          "const": true,
+          "default": true,
+          "title": "Enforce Minimum Release",
+          "type": "boolean"
+        },
+        "grant_only_declared_scope_intersection": {
+          "const": true,
+          "default": true,
+          "title": "Grant Only Declared Scope Intersection",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "policy_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Policy Id",
+          "type": "string"
+        },
+        "preserve_review_and_validation_gates": {
+          "const": true,
+          "default": true,
+          "title": "Preserve Review And Validation Gates",
+          "type": "boolean"
+        },
+        "preserve_upstream_epistemic_state": {
+          "const": true,
+          "default": true,
+          "title": "Preserve Upstream Epistemic State",
+          "type": "boolean"
+        },
+        "preserve_upstream_provenance": {
+          "const": true,
+          "default": true,
+          "title": "Preserve Upstream Provenance",
+          "type": "boolean"
+        },
+        "require_auditable_decision_trace": {
+          "const": true,
+          "default": true,
+          "title": "Require Auditable Decision Trace",
+          "type": "boolean"
+        },
+        "require_exact_contract_identity": {
+          "const": true,
+          "default": true,
+          "title": "Require Exact Contract Identity",
+          "type": "boolean"
+        },
+        "require_explicit_degradation": {
+          "const": true,
+          "default": true,
+          "title": "Require Explicit Degradation",
+          "type": "boolean"
+        },
+        "require_explicit_fallback": {
+          "const": true,
+          "default": true,
+          "title": "Require Explicit Fallback",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "policy_id"
+      ],
+      "title": "RuntimeNegotiationPolicy",
+      "type": "object"
+    },
+    "RuntimeNegotiationTrace": {
+      "properties": {
+        "consumer_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Consumer Ref",
+          "type": "string"
+        },
+        "decision_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Decision Refs",
+          "type": "array"
+        },
+        "deterministic_trace_fingerprint_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Deterministic Trace Fingerprint Sha256",
+          "type": "string"
+        },
+        "fallback_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Fallback Refs",
+          "type": "array"
+        },
+        "final_status": {
+          "$ref": "#/$defs/CompatibilityStatus"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "negotiated_at": {
+          "maxLength": 80,
+          "minLength": 10,
+          "title": "Negotiated At",
+          "type": "string"
+        },
+        "policy_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Policy Ref",
+          "type": "string"
+        },
+        "trace_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Trace Id",
+          "type": "string"
+        },
+        "trace_is_not_authorization_to_weaken_policy": {
+          "const": true,
+          "default": true,
+          "title": "Trace Is Not Authorization To Weaken Policy",
+          "type": "boolean"
+        },
+        "trace_is_not_content_validation": {
+          "const": true,
+          "default": true,
+          "title": "Trace Is Not Content Validation",
+          "type": "boolean"
+        },
+        "trace_is_not_truth_assessment": {
+          "const": true,
+          "default": true,
+          "title": "Trace Is Not Truth Assessment",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "trace_id",
+        "policy_ref",
+        "consumer_ref",
+        "decision_refs",
+        "final_status",
+        "negotiated_at",
+        "deterministic_trace_fingerprint_sha256"
+      ],
+      "title": "RuntimeNegotiationTrace",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "capabilities": {
+      "items": {
+        "$ref": "#/$defs/RuntimeCapabilityDescriptor"
+      },
+      "maxItems": 14,
+      "minItems": 14,
+      "title": "Capabilities",
+      "type": "array"
+    },
+    "consumers": {
+      "items": {
+        "$ref": "#/$defs/RuntimeConsumerProfile"
+      },
+      "minItems": 1,
+      "title": "Consumers",
+      "type": "array"
+    },
+    "contract": {
+      "const": "sc.core.unified-runtime-policy-capability-negotiation.v1",
+      "default": "sc.core.unified-runtime-policy-capability-negotiation.v1",
+      "title": "Contract",
+      "type": "string"
+    },
+    "decisions": {
+      "items": {
+        "$ref": "#/$defs/CapabilityNegotiationDecision"
+      },
+      "minItems": 1,
+      "title": "Decisions",
+      "type": "array"
+    },
+    "evidence_graph_mutation_performed": {
+      "const": false,
+      "default": false,
+      "title": "Evidence Graph Mutation Performed",
+      "type": "boolean"
+    },
+    "fallback_rules": {
+      "items": {
+        "$ref": "#/$defs/RuntimeFallbackRule"
+      },
+      "title": "Fallback Rules",
+      "type": "array"
+    },
+    "identity_graph_mutation_performed": {
+      "const": false,
+      "default": false,
+      "title": "Identity Graph Mutation Performed",
+      "type": "boolean"
+    },
+    "policies": {
+      "items": {
+        "$ref": "#/$defs/RuntimeNegotiationPolicy"
+      },
+      "minItems": 1,
+      "title": "Policies",
+      "type": "array"
+    },
+    "relationship_graph_mutation_performed": {
+      "const": false,
+      "default": false,
+      "title": "Relationship Graph Mutation Performed",
+      "type": "boolean"
+    },
+    "release": {
+      "const": "3.91.0",
+      "default": "3.91.0",
+      "title": "Release",
+      "type": "string"
+    },
+    "requirements": {
+      "items": {
+        "$ref": "#/$defs/ConsumerCapabilityRequirement"
+      },
+      "minItems": 1,
+      "title": "Requirements",
+      "type": "array"
+    },
+    "snapshots": {
+      "items": {
+        "$ref": "#/$defs/CapabilityRegistrySnapshot"
+      },
+      "minItems": 1,
+      "title": "Snapshots",
+      "type": "array"
+    },
+    "traces": {
+      "items": {
+        "$ref": "#/$defs/RuntimeNegotiationTrace"
+      },
+      "minItems": 1,
+      "title": "Traces",
+      "type": "array"
+    }
+  },
+  "required": [
+    "capabilities",
+    "requirements",
+    "consumers",
+    "policies",
+    "decisions",
+    "traces",
+    "snapshots"
+  ],
+  "title": "UnifiedRuntimePolicyCapabilityNegotiationBundle",
+  "type": "object"
+}

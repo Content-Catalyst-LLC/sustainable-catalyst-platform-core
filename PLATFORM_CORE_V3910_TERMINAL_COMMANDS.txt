@@ -1,0 +1,2 @@
+cd ~/Downloads/sc-core-v3.91.0-runtime-policy/platform-core-v3.91.0-unified-runtime-policy-capability-negotiation
+./APPLY_AND_PUSH_PLATFORM_CORE_V3910.sh "$HOME/Downloads/sustainable-catalyst-platform-core"

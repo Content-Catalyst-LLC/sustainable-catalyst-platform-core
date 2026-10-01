@@ -1,3 +1,9 @@
+# 3.91.0
+- Added Unified Runtime Policy & Capability Negotiation as the governed control plane over the v3.90 unified entity/evidence runtime.
+- Added capability discovery, consumer profiles, contract/minimum-version negotiation, scope intersection, explicit degradation/fallback, auditable decisions, negotiation traces, and immutable capability registry snapshots.
+- Preserved upstream epistemic/provenance/review/local-validation boundaries and prohibited scope escalation, boundary weakening, candidate/hypothesis promotion, and governed graph mutation.
+- Database migration: none.
+
 # 3.90.0
 - Added Unified Entity & Evidence Intelligence Runtime spanning the governed v3.77-v3.89 identity, evidence, relationship, graph-reasoning, reproducibility, and federation contracts.
 - Added explicit runtime capability bindings, policy, request, stage execution, handoff, finding, execution-trace, and immutable snapshot objects.
