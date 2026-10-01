@@ -1,0 +1,1401 @@
+{
+  "$defs": {
+    "BackpressureRule": {
+      "properties": {
+        "action": {
+          "$ref": "#/$defs/DegradationMode"
+        },
+        "backpressure_may_not_drop_governance_constraints": {
+          "const": true,
+          "default": true,
+          "title": "Backpressure May Not Drop Governance Constraints",
+          "type": "boolean"
+        },
+        "backpressure_may_not_increase_authority": {
+          "const": true,
+          "default": true,
+          "title": "Backpressure May Not Increase Authority",
+          "type": "boolean"
+        },
+        "backpressure_rule_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Backpressure Rule Id",
+          "type": "string"
+        },
+        "comparison": {
+          "enum": [
+            "gt",
+            "gte",
+            "lt",
+            "lte"
+          ],
+          "title": "Comparison",
+          "type": "string"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "must_emit_observability_signal": {
+          "const": true,
+          "default": true,
+          "title": "Must Emit Observability Signal",
+          "type": "boolean"
+        },
+        "retryable": {
+          "title": "Retryable",
+          "type": "boolean"
+        },
+        "signal": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Signal",
+          "type": "string"
+        },
+        "threshold": {
+          "minimum": 0,
+          "title": "Threshold",
+          "type": "number"
+        }
+      },
+      "required": [
+        "backpressure_rule_id",
+        "signal",
+        "threshold",
+        "comparison",
+        "action",
+        "retryable"
+      ],
+      "title": "BackpressureRule",
+      "type": "object"
+    },
+    "BatchParallelismPolicy": {
+      "properties": {
+        "batch_policy_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Batch Policy Id",
+          "type": "string"
+        },
+        "deterministic_merge_required": {
+          "const": true,
+          "default": true,
+          "title": "Deterministic Merge Required",
+          "type": "boolean"
+        },
+        "max_batch_size": {
+          "minimum": 1,
+          "title": "Max Batch Size",
+          "type": "integer"
+        },
+        "max_parallel_workers": {
+          "minimum": 1,
+          "title": "Max Parallel Workers",
+          "type": "integer"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "ordering_guarantee": {
+          "enum": [
+            "preserve-input-order",
+            "explicit-result-order"
+          ],
+          "title": "Ordering Guarantee",
+          "type": "string"
+        },
+        "parallel_results_are_not_independent_corroboration": {
+          "const": true,
+          "default": true,
+          "title": "Parallel Results Are Not Independent Corroboration",
+          "type": "boolean"
+        },
+        "provenance_per_item_required": {
+          "const": true,
+          "default": true,
+          "title": "Provenance Per Item Required",
+          "type": "boolean"
+        },
+        "workload_class": {
+          "$ref": "#/$defs/WorkloadClass"
+        }
+      },
+      "required": [
+        "batch_policy_id",
+        "workload_class",
+        "max_batch_size",
+        "max_parallel_workers",
+        "ordering_guarantee"
+      ],
+      "title": "BatchParallelismPolicy",
+      "type": "object"
+    },
+    "BenchmarkStatus": {
+      "enum": [
+        "pass",
+        "warn",
+        "fail"
+      ],
+      "title": "BenchmarkStatus",
+      "type": "string"
+    },
+    "CacheMode": {
+      "enum": [
+        "disabled",
+        "read-through",
+        "write-through",
+        "immutable-object"
+      ],
+      "title": "CacheMode",
+      "type": "string"
+    },
+    "CachePolicy": {
+      "properties": {
+        "cache_hit_is_not_content_truth": {
+          "const": true,
+          "default": true,
+          "title": "Cache Hit Is Not Content Truth",
+          "type": "boolean"
+        },
+        "cache_hit_is_not_freshness_proof": {
+          "const": true,
+          "default": true,
+          "title": "Cache Hit Is Not Freshness Proof",
+          "type": "boolean"
+        },
+        "cache_policy_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Cache Policy Id",
+          "type": "string"
+        },
+        "content_addressed": {
+          "title": "Content Addressed",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "mode": {
+          "$ref": "#/$defs/CacheMode"
+        },
+        "require_policy_fingerprint_match": {
+          "const": true,
+          "default": true,
+          "title": "Require Policy Fingerprint Match",
+          "type": "boolean"
+        },
+        "require_source_fingerprint_match": {
+          "const": true,
+          "default": true,
+          "title": "Require Source Fingerprint Match",
+          "type": "boolean"
+        },
+        "stale_entry_must_be_labeled": {
+          "const": true,
+          "default": true,
+          "title": "Stale Entry Must Be Labeled",
+          "type": "boolean"
+        },
+        "target_kind": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Target Kind",
+          "type": "string"
+        },
+        "ttl_seconds": {
+          "minimum": 0,
+          "title": "Ttl Seconds",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "cache_policy_id",
+        "target_kind",
+        "mode",
+        "ttl_seconds",
+        "content_addressed"
+      ],
+      "title": "CachePolicy",
+      "type": "object"
+    },
+    "DegradationDecision": {
+      "properties": {
+        "cannot_increase_authority": {
+          "const": true,
+          "default": true,
+          "title": "Cannot Increase Authority",
+          "type": "boolean"
+        },
+        "degradation_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Degradation Id",
+          "type": "string"
+        },
+        "explicit_to_consumer": {
+          "const": true,
+          "default": true,
+          "title": "Explicit To Consumer",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "mode": {
+          "$ref": "#/$defs/DegradationMode"
+        },
+        "observed_at": {
+          "maxLength": 80,
+          "minLength": 10,
+          "title": "Observed At",
+          "type": "string"
+        },
+        "preserves_epistemic_state": {
+          "const": true,
+          "default": true,
+          "title": "Preserves Epistemic State",
+          "type": "boolean"
+        },
+        "preserves_provenance": {
+          "const": true,
+          "default": true,
+          "title": "Preserves Provenance",
+          "type": "boolean"
+        },
+        "rationale": {
+          "maxLength": 2000,
+          "minLength": 10,
+          "title": "Rationale",
+          "type": "string"
+        },
+        "result_completeness": {
+          "enum": [
+            "complete",
+            "bounded",
+            "partial",
+            "queued",
+            "reference-only"
+          ],
+          "title": "Result Completeness",
+          "type": "string"
+        },
+        "trigger_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Trigger Ref",
+          "type": "string"
+        },
+        "workload_class": {
+          "$ref": "#/$defs/WorkloadClass"
+        }
+      },
+      "required": [
+        "degradation_id",
+        "trigger_ref",
+        "workload_class",
+        "mode",
+        "rationale",
+        "result_completeness",
+        "observed_at"
+      ],
+      "title": "DegradationDecision",
+      "type": "object"
+    },
+    "DegradationMode": {
+      "enum": [
+        "none",
+        "bounded-results",
+        "reduced-parallelism",
+        "queue-only",
+        "reference-only",
+        "incomplete-qualified"
+      ],
+      "title": "DegradationMode",
+      "type": "string"
+    },
+    "ExecutionBudget": {
+      "properties": {
+        "budget_exhaustion_does_not_change_epistemic_state": {
+          "const": true,
+          "default": true,
+          "title": "Budget Exhaustion Does Not Change Epistemic State",
+          "type": "boolean"
+        },
+        "budget_exhaustion_must_be_explicit": {
+          "const": true,
+          "default": true,
+          "title": "Budget Exhaustion Must Be Explicit",
+          "type": "boolean"
+        },
+        "budget_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Budget Id",
+          "type": "string"
+        },
+        "cpu_time_ms": {
+          "minimum": 1,
+          "title": "Cpu Time Ms",
+          "type": "integer"
+        },
+        "max_external_calls": {
+          "minimum": 0,
+          "title": "Max External Calls",
+          "type": "integer"
+        },
+        "max_intermediate_objects": {
+          "minimum": 1,
+          "title": "Max Intermediate Objects",
+          "type": "integer"
+        },
+        "max_result_objects": {
+          "minimum": 1,
+          "title": "Max Result Objects",
+          "type": "integer"
+        },
+        "memory_mb": {
+          "minimum": 16,
+          "title": "Memory Mb",
+          "type": "integer"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "on_exhaustion": {
+          "$ref": "#/$defs/DegradationMode"
+        },
+        "wall_time_ms": {
+          "minimum": 1,
+          "title": "Wall Time Ms",
+          "type": "integer"
+        },
+        "workload_class": {
+          "$ref": "#/$defs/WorkloadClass"
+        }
+      },
+      "required": [
+        "budget_id",
+        "workload_class",
+        "wall_time_ms",
+        "cpu_time_ms",
+        "memory_mb",
+        "max_result_objects",
+        "max_intermediate_objects",
+        "max_external_calls",
+        "on_exhaustion"
+      ],
+      "title": "ExecutionBudget",
+      "type": "object"
+    },
+    "FederationQueuePolicy": {
+      "properties": {
+        "max_depth": {
+          "minimum": 1,
+          "title": "Max Depth",
+          "type": "integer"
+        },
+        "max_inflight": {
+          "minimum": 1,
+          "title": "Max Inflight",
+          "type": "integer"
+        },
+        "preserve_remote_reference_state": {
+          "const": true,
+          "default": true,
+          "title": "Preserve Remote Reference State",
+          "type": "boolean"
+        },
+        "priority_classes": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Priority Classes",
+          "type": "array"
+        },
+        "queue_acceptance_is_not_local_validation": {
+          "const": true,
+          "default": true,
+          "title": "Queue Acceptance Is Not Local Validation",
+          "type": "boolean"
+        },
+        "queue_name": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Queue Name",
+          "type": "string"
+        },
+        "queue_policy_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Queue Policy Id",
+          "type": "string"
+        },
+        "queue_priority_is_not_evidence_priority": {
+          "const": true,
+          "default": true,
+          "title": "Queue Priority Is Not Evidence Priority",
+          "type": "boolean"
+        },
+        "retry_backoff_seconds": {
+          "minimum": 0,
+          "title": "Retry Backoff Seconds",
+          "type": "integer"
+        },
+        "retry_limit": {
+          "minimum": 0,
+          "title": "Retry Limit",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "queue_policy_id",
+        "queue_name",
+        "max_depth",
+        "max_inflight",
+        "retry_limit",
+        "retry_backoff_seconds",
+        "priority_classes"
+      ],
+      "title": "FederationQueuePolicy",
+      "type": "object"
+    },
+    "GraphTraversalLimit": {
+      "properties": {
+        "max_edges_visited": {
+          "minimum": 1,
+          "title": "Max Edges Visited",
+          "type": "integer"
+        },
+        "max_hops": {
+          "maximum": 100,
+          "minimum": 1,
+          "title": "Max Hops",
+          "type": "integer"
+        },
+        "max_nodes_visited": {
+          "minimum": 1,
+          "title": "Max Nodes Visited",
+          "type": "integer"
+        },
+        "max_paths_returned": {
+          "minimum": 1,
+          "title": "Max Paths Returned",
+          "type": "integer"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "missing_due_to_limit_is_not_nonexistence": {
+          "const": true,
+          "default": true,
+          "title": "Missing Due To Limit Is Not Nonexistence",
+          "type": "boolean"
+        },
+        "shortest_or_fastest_path_is_not_strongest_evidence": {
+          "const": true,
+          "default": true,
+          "title": "Shortest Or Fastest Path Is Not Strongest Evidence",
+          "type": "boolean"
+        },
+        "target_graph": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Target Graph",
+          "type": "string"
+        },
+        "timeout_ms": {
+          "minimum": 1,
+          "title": "Timeout Ms",
+          "type": "integer"
+        },
+        "traversal_limit_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Traversal Limit Id",
+          "type": "string"
+        },
+        "truncation_must_be_reported": {
+          "const": true,
+          "default": true,
+          "title": "Truncation Must Be Reported",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "traversal_limit_id",
+        "target_graph",
+        "max_hops",
+        "max_nodes_visited",
+        "max_edges_visited",
+        "max_paths_returned",
+        "timeout_ms"
+      ],
+      "title": "GraphTraversalLimit",
+      "type": "object"
+    },
+    "HighCardinalityEntityPolicy": {
+      "properties": {
+        "cardinality_policy_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Cardinality Policy Id",
+          "type": "string"
+        },
+        "entity_kind": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Entity Kind",
+          "type": "string"
+        },
+        "hard_limit": {
+          "minimum": 1,
+          "title": "Hard Limit",
+          "type": "integer"
+        },
+        "page_size": {
+          "minimum": 1,
+          "title": "Page Size",
+          "type": "integer"
+        },
+        "partial_result_is_not_complete_evidence_universe": {
+          "const": true,
+          "default": true,
+          "title": "Partial Result Is Not Complete Evidence Universe",
+          "type": "boolean"
+        },
+        "partition_strategy": {
+          "enum": [
+            "stable-hash",
+            "source-partition",
+            "time-window",
+            "none"
+          ],
+          "title": "Partition Strategy",
+          "type": "string"
+        },
+        "require_explicit_partial_result_state": {
+          "const": true,
+          "default": true,
+          "title": "Require Explicit Partial Result State",
+          "type": "boolean"
+        },
+        "require_stable_pagination": {
+          "const": true,
+          "default": true,
+          "title": "Require Stable Pagination",
+          "type": "boolean"
+        },
+        "soft_limit": {
+          "minimum": 1,
+          "title": "Soft Limit",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "cardinality_policy_id",
+        "entity_kind",
+        "soft_limit",
+        "hard_limit",
+        "page_size",
+        "partition_strategy"
+      ],
+      "title": "HighCardinalityEntityPolicy",
+      "type": "object"
+    },
+    "PackageSizeEnvelope": {
+      "properties": {
+        "envelope_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Envelope Id",
+          "type": "string"
+        },
+        "hard_limit_mb": {
+          "exclusiveMinimum": 0,
+          "title": "Hard Limit Mb",
+          "type": "number"
+        },
+        "max_object_count": {
+          "minimum": 1,
+          "title": "Max Object Count",
+          "type": "integer"
+        },
+        "max_single_artifact_mb": {
+          "exclusiveMinimum": 0,
+          "title": "Max Single Artifact Mb",
+          "type": "number"
+        },
+        "oversize_action": {
+          "$ref": "#/$defs/DegradationMode"
+        },
+        "package_kind": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Package Kind",
+          "type": "string"
+        },
+        "package_size_does_not_measure_evidence_strength": {
+          "const": true,
+          "default": true,
+          "title": "Package Size Does Not Measure Evidence Strength",
+          "type": "boolean"
+        },
+        "soft_limit_mb": {
+          "exclusiveMinimum": 0,
+          "title": "Soft Limit Mb",
+          "type": "number"
+        },
+        "split_packages_preserve_manifest_lineage": {
+          "const": true,
+          "default": true,
+          "title": "Split Packages Preserve Manifest Lineage",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "envelope_id",
+        "package_kind",
+        "soft_limit_mb",
+        "hard_limit_mb",
+        "max_object_count",
+        "max_single_artifact_mb",
+        "oversize_action"
+      ],
+      "title": "PackageSizeEnvelope",
+      "type": "object"
+    },
+    "PerformanceScalePolicy": {
+      "properties": {
+        "degraded_mode_may_increase_authority": {
+          "const": false,
+          "default": false,
+          "title": "Degraded Mode May Increase Authority",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "performance_optimization_may_drop_provenance": {
+          "const": false,
+          "default": false,
+          "title": "Performance Optimization May Drop Provenance",
+          "type": "boolean"
+        },
+        "performance_optimization_may_promote_epistemic_state": {
+          "const": false,
+          "default": false,
+          "title": "Performance Optimization May Promote Epistemic State",
+          "type": "boolean"
+        },
+        "policy_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Policy Id",
+          "type": "string"
+        },
+        "preserve_epistemic_state": {
+          "const": true,
+          "default": true,
+          "title": "Preserve Epistemic State",
+          "type": "boolean"
+        },
+        "preserve_provenance": {
+          "const": true,
+          "default": true,
+          "title": "Preserve Provenance",
+          "type": "boolean"
+        },
+        "preserve_validation_state": {
+          "const": true,
+          "default": true,
+          "title": "Preserve Validation State",
+          "type": "boolean"
+        },
+        "require_backpressure_under_saturation": {
+          "const": true,
+          "default": true,
+          "title": "Require Backpressure Under Saturation",
+          "type": "boolean"
+        },
+        "require_explicit_cache_freshness": {
+          "const": true,
+          "default": true,
+          "title": "Require Explicit Cache Freshness",
+          "type": "boolean"
+        },
+        "require_explicit_cardinality_controls": {
+          "const": true,
+          "default": true,
+          "title": "Require Explicit Cardinality Controls",
+          "type": "boolean"
+        },
+        "require_explicit_execution_budgets": {
+          "const": true,
+          "default": true,
+          "title": "Require Explicit Execution Budgets",
+          "type": "boolean"
+        },
+        "require_explicit_traversal_limits": {
+          "const": true,
+          "default": true,
+          "title": "Require Explicit Traversal Limits",
+          "type": "boolean"
+        },
+        "require_reproducible_scale_benchmarks": {
+          "const": true,
+          "default": true,
+          "title": "Require Reproducible Scale Benchmarks",
+          "type": "boolean"
+        },
+        "runtime_scaling_mutates_governed_graphs": {
+          "const": false,
+          "default": false,
+          "title": "Runtime Scaling Mutates Governed Graphs",
+          "type": "boolean"
+        },
+        "silent_sampling_allowed": {
+          "const": false,
+          "default": false,
+          "title": "Silent Sampling Allowed",
+          "type": "boolean"
+        },
+        "silent_truncation_allowed": {
+          "const": false,
+          "default": false,
+          "title": "Silent Truncation Allowed",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "policy_id"
+      ],
+      "title": "PerformanceScalePolicy",
+      "type": "object"
+    },
+    "PerformanceScaleSnapshot": {
+      "properties": {
+        "as_of": {
+          "maxLength": 80,
+          "minLength": 10,
+          "title": "As Of",
+          "type": "string"
+        },
+        "backpressure_rule_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Backpressure Rule Refs",
+          "type": "array"
+        },
+        "batch_policy_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Batch Policy Refs",
+          "type": "array"
+        },
+        "benchmark_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Benchmark Refs",
+          "type": "array"
+        },
+        "budget_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Budget Refs",
+          "type": "array"
+        },
+        "cache_policy_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Cache Policy Refs",
+          "type": "array"
+        },
+        "cardinality_policy_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Cardinality Policy Refs",
+          "type": "array"
+        },
+        "degradation_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Degradation Refs",
+          "type": "array"
+        },
+        "envelope_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Envelope Refs",
+          "type": "array"
+        },
+        "immutable": {
+          "const": true,
+          "default": true,
+          "title": "Immutable",
+          "type": "boolean"
+        },
+        "policy_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Policy Refs",
+          "type": "array"
+        },
+        "profile_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Profile Refs",
+          "type": "array"
+        },
+        "queue_policy_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Queue Policy Refs",
+          "type": "array"
+        },
+        "snapshot_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Snapshot Id",
+          "type": "string"
+        },
+        "snapshot_is_not_truth_or_evidence_strength_verdict": {
+          "const": true,
+          "default": true,
+          "title": "Snapshot Is Not Truth Or Evidence Strength Verdict",
+          "type": "boolean"
+        },
+        "supersedable": {
+          "const": true,
+          "default": true,
+          "title": "Supersedable",
+          "type": "boolean"
+        },
+        "trace_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Trace Refs",
+          "type": "array"
+        },
+        "traversal_limit_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Traversal Limit Refs",
+          "type": "array"
+        }
+      },
+      "required": [
+        "snapshot_id",
+        "policy_refs",
+        "profile_refs",
+        "budget_refs",
+        "cache_policy_refs",
+        "traversal_limit_refs",
+        "batch_policy_refs",
+        "cardinality_policy_refs",
+        "queue_policy_refs",
+        "envelope_refs",
+        "backpressure_rule_refs",
+        "degradation_refs",
+        "benchmark_refs",
+        "trace_refs",
+        "as_of"
+      ],
+      "title": "PerformanceScaleSnapshot",
+      "type": "object"
+    },
+    "PerformanceScaleTrace": {
+      "properties": {
+        "batch_policy_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Batch Policy Refs",
+          "type": "array"
+        },
+        "benchmark_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Benchmark Refs",
+          "type": "array"
+        },
+        "budget_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Budget Refs",
+          "type": "array"
+        },
+        "cache_policy_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Cache Policy Refs",
+          "type": "array"
+        },
+        "cardinality_policy_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Cardinality Policy Refs",
+          "type": "array"
+        },
+        "completed_at": {
+          "maxLength": 80,
+          "minLength": 10,
+          "title": "Completed At",
+          "type": "string"
+        },
+        "degradation_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Degradation Refs",
+          "type": "array"
+        },
+        "envelope_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Envelope Refs",
+          "type": "array"
+        },
+        "profile_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Profile Refs",
+          "type": "array"
+        },
+        "queue_policy_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Queue Policy Refs",
+          "type": "array"
+        },
+        "reproducible": {
+          "const": true,
+          "default": true,
+          "title": "Reproducible",
+          "type": "boolean"
+        },
+        "started_at": {
+          "maxLength": 80,
+          "minLength": 10,
+          "title": "Started At",
+          "type": "string"
+        },
+        "trace_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Trace Id",
+          "type": "string"
+        },
+        "trace_preserves_execution_qualifications": {
+          "const": true,
+          "default": true,
+          "title": "Trace Preserves Execution Qualifications",
+          "type": "boolean"
+        },
+        "traversal_limit_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Traversal Limit Refs",
+          "type": "array"
+        }
+      },
+      "required": [
+        "trace_id",
+        "profile_refs",
+        "budget_refs",
+        "benchmark_refs",
+        "started_at",
+        "completed_at"
+      ],
+      "title": "PerformanceScaleTrace",
+      "type": "object"
+    },
+    "RuntimePerformanceProfile": {
+      "properties": {
+        "contract": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Contract",
+          "type": "string"
+        },
+        "faster_execution_does_not_increase_evidence_strength": {
+          "const": true,
+          "default": true,
+          "title": "Faster Execution Does Not Increase Evidence Strength",
+          "type": "boolean"
+        },
+        "maximum_concurrency": {
+          "minimum": 1,
+          "title": "Maximum Concurrency",
+          "type": "integer"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "preserve_contract_semantics": {
+          "const": true,
+          "default": true,
+          "title": "Preserve Contract Semantics",
+          "type": "boolean"
+        },
+        "profile_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Profile Id",
+          "type": "string"
+        },
+        "target_capability": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Target Capability",
+          "type": "string"
+        },
+        "target_p50_latency_ms": {
+          "exclusiveMinimum": 0,
+          "title": "Target P50 Latency Ms",
+          "type": "number"
+        },
+        "target_p95_latency_ms": {
+          "exclusiveMinimum": 0,
+          "title": "Target P95 Latency Ms",
+          "type": "number"
+        },
+        "target_throughput_per_second": {
+          "exclusiveMinimum": 0,
+          "title": "Target Throughput Per Second",
+          "type": "number"
+        },
+        "workload_class": {
+          "$ref": "#/$defs/WorkloadClass"
+        }
+      },
+      "required": [
+        "profile_id",
+        "workload_class",
+        "target_capability",
+        "contract",
+        "target_p50_latency_ms",
+        "target_p95_latency_ms",
+        "target_throughput_per_second",
+        "maximum_concurrency"
+      ],
+      "title": "RuntimePerformanceProfile",
+      "type": "object"
+    },
+    "ScaleBenchmarkResult": {
+      "properties": {
+        "benchmark_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Benchmark Id",
+          "type": "string"
+        },
+        "benchmark_is_performance_evidence_not_claim_truth": {
+          "const": true,
+          "default": true,
+          "title": "Benchmark Is Performance Evidence Not Claim Truth",
+          "type": "boolean"
+        },
+        "concurrent_workers": {
+          "minimum": 1,
+          "title": "Concurrent Workers",
+          "type": "integer"
+        },
+        "dataset_scale_label": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Dataset Scale Label",
+          "type": "string"
+        },
+        "environment_ref": {
+          "maxLength": 1000,
+          "minLength": 3,
+          "title": "Environment Ref",
+          "type": "string"
+        },
+        "input_objects": {
+          "minimum": 1,
+          "title": "Input Objects",
+          "type": "integer"
+        },
+        "measured_at": {
+          "maxLength": 80,
+          "minLength": 10,
+          "title": "Measured At",
+          "type": "string"
+        },
+        "p50_latency_ms": {
+          "minimum": 0,
+          "title": "P50 Latency Ms",
+          "type": "number"
+        },
+        "p95_latency_ms": {
+          "minimum": 0,
+          "title": "P95 Latency Ms",
+          "type": "number"
+        },
+        "peak_memory_mb": {
+          "minimum": 0,
+          "title": "Peak Memory Mb",
+          "type": "number"
+        },
+        "profile_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Profile Ref",
+          "type": "string"
+        },
+        "reproducible": {
+          "const": true,
+          "default": true,
+          "title": "Reproducible",
+          "type": "boolean"
+        },
+        "status": {
+          "$ref": "#/$defs/BenchmarkStatus"
+        },
+        "throughput_per_second": {
+          "minimum": 0,
+          "title": "Throughput Per Second",
+          "type": "number"
+        },
+        "workload_class": {
+          "$ref": "#/$defs/WorkloadClass"
+        }
+      },
+      "required": [
+        "benchmark_id",
+        "profile_ref",
+        "workload_class",
+        "dataset_scale_label",
+        "input_objects",
+        "concurrent_workers",
+        "p50_latency_ms",
+        "p95_latency_ms",
+        "throughput_per_second",
+        "peak_memory_mb",
+        "status",
+        "measured_at",
+        "environment_ref"
+      ],
+      "title": "ScaleBenchmarkResult",
+      "type": "object"
+    },
+    "WorkloadClass": {
+      "enum": [
+        "interactive-query",
+        "graph-traversal",
+        "entity-resolution",
+        "evidence-package",
+        "federation-exchange",
+        "background-analysis"
+      ],
+      "title": "WorkloadClass",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "backpressure_rules": {
+      "items": {
+        "$ref": "#/$defs/BackpressureRule"
+      },
+      "minItems": 1,
+      "title": "Backpressure Rules",
+      "type": "array"
+    },
+    "batch_policies": {
+      "items": {
+        "$ref": "#/$defs/BatchParallelismPolicy"
+      },
+      "minItems": 1,
+      "title": "Batch Policies",
+      "type": "array"
+    },
+    "benchmarks": {
+      "items": {
+        "$ref": "#/$defs/ScaleBenchmarkResult"
+      },
+      "minItems": 1,
+      "title": "Benchmarks",
+      "type": "array"
+    },
+    "budgets": {
+      "items": {
+        "$ref": "#/$defs/ExecutionBudget"
+      },
+      "minItems": 1,
+      "title": "Budgets",
+      "type": "array"
+    },
+    "cache_policies": {
+      "items": {
+        "$ref": "#/$defs/CachePolicy"
+      },
+      "minItems": 1,
+      "title": "Cache Policies",
+      "type": "array"
+    },
+    "cardinality_policies": {
+      "items": {
+        "$ref": "#/$defs/HighCardinalityEntityPolicy"
+      },
+      "minItems": 1,
+      "title": "Cardinality Policies",
+      "type": "array"
+    },
+    "contract": {
+      "const": "sc.core.entity-evidence-runtime-performance-scale.v1",
+      "default": "sc.core.entity-evidence-runtime-performance-scale.v1",
+      "title": "Contract",
+      "type": "string"
+    },
+    "database_migration": {
+      "const": "none",
+      "default": "none",
+      "title": "Database Migration",
+      "type": "string"
+    },
+    "degradation_decisions": {
+      "items": {
+        "$ref": "#/$defs/DegradationDecision"
+      },
+      "minItems": 1,
+      "title": "Degradation Decisions",
+      "type": "array"
+    },
+    "package_envelopes": {
+      "items": {
+        "$ref": "#/$defs/PackageSizeEnvelope"
+      },
+      "minItems": 1,
+      "title": "Package Envelopes",
+      "type": "array"
+    },
+    "policies": {
+      "items": {
+        "$ref": "#/$defs/PerformanceScalePolicy"
+      },
+      "minItems": 1,
+      "title": "Policies",
+      "type": "array"
+    },
+    "profiles": {
+      "items": {
+        "$ref": "#/$defs/RuntimePerformanceProfile"
+      },
+      "minItems": 1,
+      "title": "Profiles",
+      "type": "array"
+    },
+    "queue_policies": {
+      "items": {
+        "$ref": "#/$defs/FederationQueuePolicy"
+      },
+      "minItems": 1,
+      "title": "Queue Policies",
+      "type": "array"
+    },
+    "release": {
+      "const": "3.98.0",
+      "default": "3.98.0",
+      "title": "Release",
+      "type": "string"
+    },
+    "snapshots": {
+      "items": {
+        "$ref": "#/$defs/PerformanceScaleSnapshot"
+      },
+      "minItems": 1,
+      "title": "Snapshots",
+      "type": "array"
+    },
+    "traces": {
+      "items": {
+        "$ref": "#/$defs/PerformanceScaleTrace"
+      },
+      "minItems": 1,
+      "title": "Traces",
+      "type": "array"
+    },
+    "traversal_limits": {
+      "items": {
+        "$ref": "#/$defs/GraphTraversalLimit"
+      },
+      "minItems": 1,
+      "title": "Traversal Limits",
+      "type": "array"
+    }
+  },
+  "required": [
+    "policies",
+    "profiles",
+    "budgets",
+    "cache_policies",
+    "traversal_limits",
+    "batch_policies",
+    "cardinality_policies",
+    "queue_policies",
+    "package_envelopes",
+    "backpressure_rules",
+    "degradation_decisions",
+    "benchmarks",
+    "traces",
+    "snapshots"
+  ],
+  "title": "EntityEvidenceRuntimePerformanceScaleBundle",
+  "type": "object"
+}

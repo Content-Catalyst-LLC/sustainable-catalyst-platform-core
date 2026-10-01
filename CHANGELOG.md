@@ -934,3 +934,8 @@ Adds governed research notebooks, ordered sections and entries, cross-research b
 - Added scoped/revocable federation trust and policy governance.
 - Added explicit capability permissions, intake rules, conflict preservation, and audit traces.
 - Preserved remote-reference/local-validation boundaries across trusted and signed federation content.
+
+## 3.98.0 — Entity & Evidence Runtime Performance and Scale
+- Added governed performance profiles, execution budgets, cache policies, graph traversal limits, batching/parallelism controls, high-cardinality handling, federation queue controls, package-size envelopes, backpressure/degradation rules, reproducible scale benchmarks, and performance snapshots.
+- Preserved epistemic state, validation state, provenance, and contract semantics through all performance optimizations.
+- Prohibited silent sampling/truncation, authority-increasing degraded modes, cache-as-truth inference, and performance-driven graph mutation.
