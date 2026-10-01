@@ -1,3 +1,8 @@
+## 3.94.0 — Cross-Product Intelligence Handoff Contract
+- Added governed cross-product intelligence handoff, receipt, return, and trace contracts.
+- Preserves epistemic/validation/provenance boundaries across all seven product handoffs.
+- No database migration.
+
 ## 3.93.0 — Investigation Session & Research Context Runtime
 - Added persistent governed investigation sessions and research-context bindings above the v3.92 unified query API.
 - Added attributed context contributions, filters, working hypotheses, immutable/supersedable checkpoints, runtime traces, and research-context snapshots.

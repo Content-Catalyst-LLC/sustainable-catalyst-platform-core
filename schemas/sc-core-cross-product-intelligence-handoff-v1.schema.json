@@ -1,0 +1,1073 @@
+{
+  "$defs": {
+    "ConsumerKind": {
+      "enum": [
+        "workspace",
+        "knowledge-library",
+        "research-librarian",
+        "research-lab",
+        "workbench",
+        "site-intelligence",
+        "decision-studio",
+        "external"
+      ],
+      "title": "ConsumerKind",
+      "type": "string"
+    },
+    "CrossProductHandoffPolicy": {
+      "properties": {
+        "allow_destination_authority_escalation": {
+          "const": false,
+          "default": false,
+          "title": "Allow Destination Authority Escalation",
+          "type": "boolean"
+        },
+        "allow_epistemic_state_promotion_in_transit": {
+          "const": false,
+          "default": false,
+          "title": "Allow Epistemic State Promotion In Transit",
+          "type": "boolean"
+        },
+        "allow_graph_mutation_from_handoff": {
+          "const": false,
+          "default": false,
+          "title": "Allow Graph Mutation From Handoff",
+          "type": "boolean"
+        },
+        "allow_remote_reference_promotion": {
+          "const": false,
+          "default": false,
+          "title": "Allow Remote Reference Promotion",
+          "type": "boolean"
+        },
+        "allow_session_context_to_become_evidence": {
+          "const": false,
+          "default": false,
+          "title": "Allow Session Context To Become Evidence",
+          "type": "boolean"
+        },
+        "allow_validation_bypass": {
+          "const": false,
+          "default": false,
+          "title": "Allow Validation Bypass",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "policy_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Policy Id",
+          "type": "string"
+        },
+        "preserve_contradictions": {
+          "const": true,
+          "default": true,
+          "title": "Preserve Contradictions",
+          "type": "boolean"
+        },
+        "preserve_epistemic_state": {
+          "const": true,
+          "default": true,
+          "title": "Preserve Epistemic State",
+          "type": "boolean"
+        },
+        "preserve_provenance": {
+          "const": true,
+          "default": true,
+          "title": "Preserve Provenance",
+          "type": "boolean"
+        },
+        "preserve_remote_reference_state": {
+          "const": true,
+          "default": true,
+          "title": "Preserve Remote Reference State",
+          "type": "boolean"
+        },
+        "preserve_source_contract_identity": {
+          "const": true,
+          "default": true,
+          "title": "Preserve Source Contract Identity",
+          "type": "boolean"
+        },
+        "preserve_validation_state": {
+          "const": true,
+          "default": true,
+          "title": "Preserve Validation State",
+          "type": "boolean"
+        },
+        "require_attributed_handoff_trace": {
+          "const": true,
+          "default": true,
+          "title": "Require Attributed Handoff Trace",
+          "type": "boolean"
+        },
+        "require_destination_capability_negotiation": {
+          "const": true,
+          "default": true,
+          "title": "Require Destination Capability Negotiation",
+          "type": "boolean"
+        },
+        "require_explicit_requested_action": {
+          "const": true,
+          "default": true,
+          "title": "Require Explicit Requested Action",
+          "type": "boolean"
+        },
+        "require_explicit_return_contract": {
+          "const": true,
+          "default": true,
+          "title": "Require Explicit Return Contract",
+          "type": "boolean"
+        },
+        "returned_outputs_require_validation_before_promotion": {
+          "const": true,
+          "default": true,
+          "title": "Returned Outputs Require Validation Before Promotion",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "policy_id"
+      ],
+      "title": "CrossProductHandoffPolicy",
+      "type": "object"
+    },
+    "CrossProductHandoffReceipt": {
+      "properties": {
+        "accepted_payload_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Accepted Payload Refs",
+          "type": "array"
+        },
+        "applied_constraints": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Applied Constraints",
+          "type": "array"
+        },
+        "destination_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Destination Ref",
+          "type": "string"
+        },
+        "granted_scopes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Granted Scopes",
+          "type": "array"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "receipt_does_not_promote_payload_state": {
+          "const": true,
+          "default": true,
+          "title": "Receipt Does Not Promote Payload State",
+          "type": "boolean"
+        },
+        "receipt_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Receipt Id",
+          "type": "string"
+        },
+        "receipt_is_not_content_validation": {
+          "const": true,
+          "default": true,
+          "title": "Receipt Is Not Content Validation",
+          "type": "boolean"
+        },
+        "receipt_is_not_truth_assessment": {
+          "const": true,
+          "default": true,
+          "title": "Receipt Is Not Truth Assessment",
+          "type": "boolean"
+        },
+        "received_at": {
+          "maxLength": 80,
+          "minLength": 10,
+          "title": "Received At",
+          "type": "string"
+        },
+        "rejected_payload_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Rejected Payload Refs",
+          "type": "array"
+        },
+        "request_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Request Ref",
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/HandoffStatus"
+        }
+      },
+      "required": [
+        "receipt_id",
+        "request_ref",
+        "destination_ref",
+        "status",
+        "applied_constraints",
+        "received_at"
+      ],
+      "title": "CrossProductHandoffReceipt",
+      "type": "object"
+    },
+    "CrossProductHandoffSnapshot": {
+      "properties": {
+        "as_of": {
+          "maxLength": 80,
+          "minLength": 10,
+          "title": "As Of",
+          "type": "string"
+        },
+        "immutable": {
+          "const": true,
+          "default": true,
+          "title": "Immutable",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "policy_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Policy Ref",
+          "type": "string"
+        },
+        "receipt_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Receipt Refs",
+          "type": "array"
+        },
+        "request_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Request Refs",
+          "type": "array"
+        },
+        "snapshot_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Snapshot Id",
+          "type": "string"
+        },
+        "snapshot_is_not_truth_certification": {
+          "const": true,
+          "default": true,
+          "title": "Snapshot Is Not Truth Certification",
+          "type": "boolean"
+        },
+        "supersedable": {
+          "const": true,
+          "default": true,
+          "title": "Supersedable",
+          "type": "boolean"
+        },
+        "trace_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Trace Refs",
+          "type": "array"
+        }
+      },
+      "required": [
+        "snapshot_id",
+        "policy_ref",
+        "request_refs",
+        "receipt_refs",
+        "trace_refs",
+        "as_of"
+      ],
+      "title": "CrossProductHandoffSnapshot",
+      "type": "object"
+    },
+    "CrossProductHandoffTrace": {
+      "properties": {
+        "contradictions_preserved": {
+          "const": true,
+          "default": true,
+          "title": "Contradictions Preserved",
+          "type": "boolean"
+        },
+        "deterministic_trace_fingerprint_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Deterministic Trace Fingerprint Sha256",
+          "type": "string"
+        },
+        "ended_at": {
+          "maxLength": 80,
+          "minLength": 10,
+          "title": "Ended At",
+          "type": "string"
+        },
+        "epistemic_states_preserved": {
+          "const": true,
+          "default": true,
+          "title": "Epistemic States Preserved",
+          "type": "boolean"
+        },
+        "graph_mutation_performed": {
+          "const": false,
+          "default": false,
+          "title": "Graph Mutation Performed",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "negotiation_trace_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Negotiation Trace Ref",
+          "type": "string"
+        },
+        "provenance_preserved": {
+          "const": true,
+          "default": true,
+          "title": "Provenance Preserved",
+          "type": "boolean"
+        },
+        "receipt_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Receipt Ref",
+          "type": "string"
+        },
+        "remote_reference_state_preserved": {
+          "const": true,
+          "default": true,
+          "title": "Remote Reference State Preserved",
+          "type": "boolean"
+        },
+        "request_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Request Ref",
+          "type": "string"
+        },
+        "return_contract_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Return Contract Ref",
+          "type": "string"
+        },
+        "session_trace_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Session Trace Ref",
+          "type": "string"
+        },
+        "source_contracts_preserved": {
+          "const": true,
+          "default": true,
+          "title": "Source Contracts Preserved",
+          "type": "boolean"
+        },
+        "started_at": {
+          "maxLength": 80,
+          "minLength": 10,
+          "title": "Started At",
+          "type": "string"
+        },
+        "trace_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Trace Id",
+          "type": "string"
+        },
+        "validation_states_preserved": {
+          "const": true,
+          "default": true,
+          "title": "Validation States Preserved",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "trace_id",
+        "request_ref",
+        "receipt_ref",
+        "return_contract_ref",
+        "negotiation_trace_ref",
+        "session_trace_ref",
+        "started_at",
+        "ended_at",
+        "deterministic_trace_fingerprint_sha256"
+      ],
+      "title": "CrossProductHandoffTrace",
+      "type": "object"
+    },
+    "CrossProductIntelligenceHandoffRequest": {
+      "properties": {
+        "action": {
+          "$ref": "#/$defs/HandoffAction"
+        },
+        "capability_requirement_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Capability Requirement Ref",
+          "type": "string"
+        },
+        "checkpoint_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Checkpoint Ref",
+          "type": "string"
+        },
+        "destination_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Destination Ref",
+          "type": "string"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "payload_binding_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Payload Binding Refs",
+          "type": "array"
+        },
+        "policy_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Policy Ref",
+          "type": "string"
+        },
+        "request_does_not_authorize_graph_mutation": {
+          "const": true,
+          "default": true,
+          "title": "Request Does Not Authorize Graph Mutation",
+          "type": "boolean"
+        },
+        "request_does_not_promote_payload_state": {
+          "const": true,
+          "default": true,
+          "title": "Request Does Not Promote Payload State",
+          "type": "boolean"
+        },
+        "request_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Request Id",
+          "type": "string"
+        },
+        "requested_at": {
+          "maxLength": 80,
+          "minLength": 10,
+          "title": "Requested At",
+          "type": "string"
+        },
+        "requested_scopes": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Requested Scopes",
+          "type": "array"
+        },
+        "return_contract_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Return Contract Ref",
+          "type": "string"
+        },
+        "session_context_remains_working_context": {
+          "const": true,
+          "default": true,
+          "title": "Session Context Remains Working Context",
+          "type": "boolean"
+        },
+        "session_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Session Ref",
+          "type": "string"
+        }
+      },
+      "required": [
+        "request_id",
+        "policy_ref",
+        "destination_ref",
+        "session_ref",
+        "checkpoint_ref",
+        "payload_binding_refs",
+        "capability_requirement_ref",
+        "return_contract_ref",
+        "action",
+        "requested_scopes",
+        "requested_at"
+      ],
+      "title": "CrossProductIntelligenceHandoffRequest",
+      "type": "object"
+    },
+    "EpistemicState": {
+      "enum": [
+        "governed-record",
+        "source-asserted",
+        "candidate",
+        "hypothesis",
+        "analytical",
+        "qualified",
+        "unresolved",
+        "remote-reference",
+        "runtime-metadata"
+      ],
+      "title": "EpistemicState",
+      "type": "string"
+    },
+    "HandoffAction": {
+      "enum": [
+        "continue-investigation",
+        "resolve-sources",
+        "research-guidance",
+        "experimental-analysis",
+        "computational-analysis",
+        "geospatial-analysis",
+        "decision-analysis"
+      ],
+      "title": "HandoffAction",
+      "type": "string"
+    },
+    "HandoffCapabilityRequirement": {
+      "properties": {
+        "destination_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Destination Ref",
+          "type": "string"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "requested_action": {
+          "$ref": "#/$defs/HandoffAction"
+        },
+        "requested_scopes": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Requested Scopes",
+          "type": "array"
+        },
+        "required_negotiation_trace_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Required Negotiation Trace Ref",
+          "type": "string"
+        },
+        "requirement_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Requirement Id",
+          "type": "string"
+        },
+        "requires_epistemic_state_preservation": {
+          "const": true,
+          "default": true,
+          "title": "Requires Epistemic State Preservation",
+          "type": "boolean"
+        },
+        "requires_provenance_preservation": {
+          "const": true,
+          "default": true,
+          "title": "Requires Provenance Preservation",
+          "type": "boolean"
+        },
+        "requires_review_gate_preservation": {
+          "const": true,
+          "default": true,
+          "title": "Requires Review Gate Preservation",
+          "type": "boolean"
+        },
+        "requires_validation_state_preservation": {
+          "const": true,
+          "default": true,
+          "title": "Requires Validation State Preservation",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "requirement_id",
+        "destination_ref",
+        "required_negotiation_trace_ref",
+        "requested_action",
+        "requested_scopes"
+      ],
+      "title": "HandoffCapabilityRequirement",
+      "type": "object"
+    },
+    "HandoffPayloadBinding": {
+      "properties": {
+        "epistemic_state": {
+          "$ref": "#/$defs/EpistemicState"
+        },
+        "handoff_role": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Handoff Role",
+          "type": "string"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "payload_binding_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Payload Binding Id",
+          "type": "string"
+        },
+        "payload_is_not_evidence_creation": {
+          "const": true,
+          "default": true,
+          "title": "Payload Is Not Evidence Creation",
+          "type": "boolean"
+        },
+        "payload_is_not_truth_certification": {
+          "const": true,
+          "default": true,
+          "title": "Payload Is Not Truth Certification",
+          "type": "boolean"
+        },
+        "payload_preserves_source_state": {
+          "const": true,
+          "default": true,
+          "title": "Payload Preserves Source State",
+          "type": "boolean"
+        },
+        "provenance_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Provenance Refs",
+          "type": "array"
+        },
+        "session_binding_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Session Binding Ref",
+          "type": "string"
+        },
+        "source_contract": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Source Contract",
+          "type": "string"
+        },
+        "source_object_ref": {
+          "maxLength": 1000,
+          "minLength": 3,
+          "title": "Source Object Ref",
+          "type": "string"
+        },
+        "validation_state": {
+          "$ref": "#/$defs/ResultValidationState"
+        }
+      },
+      "required": [
+        "payload_binding_id",
+        "session_binding_ref",
+        "source_contract",
+        "source_object_ref",
+        "epistemic_state",
+        "validation_state",
+        "provenance_refs",
+        "handoff_role"
+      ],
+      "title": "HandoffPayloadBinding",
+      "type": "object"
+    },
+    "HandoffReturnContract": {
+      "properties": {
+        "allowed_return_kinds": {
+          "items": {
+            "$ref": "#/$defs/ReturnObjectKind"
+          },
+          "minItems": 1,
+          "title": "Allowed Return Kinds",
+          "type": "array"
+        },
+        "destination_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Destination Ref",
+          "type": "string"
+        },
+        "may_mutate_governed_graphs": {
+          "const": false,
+          "default": false,
+          "title": "May Mutate Governed Graphs",
+          "type": "boolean"
+        },
+        "may_overwrite_session_checkpoint": {
+          "const": false,
+          "default": false,
+          "title": "May Overwrite Session Checkpoint",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "preserve_input_provenance_links": {
+          "const": true,
+          "default": true,
+          "title": "Preserve Input Provenance Links",
+          "type": "boolean"
+        },
+        "preserve_remote_reference_state": {
+          "const": true,
+          "default": true,
+          "title": "Preserve Remote Reference State",
+          "type": "boolean"
+        },
+        "require_explicit_merge_or_acceptance_step": {
+          "const": true,
+          "default": true,
+          "title": "Require Explicit Merge Or Acceptance Step",
+          "type": "boolean"
+        },
+        "require_validation_before_epistemic_promotion": {
+          "const": true,
+          "default": true,
+          "title": "Require Validation Before Epistemic Promotion",
+          "type": "boolean"
+        },
+        "return_contract_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Return Contract Id",
+          "type": "string"
+        },
+        "return_to_checkpoint_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Return To Checkpoint Ref",
+          "type": "string"
+        },
+        "return_to_session_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Return To Session Ref",
+          "type": "string"
+        },
+        "returned_outputs_are_derived_not_upstream_facts": {
+          "const": true,
+          "default": true,
+          "title": "Returned Outputs Are Derived Not Upstream Facts",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "return_contract_id",
+        "destination_ref",
+        "allowed_return_kinds",
+        "return_to_session_ref",
+        "return_to_checkpoint_ref"
+      ],
+      "title": "HandoffReturnContract",
+      "type": "object"
+    },
+    "HandoffStatus": {
+      "enum": [
+        "accepted",
+        "accepted-with-constraints",
+        "rejected"
+      ],
+      "title": "HandoffStatus",
+      "type": "string"
+    },
+    "ProductEndpointDescriptor": {
+      "properties": {
+        "accepted_actions": {
+          "items": {
+            "$ref": "#/$defs/HandoffAction"
+          },
+          "minItems": 1,
+          "title": "Accepted Actions",
+          "type": "array"
+        },
+        "accepts_governed_context": {
+          "const": true,
+          "default": true,
+          "title": "Accepts Governed Context",
+          "type": "boolean"
+        },
+        "consumer_kind": {
+          "$ref": "#/$defs/ConsumerKind"
+        },
+        "consumer_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Consumer Ref",
+          "type": "string"
+        },
+        "declared_scopes": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Declared Scopes",
+          "type": "array"
+        },
+        "may_mutate_governed_graphs_on_receipt": {
+          "const": false,
+          "default": false,
+          "title": "May Mutate Governed Graphs On Receipt",
+          "type": "boolean"
+        },
+        "may_promote_epistemic_state_on_receipt": {
+          "const": false,
+          "default": false,
+          "title": "May Promote Epistemic State On Receipt",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "negotiation_trace_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Negotiation Trace Ref",
+          "type": "string"
+        },
+        "preserves_epistemic_state": {
+          "const": true,
+          "default": true,
+          "title": "Preserves Epistemic State",
+          "type": "boolean"
+        },
+        "preserves_provenance": {
+          "const": true,
+          "default": true,
+          "title": "Preserves Provenance",
+          "type": "boolean"
+        },
+        "preserves_validation_state": {
+          "const": true,
+          "default": true,
+          "title": "Preserves Validation State",
+          "type": "boolean"
+        },
+        "product_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Product Id",
+          "type": "string"
+        },
+        "requires_local_validation_for_remote_references": {
+          "const": true,
+          "default": true,
+          "title": "Requires Local Validation For Remote References",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "product_id",
+        "consumer_ref",
+        "consumer_kind",
+        "negotiation_trace_ref",
+        "accepted_actions",
+        "declared_scopes"
+      ],
+      "title": "ProductEndpointDescriptor",
+      "type": "object"
+    },
+    "ResultValidationState": {
+      "enum": [
+        "governed-reference",
+        "review-required",
+        "local-validation-required",
+        "analytical-only",
+        "unresolved",
+        "metadata-only"
+      ],
+      "title": "ResultValidationState",
+      "type": "string"
+    },
+    "ReturnObjectKind": {
+      "enum": [
+        "derived-context",
+        "analytical-result",
+        "source-reference",
+        "experiment-result",
+        "computational-result",
+        "geospatial-result",
+        "decision-context"
+      ],
+      "title": "ReturnObjectKind",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "capability_requirements": {
+      "items": {
+        "$ref": "#/$defs/HandoffCapabilityRequirement"
+      },
+      "minItems": 1,
+      "title": "Capability Requirements",
+      "type": "array"
+    },
+    "contract": {
+      "const": "sc.core.cross-product-intelligence-handoff.v1",
+      "default": "sc.core.cross-product-intelligence-handoff.v1",
+      "title": "Contract",
+      "type": "string"
+    },
+    "evidence_graph_mutation_performed": {
+      "const": false,
+      "default": false,
+      "title": "Evidence Graph Mutation Performed",
+      "type": "boolean"
+    },
+    "identity_graph_mutation_performed": {
+      "const": false,
+      "default": false,
+      "title": "Identity Graph Mutation Performed",
+      "type": "boolean"
+    },
+    "negotiation_contract": {
+      "const": "sc.core.unified-runtime-policy-capability-negotiation.v1",
+      "default": "sc.core.unified-runtime-policy-capability-negotiation.v1",
+      "title": "Negotiation Contract",
+      "type": "string"
+    },
+    "payload_bindings": {
+      "items": {
+        "$ref": "#/$defs/HandoffPayloadBinding"
+      },
+      "minItems": 1,
+      "title": "Payload Bindings",
+      "type": "array"
+    },
+    "policies": {
+      "items": {
+        "$ref": "#/$defs/CrossProductHandoffPolicy"
+      },
+      "minItems": 1,
+      "title": "Policies",
+      "type": "array"
+    },
+    "products": {
+      "items": {
+        "$ref": "#/$defs/ProductEndpointDescriptor"
+      },
+      "minItems": 1,
+      "title": "Products",
+      "type": "array"
+    },
+    "receipts": {
+      "items": {
+        "$ref": "#/$defs/CrossProductHandoffReceipt"
+      },
+      "minItems": 1,
+      "title": "Receipts",
+      "type": "array"
+    },
+    "relationship_graph_mutation_performed": {
+      "const": false,
+      "default": false,
+      "title": "Relationship Graph Mutation Performed",
+      "type": "boolean"
+    },
+    "release": {
+      "const": "3.94.0",
+      "default": "3.94.0",
+      "title": "Release",
+      "type": "string"
+    },
+    "requests": {
+      "items": {
+        "$ref": "#/$defs/CrossProductIntelligenceHandoffRequest"
+      },
+      "minItems": 1,
+      "title": "Requests",
+      "type": "array"
+    },
+    "return_contracts": {
+      "items": {
+        "$ref": "#/$defs/HandoffReturnContract"
+      },
+      "minItems": 1,
+      "title": "Return Contracts",
+      "type": "array"
+    },
+    "session_contract": {
+      "const": "sc.core.investigation-session-research-context-runtime.v1",
+      "default": "sc.core.investigation-session-research-context-runtime.v1",
+      "title": "Session Contract",
+      "type": "string"
+    },
+    "snapshots": {
+      "items": {
+        "$ref": "#/$defs/CrossProductHandoffSnapshot"
+      },
+      "minItems": 1,
+      "title": "Snapshots",
+      "type": "array"
+    },
+    "traces": {
+      "items": {
+        "$ref": "#/$defs/CrossProductHandoffTrace"
+      },
+      "minItems": 1,
+      "title": "Traces",
+      "type": "array"
+    }
+  },
+  "required": [
+    "policies",
+    "products",
+    "payload_bindings",
+    "capability_requirements",
+    "return_contracts",
+    "requests",
+    "receipts",
+    "traces",
+    "snapshots"
+  ],
+  "title": "CrossProductIntelligenceHandoffBundle",
+  "type": "object"
+}

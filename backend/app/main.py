@@ -189,6 +189,7 @@ from .routers import (
     unified_runtime_policy_capability_negotiation,
     unified_entity_evidence_query_api,
     investigation_session_research_context_runtime,
+    cross_product_intelligence_handoff,
 )
 from app.routers.spark_runtime import router as spark_runtime_router
 
@@ -748,6 +749,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # Platform Core v3.93.0 — Investigation Session & Research Context Runtime
     app.include_router(investigation_session_research_context_runtime.router)
     app.include_router(investigation_session_research_context_runtime.public_router)
+
+    # Platform Core v3.94.0 — Cross-Product Intelligence Handoff Contract
+    app.include_router(cross_product_intelligence_handoff.router)
+    app.include_router(cross_product_intelligence_handoff.public_router)
     return app
 
 
