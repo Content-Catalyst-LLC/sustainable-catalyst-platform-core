@@ -1,3 +1,11 @@
+## 4.0.0 — Sustainable Catalyst Computational Research Core
+
+- Adds the stable v4 umbrella contract over 43 governed v3.57-v3.99 contracts.
+- Defines seven stable Core domains and seven stable API surfaces.
+- Preserves epistemic, provenance, validation, multilingual, federation, integrity, observability, and scale boundaries.
+- Carries forward the v3.99 controlled-soak gate; no fabricated production certification.
+- No database migration.
+
 ## 3.99.0 — Unified Core Production Certification & Soak
 - Adds 42-contract production certification inventory, controlled soak policy, recovery/readiness gates, and bounded operational certification semantics.
 - Full production certification remains pending actual elapsed soak.

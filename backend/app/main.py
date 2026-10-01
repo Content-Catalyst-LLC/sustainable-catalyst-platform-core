@@ -195,6 +195,7 @@ from .routers import (
     unified_runtime_observability_audit_drift_intelligence,
     entity_evidence_runtime_performance_scale,
     unified_core_production_certification_soak,
+    sustainable_catalyst_computational_research_core,
 )
 from app.routers.spark_runtime import router as spark_runtime_router
 
@@ -776,6 +777,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # Platform Core v3.99.0 — Unified Core Production Certification & Soak
     app.include_router(unified_core_production_certification_soak.router)
     app.include_router(unified_core_production_certification_soak.public_router)
+
+    # Platform Core v4.0.0 — Sustainable Catalyst Computational Research Core
+    app.include_router(sustainable_catalyst_computational_research_core.router)
+    app.include_router(sustainable_catalyst_computational_research_core.public_router)
     return app
 
 

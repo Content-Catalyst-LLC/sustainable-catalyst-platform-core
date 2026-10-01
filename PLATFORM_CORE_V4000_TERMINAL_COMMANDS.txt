@@ -1,0 +1,1 @@
+Use APPLY_AND_PUSH_PLATFORM_CORE_V4000.sh against ~/Downloads/sustainable-catalyst-platform-core, then copy DEPLOY_PLATFORM_CORE_V4000_CONTABO.sh to catalystadmin@94.72.113.77:/tmp/ and execute it.

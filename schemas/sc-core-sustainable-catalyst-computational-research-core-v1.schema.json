@@ -1,0 +1,578 @@
+{
+  "$defs": {
+    "ComputationalResearchCorePolicy": {
+      "properties": {
+        "no_graph_mutation_authorized_by_major_release": {
+          "const": true,
+          "default": true,
+          "title": "No Graph Mutation Authorized By Major Release",
+          "type": "boolean"
+        },
+        "original_language_is_primary_representation": {
+          "const": true,
+          "default": true,
+          "title": "Original Language Is Primary Representation",
+          "type": "boolean"
+        },
+        "performance_optimization_is_semantic_preserving": {
+          "const": true,
+          "default": true,
+          "title": "Performance Optimization Is Semantic Preserving",
+          "type": "boolean"
+        },
+        "policy_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Policy Id",
+          "type": "string"
+        },
+        "preserve_epistemic_state": {
+          "const": true,
+          "default": true,
+          "title": "Preserve Epistemic State",
+          "type": "boolean"
+        },
+        "preserve_human_review_gates": {
+          "const": true,
+          "default": true,
+          "title": "Preserve Human Review Gates",
+          "type": "boolean"
+        },
+        "preserve_provenance": {
+          "const": true,
+          "default": true,
+          "title": "Preserve Provenance",
+          "type": "boolean"
+        },
+        "preserve_remote_reference_boundary": {
+          "const": true,
+          "default": true,
+          "title": "Preserve Remote Reference Boundary",
+          "type": "boolean"
+        },
+        "preserve_upstream_contract_identity": {
+          "const": true,
+          "default": true,
+          "title": "Preserve Upstream Contract Identity",
+          "type": "boolean"
+        },
+        "preserve_validation_requirements": {
+          "const": true,
+          "default": true,
+          "title": "Preserve Validation Requirements",
+          "type": "boolean"
+        },
+        "runtime_output_is_not_evidence_fact": {
+          "const": true,
+          "default": true,
+          "title": "Runtime Output Is Not Evidence Fact",
+          "type": "boolean"
+        },
+        "stable_major_api": {
+          "const": true,
+          "default": true,
+          "title": "Stable Major Api",
+          "type": "boolean"
+        },
+        "translation_is_derived_representation": {
+          "const": true,
+          "default": true,
+          "title": "Translation Is Derived Representation",
+          "type": "boolean"
+        },
+        "v399_soak_requirement_carried_forward": {
+          "const": true,
+          "default": true,
+          "title": "V399 Soak Requirement Carried Forward",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "policy_id"
+      ],
+      "title": "ComputationalResearchCorePolicy",
+      "type": "object"
+    },
+    "ComputationalResearchCoreSnapshot": {
+      "properties": {
+        "api_surface_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Api Surface Refs",
+          "type": "array"
+        },
+        "compatibility_rule_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Compatibility Rule Refs",
+          "type": "array"
+        },
+        "consumer_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Consumer Refs",
+          "type": "array"
+        },
+        "domain_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Domain Refs",
+          "type": "array"
+        },
+        "immutable": {
+          "const": true,
+          "default": true,
+          "title": "Immutable",
+          "type": "boolean"
+        },
+        "policy_ref": {
+          "maxLength": 150,
+          "minLength": 3,
+          "title": "Policy Ref",
+          "type": "string"
+        },
+        "readiness_ref": {
+          "maxLength": 150,
+          "minLength": 3,
+          "title": "Readiness Ref",
+          "type": "string"
+        },
+        "snapshot_id": {
+          "maxLength": 150,
+          "minLength": 3,
+          "title": "Snapshot Id",
+          "type": "string"
+        },
+        "snapshot_is_not_truth_certification": {
+          "const": true,
+          "default": true,
+          "title": "Snapshot Is Not Truth Certification",
+          "type": "boolean"
+        },
+        "supersedable": {
+          "const": true,
+          "default": true,
+          "title": "Supersedable",
+          "type": "boolean"
+        },
+        "upstream_contract_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Upstream Contract Refs",
+          "type": "array"
+        }
+      },
+      "required": [
+        "snapshot_id",
+        "policy_ref",
+        "upstream_contract_refs",
+        "domain_refs",
+        "api_surface_refs",
+        "consumer_refs",
+        "compatibility_rule_refs",
+        "readiness_ref"
+      ],
+      "title": "ComputationalResearchCoreSnapshot",
+      "type": "object"
+    },
+    "CoreDomainProfile": {
+      "properties": {
+        "computational_authority": {
+          "const": "governed-contracts-and-orchestration",
+          "default": "governed-contracts-and-orchestration",
+          "title": "Computational Authority",
+          "type": "string"
+        },
+        "contract_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Contract Refs",
+          "type": "array"
+        },
+        "domain_does_not_create_truth_authority": {
+          "const": true,
+          "default": true,
+          "title": "Domain Does Not Create Truth Authority",
+          "type": "boolean"
+        },
+        "domain_id": {
+          "maxLength": 120,
+          "minLength": 3,
+          "title": "Domain Id",
+          "type": "string"
+        },
+        "public_surface": {
+          "maxLength": 300,
+          "minLength": 3,
+          "title": "Public Surface",
+          "type": "string"
+        },
+        "title": {
+          "maxLength": 300,
+          "minLength": 3,
+          "title": "Title",
+          "type": "string"
+        }
+      },
+      "required": [
+        "domain_id",
+        "title",
+        "contract_refs",
+        "public_surface"
+      ],
+      "title": "CoreDomainProfile",
+      "type": "object"
+    },
+    "MajorCompatibilityRule": {
+      "properties": {
+        "authority_may_increase": {
+          "const": false,
+          "default": false,
+          "title": "Authority May Increase",
+          "type": "boolean"
+        },
+        "requirement": {
+          "maxLength": 2000,
+          "minLength": 10,
+          "title": "Requirement",
+          "type": "string"
+        },
+        "rule_id": {
+          "maxLength": 150,
+          "minLength": 3,
+          "title": "Rule Id",
+          "type": "string"
+        },
+        "semantics_may_silently_change": {
+          "const": false,
+          "default": false,
+          "title": "Semantics May Silently Change",
+          "type": "boolean"
+        },
+        "subject": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Subject",
+          "type": "string"
+        }
+      },
+      "required": [
+        "rule_id",
+        "subject",
+        "requirement"
+      ],
+      "title": "MajorCompatibilityRule",
+      "type": "object"
+    },
+    "MajorReleaseDisposition": {
+      "enum": [
+        "approved-for-controlled-soak",
+        "production-certified",
+        "blocked"
+      ],
+      "title": "MajorReleaseDisposition",
+      "type": "string"
+    },
+    "MajorReleaseReadiness": {
+      "properties": {
+        "disposition": {
+          "$ref": "#/$defs/MajorReleaseDisposition"
+        },
+        "full_production_certification_claimed": {
+          "const": false,
+          "default": false,
+          "title": "Full Production Certification Claimed",
+          "type": "boolean"
+        },
+        "major_version_transition_is_operational_not_epistemic": {
+          "const": true,
+          "default": true,
+          "title": "Major Version Transition Is Operational Not Epistemic",
+          "type": "boolean"
+        },
+        "minimum_elapsed_soak_hours": {
+          "const": 24,
+          "default": 24,
+          "title": "Minimum Elapsed Soak Hours",
+          "type": "integer"
+        },
+        "predecessor_certification_contract": {
+          "const": "sc.core.unified-core-production-certification-soak.v1",
+          "default": "sc.core.unified-core-production-certification-soak.v1",
+          "title": "Predecessor Certification Contract",
+          "type": "string"
+        },
+        "predecessor_elapsed_soak_required_for_production_certification": {
+          "const": true,
+          "default": true,
+          "title": "Predecessor Elapsed Soak Required For Production Certification",
+          "type": "boolean"
+        },
+        "predecessor_release": {
+          "const": "3.99.0",
+          "default": "3.99.0",
+          "title": "Predecessor Release",
+          "type": "string"
+        },
+        "readiness_id": {
+          "maxLength": 150,
+          "minLength": 3,
+          "title": "Readiness Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "readiness_id",
+        "disposition"
+      ],
+      "title": "MajorReleaseReadiness",
+      "type": "object"
+    },
+    "ProductConsumerBinding": {
+      "properties": {
+        "consumer_id": {
+          "maxLength": 120,
+          "minLength": 3,
+          "title": "Consumer Id",
+          "type": "string"
+        },
+        "display_name": {
+          "maxLength": 200,
+          "minLength": 3,
+          "title": "Display Name",
+          "type": "string"
+        },
+        "handoff_contract": {
+          "const": "sc.core.cross-product-intelligence-handoff.v1",
+          "default": "sc.core.cross-product-intelligence-handoff.v1",
+          "title": "Handoff Contract",
+          "type": "string"
+        },
+        "must_preserve_epistemic_state": {
+          "const": true,
+          "default": true,
+          "title": "Must Preserve Epistemic State",
+          "type": "boolean"
+        },
+        "must_preserve_provenance": {
+          "const": true,
+          "default": true,
+          "title": "Must Preserve Provenance",
+          "type": "boolean"
+        },
+        "returned_derived_output_requires_validation": {
+          "const": true,
+          "default": true,
+          "title": "Returned Derived Output Requires Validation",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "consumer_id",
+        "display_name"
+      ],
+      "title": "ProductConsumerBinding",
+      "type": "object"
+    },
+    "StableApiSurface": {
+      "properties": {
+        "compatibility_policy": {
+          "const": "backward-compatible-within-v4",
+          "default": "backward-compatible-within-v4",
+          "title": "Compatibility Policy",
+          "type": "string"
+        },
+        "domain_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Domain Refs",
+          "type": "array"
+        },
+        "explicit_versioned_contracts_required": {
+          "const": true,
+          "default": true,
+          "title": "Explicit Versioned Contracts Required",
+          "type": "boolean"
+        },
+        "route_prefix": {
+          "maxLength": 300,
+          "minLength": 2,
+          "title": "Route Prefix",
+          "type": "string"
+        },
+        "surface_id": {
+          "maxLength": 150,
+          "minLength": 3,
+          "title": "Surface Id",
+          "type": "string"
+        },
+        "title": {
+          "maxLength": 300,
+          "minLength": 3,
+          "title": "Title",
+          "type": "string"
+        }
+      },
+      "required": [
+        "surface_id",
+        "title",
+        "route_prefix",
+        "domain_refs"
+      ],
+      "title": "StableApiSurface",
+      "type": "object"
+    },
+    "UpstreamContractBinding": {
+      "properties": {
+        "compatibility_state": {
+          "const": "retained",
+          "default": "retained",
+          "title": "Compatibility State",
+          "type": "string"
+        },
+        "contract": {
+          "maxLength": 500,
+          "minLength": 10,
+          "title": "Contract",
+          "type": "string"
+        },
+        "domain_id": {
+          "maxLength": 120,
+          "minLength": 3,
+          "title": "Domain Id",
+          "type": "string"
+        },
+        "provenance_boundary_preserved": {
+          "const": true,
+          "default": true,
+          "title": "Provenance Boundary Preserved",
+          "type": "boolean"
+        },
+        "release": {
+          "pattern": "^3\\.(?:[5-9][0-9])\\.0$",
+          "title": "Release",
+          "type": "string"
+        },
+        "semantic_identity_preserved": {
+          "const": true,
+          "default": true,
+          "title": "Semantic Identity Preserved",
+          "type": "boolean"
+        },
+        "stable_in_v4": {
+          "const": true,
+          "default": true,
+          "title": "Stable In V4",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "release",
+        "contract",
+        "domain_id"
+      ],
+      "title": "UpstreamContractBinding",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "api_surfaces": {
+      "items": {
+        "$ref": "#/$defs/StableApiSurface"
+      },
+      "minItems": 1,
+      "title": "Api Surfaces",
+      "type": "array"
+    },
+    "compatibility_rules": {
+      "items": {
+        "$ref": "#/$defs/MajorCompatibilityRule"
+      },
+      "minItems": 1,
+      "title": "Compatibility Rules",
+      "type": "array"
+    },
+    "consumers": {
+      "items": {
+        "$ref": "#/$defs/ProductConsumerBinding"
+      },
+      "minItems": 1,
+      "title": "Consumers",
+      "type": "array"
+    },
+    "contract": {
+      "const": "sc.core.sustainable-catalyst-computational-research-core.v1",
+      "default": "sc.core.sustainable-catalyst-computational-research-core.v1",
+      "title": "Contract",
+      "type": "string"
+    },
+    "database_migration": {
+      "const": "none",
+      "default": "none",
+      "title": "Database Migration",
+      "type": "string"
+    },
+    "domains": {
+      "items": {
+        "$ref": "#/$defs/CoreDomainProfile"
+      },
+      "minItems": 1,
+      "title": "Domains",
+      "type": "array"
+    },
+    "policy": {
+      "$ref": "#/$defs/ComputationalResearchCorePolicy"
+    },
+    "readiness": {
+      "$ref": "#/$defs/MajorReleaseReadiness"
+    },
+    "release": {
+      "const": "4.0.0",
+      "default": "4.0.0",
+      "title": "Release",
+      "type": "string"
+    },
+    "snapshots": {
+      "items": {
+        "$ref": "#/$defs/ComputationalResearchCoreSnapshot"
+      },
+      "minItems": 1,
+      "title": "Snapshots",
+      "type": "array"
+    },
+    "upstream_contracts": {
+      "items": {
+        "$ref": "#/$defs/UpstreamContractBinding"
+      },
+      "minItems": 1,
+      "title": "Upstream Contracts",
+      "type": "array"
+    }
+  },
+  "required": [
+    "policy",
+    "upstream_contracts",
+    "domains",
+    "api_surfaces",
+    "consumers",
+    "compatibility_rules",
+    "readiness",
+    "snapshots"
+  ],
+  "title": "SustainableCatalystComputationalResearchCoreBundle",
+  "type": "object"
+}
