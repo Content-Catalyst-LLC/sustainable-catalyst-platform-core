@@ -1,0 +1,1267 @@
+{
+  "$defs": {
+    "AlertDisposition": {
+      "enum": [
+        "observe",
+        "investigate",
+        "remediate",
+        "quarantine-runtime-output",
+        "resolved"
+      ],
+      "title": "AlertDisposition",
+      "type": "string"
+    },
+    "ContractHealthObservation": {
+      "properties": {
+        "compatible": {
+          "title": "Compatible",
+          "type": "boolean"
+        },
+        "contract": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Contract",
+          "type": "string"
+        },
+        "contract_health_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Contract Health Id",
+          "type": "string"
+        },
+        "expected_version": {
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Expected Version",
+          "type": "string"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "mismatch_does_not_invalidate_historical_objects": {
+          "const": true,
+          "default": true,
+          "title": "Mismatch Does Not Invalidate Historical Objects",
+          "type": "boolean"
+        },
+        "mismatch_is_operational_signal_not_content_truth": {
+          "const": true,
+          "default": true,
+          "title": "Mismatch Is Operational Signal Not Content Truth",
+          "type": "boolean"
+        },
+        "observed_at": {
+          "maxLength": 80,
+          "minLength": 10,
+          "title": "Observed At",
+          "type": "string"
+        },
+        "observed_version": {
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Observed Version",
+          "type": "string"
+        },
+        "schema_fingerprint_expected": {
+          "maxLength": 64,
+          "minLength": 64,
+          "title": "Schema Fingerprint Expected",
+          "type": "string"
+        },
+        "schema_fingerprint_observed": {
+          "maxLength": 64,
+          "minLength": 64,
+          "title": "Schema Fingerprint Observed",
+          "type": "string"
+        }
+      },
+      "required": [
+        "contract_health_id",
+        "contract",
+        "expected_version",
+        "observed_version",
+        "schema_fingerprint_expected",
+        "schema_fingerprint_observed",
+        "compatible",
+        "observed_at"
+      ],
+      "title": "ContractHealthObservation",
+      "type": "object"
+    },
+    "DriftBaseline": {
+      "properties": {
+        "baseline_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Baseline Id",
+          "type": "string"
+        },
+        "baseline_is_comparison_reference_not_truth": {
+          "const": true,
+          "default": true,
+          "title": "Baseline Is Comparison Reference Not Truth",
+          "type": "boolean"
+        },
+        "baseline_value": {
+          "title": "Baseline Value",
+          "type": "number"
+        },
+        "drift_kind": {
+          "$ref": "#/$defs/DriftKind"
+        },
+        "established_at": {
+          "maxLength": 80,
+          "minLength": 10,
+          "title": "Established At",
+          "type": "string"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "metric_name": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Metric Name",
+          "type": "string"
+        },
+        "provenance_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Provenance Refs",
+          "type": "array"
+        },
+        "target_ref": {
+          "maxLength": 1000,
+          "minLength": 3,
+          "title": "Target Ref",
+          "type": "string"
+        },
+        "tolerance_absolute": {
+          "minimum": 0,
+          "title": "Tolerance Absolute",
+          "type": "number"
+        }
+      },
+      "required": [
+        "baseline_id",
+        "drift_kind",
+        "target_ref",
+        "metric_name",
+        "baseline_value",
+        "tolerance_absolute",
+        "established_at",
+        "provenance_refs"
+      ],
+      "title": "DriftBaseline",
+      "type": "object"
+    },
+    "DriftKind": {
+      "enum": [
+        "runtime",
+        "model",
+        "contract",
+        "provenance",
+        "federation-policy",
+        "evidence-freshness"
+      ],
+      "title": "DriftKind",
+      "type": "string"
+    },
+    "DriftObservation": {
+      "properties": {
+        "baseline_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Baseline Ref",
+          "type": "string"
+        },
+        "delta_absolute": {
+          "minimum": 0,
+          "title": "Delta Absolute",
+          "type": "number"
+        },
+        "drift_does_not_change_epistemic_state": {
+          "const": true,
+          "default": true,
+          "title": "Drift Does Not Change Epistemic State",
+          "type": "boolean"
+        },
+        "drift_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Drift Id",
+          "type": "string"
+        },
+        "drift_is_diagnostic_not_truth_verdict": {
+          "const": true,
+          "default": true,
+          "title": "Drift Is Diagnostic Not Truth Verdict",
+          "type": "boolean"
+        },
+        "drift_kind": {
+          "$ref": "#/$defs/DriftKind"
+        },
+        "evidence_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Evidence Refs",
+          "type": "array"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "observed_at": {
+          "maxLength": 80,
+          "minLength": 10,
+          "title": "Observed At",
+          "type": "string"
+        },
+        "observed_value": {
+          "title": "Observed Value",
+          "type": "number"
+        },
+        "outside_tolerance": {
+          "title": "Outside Tolerance",
+          "type": "boolean"
+        },
+        "severity": {
+          "$ref": "#/$defs/DriftSeverity"
+        },
+        "target_ref": {
+          "maxLength": 1000,
+          "minLength": 3,
+          "title": "Target Ref",
+          "type": "string"
+        }
+      },
+      "required": [
+        "drift_id",
+        "baseline_ref",
+        "drift_kind",
+        "target_ref",
+        "observed_value",
+        "delta_absolute",
+        "outside_tolerance",
+        "severity",
+        "observed_at",
+        "evidence_refs"
+      ],
+      "title": "DriftObservation",
+      "type": "object"
+    },
+    "DriftSeverity": {
+      "enum": [
+        "informational",
+        "low",
+        "moderate",
+        "high",
+        "critical"
+      ],
+      "title": "DriftSeverity",
+      "type": "string"
+    },
+    "FederationPolicyDriftSignal": {
+      "properties": {
+        "current_state": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Current State",
+          "type": "string"
+        },
+        "detected_at": {
+          "maxLength": 80,
+          "minLength": 10,
+          "title": "Detected At",
+          "type": "string"
+        },
+        "drift_kind": {
+          "enum": [
+            "permission-change",
+            "trust-scope-change",
+            "node-state-change",
+            "verification-state-change"
+          ],
+          "title": "Drift Kind",
+          "type": "string"
+        },
+        "federation_policy_drift_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Federation Policy Drift Id",
+          "type": "string"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "node_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Node Ref",
+          "type": "string"
+        },
+        "policy_drift_does_not_establish_content_truth_or_falsity": {
+          "const": true,
+          "default": true,
+          "title": "Policy Drift Does Not Establish Content Truth Or Falsity",
+          "type": "boolean"
+        },
+        "policy_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Policy Ref",
+          "type": "string"
+        },
+        "previous_decision_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Previous Decision Ref",
+          "type": "string"
+        },
+        "prior_remote_objects_remain_historical_records": {
+          "const": true,
+          "default": true,
+          "title": "Prior Remote Objects Remain Historical Records",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "federation_policy_drift_id",
+        "node_ref",
+        "policy_ref",
+        "previous_decision_ref",
+        "current_state",
+        "drift_kind",
+        "detected_at"
+      ],
+      "title": "FederationPolicyDriftSignal",
+      "type": "object"
+    },
+    "HealthState": {
+      "enum": [
+        "healthy",
+        "degraded",
+        "unavailable",
+        "unknown"
+      ],
+      "title": "HealthState",
+      "type": "string"
+    },
+    "ObservabilityAlertDecision": {
+      "properties": {
+        "alert_cannot_promote_or_demote_epistemic_state": {
+          "const": true,
+          "default": true,
+          "title": "Alert Cannot Promote Or Demote Epistemic State",
+          "type": "boolean"
+        },
+        "alert_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Alert Id",
+          "type": "string"
+        },
+        "alert_is_not_truth_verdict": {
+          "const": true,
+          "default": true,
+          "title": "Alert Is Not Truth Verdict",
+          "type": "boolean"
+        },
+        "automatic_evidence_deletion_allowed": {
+          "const": false,
+          "default": false,
+          "title": "Automatic Evidence Deletion Allowed",
+          "type": "boolean"
+        },
+        "automatic_graph_mutation_allowed": {
+          "const": false,
+          "default": false,
+          "title": "Automatic Graph Mutation Allowed",
+          "type": "boolean"
+        },
+        "decided_at": {
+          "maxLength": 80,
+          "minLength": 10,
+          "title": "Decided At",
+          "type": "string"
+        },
+        "disposition": {
+          "$ref": "#/$defs/AlertDisposition"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "rationale": {
+          "maxLength": 3000,
+          "minLength": 3,
+          "title": "Rationale",
+          "type": "string"
+        },
+        "requires_review": {
+          "title": "Requires Review",
+          "type": "boolean"
+        },
+        "severity": {
+          "$ref": "#/$defs/DriftSeverity"
+        },
+        "signal_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Signal Refs",
+          "type": "array"
+        }
+      },
+      "required": [
+        "alert_id",
+        "signal_refs",
+        "severity",
+        "disposition",
+        "rationale",
+        "decided_at",
+        "requires_review"
+      ],
+      "title": "ObservabilityAlertDecision",
+      "type": "object"
+    },
+    "ObservabilityPolicy": {
+      "properties": {
+        "alert_promotes_or_demotes_epistemic_state": {
+          "const": false,
+          "default": false,
+          "title": "Alert Promotes Or Demotes Epistemic State",
+          "type": "boolean"
+        },
+        "anomaly_establishes_claim_false": {
+          "const": false,
+          "default": false,
+          "title": "Anomaly Establishes Claim False",
+          "type": "boolean"
+        },
+        "drift_establishes_claim_false": {
+          "const": false,
+          "default": false,
+          "title": "Drift Establishes Claim False",
+          "type": "boolean"
+        },
+        "failed_health_check_invalidates_evidence": {
+          "const": false,
+          "default": false,
+          "title": "Failed Health Check Invalidates Evidence",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "observability_mutates_governed_graphs": {
+          "const": false,
+          "default": false,
+          "title": "Observability Mutates Governed Graphs",
+          "type": "boolean"
+        },
+        "policy_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Policy Id",
+          "type": "string"
+        },
+        "require_alert_decision_provenance": {
+          "const": true,
+          "default": true,
+          "title": "Require Alert Decision Provenance",
+          "type": "boolean"
+        },
+        "require_contract_health_observations": {
+          "const": true,
+          "default": true,
+          "title": "Require Contract Health Observations",
+          "type": "boolean"
+        },
+        "require_explicit_drift_baselines": {
+          "const": true,
+          "default": true,
+          "title": "Require Explicit Drift Baselines",
+          "type": "boolean"
+        },
+        "require_federation_policy_drift_detection": {
+          "const": true,
+          "default": true,
+          "title": "Require Federation Policy Drift Detection",
+          "type": "boolean"
+        },
+        "require_human_or_policy_review_for_epistemic_change": {
+          "const": true,
+          "default": true,
+          "title": "Require Human Or Policy Review For Epistemic Change",
+          "type": "boolean"
+        },
+        "require_immutable_audit_events": {
+          "const": true,
+          "default": true,
+          "title": "Require Immutable Audit Events",
+          "type": "boolean"
+        },
+        "require_provenance_gap_detection": {
+          "const": true,
+          "default": true,
+          "title": "Require Provenance Gap Detection",
+          "type": "boolean"
+        },
+        "require_runtime_health_observations": {
+          "const": true,
+          "default": true,
+          "title": "Require Runtime Health Observations",
+          "type": "boolean"
+        },
+        "require_slo_indicators": {
+          "const": true,
+          "default": true,
+          "title": "Require Slo Indicators",
+          "type": "boolean"
+        },
+        "require_stale_evidence_signals": {
+          "const": true,
+          "default": true,
+          "title": "Require Stale Evidence Signals",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "policy_id"
+      ],
+      "title": "ObservabilityPolicy",
+      "type": "object"
+    },
+    "ObservabilitySnapshot": {
+      "properties": {
+        "alert_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Alert Refs",
+          "type": "array"
+        },
+        "as_of": {
+          "maxLength": 80,
+          "minLength": 10,
+          "title": "As Of",
+          "type": "string"
+        },
+        "audit_event_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Audit Event Refs",
+          "type": "array"
+        },
+        "contract_health_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Contract Health Refs",
+          "type": "array"
+        },
+        "drift_baseline_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Drift Baseline Refs",
+          "type": "array"
+        },
+        "drift_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Drift Refs",
+          "type": "array"
+        },
+        "federation_policy_drift_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Federation Policy Drift Refs",
+          "type": "array"
+        },
+        "health_observation_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Health Observation Refs",
+          "type": "array"
+        },
+        "immutable": {
+          "const": true,
+          "default": true,
+          "title": "Immutable",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "provenance_gap_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Provenance Gap Refs",
+          "type": "array"
+        },
+        "slo_indicator_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Slo Indicator Refs",
+          "type": "array"
+        },
+        "snapshot_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Snapshot Id",
+          "type": "string"
+        },
+        "snapshot_is_not_truth_verdict": {
+          "const": true,
+          "default": true,
+          "title": "Snapshot Is Not Truth Verdict",
+          "type": "boolean"
+        },
+        "stale_signal_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Stale Signal Refs",
+          "type": "array"
+        },
+        "supersedable": {
+          "const": true,
+          "default": true,
+          "title": "Supersedable",
+          "type": "boolean"
+        },
+        "trace_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Trace Refs",
+          "type": "array"
+        }
+      },
+      "required": [
+        "snapshot_id",
+        "health_observation_refs",
+        "contract_health_refs",
+        "drift_baseline_refs",
+        "drift_refs",
+        "slo_indicator_refs",
+        "audit_event_refs",
+        "alert_refs",
+        "trace_refs",
+        "as_of"
+      ],
+      "title": "ObservabilitySnapshot",
+      "type": "object"
+    },
+    "ObservabilityTrace": {
+      "properties": {
+        "alert_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Alert Refs",
+          "type": "array"
+        },
+        "audit_event_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Audit Event Refs",
+          "type": "array"
+        },
+        "completed_at": {
+          "maxLength": 80,
+          "minLength": 10,
+          "title": "Completed At",
+          "type": "string"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "observation_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Observation Refs",
+          "type": "array"
+        },
+        "reproducible": {
+          "const": true,
+          "default": true,
+          "title": "Reproducible",
+          "type": "boolean"
+        },
+        "started_at": {
+          "maxLength": 80,
+          "minLength": 10,
+          "title": "Started At",
+          "type": "string"
+        },
+        "trace_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Trace Id",
+          "type": "string"
+        },
+        "trace_is_diagnostic_not_research_conclusion": {
+          "const": true,
+          "default": true,
+          "title": "Trace Is Diagnostic Not Research Conclusion",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "trace_id",
+        "observation_refs",
+        "audit_event_refs",
+        "alert_refs",
+        "started_at",
+        "completed_at"
+      ],
+      "title": "ObservabilityTrace",
+      "type": "object"
+    },
+    "ProvenanceGapSignal": {
+      "properties": {
+        "detected_at": {
+          "maxLength": 80,
+          "minLength": 10,
+          "title": "Detected At",
+          "type": "string"
+        },
+        "expected_provenance_kind": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Expected Provenance Kind",
+          "type": "string"
+        },
+        "gap_does_not_delete_or_rewrite_object": {
+          "const": true,
+          "default": true,
+          "title": "Gap Does Not Delete Or Rewrite Object",
+          "type": "boolean"
+        },
+        "gap_is_not_proof_object_is_false": {
+          "const": true,
+          "default": true,
+          "title": "Gap Is Not Proof Object Is False",
+          "type": "boolean"
+        },
+        "gap_requires_review": {
+          "const": true,
+          "default": true,
+          "title": "Gap Requires Review",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "missing_or_incomplete_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Missing Or Incomplete Refs",
+          "type": "array"
+        },
+        "provenance_gap_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Provenance Gap Id",
+          "type": "string"
+        },
+        "severity": {
+          "$ref": "#/$defs/DriftSeverity"
+        },
+        "target_object_ref": {
+          "maxLength": 1000,
+          "minLength": 3,
+          "title": "Target Object Ref",
+          "type": "string"
+        }
+      },
+      "required": [
+        "provenance_gap_id",
+        "target_object_ref",
+        "expected_provenance_kind",
+        "missing_or_incomplete_refs",
+        "detected_at",
+        "severity"
+      ],
+      "title": "ProvenanceGapSignal",
+      "type": "object"
+    },
+    "RuntimeAuditEvent": {
+      "properties": {
+        "actor_or_runtime": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Actor Or Runtime",
+          "type": "string"
+        },
+        "audit_event_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Audit Event Id",
+          "type": "string"
+        },
+        "deterministic_event_sha256": {
+          "maxLength": 64,
+          "minLength": 64,
+          "title": "Deterministic Event Sha256",
+          "type": "string"
+        },
+        "event_is_audit_record_not_truth_assessment": {
+          "const": true,
+          "default": true,
+          "title": "Event Is Audit Record Not Truth Assessment",
+          "type": "boolean"
+        },
+        "event_type": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Event Type",
+          "type": "string"
+        },
+        "immutable": {
+          "const": true,
+          "default": true,
+          "title": "Immutable",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "recorded_at": {
+          "maxLength": 80,
+          "minLength": 10,
+          "title": "Recorded At",
+          "type": "string"
+        },
+        "related_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Related Refs",
+          "type": "array"
+        },
+        "target_ref": {
+          "maxLength": 1000,
+          "minLength": 2,
+          "title": "Target Ref",
+          "type": "string"
+        }
+      },
+      "required": [
+        "audit_event_id",
+        "event_type",
+        "actor_or_runtime",
+        "target_ref",
+        "recorded_at",
+        "deterministic_event_sha256"
+      ],
+      "title": "RuntimeAuditEvent",
+      "type": "object"
+    },
+    "RuntimeHealthObservation": {
+      "properties": {
+        "audit_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Audit Refs",
+          "type": "array"
+        },
+        "capability": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Capability",
+          "type": "string"
+        },
+        "contract": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Contract",
+          "type": "string"
+        },
+        "endpoint": {
+          "maxLength": 1000,
+          "minLength": 1,
+          "title": "Endpoint",
+          "type": "string"
+        },
+        "health_state_does_not_change_epistemic_state": {
+          "const": true,
+          "default": true,
+          "title": "Health State Does Not Change Epistemic State",
+          "type": "boolean"
+        },
+        "latency_ms": {
+          "minimum": 0,
+          "title": "Latency Ms",
+          "type": "number"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "observation_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Observation Id",
+          "type": "string"
+        },
+        "observed_at": {
+          "maxLength": 80,
+          "minLength": 10,
+          "title": "Observed At",
+          "type": "string"
+        },
+        "operational_observation_not_claim_truth": {
+          "const": true,
+          "default": true,
+          "title": "Operational Observation Not Claim Truth",
+          "type": "boolean"
+        },
+        "source": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Source",
+          "type": "string"
+        },
+        "state": {
+          "$ref": "#/$defs/HealthState"
+        }
+      },
+      "required": [
+        "observation_id",
+        "capability",
+        "contract",
+        "endpoint",
+        "state",
+        "latency_ms",
+        "observed_at",
+        "source"
+      ],
+      "title": "RuntimeHealthObservation",
+      "type": "object"
+    },
+    "RuntimeSLOIndicator": {
+      "properties": {
+        "compliant": {
+          "title": "Compliant",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "metric_name": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Metric Name",
+          "type": "string"
+        },
+        "objective": {
+          "title": "Objective",
+          "type": "number"
+        },
+        "observed": {
+          "title": "Observed",
+          "type": "number"
+        },
+        "observed_at": {
+          "maxLength": 80,
+          "minLength": 10,
+          "title": "Observed At",
+          "type": "string"
+        },
+        "service_or_capability": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Service Or Capability",
+          "type": "string"
+        },
+        "slo_breach_is_operational_not_epistemic": {
+          "const": true,
+          "default": true,
+          "title": "Slo Breach Is Operational Not Epistemic",
+          "type": "boolean"
+        },
+        "slo_indicator_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Slo Indicator Id",
+          "type": "string"
+        },
+        "window": {
+          "maxLength": 200,
+          "minLength": 2,
+          "title": "Window",
+          "type": "string"
+        }
+      },
+      "required": [
+        "slo_indicator_id",
+        "service_or_capability",
+        "metric_name",
+        "objective",
+        "observed",
+        "compliant",
+        "window",
+        "observed_at"
+      ],
+      "title": "RuntimeSLOIndicator",
+      "type": "object"
+    },
+    "StaleEvidenceSignal": {
+      "properties": {
+        "age_days": {
+          "minimum": 0,
+          "title": "Age Days",
+          "type": "integer"
+        },
+        "detected_at": {
+          "maxLength": 80,
+          "minLength": 10,
+          "title": "Detected At",
+          "type": "string"
+        },
+        "evidence_ref": {
+          "maxLength": 1000,
+          "minLength": 3,
+          "title": "Evidence Ref",
+          "type": "string"
+        },
+        "freshness_policy_days": {
+          "minimum": 1,
+          "title": "Freshness Policy Days",
+          "type": "integer"
+        },
+        "last_validated_at": {
+          "maxLength": 80,
+          "minLength": 10,
+          "title": "Last Validated At",
+          "type": "string"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "stale": {
+          "title": "Stale",
+          "type": "boolean"
+        },
+        "stale_does_not_mean_false": {
+          "const": true,
+          "default": true,
+          "title": "Stale Does Not Mean False",
+          "type": "boolean"
+        },
+        "stale_requires_revalidation_not_deletion": {
+          "const": true,
+          "default": true,
+          "title": "Stale Requires Revalidation Not Deletion",
+          "type": "boolean"
+        },
+        "stale_signal_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Stale Signal Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "stale_signal_id",
+        "evidence_ref",
+        "last_validated_at",
+        "freshness_policy_days",
+        "age_days",
+        "stale",
+        "detected_at"
+      ],
+      "title": "StaleEvidenceSignal",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "alerts": {
+      "items": {
+        "$ref": "#/$defs/ObservabilityAlertDecision"
+      },
+      "minItems": 1,
+      "title": "Alerts",
+      "type": "array"
+    },
+    "audit_events": {
+      "items": {
+        "$ref": "#/$defs/RuntimeAuditEvent"
+      },
+      "minItems": 1,
+      "title": "Audit Events",
+      "type": "array"
+    },
+    "contract": {
+      "const": "sc.core.unified-runtime-observability-audit-drift-intelligence.v1",
+      "default": "sc.core.unified-runtime-observability-audit-drift-intelligence.v1",
+      "title": "Contract",
+      "type": "string"
+    },
+    "contract_health": {
+      "items": {
+        "$ref": "#/$defs/ContractHealthObservation"
+      },
+      "minItems": 1,
+      "title": "Contract Health",
+      "type": "array"
+    },
+    "database_migration": {
+      "const": "none",
+      "default": "none",
+      "title": "Database Migration",
+      "type": "string"
+    },
+    "drift_baselines": {
+      "items": {
+        "$ref": "#/$defs/DriftBaseline"
+      },
+      "minItems": 1,
+      "title": "Drift Baselines",
+      "type": "array"
+    },
+    "drift_observations": {
+      "items": {
+        "$ref": "#/$defs/DriftObservation"
+      },
+      "minItems": 1,
+      "title": "Drift Observations",
+      "type": "array"
+    },
+    "federation_policy_drift": {
+      "items": {
+        "$ref": "#/$defs/FederationPolicyDriftSignal"
+      },
+      "title": "Federation Policy Drift",
+      "type": "array"
+    },
+    "health_observations": {
+      "items": {
+        "$ref": "#/$defs/RuntimeHealthObservation"
+      },
+      "minItems": 1,
+      "title": "Health Observations",
+      "type": "array"
+    },
+    "policies": {
+      "items": {
+        "$ref": "#/$defs/ObservabilityPolicy"
+      },
+      "minItems": 1,
+      "title": "Policies",
+      "type": "array"
+    },
+    "provenance_gaps": {
+      "items": {
+        "$ref": "#/$defs/ProvenanceGapSignal"
+      },
+      "title": "Provenance Gaps",
+      "type": "array"
+    },
+    "release": {
+      "const": "3.97.0",
+      "default": "3.97.0",
+      "title": "Release",
+      "type": "string"
+    },
+    "slo_indicators": {
+      "items": {
+        "$ref": "#/$defs/RuntimeSLOIndicator"
+      },
+      "minItems": 1,
+      "title": "Slo Indicators",
+      "type": "array"
+    },
+    "snapshots": {
+      "items": {
+        "$ref": "#/$defs/ObservabilitySnapshot"
+      },
+      "minItems": 1,
+      "title": "Snapshots",
+      "type": "array"
+    },
+    "stale_evidence_signals": {
+      "items": {
+        "$ref": "#/$defs/StaleEvidenceSignal"
+      },
+      "title": "Stale Evidence Signals",
+      "type": "array"
+    },
+    "traces": {
+      "items": {
+        "$ref": "#/$defs/ObservabilityTrace"
+      },
+      "minItems": 1,
+      "title": "Traces",
+      "type": "array"
+    }
+  },
+  "required": [
+    "policies",
+    "health_observations",
+    "contract_health",
+    "audit_events",
+    "drift_baselines",
+    "drift_observations",
+    "slo_indicators",
+    "alerts",
+    "traces",
+    "snapshots"
+  ],
+  "title": "UnifiedRuntimeObservabilityAuditDriftBundle",
+  "type": "object"
+}

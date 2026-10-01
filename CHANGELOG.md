@@ -1,3 +1,9 @@
+# Platform Core v3.97.0 — Unified Runtime Observability, Audit & Drift Intelligence
+
+- Adds governed runtime/contract health observations, immutable audit events, provenance-gap detection, drift baselines and signals, stale-evidence/federation-policy drift, SLO indicators, alert decisions, traces, and snapshots.
+- Enforces diagnostic/epistemic separation: anomalies, drift, staleness, and alerts do not establish claim truth/falsity or mutate governed graphs.
+- Database migration: none.
+
 
 ## 3.95.0 — Signed Runtime Artifacts & Execution Attestations
 - Added provider-neutral, content-addressed runtime artifact signing and execution attestation contracts.

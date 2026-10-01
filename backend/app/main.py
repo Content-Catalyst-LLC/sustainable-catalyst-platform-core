@@ -192,6 +192,7 @@ from .routers import (
     cross_product_intelligence_handoff,
     signed_runtime_artifacts_execution_attestations,
     federation_governance_trust_policy_runtime,
+    unified_runtime_observability_audit_drift_intelligence,
 )
 from app.routers.spark_runtime import router as spark_runtime_router
 
@@ -763,6 +764,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # Platform Core v3.96.0 — Federation Governance, Trust & Policy Runtime
     app.include_router(federation_governance_trust_policy_runtime.router)
     app.include_router(federation_governance_trust_policy_runtime.public_router)
+    app.include_router(unified_runtime_observability_audit_drift_intelligence.router)
+    app.include_router(unified_runtime_observability_audit_drift_intelligence.public_router)
     return app
 
 
