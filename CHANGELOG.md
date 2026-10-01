@@ -1,3 +1,10 @@
+## 3.92.0 — Unified Entity & Evidence Query API
+- Added one governed query surface across the v3.77–v3.91 entity/evidence runtime and control plane.
+- Added explicit query policies, scopes, plans, provenance references, qualified result sets, execution traces, and immutable query snapshots.
+- Preserved source contract identity, epistemic state, provenance, validation state, contradictions, and remote-reference boundaries for every result.
+- Defined retrieval scores as relevance-only; query results do not promote candidates/hypotheses, bypass local validation, certify truth, or mutate governed graphs.
+- No database migration.
+
 # 3.91.0
 - Added Unified Runtime Policy & Capability Negotiation as the governed control plane over the v3.90 unified entity/evidence runtime.
 - Added capability discovery, consumer profiles, contract/minimum-version negotiation, scope intersection, explicit degradation/fallback, auditable decisions, negotiation traces, and immutable capability registry snapshots.

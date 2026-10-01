@@ -1,0 +1,1112 @@
+{
+  "$defs": {
+    "EpistemicState": {
+      "enum": [
+        "governed-record",
+        "source-asserted",
+        "candidate",
+        "hypothesis",
+        "analytical",
+        "qualified",
+        "unresolved",
+        "remote-reference",
+        "runtime-metadata"
+      ],
+      "title": "EpistemicState",
+      "type": "string"
+    },
+    "QueryExecutionDisposition": {
+      "enum": [
+        "complete-with-qualifications",
+        "partial",
+        "blocked"
+      ],
+      "title": "QueryExecutionDisposition",
+      "type": "string"
+    },
+    "QueryMode": {
+      "enum": [
+        "exact",
+        "exploratory",
+        "provenance",
+        "graph-context",
+        "timeline",
+        "federation-reference"
+      ],
+      "title": "QueryMode",
+      "type": "string"
+    },
+    "QueryPlanStep": {
+      "properties": {
+        "allowed_epistemic_states": {
+          "items": {
+            "$ref": "#/$defs/EpistemicState"
+          },
+          "minItems": 1,
+          "title": "Allowed Epistemic States",
+          "type": "array"
+        },
+        "capability_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Capability Ref",
+          "type": "string"
+        },
+        "dependency_step_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Dependency Step Refs",
+          "type": "array"
+        },
+        "may_mutate_governed_graphs": {
+          "const": false,
+          "default": false,
+          "title": "May Mutate Governed Graphs",
+          "type": "boolean"
+        },
+        "may_promote_epistemic_state": {
+          "const": false,
+          "default": false,
+          "title": "May Promote Epistemic State",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "operation": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Operation",
+          "type": "string"
+        },
+        "ordinal": {
+          "minimum": 1,
+          "title": "Ordinal",
+          "type": "integer"
+        },
+        "output_contract": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Output Contract",
+          "type": "string"
+        },
+        "query_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Query Ref",
+          "type": "string"
+        },
+        "step_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Step Id",
+          "type": "string"
+        },
+        "target_kind": {
+          "$ref": "#/$defs/QueryTargetKind"
+        }
+      },
+      "required": [
+        "step_id",
+        "query_ref",
+        "ordinal",
+        "capability_ref",
+        "target_kind",
+        "operation",
+        "output_contract",
+        "allowed_epistemic_states"
+      ],
+      "title": "QueryPlanStep",
+      "type": "object"
+    },
+    "QueryProvenanceReference": {
+      "properties": {
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "provenance_is_not_truth_certification": {
+          "const": true,
+          "default": true,
+          "title": "Provenance Is Not Truth Certification",
+          "type": "boolean"
+        },
+        "provenance_ref_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Provenance Ref Id",
+          "type": "string"
+        },
+        "source_contract": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Source Contract",
+          "type": "string"
+        },
+        "source_fingerprint_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Source Fingerprint Sha256",
+          "type": "string"
+        },
+        "source_kind": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Source Kind",
+          "type": "string"
+        },
+        "source_object_ref": {
+          "maxLength": 1000,
+          "minLength": 3,
+          "title": "Source Object Ref",
+          "type": "string"
+        }
+      },
+      "required": [
+        "provenance_ref_id",
+        "source_contract",
+        "source_object_ref",
+        "source_fingerprint_sha256",
+        "source_kind"
+      ],
+      "title": "QueryProvenanceReference",
+      "type": "object"
+    },
+    "QueryTargetKind": {
+      "enum": [
+        "entity",
+        "temporal-identity",
+        "record-linkage",
+        "source-reconciliation",
+        "documentary-source",
+        "relationship",
+        "network-structure",
+        "connection-path",
+        "evidence-chain",
+        "multi-hop-reasoning",
+        "contradiction",
+        "timeline",
+        "investigation-package",
+        "federation-reference",
+        "runtime-metadata"
+      ],
+      "title": "QueryTargetKind",
+      "type": "string"
+    },
+    "ResultValidationState": {
+      "enum": [
+        "governed-reference",
+        "review-required",
+        "local-validation-required",
+        "analytical-only",
+        "unresolved",
+        "metadata-only"
+      ],
+      "title": "ResultValidationState",
+      "type": "string"
+    },
+    "UnifiedEntityEvidenceQuery": {
+      "properties": {
+        "consumer_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Consumer Ref",
+          "type": "string"
+        },
+        "include_epistemic_state": {
+          "const": true,
+          "default": true,
+          "title": "Include Epistemic State",
+          "type": "boolean"
+        },
+        "include_provenance": {
+          "const": true,
+          "default": true,
+          "title": "Include Provenance",
+          "type": "boolean"
+        },
+        "include_source_contract": {
+          "const": true,
+          "default": true,
+          "title": "Include Source Contract",
+          "type": "boolean"
+        },
+        "include_validation_state": {
+          "const": true,
+          "default": true,
+          "title": "Include Validation State",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "mode": {
+          "$ref": "#/$defs/QueryMode"
+        },
+        "policy_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Policy Ref",
+          "type": "string"
+        },
+        "query_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Query Id",
+          "type": "string"
+        },
+        "query_is_not_truth_instruction": {
+          "const": true,
+          "default": true,
+          "title": "Query Is Not Truth Instruction",
+          "type": "boolean"
+        },
+        "query_text": {
+          "maxLength": 8000,
+          "minLength": 3,
+          "title": "Query Text",
+          "type": "string"
+        },
+        "requested_at": {
+          "maxLength": 80,
+          "minLength": 10,
+          "title": "Requested At",
+          "type": "string"
+        },
+        "requested_fields": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Requested Fields",
+          "type": "array"
+        },
+        "scope_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Scope Ref",
+          "type": "string"
+        }
+      },
+      "required": [
+        "query_id",
+        "policy_ref",
+        "scope_ref",
+        "consumer_ref",
+        "query_text",
+        "mode",
+        "requested_fields",
+        "requested_at"
+      ],
+      "title": "UnifiedEntityEvidenceQuery",
+      "type": "object"
+    },
+    "UnifiedQueryExecutionTrace": {
+      "properties": {
+        "deterministic_trace_fingerprint_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Deterministic Trace Fingerprint Sha256",
+          "type": "string"
+        },
+        "executed_at": {
+          "maxLength": 80,
+          "minLength": 10,
+          "title": "Executed At",
+          "type": "string"
+        },
+        "final_disposition": {
+          "$ref": "#/$defs/QueryExecutionDisposition"
+        },
+        "graph_mutation_performed": {
+          "const": false,
+          "default": false,
+          "title": "Graph Mutation Performed",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "plan_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Plan Ref",
+          "type": "string"
+        },
+        "query_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Query Ref",
+          "type": "string"
+        },
+        "result_set_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Result Set Ref",
+          "type": "string"
+        },
+        "step_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Step Refs",
+          "type": "array"
+        },
+        "trace_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Trace Id",
+          "type": "string"
+        },
+        "trace_is_not_truth_assessment": {
+          "const": true,
+          "default": true,
+          "title": "Trace Is Not Truth Assessment",
+          "type": "boolean"
+        },
+        "trace_preserves_epistemic_state": {
+          "const": true,
+          "default": true,
+          "title": "Trace Preserves Epistemic State",
+          "type": "boolean"
+        },
+        "trace_preserves_provenance": {
+          "const": true,
+          "default": true,
+          "title": "Trace Preserves Provenance",
+          "type": "boolean"
+        },
+        "warnings": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Warnings",
+          "type": "array"
+        }
+      },
+      "required": [
+        "trace_id",
+        "query_ref",
+        "plan_ref",
+        "step_refs",
+        "result_set_ref",
+        "executed_at",
+        "final_disposition",
+        "deterministic_trace_fingerprint_sha256"
+      ],
+      "title": "UnifiedQueryExecutionTrace",
+      "type": "object"
+    },
+    "UnifiedQueryPlan": {
+      "properties": {
+        "deterministic_plan_fingerprint_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Deterministic Plan Fingerprint Sha256",
+          "type": "string"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "plan_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Plan Id",
+          "type": "string"
+        },
+        "plan_is_not_truth_assessment": {
+          "const": true,
+          "default": true,
+          "title": "Plan Is Not Truth Assessment",
+          "type": "boolean"
+        },
+        "policy_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Policy Ref",
+          "type": "string"
+        },
+        "preserves_contract_identity": {
+          "const": true,
+          "default": true,
+          "title": "Preserves Contract Identity",
+          "type": "boolean"
+        },
+        "preserves_epistemic_state": {
+          "const": true,
+          "default": true,
+          "title": "Preserves Epistemic State",
+          "type": "boolean"
+        },
+        "preserves_provenance": {
+          "const": true,
+          "default": true,
+          "title": "Preserves Provenance",
+          "type": "boolean"
+        },
+        "query_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Query Ref",
+          "type": "string"
+        },
+        "selected_capability_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Selected Capability Refs",
+          "type": "array"
+        },
+        "step_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Step Refs",
+          "type": "array"
+        }
+      },
+      "required": [
+        "plan_id",
+        "query_ref",
+        "policy_ref",
+        "step_refs",
+        "selected_capability_refs",
+        "deterministic_plan_fingerprint_sha256"
+      ],
+      "title": "UnifiedQueryPlan",
+      "type": "object"
+    },
+    "UnifiedQueryPolicy": {
+      "properties": {
+        "allow_candidate_promotion": {
+          "const": false,
+          "default": false,
+          "title": "Allow Candidate Promotion",
+          "type": "boolean"
+        },
+        "allow_cross_state_flattening": {
+          "const": false,
+          "default": false,
+          "title": "Allow Cross State Flattening",
+          "type": "boolean"
+        },
+        "allow_hypothesis_promotion": {
+          "const": false,
+          "default": false,
+          "title": "Allow Hypothesis Promotion",
+          "type": "boolean"
+        },
+        "allow_local_validation_bypass": {
+          "const": false,
+          "default": false,
+          "title": "Allow Local Validation Bypass",
+          "type": "boolean"
+        },
+        "allow_remote_reference_promotion": {
+          "const": false,
+          "default": false,
+          "title": "Allow Remote Reference Promotion",
+          "type": "boolean"
+        },
+        "allow_truth_score": {
+          "const": false,
+          "default": false,
+          "title": "Allow Truth Score",
+          "type": "boolean"
+        },
+        "enforce_consumer_scope": {
+          "const": true,
+          "default": true,
+          "title": "Enforce Consumer Scope",
+          "type": "boolean"
+        },
+        "label_retrieval_scores_as_relevance_only": {
+          "const": true,
+          "default": true,
+          "title": "Label Retrieval Scores As Relevance Only",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "policy_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Policy Id",
+          "type": "string"
+        },
+        "preserve_contradictions": {
+          "const": true,
+          "default": true,
+          "title": "Preserve Contradictions",
+          "type": "boolean"
+        },
+        "preserve_epistemic_state": {
+          "const": true,
+          "default": true,
+          "title": "Preserve Epistemic State",
+          "type": "boolean"
+        },
+        "preserve_provenance": {
+          "const": true,
+          "default": true,
+          "title": "Preserve Provenance",
+          "type": "boolean"
+        },
+        "preserve_remote_reference_state": {
+          "const": true,
+          "default": true,
+          "title": "Preserve Remote Reference State",
+          "type": "boolean"
+        },
+        "preserve_source_contract_identity": {
+          "const": true,
+          "default": true,
+          "title": "Preserve Source Contract Identity",
+          "type": "boolean"
+        },
+        "preserve_validation_state": {
+          "const": true,
+          "default": true,
+          "title": "Preserve Validation State",
+          "type": "boolean"
+        },
+        "require_capability_negotiation": {
+          "const": true,
+          "default": true,
+          "title": "Require Capability Negotiation",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "policy_id"
+      ],
+      "title": "UnifiedQueryPolicy",
+      "type": "object"
+    },
+    "UnifiedQueryResultItem": {
+      "properties": {
+        "epistemic_state": {
+          "$ref": "#/$defs/EpistemicState"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "plan_step_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Plan Step Ref",
+          "type": "string"
+        },
+        "provenance_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Provenance Refs",
+          "type": "array"
+        },
+        "query_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Query Ref",
+          "type": "string"
+        },
+        "result_does_not_promote_source_state": {
+          "const": true,
+          "default": true,
+          "title": "Result Does Not Promote Source State",
+          "type": "boolean"
+        },
+        "result_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Result Id",
+          "type": "string"
+        },
+        "retrieval_score": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Retrieval Score",
+          "type": "number"
+        },
+        "retrieval_score_is_not_evidence_strength": {
+          "const": true,
+          "default": true,
+          "title": "Retrieval Score Is Not Evidence Strength",
+          "type": "boolean"
+        },
+        "retrieval_score_is_not_probability_of_truth": {
+          "const": true,
+          "default": true,
+          "title": "Retrieval Score Is Not Probability Of Truth",
+          "type": "boolean"
+        },
+        "retrieval_score_is_relevance_only": {
+          "const": true,
+          "default": true,
+          "title": "Retrieval Score Is Relevance Only",
+          "type": "boolean"
+        },
+        "source_capability_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Source Capability Ref",
+          "type": "string"
+        },
+        "source_contract": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Source Contract",
+          "type": "string"
+        },
+        "source_object_ref": {
+          "maxLength": 1000,
+          "minLength": 3,
+          "title": "Source Object Ref",
+          "type": "string"
+        },
+        "summary": {
+          "maxLength": 8000,
+          "minLength": 1,
+          "title": "Summary",
+          "type": "string"
+        },
+        "target_kind": {
+          "$ref": "#/$defs/QueryTargetKind"
+        },
+        "title": {
+          "maxLength": 1000,
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        },
+        "validation_state": {
+          "$ref": "#/$defs/ResultValidationState"
+        }
+      },
+      "required": [
+        "result_id",
+        "query_ref",
+        "plan_step_ref",
+        "source_capability_ref",
+        "target_kind",
+        "source_contract",
+        "source_object_ref",
+        "title",
+        "summary",
+        "epistemic_state",
+        "validation_state",
+        "provenance_refs",
+        "retrieval_score"
+      ],
+      "title": "UnifiedQueryResultItem",
+      "type": "object"
+    },
+    "UnifiedQueryResultSet": {
+      "properties": {
+        "absence_from_results_is_not_nonexistence": {
+          "const": true,
+          "default": true,
+          "title": "Absence From Results Is Not Nonexistence",
+          "type": "boolean"
+        },
+        "disposition": {
+          "$ref": "#/$defs/QueryExecutionDisposition"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "plan_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Plan Ref",
+          "type": "string"
+        },
+        "qualification_notes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Qualification Notes",
+          "type": "array"
+        },
+        "query_completeness_is_not_evidence_completeness": {
+          "const": true,
+          "default": true,
+          "title": "Query Completeness Is Not Evidence Completeness",
+          "type": "boolean"
+        },
+        "query_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Query Ref",
+          "type": "string"
+        },
+        "result_limit": {
+          "minimum": 1,
+          "title": "Result Limit",
+          "type": "integer"
+        },
+        "result_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Result Refs",
+          "type": "array"
+        },
+        "result_set_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Result Set Id",
+          "type": "string"
+        },
+        "result_set_is_not_truth_verdict": {
+          "const": true,
+          "default": true,
+          "title": "Result Set Is Not Truth Verdict",
+          "type": "boolean"
+        },
+        "returned_results": {
+          "minimum": 1,
+          "title": "Returned Results",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "result_set_id",
+        "query_ref",
+        "plan_ref",
+        "result_refs",
+        "returned_results",
+        "result_limit",
+        "disposition"
+      ],
+      "title": "UnifiedQueryResultSet",
+      "type": "object"
+    },
+    "UnifiedQueryScope": {
+      "properties": {
+        "allowed_epistemic_states": {
+          "items": {
+            "$ref": "#/$defs/EpistemicState"
+          },
+          "minItems": 1,
+          "title": "Allowed Epistemic States",
+          "type": "array"
+        },
+        "capability_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Capability Refs",
+          "type": "array"
+        },
+        "include_contradictions": {
+          "default": true,
+          "title": "Include Contradictions",
+          "type": "boolean"
+        },
+        "include_remote_references": {
+          "default": false,
+          "title": "Include Remote References",
+          "type": "boolean"
+        },
+        "max_results": {
+          "default": 100,
+          "maximum": 1000,
+          "minimum": 1,
+          "title": "Max Results",
+          "type": "integer"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "omitted_results_do_not_imply_nonexistence": {
+          "const": true,
+          "default": true,
+          "title": "Omitted Results Do Not Imply Nonexistence",
+          "type": "boolean"
+        },
+        "scope_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Scope Id",
+          "type": "string"
+        },
+        "scope_is_not_truth_filter": {
+          "const": true,
+          "default": true,
+          "title": "Scope Is Not Truth Filter",
+          "type": "boolean"
+        },
+        "target_kinds": {
+          "items": {
+            "$ref": "#/$defs/QueryTargetKind"
+          },
+          "minItems": 1,
+          "title": "Target Kinds",
+          "type": "array"
+        },
+        "valid_time_end": {
+          "anyOf": [
+            {
+              "maxLength": 80,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Valid Time End"
+        },
+        "valid_time_start": {
+          "anyOf": [
+            {
+              "maxLength": 80,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Valid Time Start"
+        }
+      },
+      "required": [
+        "scope_id",
+        "target_kinds",
+        "capability_refs",
+        "allowed_epistemic_states"
+      ],
+      "title": "UnifiedQueryScope",
+      "type": "object"
+    },
+    "UnifiedQuerySnapshot": {
+      "properties": {
+        "as_of": {
+          "maxLength": 80,
+          "minLength": 10,
+          "title": "As Of",
+          "type": "string"
+        },
+        "immutable": {
+          "const": true,
+          "default": true,
+          "title": "Immutable",
+          "type": "boolean"
+        },
+        "later_source_state_may_supersede_snapshot": {
+          "const": true,
+          "default": true,
+          "title": "Later Source State May Supersede Snapshot",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "plan_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Plan Ref",
+          "type": "string"
+        },
+        "query_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Query Ref",
+          "type": "string"
+        },
+        "result_set_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Result Set Ref",
+          "type": "string"
+        },
+        "snapshot_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Snapshot Id",
+          "type": "string"
+        },
+        "snapshot_is_not_truth_certification": {
+          "const": true,
+          "default": true,
+          "title": "Snapshot Is Not Truth Certification",
+          "type": "boolean"
+        },
+        "trace_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Trace Ref",
+          "type": "string"
+        }
+      },
+      "required": [
+        "snapshot_id",
+        "query_ref",
+        "plan_ref",
+        "result_set_ref",
+        "trace_ref",
+        "as_of"
+      ],
+      "title": "UnifiedQuerySnapshot",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "contract": {
+      "const": "sc.core.unified-entity-evidence-query-api.v1",
+      "default": "sc.core.unified-entity-evidence-query-api.v1",
+      "title": "Contract",
+      "type": "string"
+    },
+    "evidence_graph_mutation_performed": {
+      "const": false,
+      "default": false,
+      "title": "Evidence Graph Mutation Performed",
+      "type": "boolean"
+    },
+    "identity_graph_mutation_performed": {
+      "const": false,
+      "default": false,
+      "title": "Identity Graph Mutation Performed",
+      "type": "boolean"
+    },
+    "negotiation_contract": {
+      "const": "sc.core.unified-runtime-policy-capability-negotiation.v1",
+      "default": "sc.core.unified-runtime-policy-capability-negotiation.v1",
+      "title": "Negotiation Contract",
+      "type": "string"
+    },
+    "plan_steps": {
+      "items": {
+        "$ref": "#/$defs/QueryPlanStep"
+      },
+      "minItems": 1,
+      "title": "Plan Steps",
+      "type": "array"
+    },
+    "plans": {
+      "items": {
+        "$ref": "#/$defs/UnifiedQueryPlan"
+      },
+      "minItems": 1,
+      "title": "Plans",
+      "type": "array"
+    },
+    "policies": {
+      "items": {
+        "$ref": "#/$defs/UnifiedQueryPolicy"
+      },
+      "minItems": 1,
+      "title": "Policies",
+      "type": "array"
+    },
+    "provenance_refs": {
+      "items": {
+        "$ref": "#/$defs/QueryProvenanceReference"
+      },
+      "minItems": 1,
+      "title": "Provenance Refs",
+      "type": "array"
+    },
+    "queries": {
+      "items": {
+        "$ref": "#/$defs/UnifiedEntityEvidenceQuery"
+      },
+      "minItems": 1,
+      "title": "Queries",
+      "type": "array"
+    },
+    "relationship_graph_mutation_performed": {
+      "const": false,
+      "default": false,
+      "title": "Relationship Graph Mutation Performed",
+      "type": "boolean"
+    },
+    "release": {
+      "const": "3.92.0",
+      "default": "3.92.0",
+      "title": "Release",
+      "type": "string"
+    },
+    "result_sets": {
+      "items": {
+        "$ref": "#/$defs/UnifiedQueryResultSet"
+      },
+      "minItems": 1,
+      "title": "Result Sets",
+      "type": "array"
+    },
+    "results": {
+      "items": {
+        "$ref": "#/$defs/UnifiedQueryResultItem"
+      },
+      "minItems": 1,
+      "title": "Results",
+      "type": "array"
+    },
+    "scopes": {
+      "items": {
+        "$ref": "#/$defs/UnifiedQueryScope"
+      },
+      "minItems": 1,
+      "title": "Scopes",
+      "type": "array"
+    },
+    "snapshots": {
+      "items": {
+        "$ref": "#/$defs/UnifiedQuerySnapshot"
+      },
+      "minItems": 1,
+      "title": "Snapshots",
+      "type": "array"
+    },
+    "traces": {
+      "items": {
+        "$ref": "#/$defs/UnifiedQueryExecutionTrace"
+      },
+      "minItems": 1,
+      "title": "Traces",
+      "type": "array"
+    }
+  },
+  "required": [
+    "policies",
+    "scopes",
+    "queries",
+    "plan_steps",
+    "plans",
+    "provenance_refs",
+    "results",
+    "result_sets",
+    "traces",
+    "snapshots"
+  ],
+  "title": "UnifiedEntityEvidenceQueryBundle",
+  "type": "object"
+}
