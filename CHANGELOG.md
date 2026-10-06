@@ -1,3 +1,12 @@
+## 4.2.0 — Discourse Structure & Rhetorical Semantics
+
+- Adds governed hierarchical discourse segments bound to exact v4.1 context spans.
+- Adds lexical discourse signals and typed rhetorical relations including concession, contrast, temporal sequence, cause, evidence, explanation, background, rebuttal, and related structures.
+- Adds descriptive argument units and argument relations without promoting rhetorical function into truth, credibility, evidence grade, or causal proof.
+- Adds discourse provenance, review state, candidate interpretation packages, and immutable snapshots bound to the exact v4.1 contextual-semantics fingerprint.
+- Preserves unresolved reference state for v4.3.0 coreference/reference work and performs no identity, relationship, evidence, or context graph mutation.
+- Database migration: none.
+
 ## 4.1.0 — Context Object & Semantic Frame Foundation
 
 - Adds persistent source-bound context objects, semantic mentions, semantic frames, participant roles, interpretation provenance, and immutable/supersedable semantic snapshots.

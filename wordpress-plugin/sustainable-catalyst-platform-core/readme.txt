@@ -53,8 +53,12 @@ Tags: knowledge graph, entity registry, provenance, live data, sustainable catal
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.0
-Stable tag: 4.1.0
+Stable tag: 4.2.0
 License: MIT
+
+== 4.2.0 ==
+* Adds Discourse Structure & Rhetorical Semantics backend compatibility.
+* Preserves rhetorical provenance, ambiguity, unresolved-reference boundaries, and non-truth/non-causality semantics.
 
 == 4.1.0 ==
 * Adds Context Object & Semantic Frame Foundation backend compatibility.

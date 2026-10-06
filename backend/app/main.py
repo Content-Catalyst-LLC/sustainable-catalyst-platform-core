@@ -197,6 +197,7 @@ from .routers import (
     unified_core_production_certification_soak,
     sustainable_catalyst_computational_research_core,
     context_semantic_frame,
+    discourse_rhetorical_semantics,
 )
 from app.routers.spark_runtime import router as spark_runtime_router
 
@@ -786,6 +787,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # Platform Core v4.1.0 — Context Object & Semantic Frame Foundation
     app.include_router(context_semantic_frame.router)
     app.include_router(context_semantic_frame.public_router)
+
+    # Platform Core v4.2.0 — Discourse Structure & Rhetorical Semantics
+    app.include_router(discourse_rhetorical_semantics.router)
+    app.include_router(discourse_rhetorical_semantics.public_router)
     return app
 
 

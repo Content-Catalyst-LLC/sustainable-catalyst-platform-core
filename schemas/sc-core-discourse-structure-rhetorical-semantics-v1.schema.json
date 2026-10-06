@@ -1,0 +1,2243 @@
+{
+  "$defs": {
+    "ArgumentRelation": {
+      "properties": {
+        "argument_relation_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Argument Relation Id",
+          "type": "string"
+        },
+        "relation_kind": {
+          "$ref": "#/$defs/ArgumentRelationKind"
+        },
+        "from_argument_unit_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "From Argument Unit Ref",
+          "type": "string"
+        },
+        "to_argument_unit_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "To Argument Unit Ref",
+          "type": "string"
+        },
+        "provenance_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Provenance Ref",
+          "type": "string"
+        },
+        "confidence": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confidence"
+        },
+        "relation_is_rhetorical_not_evidence_grade": {
+          "const": true,
+          "default": true,
+          "title": "Relation Is Rhetorical Not Evidence Grade",
+          "type": "boolean"
+        },
+        "relation_does_not_establish_truth": {
+          "const": true,
+          "default": true,
+          "title": "Relation Does Not Establish Truth",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        }
+      },
+      "required": [
+        "argument_relation_id",
+        "relation_kind",
+        "from_argument_unit_ref",
+        "to_argument_unit_ref",
+        "provenance_ref"
+      ],
+      "title": "ArgumentRelation",
+      "type": "object"
+    },
+    "ArgumentRelationKind": {
+      "enum": [
+        "supports",
+        "challenges",
+        "rebuts",
+        "qualifies",
+        "warrants",
+        "contextualizes",
+        "evidences",
+        "other"
+      ],
+      "title": "ArgumentRelationKind",
+      "type": "string"
+    },
+    "ArgumentRole": {
+      "enum": [
+        "claim",
+        "premise",
+        "evidence",
+        "warrant",
+        "rebuttal",
+        "qualification",
+        "background",
+        "other"
+      ],
+      "title": "ArgumentRole",
+      "type": "string"
+    },
+    "ArgumentUnit": {
+      "properties": {
+        "argument_unit_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Argument Unit Id",
+          "type": "string"
+        },
+        "segment_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Segment Ref",
+          "type": "string"
+        },
+        "role": {
+          "$ref": "#/$defs/ArgumentRole"
+        },
+        "frame_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Frame Refs",
+          "type": "array"
+        },
+        "provenance_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Provenance Ref",
+          "type": "string"
+        },
+        "confidence": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confidence"
+        },
+        "argument_role_is_interpretive": {
+          "const": true,
+          "default": true,
+          "title": "Argument Role Is Interpretive",
+          "type": "boolean"
+        },
+        "argument_role_does_not_establish_truth": {
+          "const": true,
+          "default": true,
+          "title": "Argument Role Does Not Establish Truth",
+          "type": "boolean"
+        },
+        "argument_role_does_not_establish_source_credibility": {
+          "const": true,
+          "default": true,
+          "title": "Argument Role Does Not Establish Source Credibility",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        }
+      },
+      "required": [
+        "argument_unit_id",
+        "segment_ref",
+        "role",
+        "provenance_ref"
+      ],
+      "title": "ArgumentUnit",
+      "type": "object"
+    },
+    "ContextObject": {
+      "properties": {
+        "context_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Context Id",
+          "type": "string"
+        },
+        "source_binding_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Source Binding Ref",
+          "type": "string"
+        },
+        "scope_kind": {
+          "$ref": "#/$defs/ContextScopeKind"
+        },
+        "char_start": {
+          "minimum": 0,
+          "title": "Char Start",
+          "type": "integer"
+        },
+        "char_end": {
+          "exclusiveMinimum": 0,
+          "title": "Char End",
+          "type": "integer"
+        },
+        "content": {
+          "maxLength": 100000,
+          "minLength": 1,
+          "title": "Content",
+          "type": "string"
+        },
+        "content_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Content Sha256",
+          "type": "string"
+        },
+        "language_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Language Ref",
+          "type": "string"
+        },
+        "parent_context_ref": {
+          "anyOf": [
+            {
+              "maxLength": 500,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Parent Context Ref"
+        },
+        "preceding_context_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Preceding Context Refs",
+          "type": "array"
+        },
+        "following_context_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Following Context Refs",
+          "type": "array"
+        },
+        "provenance_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Provenance Ref",
+          "type": "string"
+        },
+        "context_is_interpretive_container_not_evidence": {
+          "const": true,
+          "default": true,
+          "title": "Context Is Interpretive Container Not Evidence",
+          "type": "boolean"
+        },
+        "source_authority_unchanged_by_context_selection": {
+          "const": true,
+          "default": true,
+          "title": "Source Authority Unchanged By Context Selection",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        }
+      },
+      "required": [
+        "context_id",
+        "source_binding_ref",
+        "scope_kind",
+        "char_start",
+        "char_end",
+        "content",
+        "content_sha256",
+        "language_ref",
+        "provenance_ref"
+      ],
+      "title": "ContextObject",
+      "type": "object"
+    },
+    "ContextObjectSemanticFrameBundle": {
+      "properties": {
+        "release": {
+          "const": "4.1.0",
+          "default": "4.1.0",
+          "title": "Release",
+          "type": "string"
+        },
+        "contract": {
+          "const": "sc.core.context-object-semantic-frame-foundation.v1",
+          "default": "sc.core.context-object-semantic-frame-foundation.v1",
+          "title": "Contract",
+          "type": "string"
+        },
+        "predecessor_core_contract": {
+          "const": "sc.core.sustainable-catalyst-computational-research-core.v1",
+          "default": "sc.core.sustainable-catalyst-computational-research-core.v1",
+          "title": "Predecessor Core Contract",
+          "type": "string"
+        },
+        "extends_contracts": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 5,
+          "title": "Extends Contracts",
+          "type": "array"
+        },
+        "policy": {
+          "$ref": "#/$defs/ContextSemanticPolicy"
+        },
+        "source_bindings": {
+          "items": {
+            "$ref": "#/$defs/SourceContextBinding"
+          },
+          "minItems": 1,
+          "title": "Source Bindings",
+          "type": "array"
+        },
+        "contexts": {
+          "items": {
+            "$ref": "#/$defs/ContextObject"
+          },
+          "minItems": 1,
+          "title": "Contexts",
+          "type": "array"
+        },
+        "mentions": {
+          "items": {
+            "$ref": "#/$defs/SemanticMention"
+          },
+          "title": "Mentions",
+          "type": "array"
+        },
+        "provenance_records": {
+          "items": {
+            "$ref": "#/$defs/ContextSemanticProvenanceRecord"
+          },
+          "minItems": 1,
+          "title": "Provenance Records",
+          "type": "array"
+        },
+        "participants": {
+          "items": {
+            "$ref": "#/$defs/SemanticParticipant"
+          },
+          "title": "Participants",
+          "type": "array"
+        },
+        "frames": {
+          "items": {
+            "$ref": "#/$defs/SemanticFrame"
+          },
+          "minItems": 1,
+          "title": "Frames",
+          "type": "array"
+        },
+        "interpretations": {
+          "items": {
+            "$ref": "#/$defs/SemanticInterpretation"
+          },
+          "minItems": 1,
+          "title": "Interpretations",
+          "type": "array"
+        },
+        "snapshots": {
+          "items": {
+            "$ref": "#/$defs/ContextSemanticSnapshot"
+          },
+          "minItems": 1,
+          "title": "Snapshots",
+          "type": "array"
+        },
+        "database_migration": {
+          "const": "none",
+          "default": "none",
+          "title": "Database Migration",
+          "type": "string"
+        }
+      },
+      "required": [
+        "extends_contracts",
+        "policy",
+        "source_bindings",
+        "contexts",
+        "provenance_records",
+        "frames",
+        "interpretations",
+        "snapshots"
+      ],
+      "title": "ContextObjectSemanticFrameBundle",
+      "type": "object"
+    },
+    "ContextScopeKind": {
+      "enum": [
+        "sentence",
+        "paragraph",
+        "section",
+        "document",
+        "conversation",
+        "research-session",
+        "cross-document"
+      ],
+      "title": "ContextScopeKind",
+      "type": "string"
+    },
+    "ContextSemanticPolicy": {
+      "properties": {
+        "policy_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Policy Id",
+          "type": "string"
+        },
+        "original_language_remains_primary": {
+          "const": true,
+          "default": true,
+          "title": "Original Language Remains Primary",
+          "type": "boolean"
+        },
+        "translations_remain_derived": {
+          "const": true,
+          "default": true,
+          "title": "Translations Remain Derived",
+          "type": "boolean"
+        },
+        "context_is_explicit_and_persistent": {
+          "const": true,
+          "default": true,
+          "title": "Context Is Explicit And Persistent",
+          "type": "boolean"
+        },
+        "semantic_interpretation_preserves_provenance": {
+          "const": true,
+          "default": true,
+          "title": "Semantic Interpretation Preserves Provenance",
+          "type": "boolean"
+        },
+        "multiple_interpretations_may_coexist": {
+          "const": true,
+          "default": true,
+          "title": "Multiple Interpretations May Coexist",
+          "type": "boolean"
+        },
+        "unresolved_reference_may_be_preserved": {
+          "const": true,
+          "default": true,
+          "title": "Unresolved Reference May Be Preserved",
+          "type": "boolean"
+        },
+        "machine_interpretation_is_advisory": {
+          "const": true,
+          "default": true,
+          "title": "Machine Interpretation Is Advisory",
+          "type": "boolean"
+        },
+        "context_selection_does_not_promote_source_authority": {
+          "const": true,
+          "default": true,
+          "title": "Context Selection Does Not Promote Source Authority",
+          "type": "boolean"
+        },
+        "semantic_frame_is_not_evidence_fact": {
+          "const": true,
+          "default": true,
+          "title": "Semantic Frame Is Not Evidence Fact",
+          "type": "boolean"
+        },
+        "interpretation_is_not_truth_verdict": {
+          "const": true,
+          "default": true,
+          "title": "Interpretation Is Not Truth Verdict",
+          "type": "boolean"
+        },
+        "context_graph_mutation_authorized": {
+          "const": false,
+          "default": false,
+          "title": "Context Graph Mutation Authorized",
+          "type": "boolean"
+        },
+        "identity_graph_mutation_authorized": {
+          "const": false,
+          "default": false,
+          "title": "Identity Graph Mutation Authorized",
+          "type": "boolean"
+        },
+        "evidence_graph_mutation_authorized": {
+          "const": false,
+          "default": false,
+          "title": "Evidence Graph Mutation Authorized",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "policy_id"
+      ],
+      "title": "ContextSemanticPolicy",
+      "type": "object"
+    },
+    "ContextSemanticProvenanceRecord": {
+      "properties": {
+        "provenance_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Provenance Id",
+          "type": "string"
+        },
+        "subject_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Subject Refs",
+          "type": "array"
+        },
+        "method": {
+          "$ref": "#/$defs/InterpretationMethod"
+        },
+        "produced_by_ref": {
+          "maxLength": 1000,
+          "minLength": 3,
+          "title": "Produced By Ref",
+          "type": "string"
+        },
+        "source_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Source Refs",
+          "type": "array"
+        },
+        "model_ref": {
+          "anyOf": [
+            {
+              "maxLength": 1000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Model Ref"
+        },
+        "model_version": {
+          "anyOf": [
+            {
+              "maxLength": 240,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Model Version"
+        },
+        "tool_ref": {
+          "anyOf": [
+            {
+              "maxLength": 1000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tool Ref"
+        },
+        "tool_version": {
+          "anyOf": [
+            {
+              "maxLength": 240,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tool Version"
+        },
+        "created_at": {
+          "anyOf": [
+            {
+              "maxLength": 80,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Created At"
+        },
+        "reviewer_ref": {
+          "anyOf": [
+            {
+              "maxLength": 1000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reviewer Ref"
+        },
+        "review_note": {
+          "anyOf": [
+            {
+              "maxLength": 5000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Review Note"
+        },
+        "machine_or_graph_output_is_advisory": {
+          "const": true,
+          "default": true,
+          "title": "Machine Or Graph Output Is Advisory",
+          "type": "boolean"
+        },
+        "provenance_does_not_establish_semantic_truth": {
+          "const": true,
+          "default": true,
+          "title": "Provenance Does Not Establish Semantic Truth",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        }
+      },
+      "required": [
+        "provenance_id",
+        "subject_refs",
+        "method",
+        "produced_by_ref",
+        "source_refs"
+      ],
+      "title": "ContextSemanticProvenanceRecord",
+      "type": "object"
+    },
+    "ContextSemanticSnapshot": {
+      "properties": {
+        "snapshot_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Snapshot Id",
+          "type": "string"
+        },
+        "source_binding_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Source Binding Refs",
+          "type": "array"
+        },
+        "context_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Context Refs",
+          "type": "array"
+        },
+        "interpretation_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Interpretation Refs",
+          "type": "array"
+        },
+        "deterministic_context_fingerprint_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Deterministic Context Fingerprint Sha256",
+          "type": "string"
+        },
+        "immutable": {
+          "const": true,
+          "default": true,
+          "title": "Immutable",
+          "type": "boolean"
+        },
+        "supersedable": {
+          "const": true,
+          "default": true,
+          "title": "Supersedable",
+          "type": "boolean"
+        },
+        "snapshot_is_not_truth_certification": {
+          "const": true,
+          "default": true,
+          "title": "Snapshot Is Not Truth Certification",
+          "type": "boolean"
+        },
+        "snapshot_does_not_mutate_graphs": {
+          "const": true,
+          "default": true,
+          "title": "Snapshot Does Not Mutate Graphs",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        }
+      },
+      "required": [
+        "snapshot_id",
+        "source_binding_refs",
+        "context_refs",
+        "interpretation_refs",
+        "deterministic_context_fingerprint_sha256"
+      ],
+      "title": "ContextSemanticSnapshot",
+      "type": "object"
+    },
+    "DiscourseInterpretation": {
+      "properties": {
+        "interpretation_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Interpretation Id",
+          "type": "string"
+        },
+        "context_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Context Ref",
+          "type": "string"
+        },
+        "segment_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Segment Refs",
+          "type": "array"
+        },
+        "signal_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Signal Refs",
+          "type": "array"
+        },
+        "rhetorical_relation_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Rhetorical Relation Refs",
+          "type": "array"
+        },
+        "argument_unit_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Argument Unit Refs",
+          "type": "array"
+        },
+        "argument_relation_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Argument Relation Refs",
+          "type": "array"
+        },
+        "provenance_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Provenance Ref",
+          "type": "string"
+        },
+        "review_state": {
+          "$ref": "#/$defs/DiscourseReviewState",
+          "default": "candidate"
+        },
+        "reviewer_ref": {
+          "anyOf": [
+            {
+              "maxLength": 1000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reviewer Ref"
+        },
+        "confidence": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confidence"
+        },
+        "alternative_interpretation_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Alternative Interpretation Refs",
+          "type": "array"
+        },
+        "selected_by_core": {
+          "const": false,
+          "default": false,
+          "title": "Selected By Core",
+          "type": "boolean"
+        },
+        "unresolved_reference_preserved": {
+          "const": true,
+          "default": true,
+          "title": "Unresolved Reference Preserved",
+          "type": "boolean"
+        },
+        "interpretation_is_not_truth_verdict": {
+          "const": true,
+          "default": true,
+          "title": "Interpretation Is Not Truth Verdict",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        }
+      },
+      "required": [
+        "interpretation_id",
+        "context_ref",
+        "segment_refs",
+        "provenance_ref"
+      ],
+      "title": "DiscourseInterpretation",
+      "type": "object"
+    },
+    "DiscourseProvenanceRecord": {
+      "properties": {
+        "provenance_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Provenance Id",
+          "type": "string"
+        },
+        "subject_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Subject Refs",
+          "type": "array"
+        },
+        "method": {
+          "$ref": "#/$defs/InterpretationMethod"
+        },
+        "produced_by_ref": {
+          "maxLength": 1000,
+          "minLength": 3,
+          "title": "Produced By Ref",
+          "type": "string"
+        },
+        "source_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Source Refs",
+          "type": "array"
+        },
+        "model_ref": {
+          "anyOf": [
+            {
+              "maxLength": 1000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Model Ref"
+        },
+        "model_version": {
+          "anyOf": [
+            {
+              "maxLength": 240,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Model Version"
+        },
+        "tool_ref": {
+          "anyOf": [
+            {
+              "maxLength": 1000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tool Ref"
+        },
+        "tool_version": {
+          "anyOf": [
+            {
+              "maxLength": 240,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tool Version"
+        },
+        "created_at": {
+          "anyOf": [
+            {
+              "maxLength": 80,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Created At"
+        },
+        "reviewer_ref": {
+          "anyOf": [
+            {
+              "maxLength": 1000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reviewer Ref"
+        },
+        "review_note": {
+          "anyOf": [
+            {
+              "maxLength": 5000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Review Note"
+        },
+        "machine_output_is_advisory": {
+          "const": true,
+          "default": true,
+          "title": "Machine Output Is Advisory",
+          "type": "boolean"
+        },
+        "provenance_does_not_establish_rhetorical_truth": {
+          "const": true,
+          "default": true,
+          "title": "Provenance Does Not Establish Rhetorical Truth",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        }
+      },
+      "required": [
+        "provenance_id",
+        "subject_refs",
+        "method",
+        "produced_by_ref",
+        "source_refs"
+      ],
+      "title": "DiscourseProvenanceRecord",
+      "type": "object"
+    },
+    "DiscourseReviewState": {
+      "enum": [
+        "candidate",
+        "reviewed",
+        "accepted",
+        "rejected",
+        "disputed"
+      ],
+      "title": "DiscourseReviewState",
+      "type": "string"
+    },
+    "DiscourseRhetoricalPolicy": {
+      "properties": {
+        "policy_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Policy Id",
+          "type": "string"
+        },
+        "discourse_structure_is_explicit_and_persistent": {
+          "const": true,
+          "default": true,
+          "title": "Discourse Structure Is Explicit And Persistent",
+          "type": "boolean"
+        },
+        "discourse_analysis_preserves_source_text": {
+          "const": true,
+          "default": true,
+          "title": "Discourse Analysis Preserves Source Text",
+          "type": "boolean"
+        },
+        "rhetorical_relations_preserve_provenance": {
+          "const": true,
+          "default": true,
+          "title": "Rhetorical Relations Preserve Provenance",
+          "type": "boolean"
+        },
+        "multiple_discourse_interpretations_may_coexist": {
+          "const": true,
+          "default": true,
+          "title": "Multiple Discourse Interpretations May Coexist",
+          "type": "boolean"
+        },
+        "unresolved_reference_remains_unresolved": {
+          "const": true,
+          "default": true,
+          "title": "Unresolved Reference Remains Unresolved",
+          "type": "boolean"
+        },
+        "machine_discourse_output_is_advisory": {
+          "const": true,
+          "default": true,
+          "title": "Machine Discourse Output Is Advisory",
+          "type": "boolean"
+        },
+        "rhetorical_relation_is_not_source_fact": {
+          "const": true,
+          "default": true,
+          "title": "Rhetorical Relation Is Not Source Fact",
+          "type": "boolean"
+        },
+        "causal_rhetorical_relation_is_not_causal_proof": {
+          "const": true,
+          "default": true,
+          "title": "Causal Rhetorical Relation Is Not Causal Proof",
+          "type": "boolean"
+        },
+        "evidence_relation_is_not_evidence_grade": {
+          "const": true,
+          "default": true,
+          "title": "Evidence Relation Is Not Evidence Grade",
+          "type": "boolean"
+        },
+        "argument_role_is_not_truth_or_credibility_rating": {
+          "const": true,
+          "default": true,
+          "title": "Argument Role Is Not Truth Or Credibility Rating",
+          "type": "boolean"
+        },
+        "discourse_interpretation_is_not_truth_verdict": {
+          "const": true,
+          "default": true,
+          "title": "Discourse Interpretation Is Not Truth Verdict",
+          "type": "boolean"
+        },
+        "context_graph_mutation_authorized": {
+          "const": false,
+          "default": false,
+          "title": "Context Graph Mutation Authorized",
+          "type": "boolean"
+        },
+        "identity_graph_mutation_authorized": {
+          "const": false,
+          "default": false,
+          "title": "Identity Graph Mutation Authorized",
+          "type": "boolean"
+        },
+        "relationship_graph_mutation_authorized": {
+          "const": false,
+          "default": false,
+          "title": "Relationship Graph Mutation Authorized",
+          "type": "boolean"
+        },
+        "evidence_graph_mutation_authorized": {
+          "const": false,
+          "default": false,
+          "title": "Evidence Graph Mutation Authorized",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "policy_id"
+      ],
+      "title": "DiscourseRhetoricalPolicy",
+      "type": "object"
+    },
+    "DiscourseSegment": {
+      "properties": {
+        "segment_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Segment Id",
+          "type": "string"
+        },
+        "context_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Context Ref",
+          "type": "string"
+        },
+        "segment_kind": {
+          "$ref": "#/$defs/DiscourseSegmentKind"
+        },
+        "char_start": {
+          "minimum": 0,
+          "title": "Char Start",
+          "type": "integer"
+        },
+        "char_end": {
+          "exclusiveMinimum": 0,
+          "title": "Char End",
+          "type": "integer"
+        },
+        "content": {
+          "maxLength": 100000,
+          "minLength": 1,
+          "title": "Content",
+          "type": "string"
+        },
+        "content_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Content Sha256",
+          "type": "string"
+        },
+        "language_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Language Ref",
+          "type": "string"
+        },
+        "parent_segment_ref": {
+          "anyOf": [
+            {
+              "maxLength": 500,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Parent Segment Ref"
+        },
+        "frame_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Frame Refs",
+          "type": "array"
+        },
+        "mention_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Mention Refs",
+          "type": "array"
+        },
+        "provenance_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Provenance Ref",
+          "type": "string"
+        },
+        "segment_is_interpretive_structure_not_source_fact": {
+          "const": true,
+          "default": true,
+          "title": "Segment Is Interpretive Structure Not Source Fact",
+          "type": "boolean"
+        },
+        "source_text_remains_canonical": {
+          "const": true,
+          "default": true,
+          "title": "Source Text Remains Canonical",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        }
+      },
+      "required": [
+        "segment_id",
+        "context_ref",
+        "segment_kind",
+        "char_start",
+        "char_end",
+        "content",
+        "content_sha256",
+        "language_ref",
+        "provenance_ref"
+      ],
+      "title": "DiscourseSegment",
+      "type": "object"
+    },
+    "DiscourseSegmentKind": {
+      "enum": [
+        "clause",
+        "sentence",
+        "paragraph",
+        "section",
+        "quotation",
+        "turn",
+        "proposition",
+        "other"
+      ],
+      "title": "DiscourseSegmentKind",
+      "type": "string"
+    },
+    "DiscourseSignal": {
+      "properties": {
+        "signal_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Signal Id",
+          "type": "string"
+        },
+        "context_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Context Ref",
+          "type": "string"
+        },
+        "host_segment_ref": {
+          "anyOf": [
+            {
+              "maxLength": 500,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Host Segment Ref"
+        },
+        "signal_text": {
+          "maxLength": 10000,
+          "minLength": 1,
+          "title": "Signal Text",
+          "type": "string"
+        },
+        "char_start": {
+          "minimum": 0,
+          "title": "Char Start",
+          "type": "integer"
+        },
+        "char_end": {
+          "exclusiveMinimum": 0,
+          "title": "Char End",
+          "type": "integer"
+        },
+        "relation_hint_kinds": {
+          "items": {
+            "$ref": "#/$defs/RhetoricalRelationKind"
+          },
+          "title": "Relation Hint Kinds",
+          "type": "array"
+        },
+        "provenance_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Provenance Ref",
+          "type": "string"
+        },
+        "lexical_signal_does_not_force_relation": {
+          "const": true,
+          "default": true,
+          "title": "Lexical Signal Does Not Force Relation",
+          "type": "boolean"
+        },
+        "signal_is_not_truth_evidence": {
+          "const": true,
+          "default": true,
+          "title": "Signal Is Not Truth Evidence",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        }
+      },
+      "required": [
+        "signal_id",
+        "context_ref",
+        "signal_text",
+        "char_start",
+        "char_end",
+        "provenance_ref"
+      ],
+      "title": "DiscourseSignal",
+      "type": "object"
+    },
+    "DiscourseSnapshot": {
+      "properties": {
+        "snapshot_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Snapshot Id",
+          "type": "string"
+        },
+        "context_semantics_fingerprint_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Context Semantics Fingerprint Sha256",
+          "type": "string"
+        },
+        "discourse_interpretation_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Discourse Interpretation Refs",
+          "type": "array"
+        },
+        "deterministic_discourse_fingerprint_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Deterministic Discourse Fingerprint Sha256",
+          "type": "string"
+        },
+        "immutable": {
+          "const": true,
+          "default": true,
+          "title": "Immutable",
+          "type": "boolean"
+        },
+        "supersedable": {
+          "const": true,
+          "default": true,
+          "title": "Supersedable",
+          "type": "boolean"
+        },
+        "snapshot_is_not_truth_certification": {
+          "const": true,
+          "default": true,
+          "title": "Snapshot Is Not Truth Certification",
+          "type": "boolean"
+        },
+        "snapshot_does_not_mutate_graphs": {
+          "const": true,
+          "default": true,
+          "title": "Snapshot Does Not Mutate Graphs",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        }
+      },
+      "required": [
+        "snapshot_id",
+        "context_semantics_fingerprint_sha256",
+        "discourse_interpretation_refs",
+        "deterministic_discourse_fingerprint_sha256"
+      ],
+      "title": "DiscourseSnapshot",
+      "type": "object"
+    },
+    "InterpretationMethod": {
+      "enum": [
+        "manual",
+        "scholarly",
+        "imported",
+        "rule-based",
+        "model-assisted",
+        "graph-assisted"
+      ],
+      "title": "InterpretationMethod",
+      "type": "string"
+    },
+    "InterpretationReviewState": {
+      "enum": [
+        "candidate",
+        "reviewed",
+        "accepted",
+        "rejected",
+        "disputed"
+      ],
+      "title": "InterpretationReviewState",
+      "type": "string"
+    },
+    "MentionKind": {
+      "enum": [
+        "entity",
+        "event",
+        "concept",
+        "proposition",
+        "time",
+        "place",
+        "quantity",
+        "unresolved-reference",
+        "other"
+      ],
+      "title": "MentionKind",
+      "type": "string"
+    },
+    "ParticipantRoleKind": {
+      "enum": [
+        "agent",
+        "patient",
+        "theme",
+        "experiencer",
+        "stimulus",
+        "instrument",
+        "beneficiary",
+        "source",
+        "goal",
+        "location",
+        "time",
+        "manner",
+        "proposition",
+        "other"
+      ],
+      "title": "ParticipantRoleKind",
+      "type": "string"
+    },
+    "RhetoricalNuclearity": {
+      "enum": [
+        "nucleus-satellite",
+        "satellite-nucleus",
+        "multinuclear",
+        "unspecified"
+      ],
+      "title": "RhetoricalNuclearity",
+      "type": "string"
+    },
+    "RhetoricalRelation": {
+      "properties": {
+        "relation_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Relation Id",
+          "type": "string"
+        },
+        "relation_kind": {
+          "$ref": "#/$defs/RhetoricalRelationKind"
+        },
+        "source_segment_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Source Segment Refs",
+          "type": "array"
+        },
+        "target_segment_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Target Segment Refs",
+          "type": "array"
+        },
+        "signal_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Signal Refs",
+          "type": "array"
+        },
+        "nuclearity": {
+          "$ref": "#/$defs/RhetoricalNuclearity",
+          "default": "unspecified"
+        },
+        "provenance_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Provenance Ref",
+          "type": "string"
+        },
+        "review_state": {
+          "$ref": "#/$defs/DiscourseReviewState",
+          "default": "candidate"
+        },
+        "reviewer_ref": {
+          "anyOf": [
+            {
+              "maxLength": 1000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reviewer Ref"
+        },
+        "confidence": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confidence"
+        },
+        "relation_is_interpretation_not_source_fact": {
+          "const": true,
+          "default": true,
+          "title": "Relation Is Interpretation Not Source Fact",
+          "type": "boolean"
+        },
+        "relation_does_not_establish_real_world_causality": {
+          "const": true,
+          "default": true,
+          "title": "Relation Does Not Establish Real World Causality",
+          "type": "boolean"
+        },
+        "relation_does_not_establish_evidence_strength": {
+          "const": true,
+          "default": true,
+          "title": "Relation Does Not Establish Evidence Strength",
+          "type": "boolean"
+        },
+        "selected_by_core": {
+          "const": false,
+          "default": false,
+          "title": "Selected By Core",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        }
+      },
+      "required": [
+        "relation_id",
+        "relation_kind",
+        "source_segment_refs",
+        "target_segment_refs",
+        "provenance_ref"
+      ],
+      "title": "RhetoricalRelation",
+      "type": "object"
+    },
+    "RhetoricalRelationKind": {
+      "enum": [
+        "elaboration",
+        "contrast",
+        "cause",
+        "consequence",
+        "condition",
+        "concession",
+        "background",
+        "evidence",
+        "example",
+        "explanation",
+        "restatement",
+        "sequence",
+        "temporal-sequence",
+        "purpose",
+        "attribution",
+        "question-answer",
+        "claim-support",
+        "rebuttal",
+        "comparison",
+        "other"
+      ],
+      "title": "RhetoricalRelationKind",
+      "type": "string"
+    },
+    "SemanticFrame": {
+      "properties": {
+        "frame_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Frame Id",
+          "type": "string"
+        },
+        "context_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Context Ref",
+          "type": "string"
+        },
+        "frame_kind": {
+          "$ref": "#/$defs/SemanticFrameKind"
+        },
+        "trigger_text": {
+          "maxLength": 10000,
+          "minLength": 1,
+          "title": "Trigger Text",
+          "type": "string"
+        },
+        "trigger_char_start": {
+          "minimum": 0,
+          "title": "Trigger Char Start",
+          "type": "integer"
+        },
+        "trigger_char_end": {
+          "exclusiveMinimum": 0,
+          "title": "Trigger Char End",
+          "type": "integer"
+        },
+        "predicate_lemma": {
+          "anyOf": [
+            {
+              "maxLength": 1000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Predicate Lemma"
+        },
+        "mention_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Mention Refs",
+          "type": "array"
+        },
+        "participant_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Participant Refs",
+          "type": "array"
+        },
+        "provenance_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Provenance Ref",
+          "type": "string"
+        },
+        "confidence": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confidence"
+        },
+        "frame_is_interpretation_not_source_fact": {
+          "const": true,
+          "default": true,
+          "title": "Frame Is Interpretation Not Source Fact",
+          "type": "boolean"
+        },
+        "machine_frame_is_advisory": {
+          "const": true,
+          "default": true,
+          "title": "Machine Frame Is Advisory",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        }
+      },
+      "required": [
+        "frame_id",
+        "context_ref",
+        "frame_kind",
+        "trigger_text",
+        "trigger_char_start",
+        "trigger_char_end",
+        "provenance_ref"
+      ],
+      "title": "SemanticFrame",
+      "type": "object"
+    },
+    "SemanticFrameKind": {
+      "enum": [
+        "event",
+        "state",
+        "relation",
+        "communication",
+        "cognition",
+        "evaluation",
+        "causation",
+        "possession",
+        "motion",
+        "other"
+      ],
+      "title": "SemanticFrameKind",
+      "type": "string"
+    },
+    "SemanticInterpretation": {
+      "properties": {
+        "interpretation_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Interpretation Id",
+          "type": "string"
+        },
+        "context_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Context Ref",
+          "type": "string"
+        },
+        "frame_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Frame Refs",
+          "type": "array"
+        },
+        "mention_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Mention Refs",
+          "type": "array"
+        },
+        "provenance_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Provenance Ref",
+          "type": "string"
+        },
+        "review_state": {
+          "$ref": "#/$defs/InterpretationReviewState",
+          "default": "candidate"
+        },
+        "reviewer_ref": {
+          "anyOf": [
+            {
+              "maxLength": 1000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reviewer Ref"
+        },
+        "confidence": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confidence"
+        },
+        "alternative_interpretation_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Alternative Interpretation Refs",
+          "type": "array"
+        },
+        "selected_by_core": {
+          "const": false,
+          "default": false,
+          "title": "Selected By Core",
+          "type": "boolean"
+        },
+        "unresolved_ambiguity_preserved": {
+          "const": true,
+          "default": true,
+          "title": "Unresolved Ambiguity Preserved",
+          "type": "boolean"
+        },
+        "interpretation_is_not_truth_verdict": {
+          "const": true,
+          "default": true,
+          "title": "Interpretation Is Not Truth Verdict",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        }
+      },
+      "required": [
+        "interpretation_id",
+        "context_ref",
+        "frame_refs",
+        "provenance_ref"
+      ],
+      "title": "SemanticInterpretation",
+      "type": "object"
+    },
+    "SemanticMention": {
+      "properties": {
+        "mention_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Mention Id",
+          "type": "string"
+        },
+        "context_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Context Ref",
+          "type": "string"
+        },
+        "mention_kind": {
+          "$ref": "#/$defs/MentionKind"
+        },
+        "surface_text": {
+          "maxLength": 10000,
+          "minLength": 1,
+          "title": "Surface Text",
+          "type": "string"
+        },
+        "char_start": {
+          "minimum": 0,
+          "title": "Char Start",
+          "type": "integer"
+        },
+        "char_end": {
+          "exclusiveMinimum": 0,
+          "title": "Char End",
+          "type": "integer"
+        },
+        "language_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Language Ref",
+          "type": "string"
+        },
+        "provenance_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Provenance Ref",
+          "type": "string"
+        },
+        "unresolved_referent_allowed": {
+          "const": true,
+          "default": true,
+          "title": "Unresolved Referent Allowed",
+          "type": "boolean"
+        },
+        "mention_is_not_entity_identity": {
+          "const": true,
+          "default": true,
+          "title": "Mention Is Not Entity Identity",
+          "type": "boolean"
+        },
+        "mention_is_not_evidence_fact": {
+          "const": true,
+          "default": true,
+          "title": "Mention Is Not Evidence Fact",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        }
+      },
+      "required": [
+        "mention_id",
+        "context_ref",
+        "mention_kind",
+        "surface_text",
+        "char_start",
+        "char_end",
+        "language_ref",
+        "provenance_ref"
+      ],
+      "title": "SemanticMention",
+      "type": "object"
+    },
+    "SemanticParticipant": {
+      "properties": {
+        "participant_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Participant Id",
+          "type": "string"
+        },
+        "frame_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Frame Ref",
+          "type": "string"
+        },
+        "role_kind": {
+          "$ref": "#/$defs/ParticipantRoleKind"
+        },
+        "mention_ref": {
+          "anyOf": [
+            {
+              "maxLength": 500,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Mention Ref"
+        },
+        "proposition_context_ref": {
+          "anyOf": [
+            {
+              "maxLength": 500,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Proposition Context Ref"
+        },
+        "provenance_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Provenance Ref",
+          "type": "string"
+        },
+        "confidence": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confidence"
+        },
+        "participant_binding_is_interpretive": {
+          "const": true,
+          "default": true,
+          "title": "Participant Binding Is Interpretive",
+          "type": "boolean"
+        },
+        "participant_binding_is_not_identity_resolution": {
+          "const": true,
+          "default": true,
+          "title": "Participant Binding Is Not Identity Resolution",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        }
+      },
+      "required": [
+        "participant_id",
+        "frame_ref",
+        "role_kind",
+        "provenance_ref"
+      ],
+      "title": "SemanticParticipant",
+      "type": "object"
+    },
+    "SourceContextBinding": {
+      "properties": {
+        "source_binding_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Source Binding Id",
+          "type": "string"
+        },
+        "source_object_ref": {
+          "maxLength": 1000,
+          "minLength": 3,
+          "title": "Source Object Ref",
+          "type": "string"
+        },
+        "source_contract": {
+          "maxLength": 500,
+          "minLength": 10,
+          "title": "Source Contract",
+          "type": "string"
+        },
+        "source_text_ref": {
+          "maxLength": 1000,
+          "minLength": 3,
+          "title": "Source Text Ref",
+          "type": "string"
+        },
+        "source_text_unit_ref": {
+          "anyOf": [
+            {
+              "maxLength": 1000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Text Unit Ref"
+        },
+        "language_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Language Ref",
+          "type": "string"
+        },
+        "script_ref": {
+          "anyOf": [
+            {
+              "maxLength": 500,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Script Ref"
+        },
+        "content": {
+          "maxLength": 100000,
+          "minLength": 1,
+          "title": "Content",
+          "type": "string"
+        },
+        "content_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Content Sha256",
+          "type": "string"
+        },
+        "source_provenance_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Source Provenance Refs",
+          "type": "array"
+        },
+        "original_language_is_canonical": {
+          "const": true,
+          "default": true,
+          "title": "Original Language Is Canonical",
+          "type": "boolean"
+        },
+        "translation_is_derived_representation": {
+          "const": true,
+          "default": true,
+          "title": "Translation Is Derived Representation",
+          "type": "boolean"
+        },
+        "source_binding_does_not_change_source_authority": {
+          "const": true,
+          "default": true,
+          "title": "Source Binding Does Not Change Source Authority",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        }
+      },
+      "required": [
+        "source_binding_id",
+        "source_object_ref",
+        "source_contract",
+        "source_text_ref",
+        "language_ref",
+        "content",
+        "content_sha256",
+        "source_provenance_refs"
+      ],
+      "title": "SourceContextBinding",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "release": {
+      "const": "4.2.0",
+      "default": "4.2.0",
+      "title": "Release",
+      "type": "string"
+    },
+    "contract": {
+      "const": "sc.core.discourse-structure-rhetorical-semantics.v1",
+      "default": "sc.core.discourse-structure-rhetorical-semantics.v1",
+      "title": "Contract",
+      "type": "string"
+    },
+    "predecessor_contract": {
+      "const": "sc.core.context-object-semantic-frame-foundation.v1",
+      "default": "sc.core.context-object-semantic-frame-foundation.v1",
+      "title": "Predecessor Contract",
+      "type": "string"
+    },
+    "extends_contracts": {
+      "items": {
+        "type": "string"
+      },
+      "minItems": 5,
+      "title": "Extends Contracts",
+      "type": "array"
+    },
+    "policy": {
+      "$ref": "#/$defs/DiscourseRhetoricalPolicy"
+    },
+    "context_semantics": {
+      "$ref": "#/$defs/ContextObjectSemanticFrameBundle"
+    },
+    "segments": {
+      "items": {
+        "$ref": "#/$defs/DiscourseSegment"
+      },
+      "minItems": 1,
+      "title": "Segments",
+      "type": "array"
+    },
+    "signals": {
+      "items": {
+        "$ref": "#/$defs/DiscourseSignal"
+      },
+      "title": "Signals",
+      "type": "array"
+    },
+    "rhetorical_relations": {
+      "items": {
+        "$ref": "#/$defs/RhetoricalRelation"
+      },
+      "title": "Rhetorical Relations",
+      "type": "array"
+    },
+    "argument_units": {
+      "items": {
+        "$ref": "#/$defs/ArgumentUnit"
+      },
+      "title": "Argument Units",
+      "type": "array"
+    },
+    "argument_relations": {
+      "items": {
+        "$ref": "#/$defs/ArgumentRelation"
+      },
+      "title": "Argument Relations",
+      "type": "array"
+    },
+    "provenance_records": {
+      "items": {
+        "$ref": "#/$defs/DiscourseProvenanceRecord"
+      },
+      "minItems": 1,
+      "title": "Provenance Records",
+      "type": "array"
+    },
+    "interpretations": {
+      "items": {
+        "$ref": "#/$defs/DiscourseInterpretation"
+      },
+      "minItems": 1,
+      "title": "Interpretations",
+      "type": "array"
+    },
+    "snapshots": {
+      "items": {
+        "$ref": "#/$defs/DiscourseSnapshot"
+      },
+      "minItems": 1,
+      "title": "Snapshots",
+      "type": "array"
+    },
+    "database_migration": {
+      "const": "none",
+      "default": "none",
+      "title": "Database Migration",
+      "type": "string"
+    }
+  },
+  "required": [
+    "extends_contracts",
+    "policy",
+    "context_semantics",
+    "segments",
+    "provenance_records",
+    "interpretations",
+    "snapshots"
+  ],
+  "title": "DiscourseStructureRhetoricalSemanticsBundle",
+  "type": "object"
+}

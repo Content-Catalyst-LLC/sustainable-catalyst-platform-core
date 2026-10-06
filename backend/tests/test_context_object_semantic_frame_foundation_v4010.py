@@ -50,8 +50,9 @@ def test_release_and_contract_identity():
     assert ref().contract == CONTRACT_VERSION
 
 
-def test_backend_version_is_410():
-    assert Settings().version == "4.1.0"
+def test_backend_version_is_410_or_later():
+    version = tuple(int(x) for x in Settings().version.split("."))
+    assert version >= (4, 1, 0)
 
 
 def test_extends_required_upstream_contracts():
