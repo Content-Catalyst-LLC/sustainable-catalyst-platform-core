@@ -1,3 +1,13 @@
+## 4.3.0 — Coreference, Reference & Referential Identity Intelligence
+
+- Adds first-class reference-expression objects over governed v4.1 semantic mentions and v4.2 discourse context.
+- Adds persistent referent anchors, ranked candidate sets, reviewed coreference links/chains, and explicit uncertainty preservation.
+- Adds referential identity bindings that hand entity references to the existing identity graph without silently merging or canonically identifying entities.
+- Resolves the v4.1/v4.2 reference example through a reviewed v4.3 overlay while leaving the original `mention:it-unresolved` object immutable.
+- Preserves competing candidates, provenance, reviewer state, source-language identity, and strict non-truth/non-graph-mutation boundaries.
+- Adds private/public referential-identity API surfaces, JSON Schema, validation, and compatibility certification.
+- Database migration: none.
+
 ## 4.2.0 — Discourse Structure & Rhetorical Semantics
 
 - Adds governed hierarchical discourse segments bound to exact v4.1 context spans.

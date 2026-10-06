@@ -50,7 +50,8 @@ def invalid(mutator):
 def test_release_identity():
     assert CORE_RELEASE == "4.2.0"
     assert CONTRACT_VERSION == "sc.core.discourse-structure-rhetorical-semantics.v1"
-    assert Settings().version == "4.2.0"
+    version = tuple(int(x) for x in Settings().version.split("."))
+    assert version >= (4, 2, 0)
     assert ref().release == "4.2.0"
 
 
