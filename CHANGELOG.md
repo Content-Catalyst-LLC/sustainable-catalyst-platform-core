@@ -1,3 +1,12 @@
+## 4.6.0 — Pragmatic Meaning, Speech Act & Communicative Intent
+
+- Adds first-class pragmatic participants, content units, source-bound cues, genre/register context, speech acts, communicative intents, reviewed interpretations, provenance, and immutable pragmatic snapshots.
+- Distinguishes assertion from truth, request from obligation, recommendation from normative correctness, warning from established risk, and commitment from guaranteed performance.
+- Treats communicative intent as a governed contextual interpretation rather than privileged access to a speaker's private mental state.
+- Keeps surface speaker/audience labels separate from canonical actor identity and preserves the complete v4.5 epistemic predecessor unchanged.
+- Adds private/public pragmatic-semantics API surfaces, governed JSON Schema, release validation, and compatibility certification.
+- No database migration.
+
 ## 4.5.0 — Epistemic, Modal, Negation & Certainty Semantics
 
 - Added first-class propositions, attributions, epistemic cues, negation scopes, modal scopes, conditional scopes, certainty semantics, reviewed assessments, provenance, and immutable semantic snapshots.

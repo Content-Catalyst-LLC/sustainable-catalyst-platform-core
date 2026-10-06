@@ -201,6 +201,7 @@ from .routers import (
     coreference_referential_identity,
     temporal_spatial_language_grounding,
     epistemic_modal_negation_certainty,
+    pragmatic_meaning_speech_act_intent,
 )
 from app.routers.spark_runtime import router as spark_runtime_router
 
@@ -806,6 +807,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # Platform Core v4.5.0 — Epistemic, Modal, Negation & Certainty Semantics
     app.include_router(epistemic_modal_negation_certainty.router)
     app.include_router(epistemic_modal_negation_certainty.public_router)
+
+    # Platform Core v4.6.0 — Pragmatic Meaning, Speech Act & Communicative Intent
+    app.include_router(pragmatic_meaning_speech_act_intent.router)
+    app.include_router(pragmatic_meaning_speech_act_intent.public_router)
     return app
 
 
