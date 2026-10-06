@@ -1,3 +1,12 @@
+## 4.1.0 — Context Object & Semantic Frame Foundation
+
+- Adds persistent source-bound context objects, semantic mentions, semantic frames, participant roles, interpretation provenance, and immutable/supersedable semantic snapshots.
+- Preserves unresolved references and multiple interpretations instead of fabricating semantic certainty.
+- Keeps original-language sources primary and model/graph semantic derivations advisory.
+- Explicitly prohibits v4.1 from resolving coreference, inferring discourse relations, promoting epistemic state, or mutating identity/relationship/evidence/context graphs.
+- Adds `/v1/context-semantics/*` and `/public/v1/context-semantics/contract`.
+- No database migration.
+
 ## 4.0.0 — Sustainable Catalyst Computational Research Core
 
 - Adds the stable v4 umbrella contract over 43 governed v3.57-v3.99 contracts.

@@ -196,6 +196,7 @@ from .routers import (
     entity_evidence_runtime_performance_scale,
     unified_core_production_certification_soak,
     sustainable_catalyst_computational_research_core,
+    context_semantic_frame,
 )
 from app.routers.spark_runtime import router as spark_runtime_router
 
@@ -781,6 +782,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # Platform Core v4.0.0 — Sustainable Catalyst Computational Research Core
     app.include_router(sustainable_catalyst_computational_research_core.router)
     app.include_router(sustainable_catalyst_computational_research_core.public_router)
+
+    # Platform Core v4.1.0 — Context Object & Semantic Frame Foundation
+    app.include_router(context_semantic_frame.router)
+    app.include_router(context_semantic_frame.public_router)
     return app
 
 

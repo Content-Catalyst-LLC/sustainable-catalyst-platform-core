@@ -53,8 +53,12 @@ Tags: knowledge graph, entity registry, provenance, live data, sustainable catal
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.0
-Stable tag: 4.0.0
+Stable tag: 4.1.0
 License: MIT
+
+== 4.1.0 ==
+* Adds Context Object & Semantic Frame Foundation backend compatibility.
+* Preserves original-language authority, provenance, ambiguity, and non-truth semantic interpretation boundaries.
 
 WordPress status, live-data gateway, and entity lookup client for Sustainable Catalyst Platform Core.
 

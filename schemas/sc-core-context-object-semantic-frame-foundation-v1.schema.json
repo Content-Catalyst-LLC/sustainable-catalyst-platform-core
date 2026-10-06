@@ -1,0 +1,1135 @@
+{
+  "$defs": {
+    "ContextObject": {
+      "properties": {
+        "char_end": {
+          "exclusiveMinimum": 0,
+          "title": "Char End",
+          "type": "integer"
+        },
+        "char_start": {
+          "minimum": 0,
+          "title": "Char Start",
+          "type": "integer"
+        },
+        "content": {
+          "maxLength": 100000,
+          "minLength": 1,
+          "title": "Content",
+          "type": "string"
+        },
+        "content_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Content Sha256",
+          "type": "string"
+        },
+        "context_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Context Id",
+          "type": "string"
+        },
+        "context_is_interpretive_container_not_evidence": {
+          "const": true,
+          "default": true,
+          "title": "Context Is Interpretive Container Not Evidence",
+          "type": "boolean"
+        },
+        "following_context_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Following Context Refs",
+          "type": "array"
+        },
+        "language_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Language Ref",
+          "type": "string"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "parent_context_ref": {
+          "anyOf": [
+            {
+              "maxLength": 500,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Parent Context Ref"
+        },
+        "preceding_context_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Preceding Context Refs",
+          "type": "array"
+        },
+        "provenance_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Provenance Ref",
+          "type": "string"
+        },
+        "scope_kind": {
+          "$ref": "#/$defs/ContextScopeKind"
+        },
+        "source_authority_unchanged_by_context_selection": {
+          "const": true,
+          "default": true,
+          "title": "Source Authority Unchanged By Context Selection",
+          "type": "boolean"
+        },
+        "source_binding_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Source Binding Ref",
+          "type": "string"
+        }
+      },
+      "required": [
+        "context_id",
+        "source_binding_ref",
+        "scope_kind",
+        "char_start",
+        "char_end",
+        "content",
+        "content_sha256",
+        "language_ref",
+        "provenance_ref"
+      ],
+      "title": "ContextObject",
+      "type": "object"
+    },
+    "ContextScopeKind": {
+      "enum": [
+        "sentence",
+        "paragraph",
+        "section",
+        "document",
+        "conversation",
+        "research-session",
+        "cross-document"
+      ],
+      "title": "ContextScopeKind",
+      "type": "string"
+    },
+    "ContextSemanticPolicy": {
+      "properties": {
+        "context_graph_mutation_authorized": {
+          "const": false,
+          "default": false,
+          "title": "Context Graph Mutation Authorized",
+          "type": "boolean"
+        },
+        "context_is_explicit_and_persistent": {
+          "const": true,
+          "default": true,
+          "title": "Context Is Explicit And Persistent",
+          "type": "boolean"
+        },
+        "context_selection_does_not_promote_source_authority": {
+          "const": true,
+          "default": true,
+          "title": "Context Selection Does Not Promote Source Authority",
+          "type": "boolean"
+        },
+        "evidence_graph_mutation_authorized": {
+          "const": false,
+          "default": false,
+          "title": "Evidence Graph Mutation Authorized",
+          "type": "boolean"
+        },
+        "identity_graph_mutation_authorized": {
+          "const": false,
+          "default": false,
+          "title": "Identity Graph Mutation Authorized",
+          "type": "boolean"
+        },
+        "interpretation_is_not_truth_verdict": {
+          "const": true,
+          "default": true,
+          "title": "Interpretation Is Not Truth Verdict",
+          "type": "boolean"
+        },
+        "machine_interpretation_is_advisory": {
+          "const": true,
+          "default": true,
+          "title": "Machine Interpretation Is Advisory",
+          "type": "boolean"
+        },
+        "multiple_interpretations_may_coexist": {
+          "const": true,
+          "default": true,
+          "title": "Multiple Interpretations May Coexist",
+          "type": "boolean"
+        },
+        "original_language_remains_primary": {
+          "const": true,
+          "default": true,
+          "title": "Original Language Remains Primary",
+          "type": "boolean"
+        },
+        "policy_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Policy Id",
+          "type": "string"
+        },
+        "semantic_frame_is_not_evidence_fact": {
+          "const": true,
+          "default": true,
+          "title": "Semantic Frame Is Not Evidence Fact",
+          "type": "boolean"
+        },
+        "semantic_interpretation_preserves_provenance": {
+          "const": true,
+          "default": true,
+          "title": "Semantic Interpretation Preserves Provenance",
+          "type": "boolean"
+        },
+        "translations_remain_derived": {
+          "const": true,
+          "default": true,
+          "title": "Translations Remain Derived",
+          "type": "boolean"
+        },
+        "unresolved_reference_may_be_preserved": {
+          "const": true,
+          "default": true,
+          "title": "Unresolved Reference May Be Preserved",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "policy_id"
+      ],
+      "title": "ContextSemanticPolicy",
+      "type": "object"
+    },
+    "ContextSemanticProvenanceRecord": {
+      "properties": {
+        "created_at": {
+          "anyOf": [
+            {
+              "maxLength": 80,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Created At"
+        },
+        "machine_or_graph_output_is_advisory": {
+          "const": true,
+          "default": true,
+          "title": "Machine Or Graph Output Is Advisory",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "method": {
+          "$ref": "#/$defs/InterpretationMethod"
+        },
+        "model_ref": {
+          "anyOf": [
+            {
+              "maxLength": 1000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Model Ref"
+        },
+        "model_version": {
+          "anyOf": [
+            {
+              "maxLength": 240,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Model Version"
+        },
+        "produced_by_ref": {
+          "maxLength": 1000,
+          "minLength": 3,
+          "title": "Produced By Ref",
+          "type": "string"
+        },
+        "provenance_does_not_establish_semantic_truth": {
+          "const": true,
+          "default": true,
+          "title": "Provenance Does Not Establish Semantic Truth",
+          "type": "boolean"
+        },
+        "provenance_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Provenance Id",
+          "type": "string"
+        },
+        "review_note": {
+          "anyOf": [
+            {
+              "maxLength": 5000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Review Note"
+        },
+        "reviewer_ref": {
+          "anyOf": [
+            {
+              "maxLength": 1000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reviewer Ref"
+        },
+        "source_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Source Refs",
+          "type": "array"
+        },
+        "subject_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Subject Refs",
+          "type": "array"
+        },
+        "tool_ref": {
+          "anyOf": [
+            {
+              "maxLength": 1000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tool Ref"
+        },
+        "tool_version": {
+          "anyOf": [
+            {
+              "maxLength": 240,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tool Version"
+        }
+      },
+      "required": [
+        "provenance_id",
+        "subject_refs",
+        "method",
+        "produced_by_ref",
+        "source_refs"
+      ],
+      "title": "ContextSemanticProvenanceRecord",
+      "type": "object"
+    },
+    "ContextSemanticSnapshot": {
+      "properties": {
+        "context_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Context Refs",
+          "type": "array"
+        },
+        "deterministic_context_fingerprint_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Deterministic Context Fingerprint Sha256",
+          "type": "string"
+        },
+        "immutable": {
+          "const": true,
+          "default": true,
+          "title": "Immutable",
+          "type": "boolean"
+        },
+        "interpretation_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Interpretation Refs",
+          "type": "array"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "snapshot_does_not_mutate_graphs": {
+          "const": true,
+          "default": true,
+          "title": "Snapshot Does Not Mutate Graphs",
+          "type": "boolean"
+        },
+        "snapshot_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Snapshot Id",
+          "type": "string"
+        },
+        "snapshot_is_not_truth_certification": {
+          "const": true,
+          "default": true,
+          "title": "Snapshot Is Not Truth Certification",
+          "type": "boolean"
+        },
+        "source_binding_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Source Binding Refs",
+          "type": "array"
+        },
+        "supersedable": {
+          "const": true,
+          "default": true,
+          "title": "Supersedable",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "snapshot_id",
+        "source_binding_refs",
+        "context_refs",
+        "interpretation_refs",
+        "deterministic_context_fingerprint_sha256"
+      ],
+      "title": "ContextSemanticSnapshot",
+      "type": "object"
+    },
+    "InterpretationMethod": {
+      "enum": [
+        "manual",
+        "scholarly",
+        "imported",
+        "rule-based",
+        "model-assisted",
+        "graph-assisted"
+      ],
+      "title": "InterpretationMethod",
+      "type": "string"
+    },
+    "InterpretationReviewState": {
+      "enum": [
+        "candidate",
+        "reviewed",
+        "accepted",
+        "rejected",
+        "disputed"
+      ],
+      "title": "InterpretationReviewState",
+      "type": "string"
+    },
+    "MentionKind": {
+      "enum": [
+        "entity",
+        "event",
+        "concept",
+        "proposition",
+        "time",
+        "place",
+        "quantity",
+        "unresolved-reference",
+        "other"
+      ],
+      "title": "MentionKind",
+      "type": "string"
+    },
+    "ParticipantRoleKind": {
+      "enum": [
+        "agent",
+        "patient",
+        "theme",
+        "experiencer",
+        "stimulus",
+        "instrument",
+        "beneficiary",
+        "source",
+        "goal",
+        "location",
+        "time",
+        "manner",
+        "proposition",
+        "other"
+      ],
+      "title": "ParticipantRoleKind",
+      "type": "string"
+    },
+    "SemanticFrame": {
+      "properties": {
+        "confidence": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confidence"
+        },
+        "context_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Context Ref",
+          "type": "string"
+        },
+        "frame_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Frame Id",
+          "type": "string"
+        },
+        "frame_is_interpretation_not_source_fact": {
+          "const": true,
+          "default": true,
+          "title": "Frame Is Interpretation Not Source Fact",
+          "type": "boolean"
+        },
+        "frame_kind": {
+          "$ref": "#/$defs/SemanticFrameKind"
+        },
+        "machine_frame_is_advisory": {
+          "const": true,
+          "default": true,
+          "title": "Machine Frame Is Advisory",
+          "type": "boolean"
+        },
+        "mention_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Mention Refs",
+          "type": "array"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "participant_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Participant Refs",
+          "type": "array"
+        },
+        "predicate_lemma": {
+          "anyOf": [
+            {
+              "maxLength": 1000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Predicate Lemma"
+        },
+        "provenance_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Provenance Ref",
+          "type": "string"
+        },
+        "trigger_char_end": {
+          "exclusiveMinimum": 0,
+          "title": "Trigger Char End",
+          "type": "integer"
+        },
+        "trigger_char_start": {
+          "minimum": 0,
+          "title": "Trigger Char Start",
+          "type": "integer"
+        },
+        "trigger_text": {
+          "maxLength": 10000,
+          "minLength": 1,
+          "title": "Trigger Text",
+          "type": "string"
+        }
+      },
+      "required": [
+        "frame_id",
+        "context_ref",
+        "frame_kind",
+        "trigger_text",
+        "trigger_char_start",
+        "trigger_char_end",
+        "provenance_ref"
+      ],
+      "title": "SemanticFrame",
+      "type": "object"
+    },
+    "SemanticFrameKind": {
+      "enum": [
+        "event",
+        "state",
+        "relation",
+        "communication",
+        "cognition",
+        "evaluation",
+        "causation",
+        "possession",
+        "motion",
+        "other"
+      ],
+      "title": "SemanticFrameKind",
+      "type": "string"
+    },
+    "SemanticInterpretation": {
+      "properties": {
+        "alternative_interpretation_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Alternative Interpretation Refs",
+          "type": "array"
+        },
+        "confidence": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confidence"
+        },
+        "context_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Context Ref",
+          "type": "string"
+        },
+        "frame_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Frame Refs",
+          "type": "array"
+        },
+        "interpretation_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Interpretation Id",
+          "type": "string"
+        },
+        "interpretation_is_not_truth_verdict": {
+          "const": true,
+          "default": true,
+          "title": "Interpretation Is Not Truth Verdict",
+          "type": "boolean"
+        },
+        "mention_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Mention Refs",
+          "type": "array"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "provenance_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Provenance Ref",
+          "type": "string"
+        },
+        "review_state": {
+          "$ref": "#/$defs/InterpretationReviewState",
+          "default": "candidate"
+        },
+        "reviewer_ref": {
+          "anyOf": [
+            {
+              "maxLength": 1000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reviewer Ref"
+        },
+        "selected_by_core": {
+          "const": false,
+          "default": false,
+          "title": "Selected By Core",
+          "type": "boolean"
+        },
+        "unresolved_ambiguity_preserved": {
+          "const": true,
+          "default": true,
+          "title": "Unresolved Ambiguity Preserved",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "interpretation_id",
+        "context_ref",
+        "frame_refs",
+        "provenance_ref"
+      ],
+      "title": "SemanticInterpretation",
+      "type": "object"
+    },
+    "SemanticMention": {
+      "properties": {
+        "char_end": {
+          "exclusiveMinimum": 0,
+          "title": "Char End",
+          "type": "integer"
+        },
+        "char_start": {
+          "minimum": 0,
+          "title": "Char Start",
+          "type": "integer"
+        },
+        "context_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Context Ref",
+          "type": "string"
+        },
+        "language_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Language Ref",
+          "type": "string"
+        },
+        "mention_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Mention Id",
+          "type": "string"
+        },
+        "mention_is_not_entity_identity": {
+          "const": true,
+          "default": true,
+          "title": "Mention Is Not Entity Identity",
+          "type": "boolean"
+        },
+        "mention_is_not_evidence_fact": {
+          "const": true,
+          "default": true,
+          "title": "Mention Is Not Evidence Fact",
+          "type": "boolean"
+        },
+        "mention_kind": {
+          "$ref": "#/$defs/MentionKind"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "provenance_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Provenance Ref",
+          "type": "string"
+        },
+        "surface_text": {
+          "maxLength": 10000,
+          "minLength": 1,
+          "title": "Surface Text",
+          "type": "string"
+        },
+        "unresolved_referent_allowed": {
+          "const": true,
+          "default": true,
+          "title": "Unresolved Referent Allowed",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "mention_id",
+        "context_ref",
+        "mention_kind",
+        "surface_text",
+        "char_start",
+        "char_end",
+        "language_ref",
+        "provenance_ref"
+      ],
+      "title": "SemanticMention",
+      "type": "object"
+    },
+    "SemanticParticipant": {
+      "properties": {
+        "confidence": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confidence"
+        },
+        "frame_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Frame Ref",
+          "type": "string"
+        },
+        "mention_ref": {
+          "anyOf": [
+            {
+              "maxLength": 500,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Mention Ref"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "participant_binding_is_interpretive": {
+          "const": true,
+          "default": true,
+          "title": "Participant Binding Is Interpretive",
+          "type": "boolean"
+        },
+        "participant_binding_is_not_identity_resolution": {
+          "const": true,
+          "default": true,
+          "title": "Participant Binding Is Not Identity Resolution",
+          "type": "boolean"
+        },
+        "participant_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Participant Id",
+          "type": "string"
+        },
+        "proposition_context_ref": {
+          "anyOf": [
+            {
+              "maxLength": 500,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Proposition Context Ref"
+        },
+        "provenance_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Provenance Ref",
+          "type": "string"
+        },
+        "role_kind": {
+          "$ref": "#/$defs/ParticipantRoleKind"
+        }
+      },
+      "required": [
+        "participant_id",
+        "frame_ref",
+        "role_kind",
+        "provenance_ref"
+      ],
+      "title": "SemanticParticipant",
+      "type": "object"
+    },
+    "SourceContextBinding": {
+      "properties": {
+        "content": {
+          "maxLength": 100000,
+          "minLength": 1,
+          "title": "Content",
+          "type": "string"
+        },
+        "content_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Content Sha256",
+          "type": "string"
+        },
+        "language_ref": {
+          "maxLength": 500,
+          "minLength": 2,
+          "title": "Language Ref",
+          "type": "string"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "original_language_is_canonical": {
+          "const": true,
+          "default": true,
+          "title": "Original Language Is Canonical",
+          "type": "boolean"
+        },
+        "script_ref": {
+          "anyOf": [
+            {
+              "maxLength": 500,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Script Ref"
+        },
+        "source_binding_does_not_change_source_authority": {
+          "const": true,
+          "default": true,
+          "title": "Source Binding Does Not Change Source Authority",
+          "type": "boolean"
+        },
+        "source_binding_id": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Source Binding Id",
+          "type": "string"
+        },
+        "source_contract": {
+          "maxLength": 500,
+          "minLength": 10,
+          "title": "Source Contract",
+          "type": "string"
+        },
+        "source_object_ref": {
+          "maxLength": 1000,
+          "minLength": 3,
+          "title": "Source Object Ref",
+          "type": "string"
+        },
+        "source_provenance_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Source Provenance Refs",
+          "type": "array"
+        },
+        "source_text_ref": {
+          "maxLength": 1000,
+          "minLength": 3,
+          "title": "Source Text Ref",
+          "type": "string"
+        },
+        "source_text_unit_ref": {
+          "anyOf": [
+            {
+              "maxLength": 1000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Text Unit Ref"
+        },
+        "translation_is_derived_representation": {
+          "const": true,
+          "default": true,
+          "title": "Translation Is Derived Representation",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "source_binding_id",
+        "source_object_ref",
+        "source_contract",
+        "source_text_ref",
+        "language_ref",
+        "content",
+        "content_sha256",
+        "source_provenance_refs"
+      ],
+      "title": "SourceContextBinding",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "contexts": {
+      "items": {
+        "$ref": "#/$defs/ContextObject"
+      },
+      "minItems": 1,
+      "title": "Contexts",
+      "type": "array"
+    },
+    "contract": {
+      "const": "sc.core.context-object-semantic-frame-foundation.v1",
+      "default": "sc.core.context-object-semantic-frame-foundation.v1",
+      "title": "Contract",
+      "type": "string"
+    },
+    "database_migration": {
+      "const": "none",
+      "default": "none",
+      "title": "Database Migration",
+      "type": "string"
+    },
+    "extends_contracts": {
+      "items": {
+        "type": "string"
+      },
+      "minItems": 5,
+      "title": "Extends Contracts",
+      "type": "array"
+    },
+    "frames": {
+      "items": {
+        "$ref": "#/$defs/SemanticFrame"
+      },
+      "minItems": 1,
+      "title": "Frames",
+      "type": "array"
+    },
+    "interpretations": {
+      "items": {
+        "$ref": "#/$defs/SemanticInterpretation"
+      },
+      "minItems": 1,
+      "title": "Interpretations",
+      "type": "array"
+    },
+    "mentions": {
+      "items": {
+        "$ref": "#/$defs/SemanticMention"
+      },
+      "title": "Mentions",
+      "type": "array"
+    },
+    "participants": {
+      "items": {
+        "$ref": "#/$defs/SemanticParticipant"
+      },
+      "title": "Participants",
+      "type": "array"
+    },
+    "policy": {
+      "$ref": "#/$defs/ContextSemanticPolicy"
+    },
+    "predecessor_core_contract": {
+      "const": "sc.core.sustainable-catalyst-computational-research-core.v1",
+      "default": "sc.core.sustainable-catalyst-computational-research-core.v1",
+      "title": "Predecessor Core Contract",
+      "type": "string"
+    },
+    "provenance_records": {
+      "items": {
+        "$ref": "#/$defs/ContextSemanticProvenanceRecord"
+      },
+      "minItems": 1,
+      "title": "Provenance Records",
+      "type": "array"
+    },
+    "release": {
+      "const": "4.1.0",
+      "default": "4.1.0",
+      "title": "Release",
+      "type": "string"
+    },
+    "snapshots": {
+      "items": {
+        "$ref": "#/$defs/ContextSemanticSnapshot"
+      },
+      "minItems": 1,
+      "title": "Snapshots",
+      "type": "array"
+    },
+    "source_bindings": {
+      "items": {
+        "$ref": "#/$defs/SourceContextBinding"
+      },
+      "minItems": 1,
+      "title": "Source Bindings",
+      "type": "array"
+    }
+  },
+  "required": [
+    "extends_contracts",
+    "policy",
+    "source_bindings",
+    "contexts",
+    "provenance_records",
+    "frames",
+    "interpretations",
+    "snapshots"
+  ],
+  "title": "ContextObjectSemanticFrameBundle",
+  "type": "object"
+}
