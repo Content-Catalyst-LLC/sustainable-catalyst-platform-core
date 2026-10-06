@@ -53,7 +53,10 @@ Tags: knowledge graph, entity registry, provenance, live data, sustainable catal
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.0
-Stable tag: 4.4.0
+Stable tag: 4.5.0
+
+== 4.5.0 ==
+Epistemic, Modal, Negation & Certainty Semantics. Adds governed epistemic interpretation contracts while preserving source truth and evidence boundaries.
 
 == 4.4.0 ==
 * Adds Platform Core temporal and spatial language grounding contract compatibility.

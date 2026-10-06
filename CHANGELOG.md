@@ -1,3 +1,11 @@
+## 4.5.0 — Epistemic, Modal, Negation & Certainty Semantics
+
+- Added first-class propositions, attributions, epistemic cues, negation scopes, modal scopes, conditional scopes, certainty semantics, reviewed assessments, provenance, and immutable semantic snapshots.
+- Preserves source assertion versus platform truth, source certainty versus evidence validity, and linguistic confidence versus probability.
+- Keeps surface source labels separate from canonical actor identity and performs no identity, evidence, context, or knowledge graph mutation.
+- Extends v4.4.0 Temporal & Spatial Language Grounding without rewriting predecessor objects.
+- No database migration.
+
 ## 4.4.0 — Temporal & Spatial Language Grounding
 
 - Adds first-class temporal and spatial language expressions with immutable source spans and provenance.
