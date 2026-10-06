@@ -199,6 +199,7 @@ from .routers import (
     context_semantic_frame,
     discourse_rhetorical_semantics,
     coreference_referential_identity,
+    temporal_spatial_language_grounding,
 )
 from app.routers.spark_runtime import router as spark_runtime_router
 
@@ -796,6 +797,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # Platform Core v4.3.0 — Coreference, Reference & Referential Identity Intelligence
     app.include_router(coreference_referential_identity.router)
     app.include_router(coreference_referential_identity.public_router)
+
+    # Platform Core v4.4.0 — Temporal & Spatial Language Grounding
+    app.include_router(temporal_spatial_language_grounding.router)
+    app.include_router(temporal_spatial_language_grounding.public_router)
     return app
 
 

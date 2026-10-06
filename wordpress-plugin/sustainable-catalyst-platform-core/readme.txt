@@ -53,7 +53,11 @@ Tags: knowledge graph, entity registry, provenance, live data, sustainable catal
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.0
-Stable tag: 4.3.0
+Stable tag: 4.4.0
+
+== 4.4.0 ==
+* Adds Platform Core temporal and spatial language grounding contract compatibility.
+* Preserves v4.3 referential identity semantics and provenance boundaries.
 
 == 4.3.0 ==
 * Adds Coreference, Reference & Referential Identity Intelligence compatibility and governed referential-identity diagnostics.

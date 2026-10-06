@@ -1,3 +1,14 @@
+## 4.4.0 — Temporal & Spatial Language Grounding
+
+- Adds first-class temporal and spatial language expressions with immutable source spans and provenance.
+- Adds temporal and spatial anchors, ranked grounding candidates, governed candidate sets, reviewed groundings, and immutable/supersedable grounding snapshots.
+- Preserves relative-time derivation history (for example, “the following year” grounded from an explicit base year) instead of flattening normalized values.
+- Grounds spatial deixis (for example, “there”) against explicit antecedent place expressions without treating linguistic resolution as canonical geocoding.
+- Lifts the v4.2 “after” discourse signal into a governed reported temporal-order relation without asserting real-world event order.
+- Preserves v4.3 reference/coreference semantics and performs no temporal, spatial, identity, evidence, or context graph mutation.
+- Adds private/public `/language-grounding` contract surfaces and schema validation.
+- Database migration: none.
+
 ## 4.3.0 — Coreference, Reference & Referential Identity Intelligence
 
 - Adds first-class reference-expression objects over governed v4.1 semantic mentions and v4.2 discourse context.
