@@ -1,3 +1,12 @@
+## 4.7.0 — Cross-Document Context Graph
+
+- Adds a persistent, queryable context graph spanning governed source documents and v4.1-v4.6 contextual-semantic objects.
+- Adds document bindings, typed context nodes/edges, cross-document threads, provenance, reviewed interpretations, and immutable/supersedable graph snapshots.
+- Preserves candidate actor/topic continuity as hypotheses rather than canonical identity, entity merges, claim equivalence, or evidence truth.
+- Keeps predecessor objects immutable and prohibits automatic identity-graph, evidence-graph, or knowledge-graph mutation.
+- Adds private/public `/context-graph` API surfaces, governed JSON Schema, release validation, and compatibility certification.
+- No database migration.
+
 ## 4.6.0 — Pragmatic Meaning, Speech Act & Communicative Intent
 
 - Adds first-class pragmatic participants, content units, source-bound cues, genre/register context, speech acts, communicative intents, reviewed interpretations, provenance, and immutable pragmatic snapshots.

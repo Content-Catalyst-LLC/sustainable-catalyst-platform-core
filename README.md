@@ -2,7 +2,7 @@
 
 Sustainable Catalyst Platform Core is the governed semantic, provenance, research-object, evidence, visual-reasoning, analytical-contract, and cross-product exchange layer of the Sustainable Catalyst platform.
 
-**Current release:** v4.6.0 — Pragmatic Meaning, Speech Act & Communicative Intent
+**Current release:** v4.7.0 — Cross-Document Context Graph
 
 ## Architecture
 
@@ -14,7 +14,7 @@ Platform Core defines governed research meaning and interoperable contracts whil
 - **Predictive and causal contracts** — governed forecast, uncertainty, ensemble, calibration, causal, and decision-intelligence objects while specialist runtimes retain execution.
 - **Scientific and computational runtime contracts** — registered runtime providers, environments, jobs, results, artifacts, and reproducibility semantics across Python, R, Julia, JVM, Rust, Go, C/C++, Fortran, Haskell, Prolog, and related providers.
 - **Multilingual and linguistic knowledge contracts** — original-language identity, translation/transliteration/alignment provenance, language/script/variant metadata, and cross-lingual semantic exchange.
-- **Contextual semantic and discourse contracts** — persistent context objects, semantic mentions, frame/participant structures, hierarchical discourse segments, rhetorical signals/relations, descriptive argument structure, first-class reference expressions, ranked referent candidates, reviewed coreference chains, referential identity handoffs, temporal/spatial expressions, relative-time derivations, spatial-deictic antecedents, reviewed language groundings, first-class propositions, source attribution, epistemic stance, modal and negation scope, conditional scope, certainty semantics, pragmatic participants, genre/register context, speech acts, communicative intents, interpretation provenance, ambiguity preservation, and non-authoritative semantic snapshots.
+- **Contextual semantic and discourse contracts** — persistent context objects, semantic mentions, frame/participant structures, hierarchical discourse segments, rhetorical signals/relations, descriptive argument structure, first-class reference expressions, ranked referent candidates, reviewed coreference chains, referential identity handoffs, temporal/spatial expressions, relative-time derivations, spatial-deictic antecedents, reviewed language groundings, first-class propositions, source attribution, epistemic stance, modal and negation scope, conditional scope, certainty semantics, pragmatic participants, genre/register context, speech acts, communicative intents, interpretation provenance, ambiguity preservation, non-authoritative semantic snapshots, and a persistent cross-document context graph that links governed semantic objects across sources while preserving uncertainty, unresolved identity, and source-specific provenance.
 - **Graph and neural knowledge contracts** — graph representations, node/edge classification, link prediction, anomaly detection, representation learning, and evidence-graph neural analysis.
 - **Cross-product exchange** — reference-first handoff and interoperability contracts for Workspace, Lab, Library, Workbench, Decision Studio, Site Intelligence, and other Sustainable Catalyst products.
 

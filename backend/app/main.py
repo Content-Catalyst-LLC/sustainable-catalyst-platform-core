@@ -202,6 +202,7 @@ from .routers import (
     temporal_spatial_language_grounding,
     epistemic_modal_negation_certainty,
     pragmatic_meaning_speech_act_intent,
+    cross_document_context_graph,
 )
 from app.routers.spark_runtime import router as spark_runtime_router
 
@@ -811,6 +812,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # Platform Core v4.6.0 — Pragmatic Meaning, Speech Act & Communicative Intent
     app.include_router(pragmatic_meaning_speech_act_intent.router)
     app.include_router(pragmatic_meaning_speech_act_intent.public_router)
+
+    # Platform Core v4.7.0 — Cross-Document Context Graph
+    app.include_router(cross_document_context_graph.router)
+    app.include_router(cross_document_context_graph.public_router)
     return app
 
 
