@@ -207,6 +207,7 @@ from .routers import (
     contextual_semantic_evaluation,
     unified_semantic_context_runtime,
     contextual_memory_semantic_state,
+    context_retrieval_relevance,
 )
 from app.routers.spark_runtime import router as spark_runtime_router
 
@@ -836,6 +837,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # Platform Core v4.11.0 — Contextual Memory & Semantic State Foundation
     app.include_router(contextual_memory_semantic_state.router)
     app.include_router(contextual_memory_semantic_state.public_router)
+
+    # Platform Core v4.12.0 — Context Retrieval & Relevance Intelligence
+    app.include_router(context_retrieval_relevance.router)
+    app.include_router(context_retrieval_relevance.public_router)
     return app
 
 

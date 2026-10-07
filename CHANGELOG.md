@@ -1,3 +1,11 @@
+## 4.12.0 — Context Retrieval & Relevance Intelligence
+
+- Adds governed context-retrieval queries, explainable relevance signals, ranked candidates, result sets, provenance, and reproducible retrieval snapshots.
+- Separates candidate generation from ranking and keeps v4.11 memory objects immutable.
+- Preserves qualification and unresolved-state references on every selected result.
+- Adds explicit boundaries: relevance is not truth, evidence weight, authority, credibility, semantic equivalence, or identity.
+- Adds private/public `/context-retrieval` API surfaces and no database migration.
+
 ## 4.11.0 — Contextual Memory & Semantic State Foundation
 
 - Adds stable contextual-memory identities and explicit document, runtime-session, investigation, and research-project scopes.

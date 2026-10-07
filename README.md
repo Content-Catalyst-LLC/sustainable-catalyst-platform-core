@@ -2,7 +2,12 @@
 
 Sustainable Catalyst Platform Core is the governed semantic, provenance, research-object, evidence, visual-reasoning, analytical-contract, and cross-product exchange layer of the Sustainable Catalyst platform.
 
-**Current release:** v4.11.0 — Contextual Memory & Semantic State Foundation
+**Current release:** v4.12.0 — Context Retrieval & Relevance Intelligence
+
+## v4.12.0 — Context Retrieval & Relevance Intelligence
+
+Platform Core v4.12.0 adds governed retrieval over v4.11 contextual memory. It separates candidate generation from explainable ranking, preserves scope, provenance, qualifications, unresolved state, multilingual lineage, and current-revision identity, and exposes reproducible retrieval snapshots. Relevance is contextual and advisory: rank is not truth, evidence weight, authority, credibility, or canonical identity.
+
 
 ## Architecture
 

@@ -53,7 +53,12 @@ Tags: knowledge graph, entity registry, provenance, live data, sustainable catal
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.0
-Stable tag: 4.11.0
+Stable tag: 4.12.0
+
+== 4.12.0 ==
+* Adds Context Retrieval & Relevance Intelligence contracts and API surfaces.
+* Preserves qualifications, unresolved context, provenance, and multilingual lineage through retrieval.
+* Relevance rank does not establish truth, evidence weight, authority, credibility, or identity.
 
 == 4.11.0 ==
 Contextual Memory & Semantic State Foundation. Adds stable scoped semantic memory, immutable revision lineage, qualification carry-forward, checkpoints, and strict non-truth/non-authority persistence boundaries.
