@@ -1,3 +1,12 @@
+## 4.9.0 — Contextual Semantic Evaluation & Benchmark Framework
+
+- Adds governed benchmark cases, reviewed gold annotations, reference predictions, per-case evaluations, metric definitions/results, reproducible benchmark snapshots, and evaluation runs over the v4.1-v4.8 semantic stack.
+- Evaluates coreference, discourse, temporal/spatial grounding, epistemic stance, negation/modality, pragmatics, cross-document continuity, multilingual alignment, translation drift, cultural semantic divergence, and ambiguity preservation.
+- Treats unresolved ambiguity and non-equivalence as potentially correct outcomes instead of forcing deterministic collapse.
+- Keeps benchmark success separate from claim truth, evidence validity, model safety, domain authority, canonical identity, and graph mutation.
+- Adds private/public `/context-evaluation` API surfaces, governed JSON Schema, release validation, and reproducible certification.
+- No database migration.
+
 ## 4.8.0 — Multilingual Context & Semantic Alignment
 
 - Adds authoritative original-language context representations with derived translations that never replace the original.
