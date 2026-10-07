@@ -53,7 +53,12 @@ Tags: knowledge graph, entity registry, provenance, live data, sustainable catal
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.0
-Stable tag: 4.13.0
+Stable tag: 4.14.0
+
+== 4.14.0 ==
+* Adds Evidence-Context Integration Layer contracts and API surfaces.
+* Preserves upstream evidence review status and treats semantic/evidence links as a read-only governed bridge.
+* Prevents translation derivatives from being counted as independent corroboration.
 
 == 4.12.0 ==
 * Adds Context Retrieval & Relevance Intelligence contracts and API surfaces.

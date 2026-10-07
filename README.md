@@ -2,8 +2,13 @@
 
 Sustainable Catalyst Platform Core is the governed semantic, provenance, research-object, evidence, visual-reasoning, analytical-contract, and cross-product exchange layer of the Sustainable Catalyst platform.
 
-**Current release:** v4.13.0 — Claim Alignment, Agreement & Contradiction Intelligence
+**Current release:** v4.14.0 — Evidence-Context Integration Layer
 
+
+
+## v4.14.0 — Evidence-Context Integration Layer
+
+Connects contextual claim interpretation to governed Evidence Graph-style anchors through a read-only, provenance-preserving bridge. Evidence review status remains upstream authority; translation derivatives cannot count as independent corroboration; contradiction remains unresolved without governed adjudication; no graph or truth promotion occurs.
 
 ## v4.13.0 — Claim Alignment, Agreement & Contradiction Intelligence
 
