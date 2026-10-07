@@ -36,7 +36,8 @@ def invalid(mutator):
 
 
 def test_release_identity():
-    assert Settings().version == "4.10.0"
+    version = tuple(int(x) for x in Settings().version.split("."))
+    assert version >= (4, 10, 0)
     assert ref().release == "4.10.0"
     assert ref().contract == "sc.core.unified-semantic-contextual-intelligence-runtime.v1"
     assert ref().predecessor_contract == "sc.core.contextual-semantic-evaluation-benchmark-framework.v1"

@@ -1,3 +1,13 @@
+## 4.11.0 — Contextual Memory & Semantic State Foundation
+
+- Adds stable contextual-memory identities and explicit document, runtime-session, investigation, and research-project scopes.
+- Adds immutable semantic-state revisions, exact predecessor lineage, governed review states, supersession without deletion, and qualification carry-forward.
+- Carries unresolved referential, geographic, epistemic, cross-document, multilingual, and benchmark qualifications forward without converting persistence into truth or authority.
+- Adds non-mutating contextual memory links, provenance records, reproducible project checkpoints, and immutable/supersedable memory snapshots.
+- Keeps storage backend choice separate from semantic authority and performs no context-, identity-, evidence-, or knowledge-graph mutation.
+- Adds private/public `/context-memory` API surfaces, governed JSON Schema, release validation, and Docker deployment certification.
+- No database migration.
+
 ## 4.10.0 — Unified Semantic & Contextual Intelligence Runtime
 
 - Converges the v4.1-v4.9 contextual-semantic stack into a governed nine-stage runtime pipeline from context/frame construction through contextual-semantic evaluation.
