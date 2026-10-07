@@ -1,3 +1,13 @@
+## 4.10.0 — Unified Semantic & Contextual Intelligence Runtime
+
+- Converges the v4.1-v4.9 contextual-semantic stack into a governed nine-stage runtime pipeline from context/frame construction through contextual-semantic evaluation.
+- Adds immutable stage definitions, artifact envelopes, stage results, explicit qualifications, provenance records, reproducible execution plans, runtime sessions, and semantic-context snapshots.
+- Preserves original-language lineage, unresolved ambiguity, canonical-identity deferral, cultural semantic divergence, and benchmark non-authority across stage handoffs.
+- Allows qualified continuation while blocking promotion on validation failure; every stage retains its own governed contract and fingerprint.
+- Keeps runtime completion separate from claim truth, evidence validity, canonical identity, source authority, model safety, and all context/identity/evidence/knowledge-graph mutation.
+- Adds private/public `/semantic-context-runtime` API surfaces, governed JSON Schema, release validation, and Docker deployment certification.
+- No database migration.
+
 ## 4.9.0 — Contextual Semantic Evaluation & Benchmark Framework
 
 - Adds governed benchmark cases, reviewed gold annotations, reference predictions, per-case evaluations, metric definitions/results, reproducible benchmark snapshots, and evaluation runs over the v4.1-v4.8 semantic stack.

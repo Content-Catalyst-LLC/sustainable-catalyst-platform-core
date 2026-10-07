@@ -53,7 +53,10 @@ Tags: knowledge graph, entity registry, provenance, live data, sustainable catal
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.0
-Stable tag: 4.9.0
+Stable tag: 4.10.0
+
+== 4.10.0 ==
+Unified Semantic & Contextual Intelligence Runtime. Orchestrates the governed v4.1-v4.9 contextual-semantic stack with immutable stage artifacts, provenance, qualifications, reproducible sessions, and strict non-truth/non-authority boundaries.
 
 == 4.7.0 ==
 Cross-Document Context Graph. Adds governed cross-source context graph compatibility while preserving uncertainty, provenance, and non-authoritative identity/evidence boundaries.
