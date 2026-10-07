@@ -1,5 +1,13 @@
 # Changelog
 
+## 4.15.0
+- Adds Contextual Causal Language & Mechanism Intelligence over the v4.14 Evidence-Context bridge.
+- Adds causal-language signals, mechanism hypotheses, intervention contexts, counterfactual contexts, reviewed causal assessments, provenance, and reproducible snapshots.
+- Preserves modality, attribution, temporal/spatial scope, evidence conflict, and translation lineage.
+- Enforces that causal wording, association, temporal precedence, mechanisms, intervention language, and counterfactual framing do not establish causal truth or identification.
+- No database migration or automatic graph mutation.
+- Makes v4.14 release validation forward-compatible with later 4.x application versions.
+
 ## 4.14.0
 - Adds Evidence-Context Integration Layer and governed Evidence Graph anchors.
 - Preserves evidence review authority, claim scope, qualifications, contradiction state, translation lineage, and provenance.

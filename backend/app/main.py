@@ -210,6 +210,7 @@ from .routers import (
     context_retrieval_relevance,
     claim_alignment_agreement_contradiction,
     evidence_context_integration,
+    contextual_causal_language_mechanism,
 )
 from app.routers.spark_runtime import router as spark_runtime_router
 
@@ -851,6 +852,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # Platform Core v4.14.0 — Evidence-Context Integration Layer
     app.include_router(evidence_context_integration.router)
     app.include_router(evidence_context_integration.public_router)
+
+    # Platform Core v4.15.0 — Contextual Causal Language & Mechanism Intelligence
+    app.include_router(contextual_causal_language_mechanism.router)
+    app.include_router(contextual_causal_language_mechanism.public_router)
     return app
 
 

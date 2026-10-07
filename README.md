@@ -2,9 +2,13 @@
 
 Sustainable Catalyst Platform Core is the governed semantic, provenance, research-object, evidence, visual-reasoning, analytical-contract, and cross-product exchange layer of the Sustainable Catalyst platform.
 
-**Current release:** v4.14.0 — Evidence-Context Integration Layer
+**Current release:** v4.15.0 — Contextual Causal Language & Mechanism Intelligence
 
 
+
+## v4.15.0 — Contextual Causal Language & Mechanism Intelligence
+
+Adds governed causal-language signals, proposed mechanisms, intervention contexts, counterfactual questions, causal assessments, provenance, and reproducible snapshots. It separates causal wording from causal identification; temporal sequence and association from causality; mechanism plausibility from validation; intervention language from experimental evidence; and counterfactual questions from estimated causal effects. Evidence-context conflicts, modality, attribution, scope, and translation lineage remain intact, with no causal/evidence/knowledge/identity graph mutation.
 
 ## v4.14.0 — Evidence-Context Integration Layer
 
