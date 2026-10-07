@@ -1,3 +1,11 @@
+## 4.13.0 — Claim Alignment, Agreement & Contradiction Intelligence
+
+- Adds governed claim-source contexts, normalized comparison claim units, multidimensional alignment signals, pair assessments, provenance, and reproducible snapshots.
+- Separates strict contradiction from apparent contradiction when modality or scope differs, and distinguishes full, qualified, and partial agreement.
+- Preserves source wording, attribution, temporal/spatial scope, multilingual lineage, qualifications, unresolved identity, and predecessor retrieval context.
+- Keeps agreement/contradiction separate from truth, credibility, evidence validity, deception, majority voting, or graph mutation.
+- Adds private/public `/claim-comparison` API surfaces and no database migration.
+
 ## 4.12.0 — Context Retrieval & Relevance Intelligence
 
 - Adds governed context-retrieval queries, explainable relevance signals, ranked candidates, result sets, provenance, and reproducible retrieval snapshots.

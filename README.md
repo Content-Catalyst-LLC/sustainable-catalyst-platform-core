@@ -2,7 +2,16 @@
 
 Sustainable Catalyst Platform Core is the governed semantic, provenance, research-object, evidence, visual-reasoning, analytical-contract, and cross-product exchange layer of the Sustainable Catalyst platform.
 
-**Current release:** v4.12.0 — Context Retrieval & Relevance Intelligence
+**Current release:** v4.13.0 — Claim Alignment, Agreement & Contradiction Intelligence
+
+
+## v4.13.0 — Claim Alignment, Agreement & Contradiction Intelligence
+
+- Adds governed claim units, source contexts, comparison queries, multidimensional alignment signals, comparison pairs, relation assessments, provenance, and reproducible snapshots.
+- Distinguishes agreement, qualified agreement, partial agreement, strict contradiction, apparent contradiction, scope mismatch, distinct claims, and unresolved comparisons.
+- Requires polarity, modality, temporal/spatial scope, attribution, multilingual lineage, qualification, and unresolved identity to remain visible during comparison.
+- Explicitly separates contradiction detection from truth adjudication, deception detection, evidence validity, source majority, and graph mutation.
+- Adds private/public `/claim-comparison` API surfaces and no database migration.
 
 ## v4.12.0 — Context Retrieval & Relevance Intelligence
 

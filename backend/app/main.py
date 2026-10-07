@@ -208,6 +208,7 @@ from .routers import (
     unified_semantic_context_runtime,
     contextual_memory_semantic_state,
     context_retrieval_relevance,
+    claim_alignment_agreement_contradiction,
 )
 from app.routers.spark_runtime import router as spark_runtime_router
 
@@ -841,6 +842,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # Platform Core v4.12.0 — Context Retrieval & Relevance Intelligence
     app.include_router(context_retrieval_relevance.router)
     app.include_router(context_retrieval_relevance.public_router)
+
+    # Platform Core v4.13.0 — Claim Alignment, Agreement & Contradiction Intelligence
+    app.include_router(claim_alignment_agreement_contradiction.router)
+    app.include_router(claim_alignment_agreement_contradiction.public_router)
     return app
 
 
