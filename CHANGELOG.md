@@ -1,3 +1,13 @@
+## 4.8.0 — Multilingual Context & Semantic Alignment
+
+- Adds authoritative original-language context representations with derived translations that never replace the original.
+- Adds source-span-preserving semantic units and directional multilingual context alignments across proposition, modality, discourse, pragmatic, referential, cultural, and historical dimensions.
+- Adds first-class semantic-divergence records so culturally or historically conditioned meaning is preserved instead of flattened into lexical equivalence.
+- Connects multilingual semantic units to v4.7 context threads through explicitly non-mutating candidate projections.
+- Integrates the existing v3.65-v3.69 language/linguistics contracts with the v4.1-v4.7 contextual-semantic stack.
+- Adds private/public `/multilingual-context` API surfaces, governed JSON Schema, release validation, and compatibility certification.
+- No database migration.
+
 ## 4.7.0 — Cross-Document Context Graph
 
 - Adds a persistent, queryable context graph spanning governed source documents and v4.1-v4.6 contextual-semantic objects.
