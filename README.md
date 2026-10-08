@@ -2,9 +2,13 @@
 
 Sustainable Catalyst Platform Core is the governed semantic, provenance, research-object, evidence, visual-reasoning, analytical-contract, and cross-product exchange layer of the Sustainable Catalyst platform.
 
-**Current release:** v4.18.0 — Contextual Hypothesis & Competing Explanation Objects
+**Current release:** v4.19.0 — Semantic Synthesis & Research Answer Object
 
 
+
+## v4.19.0 — Semantic Synthesis & Research Answer Object
+
+Adds governed research-answer objects that synthesize claims, counterevidence, competing explanations, qualifications, unresolved questions, original-language/source-independence constraints, and reproducible provenance without truth promotion or automatic hypothesis selection.
 
 ## v4.18.0 — Contextual Hypothesis & Competing Explanation Objects
 

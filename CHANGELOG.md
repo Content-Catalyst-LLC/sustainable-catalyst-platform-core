@@ -1,3 +1,8 @@
+## v4.19.0 — Semantic Synthesis & Research Answer Object
+- Adds governed semantic synthesis claims and research-answer objects over v4.18 competing explanations.
+- Preserves counterevidence, unresolved hypotheses, rejected explanations, translation/source-independence lineage, causal/identity qualifications, and deterministic snapshots.
+- No database migration or automatic graph/evidence/hypothesis mutation.
+
 # Changelog
 
 ## 4.18.0
