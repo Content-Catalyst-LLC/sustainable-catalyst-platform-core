@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 from datetime import datetime
+import json
 from fastapi import HTTPException
-from sqlalchemy import and_, desc, func, or_, select
+from sqlalchemy import Text, and_, cast, desc, func, or_, select
 from sqlalchemy.orm import Session
 
 from ..models import InternationalLawRecord, LiveDataConnector, LiveDataRawRecord, LiveDataSource
@@ -63,9 +64,19 @@ def list_records(
     if public_only:
         filters.append(InternationalLawRecord.public.is_(True))
     if country:
-        filters.append(InternationalLawRecord.countries_json.contains([country]))
+        filters.append(
+            cast(InternationalLawRecord.countries_json, Text).contains(
+                json.dumps(str(country)),
+                autoescape=True,
+            )
+        )
     if subject:
-        filters.append(InternationalLawRecord.subjects_json.contains([subject]))
+        filters.append(
+            cast(InternationalLawRecord.subjects_json, Text).contains(
+                json.dumps(str(subject)),
+                autoescape=True,
+            )
+        )
     if query:
         pattern = f"%{query.strip()}%"
         filters.append(or_(InternationalLawRecord.title.ilike(pattern), InternationalLawRecord.summary.ilike(pattern), InternationalLawRecord.official_symbol.ilike(pattern)))

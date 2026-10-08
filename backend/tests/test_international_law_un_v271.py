@@ -221,3 +221,49 @@ def test_scoped_public_authority_taxonomy(client, write_headers):
     assert response.status_code == 200, response.text
     assert response.json()["meta"]["api_version"] == "v1"
     assert "official_security_council_resolution" in response.json()["data"]
+
+
+def test_international_law_country_and_subject_filters_are_database_portable(client):
+    from app.models import InternationalLawRecord
+
+    with client.app.state.database.session() as db:
+        db.add(
+            InternationalLawRecord(
+                id="law-filter-portability-fixture",
+                connector_id="un.digital-library",
+                source_id="un-digital-library",
+                source_record_id="law-filter-portability-fixture",
+                record_type="official_document",
+                authority_level="official_report",
+                title="Kenya humanitarian law fixture",
+                legal_body="United Nations",
+                countries_json=["KEN"],
+                subjects_json=["Humanitarian assistance"],
+                content_hash="a" * 64,
+                public=True,
+            )
+        )
+        db.commit()
+
+    country = client.get(
+        "/v1/international-law/records",
+        params={"country": "KEN", "limit": 10},
+    )
+    assert country.status_code == 200, country.text
+    assert country.json()["total"] == 1
+    assert country.json()["items"][0]["id"] == "law-filter-portability-fixture"
+
+    subject = client.get(
+        "/v1/international-law/records",
+        params={"subject": "Humanitarian assistance", "limit": 10},
+    )
+    assert subject.status_code == 200, subject.text
+    assert subject.json()["total"] == 1
+    assert subject.json()["items"][0]["id"] == "law-filter-portability-fixture"
+
+    miss = client.get(
+        "/v1/international-law/records",
+        params={"country": "USA", "limit": 10},
+    )
+    assert miss.status_code == 200, miss.text
+    assert miss.json()["total"] == 0
