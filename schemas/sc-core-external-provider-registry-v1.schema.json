@@ -1,0 +1,630 @@
+{
+  "$defs": {
+    "AuthenticationMode": {
+      "enum": [
+        "none",
+        "api-key",
+        "bearer-token",
+        "oauth2",
+        "account",
+        "provider-specific"
+      ],
+      "title": "AuthenticationMode",
+      "type": "string"
+    },
+    "EndpointProtocol": {
+      "enum": [
+        "rest",
+        "graphql",
+        "sparql",
+        "sdmx",
+        "stac",
+        "rpc",
+        "other"
+      ],
+      "title": "EndpointProtocol",
+      "type": "string"
+    },
+    "ExternalProviderRecord": {
+      "properties": {
+        "provider_id": {
+          "minLength": 3,
+          "title": "Provider Id",
+          "type": "string"
+        },
+        "display_name": {
+          "maxLength": 300,
+          "minLength": 2,
+          "title": "Display Name",
+          "type": "string"
+        },
+        "kinds": {
+          "items": {
+            "$ref": "#/$defs/ProviderKind"
+          },
+          "minItems": 1,
+          "title": "Kinds",
+          "type": "array"
+        },
+        "lifecycle_state": {
+          "$ref": "#/$defs/ProviderLifecycleState"
+        },
+        "description": {
+          "maxLength": 2000,
+          "minLength": 3,
+          "title": "Description",
+          "type": "string"
+        },
+        "authority_scopes": {
+          "items": {
+            "$ref": "#/$defs/ProviderAuthorityScope"
+          },
+          "minItems": 1,
+          "title": "Authority Scopes",
+          "type": "array"
+        },
+        "capabilities": {
+          "items": {
+            "$ref": "#/$defs/ProviderCapability"
+          },
+          "minItems": 1,
+          "title": "Capabilities",
+          "type": "array"
+        },
+        "endpoints": {
+          "items": {
+            "$ref": "#/$defs/ProviderEndpoint"
+          },
+          "title": "Endpoints",
+          "type": "array"
+        },
+        "usage_policy": {
+          "$ref": "#/$defs/ProviderUsagePolicy"
+        },
+        "provider_metadata_version": {
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Provider Metadata Version",
+          "type": "string"
+        },
+        "adapter_implementation_ref": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Adapter Implementation Ref"
+        },
+        "source_identity_must_be_preserved": {
+          "const": true,
+          "default": true,
+          "title": "Source Identity Must Be Preserved",
+          "type": "boolean"
+        },
+        "retrieval_provenance_required": {
+          "const": true,
+          "default": true,
+          "title": "Retrieval Provenance Required",
+          "type": "boolean"
+        },
+        "registration_is_not_adapter_implementation": {
+          "const": true,
+          "default": true,
+          "title": "Registration Is Not Adapter Implementation",
+          "type": "boolean"
+        },
+        "registration_is_not_connectivity_verification": {
+          "const": true,
+          "default": true,
+          "title": "Registration Is Not Connectivity Verification",
+          "type": "boolean"
+        },
+        "registration_establishes_evidence_truth": {
+          "const": false,
+          "default": false,
+          "title": "Registration Establishes Evidence Truth",
+          "type": "boolean"
+        },
+        "registration_authorizes_graph_mutation": {
+          "const": false,
+          "default": false,
+          "title": "Registration Authorizes Graph Mutation",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "provider_id",
+        "display_name",
+        "kinds",
+        "lifecycle_state",
+        "description",
+        "authority_scopes",
+        "capabilities",
+        "usage_policy",
+        "provider_metadata_version"
+      ],
+      "title": "ExternalProviderRecord",
+      "type": "object"
+    },
+    "ExternalProviderRegistryPolicy": {
+      "properties": {
+        "policy_id": {
+          "minLength": 3,
+          "title": "Policy Id",
+          "type": "string"
+        },
+        "provider_identity_is_governed": {
+          "const": true,
+          "default": true,
+          "title": "Provider Identity Is Governed",
+          "type": "boolean"
+        },
+        "capability_identity_is_governed": {
+          "const": true,
+          "default": true,
+          "title": "Capability Identity Is Governed",
+          "type": "boolean"
+        },
+        "endpoint_identity_is_governed": {
+          "const": true,
+          "default": true,
+          "title": "Endpoint Identity Is Governed",
+          "type": "boolean"
+        },
+        "authority_scope_must_be_explicit": {
+          "const": true,
+          "default": true,
+          "title": "Authority Scope Must Be Explicit",
+          "type": "boolean"
+        },
+        "provider_terms_must_be_preserved": {
+          "const": true,
+          "default": true,
+          "title": "Provider Terms Must Be Preserved",
+          "type": "boolean"
+        },
+        "credentials_must_be_reference_only": {
+          "const": true,
+          "default": true,
+          "title": "Credentials Must Be Reference Only",
+          "type": "boolean"
+        },
+        "retrieval_provenance_required": {
+          "const": true,
+          "default": true,
+          "title": "Retrieval Provenance Required",
+          "type": "boolean"
+        },
+        "provider_registration_establishes_connectivity": {
+          "const": false,
+          "default": false,
+          "title": "Provider Registration Establishes Connectivity",
+          "type": "boolean"
+        },
+        "provider_authority_establishes_truth": {
+          "const": false,
+          "default": false,
+          "title": "Provider Authority Establishes Truth",
+          "type": "boolean"
+        },
+        "provider_output_auto_promotes_evidence": {
+          "const": false,
+          "default": false,
+          "title": "Provider Output Auto Promotes Evidence",
+          "type": "boolean"
+        },
+        "computational_output_auto_promotes_evidence": {
+          "const": false,
+          "default": false,
+          "title": "Computational Output Auto Promotes Evidence",
+          "type": "boolean"
+        },
+        "event_signal_establishes_ground_truth": {
+          "const": false,
+          "default": false,
+          "title": "Event Signal Establishes Ground Truth",
+          "type": "boolean"
+        },
+        "provider_agreement_establishes_truth": {
+          "const": false,
+          "default": false,
+          "title": "Provider Agreement Establishes Truth",
+          "type": "boolean"
+        },
+        "registry_authorizes_automatic_graph_mutation": {
+          "const": false,
+          "default": false,
+          "title": "Registry Authorizes Automatic Graph Mutation",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "policy_id"
+      ],
+      "title": "ExternalProviderRegistryPolicy",
+      "type": "object"
+    },
+    "ProviderAuthorityScope": {
+      "properties": {
+        "authority_id": {
+          "minLength": 3,
+          "title": "Authority Id",
+          "type": "string"
+        },
+        "scope": {
+          "maxLength": 1000,
+          "minLength": 3,
+          "title": "Scope",
+          "type": "string"
+        },
+        "authority_class": {
+          "maxLength": 100,
+          "minLength": 3,
+          "title": "Authority Class",
+          "type": "string"
+        },
+        "source_is_authoritative_within_scope_only": {
+          "const": true,
+          "default": true,
+          "title": "Source Is Authoritative Within Scope Only",
+          "type": "boolean"
+        },
+        "authority_establishes_truth": {
+          "const": false,
+          "default": false,
+          "title": "Authority Establishes Truth",
+          "type": "boolean"
+        },
+        "authority_overrides_conflicting_evidence": {
+          "const": false,
+          "default": false,
+          "title": "Authority Overrides Conflicting Evidence",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "authority_id",
+        "scope",
+        "authority_class"
+      ],
+      "title": "ProviderAuthorityScope",
+      "type": "object"
+    },
+    "ProviderCapability": {
+      "properties": {
+        "capability_id": {
+          "minLength": 3,
+          "title": "Capability Id",
+          "type": "string"
+        },
+        "provider_kind": {
+          "$ref": "#/$defs/ProviderKind"
+        },
+        "operation": {
+          "maxLength": 160,
+          "minLength": 3,
+          "title": "Operation",
+          "type": "string"
+        },
+        "object_types": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Object Types",
+          "type": "array"
+        },
+        "supports_historical_versions": {
+          "default": false,
+          "title": "Supports Historical Versions",
+          "type": "boolean"
+        },
+        "supports_structured_query": {
+          "default": true,
+          "title": "Supports Structured Query",
+          "type": "boolean"
+        },
+        "supports_reproducible_retrieval": {
+          "default": true,
+          "title": "Supports Reproducible Retrieval",
+          "type": "boolean"
+        },
+        "output_requires_provenance": {
+          "const": true,
+          "default": true,
+          "title": "Output Requires Provenance",
+          "type": "boolean"
+        },
+        "output_is_not_automatically_evidence": {
+          "const": true,
+          "default": true,
+          "title": "Output Is Not Automatically Evidence",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "capability_id",
+        "provider_kind",
+        "operation",
+        "object_types"
+      ],
+      "title": "ProviderCapability",
+      "type": "object"
+    },
+    "ProviderEndpoint": {
+      "properties": {
+        "endpoint_id": {
+          "minLength": 3,
+          "title": "Endpoint Id",
+          "type": "string"
+        },
+        "protocol": {
+          "$ref": "#/$defs/EndpointProtocol"
+        },
+        "endpoint_label": {
+          "maxLength": 300,
+          "minLength": 3,
+          "title": "Endpoint Label",
+          "type": "string"
+        },
+        "authentication_mode": {
+          "$ref": "#/$defs/AuthenticationMode",
+          "default": "none"
+        },
+        "credential_reference": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Credential Reference"
+        },
+        "endpoint_uri": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Endpoint Uri"
+        },
+        "secret_material_embedded": {
+          "const": false,
+          "default": false,
+          "title": "Secret Material Embedded",
+          "type": "boolean"
+        },
+        "endpoint_registration_establishes_connectivity": {
+          "const": false,
+          "default": false,
+          "title": "Endpoint Registration Establishes Connectivity",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "endpoint_id",
+        "protocol",
+        "endpoint_label"
+      ],
+      "title": "ProviderEndpoint",
+      "type": "object"
+    },
+    "ProviderKind": {
+      "enum": [
+        "knowledge",
+        "data",
+        "computational",
+        "geospatial",
+        "event",
+        "intelligence"
+      ],
+      "title": "ProviderKind",
+      "type": "string"
+    },
+    "ProviderLifecycleState": {
+      "enum": [
+        "reference-only",
+        "configured",
+        "active",
+        "disabled"
+      ],
+      "title": "ProviderLifecycleState",
+      "type": "string"
+    },
+    "ProviderRegistrySnapshot": {
+      "properties": {
+        "snapshot_id": {
+          "minLength": 3,
+          "title": "Snapshot Id",
+          "type": "string"
+        },
+        "provider_fingerprints": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Provider Fingerprints",
+          "type": "object"
+        },
+        "deterministic_registry_fingerprint_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Deterministic Registry Fingerprint Sha256",
+          "type": "string"
+        },
+        "supersedable": {
+          "const": true,
+          "default": true,
+          "title": "Supersedable",
+          "type": "boolean"
+        },
+        "snapshot_is_not_connectivity_or_truth_certification": {
+          "const": true,
+          "default": true,
+          "title": "Snapshot Is Not Connectivity Or Truth Certification",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "snapshot_id",
+        "provider_fingerprints",
+        "deterministic_registry_fingerprint_sha256"
+      ],
+      "title": "ProviderRegistrySnapshot",
+      "type": "object"
+    },
+    "ProviderUsagePolicy": {
+      "properties": {
+        "policy_id": {
+          "minLength": 3,
+          "title": "Policy Id",
+          "type": "string"
+        },
+        "license_label": {
+          "maxLength": 300,
+          "minLength": 1,
+          "title": "License Label",
+          "type": "string"
+        },
+        "commercial_use_status": {
+          "enum": [
+            "allowed",
+            "restricted",
+            "unknown",
+            "provider-specific"
+          ],
+          "title": "Commercial Use Status",
+          "type": "string"
+        },
+        "redistribution_status": {
+          "enum": [
+            "allowed",
+            "restricted",
+            "unknown",
+            "provider-specific"
+          ],
+          "title": "Redistribution Status",
+          "type": "string"
+        },
+        "attribution_required": {
+          "title": "Attribution Required",
+          "type": "boolean"
+        },
+        "caching_status": {
+          "enum": [
+            "allowed",
+            "restricted",
+            "unknown",
+            "provider-specific"
+          ],
+          "title": "Caching Status",
+          "type": "string"
+        },
+        "quota_model": {
+          "enum": [
+            "none",
+            "request-limit",
+            "volume-limit",
+            "paid-tier",
+            "unknown",
+            "provider-specific"
+          ],
+          "title": "Quota Model",
+          "type": "string"
+        },
+        "terms_reference": {
+          "maxLength": 1000,
+          "minLength": 3,
+          "title": "Terms Reference",
+          "type": "string"
+        },
+        "provider_terms_remain_authoritative": {
+          "const": true,
+          "default": true,
+          "title": "Provider Terms Remain Authoritative",
+          "type": "boolean"
+        },
+        "registry_may_override_provider_terms": {
+          "const": false,
+          "default": false,
+          "title": "Registry May Override Provider Terms",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "policy_id",
+        "license_label",
+        "commercial_use_status",
+        "redistribution_status",
+        "attribution_required",
+        "caching_status",
+        "quota_model",
+        "terms_reference"
+      ],
+      "title": "ProviderUsagePolicy",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "release": {
+      "const": "4.20.1",
+      "default": "4.20.1",
+      "title": "Release",
+      "type": "string"
+    },
+    "contract": {
+      "const": "sc.core.external-provider-registry.v1",
+      "default": "sc.core.external-provider-registry.v1",
+      "title": "Contract",
+      "type": "string"
+    },
+    "predecessor_contract": {
+      "const": "sc.core.unified-contextual-reasoning-runtime.v1",
+      "default": "sc.core.unified-contextual-reasoning-runtime.v1",
+      "title": "Predecessor Contract",
+      "type": "string"
+    },
+    "policy": {
+      "$ref": "#/$defs/ExternalProviderRegistryPolicy"
+    },
+    "providers": {
+      "items": {
+        "$ref": "#/$defs/ExternalProviderRecord"
+      },
+      "minItems": 1,
+      "title": "Providers",
+      "type": "array"
+    },
+    "snapshots": {
+      "items": {
+        "$ref": "#/$defs/ProviderRegistrySnapshot"
+      },
+      "maxItems": 1,
+      "minItems": 1,
+      "title": "Snapshots",
+      "type": "array"
+    },
+    "database_migration": {
+      "const": "none",
+      "default": "none",
+      "title": "Database Migration",
+      "type": "string"
+    }
+  },
+  "required": [
+    "policy",
+    "providers",
+    "snapshots"
+  ],
+  "title": "ExternalProviderRegistryBundle",
+  "type": "object"
+}

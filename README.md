@@ -2,9 +2,19 @@
 
 Sustainable Catalyst Platform Core is the governed semantic, provenance, research-object, evidence, visual-reasoning, analytical-contract, and cross-product exchange layer of the Sustainable Catalyst platform.
 
-**Current release:** v4.20.0 — Unified Contextual Reasoning Runtime
+**Current release:** v4.20.1 — External Provider Registry Contract
 
 
+
+
+## v4.20.1 — External Provider Registry Contract
+
+- Adds a provider-neutral governed registry for knowledge, data, computational, geospatial, event, and intelligence providers.
+- Defines provider identity, capability, authority scope, endpoint, authentication, licensing/usage, quota/cache, lifecycle, provenance, and deterministic snapshot objects.
+- Keeps provider registration separate from adapter implementation and live connectivity.
+- Enforces provider authority != truth, provider agreement != truth, computational output != evidence, event signal != ground truth, and no automatic graph mutation.
+- Preserves the v4.20 contextual reasoning consolidation boundary; this is a compatibility extension, not a reopened reasoning arc.
+- No database migration.
 
 ## v4.20.0 — Unified Contextual Reasoning Runtime
 

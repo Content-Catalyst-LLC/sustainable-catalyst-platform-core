@@ -53,7 +53,7 @@ Tags: knowledge graph, entity registry, provenance, live data, sustainable catal
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.0
-Stable tag: 4.20.0
+Stable tag: 4.20.1
 
 == 4.20.0 ==
 * Adds Unified Contextual Reasoning Runtime over the governed v4.11-v4.19 reasoning arc.

@@ -1,3 +1,11 @@
+## v4.20.1 — External Provider Registry Contract
+- Adds provider-neutral registry objects for knowledge, data, computational, geospatial, event, and intelligence providers.
+- Adds explicit capability, authority-scope, endpoint, authentication, usage/license, quota/cache, lifecycle, provenance, and registry-snapshot governance.
+- Keeps provider registration separate from adapter implementation and connectivity verification.
+- Enforces provider authority != truth, source agreement != truth, computational output != evidence, event signals != ground truth, and no automatic graph mutation.
+- Preserves v4.20.0 as the contextual-reasoning consolidation milestone.
+- No database migration.
+
 ## v4.20.0 — Unified Contextual Reasoning Runtime
 - Consolidates the governed v4.11–v4.19 contextual reasoning sequence into one auditable runtime contract.
 - Adds nine ordered reasoning-stage records, three end-to-end research traces, runtime provenance, and deterministic runtime snapshots.

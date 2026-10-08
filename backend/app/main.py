@@ -216,6 +216,7 @@ from .routers import (
     contextual_hypothesis_competing_explanations,
     semantic_synthesis_research_answer,
     unified_contextual_reasoning_runtime,
+    external_provider_registry,
 )
 from app.routers.spark_runtime import router as spark_runtime_router
 
@@ -881,6 +882,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # Platform Core v4.20.0 — Unified Contextual Reasoning Runtime
     app.include_router(unified_contextual_reasoning_runtime.router)
     app.include_router(unified_contextual_reasoning_runtime.public_router)
+
+    # Platform Core v4.20.1 — External Provider Registry Contract
+    app.include_router(external_provider_registry.router)
+    app.include_router(external_provider_registry.public_router)
     return app
 
 

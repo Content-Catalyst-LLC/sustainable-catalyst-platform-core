@@ -1,0 +1,31 @@
+#!/usr/bin/env python3
+from pathlib import Path
+import re
+ROOT=Path(__file__).resolve().parents[1]
+def check(label,cond):
+    if not cond: raise SystemExit(f"{label}=FAIL")
+    print(f"{label}=PASS")
+config=(ROOT/'backend/app/config.py').read_text(); main=(ROOT/'backend/app/main.py').read_text(); service=(ROOT/'backend/app/services/external_provider_registry.py').read_text(); router=(ROOT/'backend/app/routers/external_provider_registry.py').read_text(); readme=(ROOT/'README.md').read_text(); wp=(ROOT/'wordpress-plugin/sustainable-catalyst-platform-core/sustainable-catalyst-platform-core.php').read_text(); wpread=(ROOT/'wordpress-plugin/sustainable-catalyst-platform-core/readme.txt').read_text(); v420v=(ROOT/'scripts/validate_v4200_release.py').read_text()
+m=re.search(r'version: str = "(\d+)\.(\d+)\.(\d+)"',config); av=tuple(map(int,m.groups())) if m else (0,0,0)
+check('PLATFORM_CORE_V4201_BACKEND_VERSION',av >= (4,20,1))
+check('PLATFORM_CORE_V4201_ROUTE_MOUNT','external_provider_registry.router' in main and 'external_provider_registry.public_router' in main)
+check('PLATFORM_CORE_V4201_SERVICE_RELEASE','CORE_RELEASE = "4.20.1"' in service)
+check('PLATFORM_CORE_V4201_CONTRACT','sc.core.external-provider-registry.v1' in service)
+check('PLATFORM_CORE_V4201_PREDECESSOR','sc.core.unified-contextual-reasoning-runtime.v1' in service)
+check('PLATFORM_CORE_V4201_API_SURFACE','/v1/providers' in router and '/public/v1/providers' in router)
+check('PLATFORM_CORE_V4201_PROVIDER_CLASSES',all(x in service for x in ['knowledge = "knowledge"','data = "data"','computational = "computational"','geospatial = "geospatial"','event = "event"','intelligence = "intelligence"']))
+check('PLATFORM_CORE_V4201_AUTHORITY_FOUNDATION','ProviderAuthorityScope' in service and 'authority_establishes_truth' in service)
+check('PLATFORM_CORE_V4201_CAPABILITY_FOUNDATION','ProviderCapability' in service and 'output_requires_provenance' in service)
+check('PLATFORM_CORE_V4201_ENDPOINT_CREDENTIAL_BOUNDARY','ProviderEndpoint' in service and 'secret_material_embedded' in service and 'credential_reference' in service)
+check('PLATFORM_CORE_V4201_USAGE_POLICY','ProviderUsagePolicy' in service and 'provider_terms_remain_authoritative' in service)
+check('PLATFORM_CORE_V4201_REGISTRY_SNAPSHOT','ProviderRegistrySnapshot' in service and 'deterministic_registry_fingerprint_sha256' in service)
+check('PLATFORM_CORE_V4201_EPISTEMIC_BOUNDARY',all(x in service for x in ['provider_authority_establishes_truth','provider_output_auto_promotes_evidence','computational_output_auto_promotes_evidence','event_signal_establishes_ground_truth','provider_agreement_establishes_truth']))
+check('PLATFORM_CORE_V4201_MUTATION_BOUNDARY','registry_authorizes_automatic_graph_mutation' in service)
+check('PLATFORM_CORE_V4201_README','v4.20.1 — External Provider Registry Contract' in readme)
+wm=re.search(r'Version: (\d+)\.(\d+)\.(\d+)',wp); wv=tuple(map(int,wm.groups())) if wm else (0,0,0); check('PLATFORM_CORE_V4201_WORDPRESS_VERSION',wv >= (4,20,1))
+tm=re.search(r'Stable tag: (\d+)\.(\d+)\.(\d+)',wpread); tv=tuple(map(int,tm.groups())) if tm else (0,0,0); check('PLATFORM_CORE_V4201_WORDPRESS_STABLE_TAG',tv >= (4,20,1))
+check('PLATFORM_CORE_V4201_SCHEMA',(ROOT/'schemas/sc-core-external-provider-registry-v1.schema.json').exists())
+check('PLATFORM_CORE_V4201_TEST_COVERAGE',(ROOT/'backend/tests/test_external_provider_registry_v4201.py').exists())
+check('PLATFORM_CORE_V4201_V420_FORWARD_COMPATIBILITY','av >= (4,20,0)' in v420v and 'wv >= (4,20,0)' in v420v and 'tv >= (4,20,0)' in v420v)
+check('PLATFORM_CORE_V4201_NO_DB_MIGRATION','database_migration: Literal["none"]' in service)
+print('PLATFORM_CORE_V4201_VALIDATION=PASS')
