@@ -17,10 +17,15 @@ def _int(name: str, default: int) -> int:
     except ValueError:
         return default
 
+
+def _csv(name: str) -> tuple[str, ...]:
+    raw = os.getenv(name, "")
+    return tuple(item.strip() for item in raw.split(",") if item.strip())
+
 @dataclass(frozen=True)
 class Settings:
     app_name: str = "Sustainable Catalyst Platform Core"
-    version: str = "4.20.3"
+    version: str = "4.21.0"
     environment: str = "development"
     database_url: str = "sqlite:///./platform_core.db"
     write_api_key: str = ""
@@ -53,7 +58,7 @@ class Settings:
     live_data_enabled: bool = True
     live_data_ingest_enabled: bool = True
     live_data_strict_free_sources: bool = True
-    live_data_user_agent: str = "SustainableCatalystPlatformCore/3.68.0 (+https://sustainablecatalyst.com/contact/)"
+    live_data_user_agent: str = "SustainableCatalystPlatformCore/4.21.0 (+https://sustainablecatalyst.com/contact/)"
     live_data_timeout_seconds: int = 20
     live_data_max_response_bytes: int = 12582912
     live_data_raw_payload_max_bytes: int = 1048576
@@ -82,6 +87,9 @@ class Settings:
     reliability_worker_lease_seconds: int = 60
     reliability_worker_max_attempts: int = 3
     provider_failover_enabled: bool = True
+    parameterized_profile_scheduler_enabled: bool = False
+    parameterized_profile_scheduler_ids: tuple[str, ...] = ()
+    parameterized_profile_max_per_pass: int = 12
     humanitarian_fabric_enabled: bool = True
     humanitarian_auto_materialize: bool = True
     country_evidence_federation_enabled: bool = True
@@ -331,7 +339,7 @@ class Settings:
             live_data_strict_free_sources=_bool("SC_CORE_LIVE_DATA_STRICT_FREE_SOURCES", True),
             live_data_user_agent=os.getenv(
                 "SC_CORE_LIVE_DATA_USER_AGENT",
-                "SustainableCatalystPlatformCore/3.68.0 (+https://sustainablecatalyst.com/contact/)",
+                "SustainableCatalystPlatformCore/4.21.0 (+https://sustainablecatalyst.com/contact/)",
             ).strip(),
             live_data_timeout_seconds=max(
                 1, min(_int("SC_CORE_LIVE_DATA_TIMEOUT_SECONDS", 20), 120)
@@ -372,6 +380,20 @@ class Settings:
             reliability_worker_lease_seconds=max(5, min(_int("SC_CORE_RELIABILITY_WORKER_LEASE_SECONDS", 60), 3600)),
             reliability_worker_max_attempts=max(1, min(_int("SC_CORE_RELIABILITY_WORKER_MAX_ATTEMPTS", 3), 20)),
             provider_failover_enabled=_bool("SC_CORE_PROVIDER_FAILOVER_ENABLED", True),
+            parameterized_profile_scheduler_enabled=_bool(
+                "SC_CORE_PARAMETERIZED_PROFILE_SCHEDULER_ENABLED",
+                False,
+            ),
+            parameterized_profile_scheduler_ids=_csv(
+                "SC_CORE_PARAMETERIZED_PROFILE_IDS"
+            ),
+            parameterized_profile_max_per_pass=max(
+                1,
+                min(
+                    _int("SC_CORE_PARAMETERIZED_PROFILE_MAX_PER_PASS", 12),
+                    100,
+                ),
+            ),
             humanitarian_fabric_enabled=_bool("SC_CORE_HUMANITARIAN_FABRIC_ENABLED", True),
             humanitarian_auto_materialize=_bool("SC_CORE_HUMANITARIAN_AUTO_MATERIALIZE", True),
             country_evidence_federation_enabled=_bool("SC_CORE_COUNTRY_EVIDENCE_FEDERATION_ENABLED", True),

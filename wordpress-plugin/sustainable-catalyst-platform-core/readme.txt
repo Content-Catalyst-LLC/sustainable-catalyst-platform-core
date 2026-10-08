@@ -53,7 +53,12 @@ Tags: knowledge graph, entity registry, provenance, live data, sustainable catal
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.0
-Stable tag: 4.20.2
+Stable tag: 4.21.0
+
+== 4.21.0 ==
+* Adds Platform Core Parameterized Connector Execution Profiles compatibility.
+* Preserves credential, provenance, source-authority, and non-truth-promotion boundaries.
+* Parameterized scheduling remains disabled by default pending provider smoke certification.
 
 == 4.20.2 ==
 * Adds the Computational Provider Contract for governed Wolfram/Python/R/Julia/SymPy/Haskell/Workbench Native handoffs.

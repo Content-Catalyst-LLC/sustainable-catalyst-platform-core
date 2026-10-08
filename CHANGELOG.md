@@ -1,3 +1,15 @@
+## v4.21.0 — Parameterized Connector Execution Profiles
+- Added governed execution profiles for all 22 periodic parameterized connectors identified by the v4.20.3 production audit.
+- Added scheduled and template modes, deterministic fingerprints, explicit scope, provider-request provenance, and caller-binding contracts.
+- Added safe dynamic parameter resolution for year/date windows and lagged ECMWF forecast cycles.
+- Added internal/public profile discovery APIs, readiness reporting, and explicit profile queue execution.
+- Extended connector scheduling with profile-specific freshness, active-work deduplication, configuration gates, allowlists, and max-per-pass backpressure.
+- Parameterized profile scheduling is disabled by default and must be explicitly enabled after smoke testing.
+- Provider credentials remain deployment settings and are forbidden from durable profile parameters.
+- Manual/search connectors remain manual; the zero-parameter scheduler is preserved.
+- Execution success is not truth certification and does not automatically promote evidence.
+- No database migration.
+
 ## v4.20.2 — Computational Provider Contract
 - Added `sc.core.computational-provider-contract.v1` as the governed cross-engine execution/handoff contract.
 - Added reference computational profiles for Wolfram, Python, R, Julia, SymPy, Haskell, and Workbench Native.

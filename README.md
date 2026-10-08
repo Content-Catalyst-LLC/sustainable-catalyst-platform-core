@@ -2,9 +2,21 @@
 
 Sustainable Catalyst Platform Core is the governed semantic, provenance, research-object, evidence, visual-reasoning, analytical-contract, and cross-product exchange layer of the Sustainable Catalyst platform.
 
-**Current release:** v4.20.3 — Connector Runtime Scheduling & Provider Compatibility Repair
+**Current release:** v4.21.0 — Parameterized Connector Execution Profiles
 
 
+
+## v4.21.0 — Parameterized Connector Execution Profiles
+
+- Adds `sc.core.parameterized-connector-execution-profile.v1`, a governed registry for all 22 non-manual parameterized live-data connectors identified by the v4.20.3 production audit.
+- Adds scheduled and caller-bound template profile modes with explicit scope, provenance, deterministic fingerprints, refresh policy, queue priority, and retry policy.
+- Adds safe dynamic year/date/ECMWF-cycle parameter resolution without persisting provider credentials.
+- Adds `/v1/connector-profiles` and `/public/v1/connector-profiles` discovery surfaces plus internal readiness and queue controls.
+- Extends the v4.20.3 connector scheduler with per-profile scheduling, independent activity lineage, duplicate-work suppression, configuration gating, an execution allowlist, and max-per-pass backpressure.
+- Keeps parameterized profile scheduling disabled by default until production smoke tests explicitly enable it.
+- Preserves manual/search connector boundaries and the existing zero-parameter scheduler.
+- Profile execution success does not establish truth and does not automatically promote observations into evidence.
+- No database migration.
 
 ## v4.20.3 — Connector Runtime Scheduling & Provider Compatibility Repair
 
