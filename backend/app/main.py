@@ -215,6 +215,7 @@ from .routers import (
     cross_source_semantic_reconciliation,
     contextual_hypothesis_competing_explanations,
     semantic_synthesis_research_answer,
+    unified_contextual_reasoning_runtime,
 )
 from app.routers.spark_runtime import router as spark_runtime_router
 
@@ -876,6 +877,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # Platform Core v4.19.0 — Semantic Synthesis & Research Answer Object
     app.include_router(semantic_synthesis_research_answer.router)
     app.include_router(semantic_synthesis_research_answer.public_router)
+
+    # Platform Core v4.20.0 — Unified Contextual Reasoning Runtime
+    app.include_router(unified_contextual_reasoning_runtime.router)
+    app.include_router(unified_contextual_reasoning_runtime.public_router)
     return app
 
 

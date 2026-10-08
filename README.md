@@ -2,9 +2,13 @@
 
 Sustainable Catalyst Platform Core is the governed semantic, provenance, research-object, evidence, visual-reasoning, analytical-contract, and cross-product exchange layer of the Sustainable Catalyst platform.
 
-**Current release:** v4.19.0 — Semantic Synthesis & Research Answer Object
+**Current release:** v4.20.0 — Unified Contextual Reasoning Runtime
 
 
+
+## v4.20.0 — Unified Contextual Reasoning Runtime
+
+Consolidates the v4.11–v4.19 contextual reasoning arc into one governed, auditable runtime. It preserves stage order, predecessor object identity, qualifications, unresolved state, original-language authority, translation lineage, source independence, counterevidence, competing explanations, and v4.19 research-answer dispositions across end-to-end reasoning traces. Runtime completion is not truth certification; no automatic evidence promotion, hypothesis selection, canonical identity merge, or graph mutation is authorized. This release is the planned major Core feature-expansion stopping point for the contextual-reasoning arc.
 
 ## v4.19.0 — Semantic Synthesis & Research Answer Object
 

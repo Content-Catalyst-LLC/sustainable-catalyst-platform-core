@@ -1,3 +1,11 @@
+## v4.20.0 — Unified Contextual Reasoning Runtime
+- Consolidates the governed v4.11–v4.19 contextual reasoning sequence into one auditable runtime contract.
+- Adds nine ordered reasoning-stage records, three end-to-end research traces, runtime provenance, and deterministic runtime snapshots.
+- Preserves qualifications, unresolved state, counterevidence, original-language authority, translation derivation, source independence, competing explanations, and v4.19 answer dispositions.
+- Enforces runtime completion != truth, synthesis answer != evidence record, and no automatic evidence promotion, hypothesis selection, canonical identity merge, or graph mutation.
+- Marks completion of the planned v4 contextual-reasoning arc and recommended Core feature-expansion pause.
+- No database migration.
+
 ## v4.19.0 — Semantic Synthesis & Research Answer Object
 - Adds governed semantic synthesis claims and research-answer objects over v4.18 competing explanations.
 - Preserves counterevidence, unresolved hypotheses, rejected explanations, translation/source-independence lineage, causal/identity qualifications, and deterministic snapshots.

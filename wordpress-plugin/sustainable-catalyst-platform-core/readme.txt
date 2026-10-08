@@ -53,7 +53,12 @@ Tags: knowledge graph, entity registry, provenance, live data, sustainable catal
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.0
-Stable tag: 4.19.0
+Stable tag: 4.20.0
+
+== 4.20.0 ==
+* Adds Unified Contextual Reasoning Runtime over the governed v4.11-v4.19 reasoning arc.
+* Preserves ordered stage lineage, qualifications, unresolved state, counterevidence, original-language authority, translation derivation, source independence, competing explanations, and v4.19 research-answer dispositions.
+* Runtime completion does not establish truth and authorizes no automatic evidence promotion, hypothesis selection, canonical identity merge, or graph mutation.
 
 == 4.15.0 ==
 Adds Contextual Causal Language & Mechanism Intelligence, preserving evidence and epistemic boundaries with no automatic graph mutation.
