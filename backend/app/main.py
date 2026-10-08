@@ -217,6 +217,7 @@ from .routers import (
     semantic_synthesis_research_answer,
     unified_contextual_reasoning_runtime,
     external_provider_registry,
+    computational_provider_contract,
 )
 from app.routers.spark_runtime import router as spark_runtime_router
 
@@ -886,6 +887,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # Platform Core v4.20.1 — External Provider Registry Contract
     app.include_router(external_provider_registry.router)
     app.include_router(external_provider_registry.public_router)
+
+    # Platform Core v4.20.2 — Computational Provider Contract
+    app.include_router(computational_provider_contract.router)
+    app.include_router(computational_provider_contract.public_router)
     return app
 
 

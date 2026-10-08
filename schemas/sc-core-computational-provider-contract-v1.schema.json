@@ -1,0 +1,988 @@
+{
+  "$defs": {
+    "ComputationalAssumptionSet": {
+      "properties": {
+        "assumption_set_id": {
+          "minLength": 3,
+          "title": "Assumption Set Id",
+          "type": "string"
+        },
+        "assumptions": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Assumptions",
+          "type": "array"
+        },
+        "unit_system": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Unit System"
+        },
+        "precision_policy": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Precision Policy"
+        },
+        "tolerance": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tolerance"
+        },
+        "random_seed": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Random Seed"
+        },
+        "assumptions_are_declared_not_inferred": {
+          "const": true,
+          "default": true,
+          "title": "Assumptions Are Declared Not Inferred",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "assumption_set_id"
+      ],
+      "title": "ComputationalAssumptionSet",
+      "type": "object"
+    },
+    "ComputationalCapabilityDeclaration": {
+      "properties": {
+        "capability_id": {
+          "minLength": 3,
+          "title": "Capability Id",
+          "type": "string"
+        },
+        "operation": {
+          "maxLength": 160,
+          "minLength": 2,
+          "title": "Operation",
+          "type": "string"
+        },
+        "engine_kind": {
+          "$ref": "#/$defs/ComputationalEngineKind"
+        },
+        "input_types": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Input Types",
+          "type": "array"
+        },
+        "output_types": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Output Types",
+          "type": "array"
+        },
+        "supports_units": {
+          "default": false,
+          "title": "Supports Units",
+          "type": "boolean"
+        },
+        "supports_exact_arithmetic": {
+          "default": false,
+          "title": "Supports Exact Arithmetic",
+          "type": "boolean"
+        },
+        "supports_seed_control": {
+          "default": false,
+          "title": "Supports Seed Control",
+          "type": "boolean"
+        },
+        "supports_assumptions": {
+          "default": true,
+          "title": "Supports Assumptions",
+          "type": "boolean"
+        },
+        "output_requires_provenance": {
+          "const": true,
+          "default": true,
+          "title": "Output Requires Provenance",
+          "type": "boolean"
+        },
+        "output_is_not_automatically_evidence": {
+          "const": true,
+          "default": true,
+          "title": "Output Is Not Automatically Evidence",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "capability_id",
+        "operation",
+        "engine_kind",
+        "input_types",
+        "output_types"
+      ],
+      "title": "ComputationalCapabilityDeclaration",
+      "type": "object"
+    },
+    "ComputationalComparisonDisposition": {
+      "enum": [
+        "exact-agreement",
+        "tolerance-agreement",
+        "symbolic-equivalence",
+        "discrepancy",
+        "incomparable",
+        "unresolved"
+      ],
+      "title": "ComputationalComparisonDisposition",
+      "type": "string"
+    },
+    "ComputationalEngineKind": {
+      "enum": [
+        "general",
+        "symbolic",
+        "numerical",
+        "statistical",
+        "simulation",
+        "optimization",
+        "functional"
+      ],
+      "title": "ComputationalEngineKind",
+      "type": "string"
+    },
+    "ComputationalExecutionEnvironment": {
+      "properties": {
+        "environment_id": {
+          "minLength": 3,
+          "title": "Environment Id",
+          "type": "string"
+        },
+        "provider_profile_id": {
+          "minLength": 3,
+          "title": "Provider Profile Id",
+          "type": "string"
+        },
+        "runtime_or_service_version": {
+          "minLength": 1,
+          "title": "Runtime Or Service Version",
+          "type": "string"
+        },
+        "package_or_model_versions": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Package Or Model Versions",
+          "type": "object"
+        },
+        "container_or_endpoint_ref": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Container Or Endpoint Ref"
+        },
+        "locale": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Locale"
+        },
+        "timezone": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Timezone"
+        },
+        "determinism_class": {
+          "$ref": "#/$defs/DeterminismClass"
+        },
+        "environment_fingerprint_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Environment Fingerprint Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "environment_id",
+        "provider_profile_id",
+        "runtime_or_service_version",
+        "determinism_class",
+        "environment_fingerprint_sha256"
+      ],
+      "title": "ComputationalExecutionEnvironment",
+      "type": "object"
+    },
+    "ComputationalExecutionHost": {
+      "enum": [
+        "external-service",
+        "workbench",
+        "workspace",
+        "lab",
+        "provider-managed",
+        "caller-managed"
+      ],
+      "title": "ComputationalExecutionHost",
+      "type": "string"
+    },
+    "ComputationalImplementationState": {
+      "enum": [
+        "reference-only",
+        "internal-runtime-reference",
+        "proposed"
+      ],
+      "title": "ComputationalImplementationState",
+      "type": "string"
+    },
+    "ComputationalInputBinding": {
+      "properties": {
+        "input_id": {
+          "minLength": 3,
+          "title": "Input Id",
+          "type": "string"
+        },
+        "object_ref": {
+          "minLength": 3,
+          "title": "Object Ref",
+          "type": "string"
+        },
+        "role": {
+          "maxLength": 100,
+          "minLength": 2,
+          "title": "Role",
+          "type": "string"
+        },
+        "unit": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Unit"
+        },
+        "content_hash": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Content Hash"
+        },
+        "source_provenance_ref": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Provenance Ref"
+        }
+      },
+      "required": [
+        "input_id",
+        "object_ref",
+        "role"
+      ],
+      "title": "ComputationalInputBinding",
+      "type": "object"
+    },
+    "ComputationalProviderPolicy": {
+      "properties": {
+        "policy_id": {
+          "minLength": 3,
+          "title": "Policy Id",
+          "type": "string"
+        },
+        "provider_registry_binding_required_for_external_services": {
+          "const": true,
+          "default": true,
+          "title": "Provider Registry Binding Required For External Services",
+          "type": "boolean"
+        },
+        "execution_occurs_outside_core": {
+          "const": true,
+          "default": true,
+          "title": "Execution Occurs Outside Core",
+          "type": "boolean"
+        },
+        "explicit_capability_match_required": {
+          "const": true,
+          "default": true,
+          "title": "Explicit Capability Match Required",
+          "type": "boolean"
+        },
+        "explicit_assumptions_required": {
+          "const": true,
+          "default": true,
+          "title": "Explicit Assumptions Required",
+          "type": "boolean"
+        },
+        "explicit_environment_required": {
+          "const": true,
+          "default": true,
+          "title": "Explicit Environment Required",
+          "type": "boolean"
+        },
+        "units_and_precision_must_be_preserved": {
+          "const": true,
+          "default": true,
+          "title": "Units And Precision Must Be Preserved",
+          "type": "boolean"
+        },
+        "provenance_required": {
+          "const": true,
+          "default": true,
+          "title": "Provenance Required",
+          "type": "boolean"
+        },
+        "failures_and_partial_results_must_be_preserved": {
+          "const": true,
+          "default": true,
+          "title": "Failures And Partial Results Must Be Preserved",
+          "type": "boolean"
+        },
+        "legacy_analytical_runtime_lineage_preserved": {
+          "const": true,
+          "default": true,
+          "title": "Legacy Analytical Runtime Lineage Preserved",
+          "type": "boolean"
+        },
+        "computational_output_establishes_truth": {
+          "const": false,
+          "default": false,
+          "title": "Computational Output Establishes Truth",
+          "type": "boolean"
+        },
+        "computational_output_auto_promotes_evidence": {
+          "const": false,
+          "default": false,
+          "title": "Computational Output Auto Promotes Evidence",
+          "type": "boolean"
+        },
+        "multi_engine_agreement_establishes_truth": {
+          "const": false,
+          "default": false,
+          "title": "Multi Engine Agreement Establishes Truth",
+          "type": "boolean"
+        },
+        "discrepancy_auto_identifies_faulty_engine": {
+          "const": false,
+          "default": false,
+          "title": "Discrepancy Auto Identifies Faulty Engine",
+          "type": "boolean"
+        },
+        "core_selects_provider_autonomously": {
+          "const": false,
+          "default": false,
+          "title": "Core Selects Provider Autonomously",
+          "type": "boolean"
+        },
+        "core_executes_provider": {
+          "const": false,
+          "default": false,
+          "title": "Core Executes Provider",
+          "type": "boolean"
+        },
+        "contract_authorizes_graph_mutation": {
+          "const": false,
+          "default": false,
+          "title": "Contract Authorizes Graph Mutation",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "policy_id"
+      ],
+      "title": "ComputationalProviderPolicy",
+      "type": "object"
+    },
+    "ComputationalProviderProfile": {
+      "properties": {
+        "profile_id": {
+          "minLength": 3,
+          "title": "Profile Id",
+          "type": "string"
+        },
+        "display_name": {
+          "maxLength": 200,
+          "minLength": 2,
+          "title": "Display Name",
+          "type": "string"
+        },
+        "provider_registry_ref": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Provider Registry Ref"
+        },
+        "registry_binding_state": {
+          "enum": [
+            "registered-reference",
+            "internal-runtime-reference",
+            "proposed"
+          ],
+          "title": "Registry Binding State",
+          "type": "string"
+        },
+        "implementation_state": {
+          "$ref": "#/$defs/ComputationalImplementationState"
+        },
+        "engine_kinds": {
+          "items": {
+            "$ref": "#/$defs/ComputationalEngineKind"
+          },
+          "minItems": 1,
+          "title": "Engine Kinds",
+          "type": "array"
+        },
+        "execution_host": {
+          "$ref": "#/$defs/ComputationalExecutionHost"
+        },
+        "capabilities": {
+          "items": {
+            "$ref": "#/$defs/ComputationalCapabilityDeclaration"
+          },
+          "minItems": 1,
+          "title": "Capabilities",
+          "type": "array"
+        },
+        "runtime_or_service_version": {
+          "maxLength": 120,
+          "minLength": 1,
+          "title": "Runtime Or Service Version",
+          "type": "string"
+        },
+        "reference_profile_only": {
+          "const": true,
+          "default": true,
+          "title": "Reference Profile Only",
+          "type": "boolean"
+        },
+        "connectivity_verified": {
+          "const": false,
+          "default": false,
+          "title": "Connectivity Verified",
+          "type": "boolean"
+        },
+        "execution_authorized_by_core": {
+          "const": false,
+          "default": false,
+          "title": "Execution Authorized By Core",
+          "type": "boolean"
+        },
+        "provider_output_establishes_truth": {
+          "const": false,
+          "default": false,
+          "title": "Provider Output Establishes Truth",
+          "type": "boolean"
+        },
+        "provider_output_auto_promotes_evidence": {
+          "const": false,
+          "default": false,
+          "title": "Provider Output Auto Promotes Evidence",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "profile_id",
+        "display_name",
+        "registry_binding_state",
+        "implementation_state",
+        "engine_kinds",
+        "execution_host",
+        "capabilities",
+        "runtime_or_service_version"
+      ],
+      "title": "ComputationalProviderProfile",
+      "type": "object"
+    },
+    "ComputationalProviderSnapshot": {
+      "properties": {
+        "snapshot_id": {
+          "minLength": 3,
+          "title": "Snapshot Id",
+          "type": "string"
+        },
+        "provider_fingerprints": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Provider Fingerprints",
+          "type": "object"
+        },
+        "request_result_pairs": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Request Result Pairs",
+          "type": "object"
+        },
+        "deterministic_contract_fingerprint_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Deterministic Contract Fingerprint Sha256",
+          "type": "string"
+        },
+        "supersedable": {
+          "const": true,
+          "default": true,
+          "title": "Supersedable",
+          "type": "boolean"
+        },
+        "snapshot_is_not_connectivity_execution_or_truth_certification": {
+          "const": true,
+          "default": true,
+          "title": "Snapshot Is Not Connectivity Execution Or Truth Certification",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "snapshot_id",
+        "provider_fingerprints",
+        "request_result_pairs",
+        "deterministic_contract_fingerprint_sha256"
+      ],
+      "title": "ComputationalProviderSnapshot",
+      "type": "object"
+    },
+    "ComputationalRequestEnvelope": {
+      "properties": {
+        "request_id": {
+          "minLength": 3,
+          "title": "Request Id",
+          "type": "string"
+        },
+        "provider_profile_id": {
+          "minLength": 3,
+          "title": "Provider Profile Id",
+          "type": "string"
+        },
+        "capability_id": {
+          "minLength": 3,
+          "title": "Capability Id",
+          "type": "string"
+        },
+        "operation": {
+          "minLength": 2,
+          "title": "Operation",
+          "type": "string"
+        },
+        "inputs": {
+          "items": {
+            "$ref": "#/$defs/ComputationalInputBinding"
+          },
+          "minItems": 1,
+          "title": "Inputs",
+          "type": "array"
+        },
+        "assumption_set_id": {
+          "title": "Assumption Set Id",
+          "type": "string"
+        },
+        "environment_id": {
+          "title": "Environment Id",
+          "type": "string"
+        },
+        "requested_by_product": {
+          "minLength": 2,
+          "title": "Requested By Product",
+          "type": "string"
+        },
+        "external_execution_ref": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "External Execution Ref"
+        },
+        "reference_fixture_only": {
+          "const": true,
+          "default": true,
+          "title": "Reference Fixture Only",
+          "type": "boolean"
+        },
+        "core_executes_request": {
+          "const": false,
+          "default": false,
+          "title": "Core Executes Request",
+          "type": "boolean"
+        },
+        "request_is_not_evidence": {
+          "const": true,
+          "default": true,
+          "title": "Request Is Not Evidence",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "request_id",
+        "provider_profile_id",
+        "capability_id",
+        "operation",
+        "inputs",
+        "assumption_set_id",
+        "environment_id",
+        "requested_by_product"
+      ],
+      "title": "ComputationalRequestEnvelope",
+      "type": "object"
+    },
+    "ComputationalResultComparison": {
+      "properties": {
+        "comparison_id": {
+          "minLength": 3,
+          "title": "Comparison Id",
+          "type": "string"
+        },
+        "left_result_id": {
+          "minLength": 3,
+          "title": "Left Result Id",
+          "type": "string"
+        },
+        "right_result_id": {
+          "minLength": 3,
+          "title": "Right Result Id",
+          "type": "string"
+        },
+        "disposition": {
+          "$ref": "#/$defs/ComputationalComparisonDisposition"
+        },
+        "basis": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Basis",
+          "type": "array"
+        },
+        "tolerance": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tolerance"
+        },
+        "comparison_is_reference_fixture": {
+          "const": true,
+          "default": true,
+          "title": "Comparison Is Reference Fixture",
+          "type": "boolean"
+        },
+        "agreement_establishes_truth": {
+          "const": false,
+          "default": false,
+          "title": "Agreement Establishes Truth",
+          "type": "boolean"
+        },
+        "discrepancy_establishes_error": {
+          "const": false,
+          "default": false,
+          "title": "Discrepancy Establishes Error",
+          "type": "boolean"
+        },
+        "comparison_auto_selects_winner": {
+          "const": false,
+          "default": false,
+          "title": "Comparison Auto Selects Winner",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "comparison_id",
+        "left_result_id",
+        "right_result_id",
+        "disposition",
+        "basis"
+      ],
+      "title": "ComputationalResultComparison",
+      "type": "object"
+    },
+    "ComputationalResultEnvelope": {
+      "properties": {
+        "result_id": {
+          "minLength": 3,
+          "title": "Result Id",
+          "type": "string"
+        },
+        "request_id": {
+          "minLength": 3,
+          "title": "Request Id",
+          "type": "string"
+        },
+        "provider_profile_id": {
+          "minLength": 3,
+          "title": "Provider Profile Id",
+          "type": "string"
+        },
+        "state": {
+          "$ref": "#/$defs/ComputationalResultState"
+        },
+        "result_payload": {
+          "additionalProperties": true,
+          "title": "Result Payload",
+          "type": "object"
+        },
+        "diagnostics": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Diagnostics",
+          "type": "array"
+        },
+        "artifacts": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Artifacts",
+          "type": "array"
+        },
+        "external_execution_ref": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "External Execution Ref"
+        },
+        "external_execution_performed": {
+          "const": false,
+          "default": false,
+          "title": "External Execution Performed",
+          "type": "boolean"
+        },
+        "reference_fixture_only": {
+          "const": true,
+          "default": true,
+          "title": "Reference Fixture Only",
+          "type": "boolean"
+        },
+        "provenance_complete": {
+          "const": true,
+          "default": true,
+          "title": "Provenance Complete",
+          "type": "boolean"
+        },
+        "result_establishes_truth": {
+          "const": false,
+          "default": false,
+          "title": "Result Establishes Truth",
+          "type": "boolean"
+        },
+        "result_auto_promotes_evidence": {
+          "const": false,
+          "default": false,
+          "title": "Result Auto Promotes Evidence",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "result_id",
+        "request_id",
+        "provider_profile_id",
+        "state",
+        "result_payload"
+      ],
+      "title": "ComputationalResultEnvelope",
+      "type": "object"
+    },
+    "ComputationalResultState": {
+      "enum": [
+        "declared",
+        "completed",
+        "partial",
+        "failed",
+        "cancelled"
+      ],
+      "title": "ComputationalResultState",
+      "type": "string"
+    },
+    "DeterminismClass": {
+      "enum": [
+        "deterministic",
+        "seeded",
+        "environment-dependent",
+        "provider-dependent",
+        "unknown"
+      ],
+      "title": "DeterminismClass",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "release": {
+      "const": "4.20.2",
+      "default": "4.20.2",
+      "title": "Release",
+      "type": "string"
+    },
+    "contract": {
+      "const": "sc.core.computational-provider-contract.v1",
+      "default": "sc.core.computational-provider-contract.v1",
+      "title": "Contract",
+      "type": "string"
+    },
+    "predecessor_contract": {
+      "const": "sc.core.external-provider-registry.v1",
+      "default": "sc.core.external-provider-registry.v1",
+      "title": "Predecessor Contract",
+      "type": "string"
+    },
+    "legacy_analytical_contract": {
+      "const": "sc.core.analytical-runtime-provider.v1",
+      "default": "sc.core.analytical-runtime-provider.v1",
+      "title": "Legacy Analytical Contract",
+      "type": "string"
+    },
+    "policy": {
+      "$ref": "#/$defs/ComputationalProviderPolicy"
+    },
+    "providers": {
+      "items": {
+        "$ref": "#/$defs/ComputationalProviderProfile"
+      },
+      "minItems": 1,
+      "title": "Providers",
+      "type": "array"
+    },
+    "assumption_sets": {
+      "items": {
+        "$ref": "#/$defs/ComputationalAssumptionSet"
+      },
+      "minItems": 1,
+      "title": "Assumption Sets",
+      "type": "array"
+    },
+    "environments": {
+      "items": {
+        "$ref": "#/$defs/ComputationalExecutionEnvironment"
+      },
+      "minItems": 1,
+      "title": "Environments",
+      "type": "array"
+    },
+    "requests": {
+      "items": {
+        "$ref": "#/$defs/ComputationalRequestEnvelope"
+      },
+      "minItems": 1,
+      "title": "Requests",
+      "type": "array"
+    },
+    "results": {
+      "items": {
+        "$ref": "#/$defs/ComputationalResultEnvelope"
+      },
+      "minItems": 1,
+      "title": "Results",
+      "type": "array"
+    },
+    "comparisons": {
+      "items": {
+        "$ref": "#/$defs/ComputationalResultComparison"
+      },
+      "minItems": 1,
+      "title": "Comparisons",
+      "type": "array"
+    },
+    "snapshots": {
+      "items": {
+        "$ref": "#/$defs/ComputationalProviderSnapshot"
+      },
+      "maxItems": 1,
+      "minItems": 1,
+      "title": "Snapshots",
+      "type": "array"
+    },
+    "database_migration": {
+      "const": "none",
+      "default": "none",
+      "title": "Database Migration",
+      "type": "string"
+    }
+  },
+  "required": [
+    "policy",
+    "providers",
+    "assumption_sets",
+    "environments",
+    "requests",
+    "results",
+    "comparisons",
+    "snapshots"
+  ],
+  "title": "ComputationalProviderContractBundle",
+  "type": "object"
+}

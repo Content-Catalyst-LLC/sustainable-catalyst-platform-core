@@ -2,10 +2,17 @@
 
 Sustainable Catalyst Platform Core is the governed semantic, provenance, research-object, evidence, visual-reasoning, analytical-contract, and cross-product exchange layer of the Sustainable Catalyst platform.
 
-**Current release:** v4.20.1 — External Provider Registry Contract
+**Current release:** v4.20.2 — Computational Provider Contract
 
 
+## v4.20.2 — Computational Provider Contract
 
+- Adds a provider-neutral execution/handoff contract for Wolfram, Python, R, Julia, SymPy, Haskell, Workbench Native, and future engines.
+- Governs computational provider profiles, explicit capabilities, assumptions, input bindings, execution environments, request/result envelopes, diagnostics, artifacts, and cross-engine comparisons.
+- Binds external computational services to the v4.20.1 provider registry while preserving internal runtime references separately.
+- Preserves the legacy `sc.core.analytical-runtime-provider.v1` lineage rather than duplicating or replacing it.
+- Explicitly keeps execution outside Core and separates computational agreement/discrepancy from truth, evidence promotion, autonomous provider selection, and graph mutation.
+- No database migration.
 
 ## v4.20.1 — External Provider Registry Contract
 

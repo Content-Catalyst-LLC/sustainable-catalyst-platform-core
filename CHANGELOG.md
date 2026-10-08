@@ -1,3 +1,11 @@
+## v4.20.2 — Computational Provider Contract
+- Added `sc.core.computational-provider-contract.v1` as the governed cross-engine execution/handoff contract.
+- Added reference computational profiles for Wolfram, Python, R, Julia, SymPy, Haskell, and Workbench Native.
+- Added explicit capability, assumption, unit/precision/seed, environment, request/result, comparison, provenance, and deterministic snapshot semantics.
+- Preserved the v3.1 analytical-runtime lineage and v4.20.1 provider-registry identity.
+- Core does not execute providers, select a provider autonomously, treat computational output as evidence/truth, or mutate graphs.
+- No database migration.
+
 ## v4.20.1 — External Provider Registry Contract
 - Adds provider-neutral registry objects for knowledge, data, computational, geospatial, event, and intelligence providers.
 - Adds explicit capability, authority-scope, endpoint, authentication, usage/license, quota/cache, lifecycle, provenance, and registry-snapshot governance.

@@ -1,0 +1,31 @@
+#!/usr/bin/env python3
+from pathlib import Path
+import re
+ROOT=Path(__file__).resolve().parents[1]
+def check(label,cond):
+    if not cond: raise SystemExit(f"{label}=FAIL")
+    print(f"{label}=PASS")
+config=(ROOT/'backend/app/config.py').read_text(); main=(ROOT/'backend/app/main.py').read_text(); service=(ROOT/'backend/app/services/computational_provider_contract.py').read_text(); router=(ROOT/'backend/app/routers/computational_provider_contract.py').read_text(); readme=(ROOT/'README.md').read_text(); wp=(ROOT/'wordpress-plugin/sustainable-catalyst-platform-core/sustainable-catalyst-platform-core.php').read_text(); wpread=(ROOT/'wordpress-plugin/sustainable-catalyst-platform-core/readme.txt').read_text(); v4201=(ROOT/'scripts/validate_v4201_release.py').read_text()
+m=re.search(r'version: str = "(\d+)\.(\d+)\.(\d+)"',config); av=tuple(map(int,m.groups())) if m else (0,0,0)
+check('PLATFORM_CORE_V4202_BACKEND_VERSION',av >= (4,20,2))
+check('PLATFORM_CORE_V4202_ROUTE_MOUNT','computational_provider_contract.router' in main and 'computational_provider_contract.public_router' in main)
+check('PLATFORM_CORE_V4202_SERVICE_RELEASE','CORE_RELEASE = "4.20.2"' in service)
+check('PLATFORM_CORE_V4202_CONTRACT','sc.core.computational-provider-contract.v1' in service)
+check('PLATFORM_CORE_V4202_PREDECESSOR','sc.core.external-provider-registry.v1' in service)
+check('PLATFORM_CORE_V4202_LEGACY_ANALYTICAL_LINEAGE','sc.core.analytical-runtime-provider.v1' in service)
+check('PLATFORM_CORE_V4202_API_SURFACE','/v1/computational-providers' in router and '/public/v1/computational-providers' in router)
+check('PLATFORM_CORE_V4202_PROVIDER_PROFILES',all(x in service for x in ['compute:wolfram','compute:python','compute:r','compute:julia','compute:sympy','compute:haskell','compute:workbench-native']))
+check('PLATFORM_CORE_V4202_REQUEST_RESULT_OBJECTS','ComputationalRequestEnvelope' in service and 'ComputationalResultEnvelope' in service)
+check('PLATFORM_CORE_V4202_ASSUMPTIONS_ENVIRONMENTS','ComputationalAssumptionSet' in service and 'ComputationalExecutionEnvironment' in service)
+check('PLATFORM_CORE_V4202_COMPARISON_OBJECT','ComputationalResultComparison' in service and 'comparison_auto_selects_winner' in service)
+check('PLATFORM_CORE_V4202_EPISTEMIC_BOUNDARY',all(x in service for x in ['computational_output_establishes_truth','computational_output_auto_promotes_evidence','multi_engine_agreement_establishes_truth','discrepancy_auto_identifies_faulty_engine']))
+check('PLATFORM_CORE_V4202_EXECUTION_BOUNDARY','core_executes_provider' in service and 'core_selects_provider_autonomously' in service)
+check('PLATFORM_CORE_V4202_MUTATION_BOUNDARY','contract_authorizes_graph_mutation' in service)
+check('PLATFORM_CORE_V4202_README','v4.20.2 — Computational Provider Contract' in readme)
+wm=re.search(r'Version: (\d+)\.(\d+)\.(\d+)',wp); wv=tuple(map(int,wm.groups())) if wm else (0,0,0); check('PLATFORM_CORE_V4202_WORDPRESS_VERSION',wv >= (4,20,2))
+tm=re.search(r'Stable tag: (\d+)\.(\d+)\.(\d+)',wpread); tv=tuple(map(int,tm.groups())) if tm else (0,0,0); check('PLATFORM_CORE_V4202_WORDPRESS_STABLE_TAG',tv >= (4,20,2))
+check('PLATFORM_CORE_V4202_SCHEMA',(ROOT/'schemas/sc-core-computational-provider-contract-v1.schema.json').exists())
+check('PLATFORM_CORE_V4202_TEST_COVERAGE',(ROOT/'backend/tests/test_computational_provider_contract_v4202.py').exists())
+check('PLATFORM_CORE_V4202_V4201_FORWARD_COMPATIBILITY','av >= (4,20,1)' in v4201 and 'wv >= (4,20,1)' in v4201 and 'tv >= (4,20,1)' in v4201)
+check('PLATFORM_CORE_V4202_NO_DB_MIGRATION','database_migration: Literal["none"]' in service)
+print('PLATFORM_CORE_V4202_VALIDATION=PASS')
