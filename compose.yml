@@ -29,6 +29,55 @@ services:
       retries: 3
       start_period: 30s
 
+
+  connector-worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: sc-core-connector-worker
+    restart: unless-stopped
+
+    env_file:
+      - .env.production
+
+    command:
+      - python
+      - scripts/run_connector_worker.py
+      - --idle-seconds
+      - "2"
+
+    networks:
+      - sc-internal
+
+    depends_on:
+      core:
+        condition: service_healthy
+
+
+  connector-scheduler:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: sc-core-connector-scheduler
+    restart: unless-stopped
+
+    env_file:
+      - .env.production
+
+    command:
+      - python
+      - -m
+      - scripts.run_connector_scheduler
+      - --poll-seconds
+      - "60"
+
+    networks:
+      - sc-internal
+
+    depends_on:
+      core:
+        condition: service_healthy
+
 networks:
   sc-internal:
     external: true

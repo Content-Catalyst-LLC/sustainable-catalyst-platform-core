@@ -59,7 +59,7 @@ class Settings:
     live_data_raw_payload_max_bytes: int = 1048576
     fred_api_key: str = ""
     reliefweb_appname: str = ""
-    hdx_hapi_app_identifier: str = "sustainable-catalyst-platform-core"
+    hdx_hapi_app_identifier: str = ""
     uhri_api_url: str = ""
     un_population_bearer_token: str = ""
     nasa_api_key: str = "DEMO_KEY"
@@ -346,7 +346,7 @@ class Settings:
             reliefweb_appname=os.getenv("SC_CORE_RELIEFWEB_APPNAME", "").strip(),
             hdx_hapi_app_identifier=os.getenv(
                 "SC_CORE_HDX_HAPI_APP_IDENTIFIER",
-                "sustainable-catalyst-platform-core",
+                "",
             ).strip(),
             uhri_api_url=os.getenv("SC_CORE_UHRI_API_URL", "").strip(),
             un_population_bearer_token=os.getenv(

@@ -1142,7 +1142,7 @@ class NasaApodAdapter(ConnectorAdapter):
     adapter_id = "nasa_apod_v1"
 
     def build_request(self, connector, parameters, settings) -> ConnectorRequest:
-        params: dict[str, Any] = {"api_key": settings.nasa_api_key, "thumbs": "true"}
+        params: dict[str, Any] = {"api_key": settings.nasa_api_key}
         for key in ("date", "start_date", "end_date"):
             if parameters.get(key): params[key] = str(parameters[key])
         if parameters.get("count") is not None:

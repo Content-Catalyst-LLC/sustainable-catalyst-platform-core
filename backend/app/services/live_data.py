@@ -153,6 +153,13 @@ class LiveDataRuntime:
             return "adapter_missing"
         if connector.id == "fred.series-observations" and not self.settings.fred_api_key:
             return "credential_required"
+        if connector.id == "ocha.hdx-hapi":
+            hdx_identifier = self.settings.hdx_hapi_app_identifier.strip()
+            if (
+                not hdx_identifier
+                or hdx_identifier == "sustainable-catalyst-platform-core"
+            ):
+                return "registration_required"
         if connector.id == "ocha.reliefweb-reports" and not self.settings.reliefweb_appname:
             return "registration_required"
         if connector.id == "ohchr.uhri-recommendations" and not self.settings.uhri_api_url:

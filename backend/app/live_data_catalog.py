@@ -523,7 +523,7 @@ DEFAULT_LIVE_DATA_CONNECTORS: list[dict] = [
     {
         "id": "nasa.apod", "source_id": "nasa-open-apis", "name": "NASA Astronomy Picture of the Day", "domain": "space_science",
         "description": "Public NASA astronomy imagery metadata with explanation, media type, and copyright context.", "adapter": "nasa_apod_v1",
-        "base_url": "https://api.nasa.gov/planetary/apod", "refresh_policy": "P1D", "freshness_window_seconds": 172800,
+        "base_url": "https://science.nasa.gov/wp-json/wp/v2/apod-basic/", "refresh_policy": "P1D", "freshness_window_seconds": 172800,
         "capabilities": ["astronomy_image", "public_education", "daily_feed"], "configuration": {"credential_env": "SC_CORE_NASA_API_KEY"},
     },
     {
