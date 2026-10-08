@@ -213,6 +213,7 @@ from .routers import (
     contextual_causal_language_mechanism,
     narrative_framing_perspective,
     cross_source_semantic_reconciliation,
+    contextual_hypothesis_competing_explanations,
 )
 from app.routers.spark_runtime import router as spark_runtime_router
 
@@ -866,6 +867,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # Platform Core v4.17.0 — Cross-Source Semantic Reconciliation Engine
     app.include_router(cross_source_semantic_reconciliation.router)
     app.include_router(cross_source_semantic_reconciliation.public_router)
+
+    # Platform Core v4.18.0 — Contextual Hypothesis & Competing Explanation Objects
+    app.include_router(contextual_hypothesis_competing_explanations.router)
+    app.include_router(contextual_hypothesis_competing_explanations.public_router)
     return app
 
 

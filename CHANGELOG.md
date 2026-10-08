@@ -1,5 +1,14 @@
 # Changelog
 
+## 4.18.0
+- Adds Contextual Hypothesis & Competing Explanation Objects over the v4.17 reconciliation layer.
+- Adds governed hypotheses, support/challenge/qualification evidence positions, pairwise explanation comparisons, competing-explanation sets, provenance, and reproducible snapshots.
+- Preserves source independence, original-language authority, causal-identification limits, identity uncertainty, scope/temporal ambiguity, and unresolved cross-source conflicts.
+- Demonstrates four explanation sets: emissions discrepancy, ministry/agency identity, governance terminology, and Chinese/English cost-claim source independence.
+- Enforces hypothesis != truth, explanatory fit != probability, support count != truth, challenge count != falsity, retained != winner, and no automatic graph mutation.
+- No database migration.
+- Makes v4.17 release validation forward-compatible with later 4.x application versions.
+
 ## 4.17.0
 - Adds Cross-Source Semantic Reconciliation Engine over the v4.16 narrative/framing layer.
 - Adds governed reconciliation anchors, semantic correspondence candidates, conflicts, review decisions, clusters, provenance, and reproducible snapshots.

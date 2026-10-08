@@ -2,9 +2,13 @@
 
 Sustainable Catalyst Platform Core is the governed semantic, provenance, research-object, evidence, visual-reasoning, analytical-contract, and cross-product exchange layer of the Sustainable Catalyst platform.
 
-**Current release:** v4.17.0 — Cross-Source Semantic Reconciliation Engine
+**Current release:** v4.18.0 — Contextual Hypothesis & Competing Explanation Objects
 
 
+
+## v4.18.0 — Contextual Hypothesis & Competing Explanation Objects
+
+Adds governed contextual hypotheses, evidence positions, pairwise explanation comparisons, competing-explanation sets, provenance, and reproducible snapshots over v4.17 cross-source reconciliation. It preserves multiple live explanations for conflicting or incomplete source contexts, explicitly separates supporting, challenging, qualifying, unresolved, and non-independent evidence positions, carries forward causal-identification and identity uncertainty, and allows source-lineage constraints to reject an explanation without turning that rejection into a general truth verdict. Explanatory-fit scores are advisory metadata, not probabilities, evidence weights, or truth values; retained hypotheses are not automatically selected winners and no graph mutation occurs.
 
 ## v4.17.0 — Cross-Source Semantic Reconciliation Engine
 
