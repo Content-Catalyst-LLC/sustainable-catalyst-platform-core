@@ -212,6 +212,7 @@ from .routers import (
     evidence_context_integration,
     contextual_causal_language_mechanism,
     narrative_framing_perspective,
+    cross_source_semantic_reconciliation,
 )
 from app.routers.spark_runtime import router as spark_runtime_router
 
@@ -861,6 +862,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # Platform Core v4.16.0 — Narrative, Framing & Perspective Intelligence
     app.include_router(narrative_framing_perspective.router)
     app.include_router(narrative_framing_perspective.public_router)
+
+    # Platform Core v4.17.0 — Cross-Source Semantic Reconciliation Engine
+    app.include_router(cross_source_semantic_reconciliation.router)
+    app.include_router(cross_source_semantic_reconciliation.public_router)
     return app
 
 

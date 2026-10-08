@@ -1,5 +1,14 @@
 # Changelog
 
+## 4.17.0
+- Adds Cross-Source Semantic Reconciliation Engine over the v4.16 narrative/framing layer.
+- Adds governed reconciliation anchors, semantic correspondence candidates, conflicts, review decisions, clusters, provenance, and reproducible snapshots.
+- Reconciles claim families, actor-continuity candidates, culturally conditioned terminology, temporal scope, spatial deictic grounding, translation lineage, and source-independence constraints.
+- Preserves strict claim conflicts, direct-vs-total scope divergence, modality/temporal differences, unresolved actor identity, cultural semantic divergence, and original-language authority.
+- Enforces reconciliation != canonicalization, score != truth/identity/equivalence, derived translation != independent source, and no automatic graph mutation.
+- No database migration.
+- Makes v4.16 release validation forward-compatible with later 4.x application versions.
+
 ## 4.16.0
 - Adds Narrative, Framing & Perspective Intelligence over the v4.15 causal-context layer.
 - Adds source perspectives, framing signals, narrative frames, cross-perspective comparisons, framing assessments, provenance, and reproducible snapshots.

@@ -2,9 +2,13 @@
 
 Sustainable Catalyst Platform Core is the governed semantic, provenance, research-object, evidence, visual-reasoning, analytical-contract, and cross-product exchange layer of the Sustainable Catalyst platform.
 
-**Current release:** v4.16.0 — Narrative, Framing & Perspective Intelligence
+**Current release:** v4.17.0 — Cross-Source Semantic Reconciliation Engine
 
 
+
+## v4.17.0 — Cross-Source Semantic Reconciliation Engine
+
+Adds governed cross-source semantic anchors, correspondence candidates, explicit reconciliation conflicts, review decisions, semantic clusters, provenance, and reproducible snapshots. It reconciles claims, actor references, terminology, temporal scope, spatial/deictic references, multilingual variants, source-independence lineage, and framing context while preserving contradictions, scope/modality differences, unresolved identity, original-language authority, derived translations, and evidence/causal boundaries. Reconciliation is advisory alignment rather than canonicalization: scores do not establish truth, identity, equivalence, or graph facts, and no automatic graph mutation occurs.
 
 ## v4.16.0 — Narrative, Framing & Perspective Intelligence
 
