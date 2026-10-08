@@ -43,3 +43,8 @@ wordpress-plugin/*.zip
 # Operational/release helpers belong under scripts/ or deployment/, not repository root.
 /*.sh
 /*.py
+
+# Local production repair artifacts
+.gateway-test.key
+*.before-v*
+compose.yml.before-*
