@@ -2,8 +2,22 @@
 
 Sustainable Catalyst Platform Core is the governed semantic, provenance, research-object, evidence, visual-reasoning, analytical-contract, and cross-product exchange layer of the Sustainable Catalyst platform.
 
-**Current release:** v4.20.2 — Computational Provider Contract
+**Current release:** v4.20.3 — Connector Runtime Scheduling & Provider Compatibility Repair
 
+
+
+## v4.20.3 — Connector Runtime Scheduling & Provider Compatibility Repair
+
+- Adds the durable connector worker and automatic connector scheduler production services.
+- Schedules only enabled, configured, zero-parameter connectors whose refresh windows are due.
+- Preserves manual and parameterized connector boundaries rather than issuing invalid empty requests.
+- Adds duplicate active-work suppression and provider freshness-aware scheduling.
+- Migrates NASA APOD from the retired legacy API endpoint to the current NASA Science endpoint.
+- Correctly treats HDX HAPI as registration-required until a valid generated application identifier is configured.
+- Prevents the legacy Sustainable Catalyst HDX placeholder from being treated as valid registration.
+- Preserves retry and dead-letter lineage for failed upstream execution attempts.
+- Production-certified with Core API, connector worker, and connector scheduler operating concurrently.
+- No database migration.
 
 ## v4.20.2 — Computational Provider Contract
 
