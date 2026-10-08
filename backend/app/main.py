@@ -211,6 +211,7 @@ from .routers import (
     claim_alignment_agreement_contradiction,
     evidence_context_integration,
     contextual_causal_language_mechanism,
+    narrative_framing_perspective,
 )
 from app.routers.spark_runtime import router as spark_runtime_router
 
@@ -856,6 +857,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # Platform Core v4.15.0 — Contextual Causal Language & Mechanism Intelligence
     app.include_router(contextual_causal_language_mechanism.router)
     app.include_router(contextual_causal_language_mechanism.public_router)
+
+    # Platform Core v4.16.0 — Narrative, Framing & Perspective Intelligence
+    app.include_router(narrative_framing_perspective.router)
+    app.include_router(narrative_framing_perspective.public_router)
     return app
 
 

@@ -1,5 +1,13 @@
 # Changelog
 
+## 4.16.0
+- Adds Narrative, Framing & Perspective Intelligence over the v4.15 causal-context layer.
+- Adds source perspectives, framing signals, narrative frames, cross-perspective comparisons, framing assessments, provenance, and reproducible snapshots.
+- Preserves modality, scope, causal uncertainty, evidence conflict, original-language authority, translation lineage, qualifications, and unresolved context.
+- Enforces framing != truth, emphasis != manipulation, omission != deception, perspective != motive, and framing score != bias or credibility.
+- No database migration or automatic graph mutation.
+- Makes v4.15 release validation forward-compatible with later 4.x application versions.
+
 ## 4.15.0
 - Adds Contextual Causal Language & Mechanism Intelligence over the v4.14 Evidence-Context bridge.
 - Adds causal-language signals, mechanism hypotheses, intervention contexts, counterfactual contexts, reviewed causal assessments, provenance, and reproducible snapshots.

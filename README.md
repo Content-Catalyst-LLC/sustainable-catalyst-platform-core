@@ -2,9 +2,13 @@
 
 Sustainable Catalyst Platform Core is the governed semantic, provenance, research-object, evidence, visual-reasoning, analytical-contract, and cross-product exchange layer of the Sustainable Catalyst platform.
 
-**Current release:** v4.15.0 — Contextual Causal Language & Mechanism Intelligence
+**Current release:** v4.16.0 — Narrative, Framing & Perspective Intelligence
 
 
+
+## v4.16.0 — Narrative, Framing & Perspective Intelligence
+
+Adds governed source perspectives, framing signals, narrative frames, cross-perspective comparisons, reviewed framing assessments, provenance, and reproducible snapshots. It can describe how sources foreground outcomes, benefits, uncertainty, scope, responsibility, accountability, urgency, and mechanisms while explicitly separating framing from truth, credibility, ideological classification, motive inference, manipulation, deception, causal proof, or evidence validity. Original-language authority and translation derivation remain explicit, and no graph mutation occurs.
 
 ## v4.15.0 — Contextual Causal Language & Mechanism Intelligence
 

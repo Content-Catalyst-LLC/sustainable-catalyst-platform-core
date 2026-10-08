@@ -53,7 +53,7 @@ Tags: knowledge graph, entity registry, provenance, live data, sustainable catal
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.0
-Stable tag: 4.15.0
+Stable tag: 4.16.0
 
 == 4.15.0 ==
 Adds Contextual Causal Language & Mechanism Intelligence, preserving evidence and epistemic boundaries with no automatic graph mutation.
