@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from app.config import Settings
+
 from pathlib import Path
 
 from app.migrations import MIGRATIONS
@@ -24,7 +26,7 @@ def _public_key(client, write_headers):
 def test_v2270_migration_health_meta_and_seeded_contracts(client):
     assert any(version == '0030' for version, _ in MIGRATIONS)
     health = client.get('/health').json()
-    assert health['version'] == '2.35.0'
+    assert health['version'] == Settings().version
     assert health['scientific_object_storage_processing_adapter_fabric'] is True
     meta = client.get('/v1/meta').json()
     for capability in {

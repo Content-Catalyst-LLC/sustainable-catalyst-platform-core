@@ -20,7 +20,7 @@ def test_contract_boundary_and_reference_runtime():
     doc = contract_document()
     assert doc["release"] == "3.22.0"
     assert doc["contract"] == CONTRACT_VERSION
-    assert doc["reference_runtime"]["provider_version"] == "0.2.0"
+    assert doc["reference_runtime"]["provider_version"] == "0.3.0"
     assert doc["boundaries"]["core_executes_arbitrary_source"] is False
     assert "execution_result" in doc["object_types"]
 

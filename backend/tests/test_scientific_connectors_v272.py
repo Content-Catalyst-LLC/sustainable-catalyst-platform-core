@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from app.config import Settings
+
 import httpx
 
 from app.connectors.adapters import ADAPTERS
@@ -107,7 +109,7 @@ def test_registration_gate_and_read_only_adql(client, write_headers):
 
 def test_health_meta_stats_and_public_science_api(client, write_headers):
     health=client.get('/health').json()
-    assert health['version'] == '2.35.0'
+    assert health['version'] == Settings().version
     assert health['scientific_data_connector_pack'] is True
     meta=client.get('/v1/meta').json()
     assert 'scientific_data_record_store' in meta['capabilities']
@@ -135,7 +137,8 @@ def test_public_sdk_exposes_scientific_methods():
 def test_apod_noaa_and_ecmwf_adapters(client, write_headers):
     async def handler(request: httpx.Request) -> httpx.Response:
         path = request.url.path
-        if path.endswith('/planetary/apod'):
+        if request.url.host == 'science.nasa.gov' and path == '/wp-json/wp/v2/apod-basic/':
+            assert request.url.params['date'] == '2026-07-14'
             return httpx.Response(200, json={
                 'date': '2026-07-14',
                 'title': 'A Test Nebula',

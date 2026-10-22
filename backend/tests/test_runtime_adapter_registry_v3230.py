@@ -28,8 +28,11 @@ def test_julia_reference_adapter_is_registered():
     adapter = REGISTRY.get("adapter:catalyst-julia-runtime")
     assert adapter is not None
     assert adapter.runtime.runtime_id == "catalyst-julia-runtime"
-    assert adapter.runtime.provider_version == "0.2.0"
-    assert adapter.status == "contract-only"
+    assert adapter.runtime.provider_version == "0.3.0"
+    assert adapter.status == "registered"
+    reference = contract_document()["reference_adapter"]
+    assert reference["provider_version"] == adapter.runtime.provider_version
+    assert reference["status"] == adapter.status
 
 
 def test_julia_capabilities_include_v020_allowlisted_operations():
@@ -113,7 +116,12 @@ def test_legacy_analytical_provider_bridge_preserves_capability_metadata():
 
 
 def test_contract_only_adapters_can_be_excluded_from_resolution():
-    candidates = REGISTRY.resolve(
-        CapabilityRequirement(operations=["sum"], include_contract_only=False)
-    )
-    assert candidates == []
+    from copy import deepcopy
+
+    registry = RuntimeAdapterRegistry()
+    adapter = deepcopy(REGISTRY.get("adapter:catalyst-julia-runtime"))
+    adapter.status = "contract-only"
+    registry.register(adapter)
+    requirement = CapabilityRequirement(operations=["sum"], include_contract_only=True)
+    assert len(registry.resolve(requirement)) == 1
+    assert registry.resolve(requirement.model_copy(update={"include_contract_only": False})) == []

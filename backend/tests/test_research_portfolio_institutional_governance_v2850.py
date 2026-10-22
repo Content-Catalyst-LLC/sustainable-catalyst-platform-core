@@ -6,7 +6,7 @@ def client(tmp_path): return TestClient(create_app(Settings(database_url="sqlite
 def program(c,key,visibility="public"):
     r=c.post("/v1/research/programs",json={"data":{"program_key":key,"title":key.replace("-"," ").title(),"visibility":visibility}}); assert r.status_code==200,r.text; return r.json()["id"]
 def portfolio(c,visibility="public"):
-    r=c.post("/v1/research/portfolios",json={"data":{"portfolio_key":"institutional-research","title":"Institutional Research Portfolio","visibility":visibility,"charter_text":"Govern multiple research programs with explicit institutional provenance."}}); assert r.status_code==200,r.text; return r.json()["id"]
+    r=c.post("/v1/research/portfolios",json={"data":{"portfolio_key":"institutional-research-"+visibility,"title":"Institutional Research Portfolio","visibility":visibility,"charter_text":"Govern multiple research programs with explicit institutional provenance."}}); assert r.status_code==200,r.text; return r.json()["id"]
 def test_readiness(tmp_path):
     c=client(tmp_path); d=c.get("/v1/research/portfolios/readiness").json(); assert d["release"]=="2.85.0"; assert d["migration_0089_applied"] is True; assert d["research_portfolio_registry_by_core"] is True; assert d["descriptive_portfolio_map_by_core"] is True; assert d["prioritize_programs_by_core"] is False; assert d["allocate_resources_by_core"] is False; assert d["infer_truth_by_core"] is False; c.close()
 def test_membership_themes_objectives_resources_and_risks(tmp_path):
