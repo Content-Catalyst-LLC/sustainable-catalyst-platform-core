@@ -13,7 +13,7 @@ def app_client(td, **kwargs):
 
 def test_readiness_and_migration_0022():
     with TemporaryDirectory() as td:
-        app,c=app_client(td); b=c.get('/v1/operations/readiness').json(); assert b['release']=='2.35.0' and b['migration_0022_applied'] and b['automatic_rollback_enabled'] is False
+        app,c=app_client(td); b=c.get('/v1/operations/readiness').json(); assert b['release']==Settings().version and b['migration_0022_applied'] and b['automatic_rollback_enabled'] is False
 
 def test_incident_idempotency_and_non_public_visibility():
     with TemporaryDirectory() as td:

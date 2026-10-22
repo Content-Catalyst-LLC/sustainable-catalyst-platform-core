@@ -1,3 +1,5 @@
+
+from app.config import Settings
 from datetime import datetime, timezone, timedelta
 
 from app.models import LiveDataObservation
@@ -17,9 +19,9 @@ def post_condition(client, headers, **overrides):
     return r.json()
 
 def test_release_and_readiness(client):
-    assert client.get('/health').json()['version']=='2.35.0'
+    assert client.get('/health').json()['version']==Settings().version
     r=client.get('/v1/humanitarian/readiness'); assert r.status_code==200
-    body=r.json(); assert body['release']=='2.35.0'; assert body['migration_0014_applied'] is True
+    body=r.json(); assert body['release']==Settings().version; assert body['migration_0014_applied'] is True
     assert body['structured_source_materialization_only'] is True
     assert body['reliefweb_report_metadata_promoted_to_operational_claim'] is False
     assert body['synthetic_severity_scoring'] is False

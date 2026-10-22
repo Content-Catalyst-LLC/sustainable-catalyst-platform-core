@@ -15,10 +15,10 @@ def app_client(tmp, **kw):
 def test_health_and_readiness_expose_observability():
     with TemporaryDirectory() as td:
         app,c=app_client(td)
-        assert c.get('/health').json()['version']=='2.35.0'
+        assert c.get('/health').json()['version']==Settings().version
         assert c.get('/health').json()['observability_slo_production_operations'] is True
         r=c.get('/v1/observability/readiness'); assert r.status_code==200
-        b=r.json(); assert b['release']=='2.35.0' and b['migration_0021_applied'] is True and b['external_monitoring_provider_required'] is False
+        b=r.json(); assert b['release']==Settings().version and b['migration_0021_applied'] is True and b['external_monitoring_provider_required'] is False
 
 def test_request_metrics_are_recorded_without_query_strings():
     with TemporaryDirectory() as td:
