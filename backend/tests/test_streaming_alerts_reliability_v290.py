@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from app.config import Settings
+
 from datetime import datetime, timedelta, timezone
 
 from app.models import AlertRule, LiveDataConnector, LiveDataObservation, StreamEvent
