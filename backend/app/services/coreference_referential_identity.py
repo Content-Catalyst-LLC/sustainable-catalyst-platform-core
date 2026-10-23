@@ -375,6 +375,10 @@ class ReferentialIdentitySnapshot(BaseModel):
         return canonical_sha256(self)
 
 
+# Preserve the predecessor discourse contract and stable reference IDs while
+# assembling candidate referents, links, interpretations and provenance.
+# The validator rejects missing/duplicate references; a well-formed bundle
+# is not evidence that an interpretation is factually correct.
 class CoreferenceReferentialIdentityBundle(BaseModel):
     release: Literal["4.3.0"] = "4.3.0"
     contract: Literal[CONTRACT_VERSION] = CONTRACT_VERSION
