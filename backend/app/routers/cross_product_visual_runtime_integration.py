@@ -14,6 +14,10 @@ public_router = APIRouter(prefix="/api/v1/visual-runtime/integrations", tags=["U
 class Payload(BaseModel):
     data: dict[str, Any] = Field(default_factory=dict)
 
+# This API records declared cross-product visual bindings. It does not render
+# specialist visualizations, execute scientific work or synchronize source
+# objects; callers must retain authorization and provenance in the owning
+# product before writing a reference here.
 def enabled(request: Request):
     if not request.app.state.settings.cross_product_visual_runtime_integration_enabled:
         raise HTTPException(503, "Cross-Product Visual Runtime Integration is disabled.")

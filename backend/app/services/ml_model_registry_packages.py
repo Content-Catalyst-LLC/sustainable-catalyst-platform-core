@@ -267,6 +267,10 @@ class MLReproducibleModelPackage(BaseModel):
         return canonical_sha256(self)
 
 
+# A package joins model, training, evaluation, explanation, representation and
+# inference lineage into one referentially consistent record. Validation
+# checks declared IDs/fingerprints; it does not rerun training, calibrate a
+# model, or establish independent scientific validity.
 class MLModelRegistryPackageBundle(BaseModel):
     ml_model_bundle: MLModelBundle
     training_lineage_bundle: MLTrainingLineageBundle
