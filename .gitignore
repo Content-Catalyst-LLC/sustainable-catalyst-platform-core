@@ -48,3 +48,9 @@ wordpress-plugin/*.zip
 .gateway-test.key
 *.before-v*
 compose.yml.before-*
+
+# Private development activation settings
+.env.dev
+
+# Permit only the credential-free development example
+!.env.dev.example
