@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Generator
+import hmac
 
 from fastapi import Header, HTTPException, Request, status
 from sqlalchemy.orm import Session
@@ -10,9 +11,14 @@ def get_session(request: Request) -> Generator[Session, None, None]:
     yield from request.app.state.database.session()
 
 
-def require_read(request: Request) -> None:
+def require_read(request: Request,
+    x_sc_api_key: str | None = Header(default=None, alias="X-SC-API-Key"),
+) -> None:
     settings = request.app.state.settings
     if not settings.public_reads:
+        expected = settings.write_api_key
+        if expected and isinstance(x_sc_api_key, str) and hmac.compare_digest(x_sc_api_key.encode(), expected.encode()):
+            return
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Public reads are disabled.",
