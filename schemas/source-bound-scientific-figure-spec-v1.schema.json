@@ -1,0 +1,538 @@
+{
+  "$defs": {
+    "Edge": {
+      "additionalProperties": false,
+      "properties": {
+        "source": {
+          "title": "Source",
+          "type": "string"
+        },
+        "target": {
+          "title": "Target",
+          "type": "string"
+        },
+        "label": {
+          "maxLength": 160,
+          "minLength": 1,
+          "title": "Label",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source",
+        "target",
+        "label"
+      ],
+      "title": "Edge",
+      "type": "object"
+    },
+    "Node": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[A-Za-z0-9_-]{1,60}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "label": {
+          "maxLength": 140,
+          "minLength": 1,
+          "title": "Label",
+          "type": "string"
+        },
+        "detail": {
+          "maxLength": 600,
+          "minLength": 1,
+          "title": "Detail",
+          "type": "string"
+        },
+        "source_ids": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 20,
+          "title": "Source Ids",
+          "type": "array"
+        },
+        "blockers": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 20,
+          "title": "Blockers",
+          "type": "array"
+        },
+        "disposition": {
+          "default": "unreviewed",
+          "enum": [
+            "unreviewed",
+            "positive",
+            "null",
+            "adverse",
+            "inconclusive"
+          ],
+          "title": "Disposition",
+          "type": "string"
+        },
+        "reviewer_ref": {
+          "anyOf": [
+            {
+              "maxLength": 300,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reviewer Ref"
+        }
+      },
+      "required": [
+        "id",
+        "label",
+        "detail"
+      ],
+      "title": "Node",
+      "type": "object"
+    },
+    "Panel": {
+      "additionalProperties": false,
+      "properties": {
+        "label": {
+          "maxLength": 160,
+          "minLength": 1,
+          "title": "Label",
+          "type": "string"
+        },
+        "source_id": {
+          "title": "Source Id",
+          "type": "string"
+        },
+        "material": {
+          "maxLength": 160,
+          "minLength": 1,
+          "title": "Material",
+          "type": "string"
+        },
+        "time_window": {
+          "maxLength": 160,
+          "minLength": 1,
+          "title": "Time Window",
+          "type": "string"
+        },
+        "denominator": {
+          "maxLength": 240,
+          "minLength": 1,
+          "title": "Denominator",
+          "type": "string"
+        },
+        "endpoint": {
+          "enum": [
+            "potential",
+            "gross-estimate",
+            "qualitative-response",
+            "transport-fraction"
+          ],
+          "title": "Endpoint",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Value"
+        },
+        "value_qualifier": {
+          "default": "estimate",
+          "enum": [
+            "estimate",
+            "up-to"
+          ],
+          "title": "Value Qualifier",
+          "type": "string"
+        },
+        "lower": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Lower"
+        },
+        "upper": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Upper"
+        },
+        "plus_minus": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Plus Minus"
+        },
+        "uncertainty_type": {
+          "maxLength": 120,
+          "minLength": 1,
+          "title": "Uncertainty Type",
+          "type": "string"
+        },
+        "unit": {
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Unit",
+          "type": "string"
+        },
+        "finding": {
+          "maxLength": 700,
+          "minLength": 1,
+          "title": "Finding",
+          "type": "string"
+        }
+      },
+      "required": [
+        "label",
+        "source_id",
+        "material",
+        "time_window",
+        "denominator",
+        "endpoint",
+        "uncertainty_type",
+        "unit",
+        "finding"
+      ],
+      "title": "Panel",
+      "type": "object"
+    },
+    "ProtocolRow": {
+      "additionalProperties": false,
+      "properties": {
+        "domain": {
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Domain",
+          "type": "string"
+        },
+        "measurements": {
+          "maxLength": 700,
+          "minLength": 1,
+          "title": "Measurements",
+          "type": "string"
+        },
+        "frequency": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Frequency",
+          "type": "string"
+        },
+        "responsible_authority": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Responsible Authority",
+          "type": "string"
+        },
+        "reference_methods": {
+          "maxLength": 400,
+          "minLength": 1,
+          "title": "Reference Methods",
+          "type": "string"
+        },
+        "missing_data_rule": {
+          "maxLength": 400,
+          "minLength": 1,
+          "title": "Missing Data Rule",
+          "type": "string"
+        },
+        "protective_stop_rule": {
+          "maxLength": 400,
+          "minLength": 1,
+          "title": "Protective Stop Rule",
+          "type": "string"
+        },
+        "reporting_status": {
+          "enum": [
+            "proposed",
+            "approved",
+            "in-progress",
+            "complete",
+            "stopped"
+          ],
+          "title": "Reporting Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "domain",
+        "measurements",
+        "frequency",
+        "responsible_authority",
+        "reference_methods",
+        "missing_data_rule",
+        "protective_stop_rule",
+        "reporting_status"
+      ],
+      "title": "ProtocolRow",
+      "type": "object"
+    },
+    "Source": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "maxLength": 160,
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "citation": {
+          "maxLength": 1000,
+          "minLength": 1,
+          "title": "Citation",
+          "type": "string"
+        },
+        "uri": {
+          "maxLength": 2000,
+          "pattern": "^https://[^\\s]+$",
+          "title": "Uri",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        },
+        "source_kind": {
+          "enum": [
+            "literature-derived",
+            "official-observed",
+            "modeled",
+            "simulation",
+            "user-entered",
+            "conceptual",
+            "field-observed",
+            "unquantified"
+          ],
+          "title": "Source Kind",
+          "type": "string"
+        },
+        "locator": {
+          "maxLength": 300,
+          "minLength": 1,
+          "title": "Locator",
+          "type": "string"
+        },
+        "review": {
+          "enum": [
+            "pending",
+            "human-reviewed"
+          ],
+          "title": "Review",
+          "type": "string"
+        },
+        "review_ref": {
+          "anyOf": [
+            {
+              "maxLength": 300,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Review Ref"
+        },
+        "rights_ref": {
+          "maxLength": 1000,
+          "minLength": 1,
+          "title": "Rights Ref",
+          "type": "string"
+        },
+        "crs": {
+          "anyOf": [
+            {
+              "maxLength": 80,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Crs"
+        },
+        "scale_denominator": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Scale Denominator"
+        },
+        "data_version": {
+          "anyOf": [
+            {
+              "maxLength": 160,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Data Version"
+        }
+      },
+      "required": [
+        "id",
+        "citation",
+        "uri",
+        "sha256",
+        "source_kind",
+        "locator",
+        "review",
+        "rights_ref"
+      ],
+      "title": "Source",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "title": {
+      "maxLength": 160,
+      "minLength": 1,
+      "title": "Title",
+      "type": "string"
+    },
+    "description": {
+      "maxLength": 1000,
+      "minLength": 1,
+      "title": "Description",
+      "type": "string"
+    },
+    "project_id": {
+      "maxLength": 160,
+      "minLength": 1,
+      "title": "Project Id",
+      "type": "string"
+    },
+    "revision": {
+      "minimum": 1,
+      "title": "Revision",
+      "type": "integer"
+    },
+    "family": {
+      "enum": [
+        "evidence-comparison",
+        "denominator-ranges",
+        "attribution-process",
+        "screening-workflow",
+        "evidence-gates",
+        "protocol-matrix"
+      ],
+      "title": "Family",
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "conceptual",
+        "literature-derived",
+        "simulation",
+        "unquantified"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "sources": {
+      "items": {
+        "$ref": "#/$defs/Source"
+      },
+      "maxItems": 20,
+      "minItems": 1,
+      "title": "Sources",
+      "type": "array"
+    },
+    "panels": {
+      "items": {
+        "$ref": "#/$defs/Panel"
+      },
+      "maxItems": 12,
+      "title": "Panels",
+      "type": "array"
+    },
+    "nodes": {
+      "items": {
+        "$ref": "#/$defs/Node"
+      },
+      "maxItems": 12,
+      "title": "Nodes",
+      "type": "array"
+    },
+    "edges": {
+      "items": {
+        "$ref": "#/$defs/Edge"
+      },
+      "maxItems": 24,
+      "title": "Edges",
+      "type": "array"
+    },
+    "protocol": {
+      "items": {
+        "$ref": "#/$defs/ProtocolRow"
+      },
+      "maxItems": 20,
+      "title": "Protocol",
+      "type": "array"
+    },
+    "limitations": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 20,
+      "minItems": 1,
+      "title": "Limitations",
+      "type": "array"
+    }
+  },
+  "required": [
+    "title",
+    "description",
+    "project_id",
+    "revision",
+    "family",
+    "status",
+    "sources",
+    "limitations"
+  ],
+  "title": "FigureSpec",
+  "type": "object"
+}
