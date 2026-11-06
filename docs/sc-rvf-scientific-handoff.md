@@ -28,3 +28,11 @@ Workbench's protected `/standalone/v1/scientific-transport/calculate` and `/save
 The Pi acceptance runtime is isolated. Its protected configuration and rollback containers are operational records outside this repository. No credentials, private manuscript contents or production data belong in this document. The master acceptance issue tracks exact tested revisions, evidence and remaining gaps: https://github.com/Content-Catalyst-LLC/ucd-sustainable-development-research/issues/2
 
 API acceptance does not substitute for browser acceptance or scientific review. The broader SC-RVF-01 experimental design, chemistry, lifecycle, legal status and full manuscript requirements require their own verified implementation and acceptance evidence; this contract does not claim them complete.
+
+## Proposed studies and declared ledgers
+
+Lab `POST /v1/scientific-study/plan` requires the native compute key and explicit unit IDs, blocks, groups, untreated control, seed, observation-window labels and a protocol reference. It reuses the native blocked allocation and randomization engines; source labels are simulation or conceptual. The result is a proposed schedule with pending review, not field execution or preregistration approval.
+
+Workbench `/standalone/v1/scientific-carbon-ledger/calculate` and `/save` use native owned sessions. Each explicit accounting entry retains CO2 mass units, scope, source and method references. Storage bounds attributable mass; reversal and lifecycle domains subtract from the declared balance. Explicit covariance permits local linear propagation with a stated bound-switching limitation. Missing domains block the balance. The declared arithmetic never becomes verified removal or eligibility. Mol/charge quantities are rejected rather than converted into CO2.
+
+Full Core CI currently contains 41 failures that also reproduce on the unmodified base commit. The master issue records the baseline comparison; this adapter contract does not declare release certification.
