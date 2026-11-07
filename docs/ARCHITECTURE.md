@@ -1,3 +1,5 @@
+> **Product-boundary decision, 2026-11-07:** **Publications** = WordPress blog/editorial articles; **Press** = customer-facing identity for the existing Engagement & Communications application; Research/Library/Workspace retain their own authorities. See [the approved cross-product ADR](PRODUCT-BOUNDARIES-PUBLICATIONS-PRESS-RESEARCH-2026-11-07.md). This is documentation only, not a service rename or deployment.
+
 # Architecture
 
 Platform Core v2.5.0 combines six infrastructure layers:
