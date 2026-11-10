@@ -1,0 +1,27 @@
+# Development override; requires Docker Compose supporting !override.
+services:
+  core:
+    container_name: sc-core-dev
+    env_file: !override [.env.dev]
+    volumes: [core-dev-data:/data]
+    mem_limit: 768m
+    networks:
+      wordpress-dev:
+        aliases: [sc-dev-core-api]
+      sc-internal:
+        aliases: [sc-core]
+  connector-worker:
+    env_file: !override [.env.dev]
+    profiles: [connector-workers]
+    volumes: [core-dev-data:/data]
+  connector-scheduler:
+    env_file: !override [.env.dev]
+    profiles: [connector-workers]
+    volumes: [core-dev-data:/data]
+volumes:
+  core-dev-data:
+
+networks:
+  wordpress-dev:
+    external: true
+    name: ${SC_DEV_WP_NETWORK:?Set the existing private WordPress development network}
