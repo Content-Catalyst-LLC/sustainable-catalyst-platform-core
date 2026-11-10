@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from app.config import Settings
+
 import httpx
 
 from app.connectors.adapters import ADAPTERS
@@ -158,7 +160,7 @@ def test_registration_gated_connectors_fail_closed(client, write_headers):
 
 def test_authority_taxonomy_and_meta_advertise_v271(client):
     health = client.get('/health').json()
-    assert health['version'] == '2.35.0'
+    assert health['version'] == Settings().version
     assert health['international_law_un_connector_pack'] is True
 
     taxonomy = client.get('/v1/international-law/authority-taxonomy')
@@ -226,7 +228,7 @@ def test_scoped_public_authority_taxonomy(client, write_headers):
 def test_international_law_country_and_subject_filters_are_database_portable(client):
     from app.models import InternationalLawRecord
 
-    with client.app.state.database.session() as db:
+    with client.app.state.database.session_factory() as db:
         db.add(
             InternationalLawRecord(
                 id="law-filter-portability-fixture",

@@ -1,9 +1,11 @@
 from __future__ import annotations
 
+from io import BytesIO
 from pathlib import Path
+from zipfile import ZIP_DEFLATED, ZipFile
 
 from fastapi import APIRouter, HTTPException, Request
-from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
+from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, Response
 from sqlalchemy import select
 
 from ..models import ApiPlan
@@ -370,29 +372,39 @@ def postman_collection(request: Request):
 
 @router.get("/developers/sdk/python.zip")
 def python_sdk(request: Request):
-    _require_portal(request)
-    path = SDK_ROOT / "downloads" / f"sc-platform-core-public-python-v{request.app.state.settings.version}.zip"
-    if not path.exists():
-        raise HTTPException(status_code=404, detail="Python SDK is unavailable.")
-    return FileResponse(
-        path,
-        media_type="application/zip",
-        filename=path.name,
-    )
+    return _sdk_download(request, "python")
 
 
 @router.get("/developers/sdk/javascript.zip")
 def javascript_sdk(request: Request):
+    return _sdk_download(request, "javascript")
+
+
+def _sdk_download(request: Request, language: str):
     _require_portal(request)
-    path = (
-        SDK_ROOT
-        / "downloads"
-        / f"sc-platform-core-public-javascript-v{request.app.state.settings.version}.zip"
+    filename = f"sc-platform-core-public-{language}-v{request.app.state.settings.version}.zip"
+    path = SDK_ROOT / "downloads" / filename
+    if path.is_file():
+        return FileResponse(path, media_type="application/zip", filename=filename)
+
+    # Core releases do not necessarily rebuild the independently versioned SDKs.
+    # Package the shipped sources instead of requiring a release-specific ZIP.
+    source = SDK_ROOT / language
+    files = sorted(
+        item for item in source.rglob("*")
+        if item.is_file() and not item.is_symlink()
+        and not any(part.startswith(".") or part in {"__pycache__", "node_modules"}
+                    for part in item.relative_to(source).parts)
+        and item.suffix in {".py", ".toml", ".md", ".mjs", ".json"}
     )
-    if not path.exists():
-        raise HTTPException(status_code=404, detail="JavaScript SDK is unavailable.")
-    return FileResponse(
-        path,
+    if not files:
+        raise HTTPException(status_code=404, detail=f"{language.title()} SDK is unavailable.")
+    buffer = BytesIO()
+    with ZipFile(buffer, "w", compression=ZIP_DEFLATED) as archive:
+        for item in files:
+            archive.write(item, item.relative_to(source).as_posix())
+    return Response(
+        buffer.getvalue(),
         media_type="application/zip",
-        filename=path.name,
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
     )

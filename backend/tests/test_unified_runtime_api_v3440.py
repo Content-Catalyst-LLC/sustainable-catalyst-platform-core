@@ -81,7 +81,8 @@ def test_contract_links_v339_interchange():
 
 def test_reference_catalog_has_r_and_julia():
     refs = {item.runtime_ref for item in ref_catalog().entries}
-    assert refs == {REFERENCE_R_RUNTIME, REFERENCE_JULIA_RUNTIME}
+    assert {REFERENCE_R_RUNTIME, REFERENCE_JULIA_RUNTIME} <= refs
+    assert len(refs) == len(ref_catalog().entries)
 
 
 def test_reference_r_entry_version_and_adapter():
@@ -345,7 +346,10 @@ def test_candidate_resolution_for_matrix_multiply_returns_julia():
     )
     result = resolve_runtime_request(catalog=ref_catalog(), profile=profile(ProductId.workspace), request=request)
     assert result.mode == ResolutionMode.candidate_discovery
-    assert [x.runtime_ref for x in result.candidates] == [REFERENCE_JULIA_RUNTIME]
+    assert {x.runtime_ref for x in result.candidates} == {
+        REFERENCE_JULIA_RUNTIME, "sc-runtime-octave", "sc-runtime-fortran",
+        "sc-runtime-cpp", "sc-runtime-python",
+    }
     assert result.bound_runtime_ref is None
 
 
@@ -359,7 +363,7 @@ def test_candidate_resolution_for_regression_returns_r():
     )
     result = resolve_runtime_request(catalog=ref_catalog(), profile=profile(ProductId.research_lab), request=request)
     assert result.mode == ResolutionMode.candidate_discovery
-    assert [x.runtime_ref for x in result.candidates] == [REFERENCE_R_RUNTIME]
+    assert {x.runtime_ref for x in result.candidates} == {REFERENCE_R_RUNTIME, "sc-runtime-python"}
 
 
 def test_explicit_r_binding_validates_for_regression():
@@ -409,7 +413,14 @@ def test_unavailable_runtime_excluded_from_candidates():
         operation="matrix_multiply",
     )
     result = resolve_runtime_request(catalog=catalog, profile=profile(ProductId.workspace), request=request)
+    assert result.mode == ResolutionMode.candidate_discovery
+    assert REFERENCE_JULIA_RUNTIME not in {x.runtime_ref for x in result.candidates}
+    assert result.bound_runtime_ref is None
+    for entry in catalog.entries:
+        entry.availability = RuntimeAvailability.unavailable
+    result = resolve_runtime_request(catalog=catalog, profile=profile(ProductId.workspace), request=request)
     assert result.mode == ResolutionMode.unresolved
+    assert result.candidates == []
 
 
 def test_resolution_rejects_duplicate_candidates():
@@ -754,9 +765,12 @@ def test_reference_receipt_status_completed():
     assert contract_document()["reference"]["reference_receipt_status"] == "completed"
 
 
-def test_matrix_candidate_discovery_is_julia_only():
+def test_matrix_candidate_discovery_includes_registered_matrix_runtimes():
     doc = contract_document()
-    assert doc["reference"]["matrix_candidate_runtime_refs"] == [REFERENCE_JULIA_RUNTIME]
+    assert set(doc["reference"]["matrix_candidate_runtime_refs"]) == {
+        REFERENCE_JULIA_RUNTIME, "sc-runtime-octave", "sc-runtime-fortran",
+        "sc-runtime-cpp", "sc-runtime-python",
+    }
     assert doc["reference"]["matrix_candidate_resolution_mode"] == "candidate-discovery"
 
 

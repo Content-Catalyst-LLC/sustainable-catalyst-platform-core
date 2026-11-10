@@ -796,8 +796,8 @@ def contract_document() -> dict[str, Any]:
         "reference_adapter": {
             "adapter_id": "adapter:catalyst-julia-runtime",
             "runtime_id": "catalyst-julia-runtime",
-            "provider_version": "0.2.0",
-            "status": "contract-only",
+            "provider_version": REGISTRY.get("adapter:catalyst-julia-runtime").runtime.provider_version,
+            "status": REGISTRY.get("adapter:catalyst-julia-runtime").status,
             "provider_release": "Catalyst Julia Runtime v0.3.0",
         },
         "legacy_bridge": {

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from app.config import Settings
+
 from datetime import datetime, timezone
 
 import httpx
@@ -234,7 +236,7 @@ def test_registry_stats_include_live_data_counts(client):
 
 def test_health_advertises_live_data_gateway(client):
     health = client.get("/health").json()
-    assert health["version"] == "2.35.0"
+    assert health["version"] == Settings().version
     assert health["live_data_gateway"] is True
     assert health["strict_free_sources"] is True
 

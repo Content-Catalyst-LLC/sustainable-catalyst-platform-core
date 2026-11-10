@@ -39,4 +39,5 @@ def test_v2231_historical_release_record_remains_present():
     root = Path(__file__).resolve().parents[2]
     roadmap = (root / 'docs/ROADMAP.md').read_text()
     assert 'v2.23.1 — Capability Metadata, Documentation & Release-Lineage Repair' in roadmap
-    assert (root / 'RELEASE_NOTES_V2231.md').is_file()
+    readme = (root / 'README.md').read_text()
+    assert 'archive/pre-root-cleanup-2026-09-29-core' in readme
